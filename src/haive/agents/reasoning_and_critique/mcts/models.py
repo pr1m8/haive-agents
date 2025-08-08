@@ -14,7 +14,9 @@ class Reflection(BaseModel):
     found_solution: bool = Field(..., description="True if task was solved")
 
     def as_message(self) -> HumanMessage:
-        return HumanMessage(content=f"Reasoning: {self.reflections}\nScore: {self.score}")
+        return HumanMessage(
+            content=f"Reasoning: {self.reflections}\nScore: {self.score}"
+        )
 
     @property
     def normalized_score(self) -> float:
@@ -53,7 +55,9 @@ class TreeNode(BaseModel):
             node = node.parent
 
     def get_messages(self, include_reflections: bool = True) -> list[BaseMessage]:
-        return self.messages + ([self.reflection.as_message()] if include_reflections else [])
+        return self.messages + (
+            [self.reflection.as_message()] if include_reflections else []
+        )
 
     def get_trajectory(self, include_reflections: bool = True) -> list[BaseMessage]:
         node = self
@@ -75,7 +79,8 @@ class TreeNode(BaseModel):
     def get_best_solution(self) -> TreeNode:
         all_nodes = [self, *self._get_all_children()]
         best = max(
-            all_nodes, key=lambda node: int(node.is_terminal and node.is_solved) * node.value
+            all_nodes,
+            key=lambda node: int(node.is_terminal and node.is_solved) * node.value,
         )
         return best
 

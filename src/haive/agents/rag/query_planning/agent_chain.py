@@ -31,7 +31,9 @@ class SubQueryResult(BaseModel):
 
 
 def create_query_planning_chain(
-    documents: list[Document], llm_config: LLMConfig | None = None, name: str = "Query Planning RAG"
+    documents: list[Document],
+    llm_config: LLMConfig | None = None,
+    name: str = "Query Planning RAG",
 ) -> ChainAgent:
     """Create query planning RAG using ChainAgent."""
     if not llm_config:
@@ -175,7 +177,9 @@ def create_adaptive_planning_chain(
     )
 
     # Complex planning chain
-    complex_planning = create_query_planning_chain(documents, llm_config, "Complex Planning")
+    complex_planning = create_query_planning_chain(
+        documents, llm_config, "Complex Planning"
+    )
 
     # Route based on complexity
     return flow_with_edges(

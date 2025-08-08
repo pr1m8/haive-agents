@@ -1,8 +1,5 @@
 from collections.abc import Callable
 
-from haive.agents.reflexion.config import ReflexionConfig
-from haive.agents.reflexion.responder_with_retries import ResponderWithRetries
-from haive.agents.reflexion.utils import _get_num_iterations
 from haive.core.engine.agent.agent import Agent, register_agent
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.branches import Branch
@@ -11,6 +8,10 @@ from langchain_core.tools import BaseTool, StructuredTool
 from langgraph.graph import END, START
 from langgraph.prebuilt import ToolNode
 from langgraph.types import Command
+
+from haive.agents.reflexion.config import ReflexionConfig
+from haive.agents.reflexion.responder_with_retries import ResponderWithRetries
+from haive.agents.reflexion.utils import _get_num_iterations
 
 # from haive_agents.reflexion.aug_llms import initial_answer_chain,revision_chain
 
@@ -32,7 +33,8 @@ class ReflexionAgent(Agent[ReflexionConfig]):
         self.answer_writer = AugLLMConfig(model="gpt-4o", name="answer_writer")
         self.tool_node = self.create_tool_node(config.tools)
         self.event_loop_branch = Branch(
-            function=lambda state: _get_num_iterations(state) > self.config.max_iterations,
+            function=lambda state: _get_num_iterations(state)
+            > self.config.max_iterations,
             destinations={True: "end", False: "execute_tools"},
         )
         super().__init__(config)
@@ -48,7 +50,9 @@ class ReflexionAgent(Agent[ReflexionConfig]):
         tool_node_tools = []
         for tool in self.config.tools:
             for model in self.config.models:
-                tool_node_tools.append(StructuredTool.from_function(tool, name=model.__name__))
+                tool_node_tools.append(
+                    StructuredTool.from_function(tool, name=model.__name__)
+                )
         return ToolNode(tools=tool_node_tools)
 
     def final_answer(self, state: dict):
@@ -95,5 +99,7 @@ class ReflexionAgent(Agent[ReflexionConfig]):
             return "end" if iterations > self.config.max_iterations else "execute_tools"
 
         self.graph.add_conditional_edges(
-            "revision", should_continue, {"execute_tools": "tools", "end": "final_answer"}
+            "revision",
+            should_continue,
+            {"execute_tools": "tools", "end": "final_answer"},
         )

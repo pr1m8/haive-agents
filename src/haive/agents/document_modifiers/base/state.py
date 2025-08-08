@@ -6,6 +6,7 @@ foundation for all document processing agents in the haive framework.
 """
 
 from typing import Any
+
 from haive.core.schema import StateSchema
 from langchain_core.documents import Document
 from pydantic import Field, computed_field, field_validator, model_validator
@@ -59,11 +60,15 @@ class DocumentModifierState(StateSchema):
         is present to prevent processing empty collections.
     """
 
-    name: str | None = Field(default=None, description="The name of the document modifier.")
+    name: str | None = Field(
+        default=None, description="The name of the document modifier."
+    )
     description: str | None = Field(
         default=None, description="The description of the document modifier."
     )
-    documents: list[Document] = Field(default_factory=list, description="The documents to process.")
+    documents: list[Document] = Field(
+        default_factory=list, description="The documents to process."
+    )
 
     @classmethod
     def from_documents(cls, documents: list[Document]) -> "DocumentModifierState":

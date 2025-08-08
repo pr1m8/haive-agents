@@ -129,13 +129,13 @@ def main():
     plan1 = test_basic_plan()
 
     # Test 2: Detailed plan with requirements
-    plan2 = test_detailed_plan()
+    test_detailed_plan()
 
     # Test 3: No context
-    plan3 = test_no_context()
+    test_no_context()
 
     # Test 4: Async
-    plan4 = asyncio.run(test_async_plan())
+    asyncio.run(test_async_plan())
 
     print("All tests completed!")
 

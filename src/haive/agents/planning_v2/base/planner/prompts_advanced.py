@@ -1,6 +1,6 @@
 """Advanced prompt patterns for the planner using MessagesPlaceholder."""
 
-from langchain_core.messages import HumanMessage, SystemMessage
+from langchain_core.messages import SystemMessage
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 
 from haive.agents.planning_v2.base.planner.prompts import PLANNER_SYSTEM_MESSAGE

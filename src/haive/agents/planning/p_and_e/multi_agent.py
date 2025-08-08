@@ -70,7 +70,10 @@ class PlanAndExecuteAgent(ConfigurableMultiAgent):
                     outputs=[],  # Connects via branches
                 ),
                 WorkflowStep(
-                    "prepare_replan", self._prepare_replan_step, inputs=[], outputs=[replanner]
+                    "prepare_replan",
+                    self._prepare_replan_step,
+                    inputs=[],
+                    outputs=[replanner],
                 ),
                 WorkflowStep(
                     "process_replan",
@@ -120,7 +123,9 @@ class PlanAndExecuteAgent(ConfigurableMultiAgent):
     def _prepare_execution_step(self, state: PlanExecuteState) -> Command:
         """Prepare the next execution step."""
         if not state.plan:
-            return Command(update={"errors": [*state.errors, "No plan available for execution"]})
+            return Command(
+                update={"errors": [*state.errors, "No plan available for execution"]}
+            )
 
         next_step = state.plan.next_step
         if not next_step:
@@ -128,7 +133,9 @@ class PlanAndExecuteAgent(ConfigurableMultiAgent):
 
         state.plan.update_step_status(next_step.step_id, "in_progress")
 
-        return Command(update={"current_step_id": next_step.step_id, "plan": state.plan})
+        return Command(
+            update={"current_step_id": next_step.step_id, "plan": state.plan}
+        )
 
     def _process_execution_result(self, state: PlanExecuteState) -> Command:
         """Process the execution result and update the plan."""
@@ -136,16 +143,23 @@ class PlanAndExecuteAgent(ConfigurableMultiAgent):
             return Command(update={})
 
         if not state.messages:
-            return Command(update={"errors": [*state.errors, "No execution result received"]})
+            return Command(
+                update={"errors": [*state.errors, "No execution result received"]}
+            )
 
         last_message = state.messages[-1]
         result_content = getattr(last_message, "content", "")
 
         execution_result = ExecutionResult(
-            step_id=state.current_step_id, success=True, output=result_content, execution_time=1.0
+            step_id=state.current_step_id,
+            success=True,
+            output=result_content,
+            execution_time=1.0,
         )
 
-        state.plan.update_step_status(state.current_step_id, "completed", result=result_content)
+        state.plan.update_step_status(
+            state.current_step_id, "completed", result=result_content
+        )
 
         return Command(
             update={
@@ -218,7 +232,10 @@ class PlanAndExecuteAgent(ConfigurableMultiAgent):
 
         if state.plan and state.replan_count > 0:
             replan_history = state.replan_history or []
-            if replan_history and replan_history[-1].get("reason") == "New plan from replanner":
+            if (
+                replan_history
+                and replan_history[-1].get("reason") == "New plan from replanner"
+            ):
                 return "new_plan"
 
         return "continue"
@@ -227,10 +244,13 @@ class PlanAndExecuteAgent(ConfigurableMultiAgent):
 # Example usage patterns:
 
 
-def create_plan_execute_system(planner_agent: Any, executor_agent: Any, replanner_agent: Any):
+def create_plan_execute_system(
+    planner_agent: Any, executor_agent: Any, replanner_agent: Any
+):
     """Create Plan and Execute system with default workflow."""
     return PlanAndExecuteAgent(
-        agents=[planner_agent, executor_agent, replanner_agent], name="Plan and Execute System"
+        agents=[planner_agent, executor_agent, replanner_agent],
+        name="Plan and Execute System",
     )
 
 

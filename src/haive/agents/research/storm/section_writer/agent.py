@@ -16,5 +16,7 @@ async def retrieve(inputs: dict):
 
 
 section_writer = (
-    retrieve | section_writer_prompt | long_context_llm.with_structured_output(WikiSection)
+    retrieve
+    | section_writer_prompt
+    | long_context_llm.with_structured_output(WikiSection)
 )

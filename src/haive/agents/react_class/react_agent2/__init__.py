@@ -10,7 +10,6 @@ from haive.agents.react_class.react_agent2.advanced_agent3 import (
     AdvancedReactAgentConfig,
     add_tool,
 )
-
 from haive.agents.react_class.react_agent2.agent2 import (
     MessageNormalizingToolNode,
     ReactAgent,
@@ -23,17 +22,17 @@ from haive.agents.react_class.react_agent2.agent2 import (
     stream,
     structured_output_node,
 )
-
+from haive.agents.react_class.react_agent2.agent3 import ReactAgent as ReactAgent3
 from haive.agents.react_class.react_agent2.agent3 import (
-    ReactAgent as ReactAgent3,
     ReactAgentConfig,
     ReactAgentState,
     from_tools,
     search,
 )
-
 from haive.agents.react_class.react_agent2.config import (
     ReactAgentConfig as ReactAgentConfigV1,
+)
+from haive.agents.react_class.react_agent2.config import (
     from_scratch,
 )
 

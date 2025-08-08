@@ -7,8 +7,6 @@ from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import Field
 
-from haive.agents.simple.agent import SimpleAgent
-
 from .self_discover_enhanced_v4 import ModuleSelectionOutput
 
 logger = logging.getLogger(__name__)

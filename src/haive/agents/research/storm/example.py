@@ -40,7 +40,9 @@ def setup_environment() -> None:
             missing_vars.append(var)
 
     if missing_vars:
-        logger.error(f"Missing required environment variables: {', '.join(missing_vars)}")
+        logger.error(
+            f"Missing required environment variables: {', '.join(missing_vars)}"
+        )
         logger.error("Please set these variables before running the example.")
         sys.exit(1)
 
@@ -89,7 +91,9 @@ async def run_storm_agent(
 
     # Configure vector store
     vector_store_config = VectorStoreConfig(
-        name="storm_references", vector_store_provider="InMemory", embedding_model=embedding_model
+        name="storm_references",
+        vector_store_provider="InMemory",
+        embedding_model=embedding_model,
     )
 
     # Configure retriever
@@ -135,7 +139,11 @@ async def run_storm_agent(
         final_state = storm_agent.app.get_state(storm_agent.config.runnable_config)
 
         # Extract the article
-        if final_state and "values" in final_state and "article" in final_state["values"]:
+        if (
+            final_state
+            and "values" in final_state
+            and "article" in final_state["values"]
+        ):
             article = final_state["values"]["article"]
 
             # Print a preview of the article
@@ -165,12 +173,18 @@ def main() -> None:
     parser.add_argument("topic", help="Topic to research and write about")
     parser.add_argument("--output", "-o", help="Output file path (optional)")
     parser.add_argument(
-        "--perspectives", "-p", type=int, default=3, help="Number of perspectives (default: 3)"
+        "--perspectives",
+        "-p",
+        type=int,
+        default=3,
+        help="Number of perspectives (default: 3)",
     )
     parser.add_argument(
         "--turns", "-t", type=int, default=5, help="Max conversation turns (default: 5)"
     )
-    parser.add_argument("--verbose", "-v", action="store_true", help="Enable verbose logging")
+    parser.add_argument(
+        "--verbose", "-v", action="store_true", help="Enable verbose logging"
+    )
 
     args = parser.parse_args()
 

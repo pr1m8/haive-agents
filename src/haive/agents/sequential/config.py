@@ -8,10 +8,12 @@ automates the process of connecting multiple engine components in a sequence.
 import logging
 import uuid
 from typing import Any
+
 from haive.core.engine.agent.config import AgentConfig
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.schema.state_schema import StateSchema
 from pydantic import BaseModel, Field, field_validator, model_validator
+
 from haive.agents.sequential.agent import SequentialAgent
 
 logger = logging.getLogger(__name__)
@@ -48,9 +50,12 @@ class SequentialAgentConfig(AgentConfig):
     for chaining language model steps.
     """
 
-    steps: list[StepConfig] = Field(description="Ordered list of steps in the sequential workflow")
+    steps: list[StepConfig] = Field(
+        description="Ordered list of steps in the sequential workflow"
+    )
     entry_point: str | None = Field(
-        default=None, description="Name of the entry point step (defaults to first step)"
+        default=None,
+        description="Name of the entry point step (defaults to first step)",
     )
     visualize: bool = Field(default=True, description="Whether to visualize the graph")
     state_schema: type[StateSchema] | None = Field(
@@ -180,7 +185,9 @@ class SequentialAgentConfig(AgentConfig):
                     description=f"Step using {component.__class__.__name__}",
                 )
             )
-        return cls.from_steps(steps=steps, name=name, id=id, state_schema=state_schema, **kwargs)
+        return cls.from_steps(
+            steps=steps, name=name, id=id, state_schema=state_schema, **kwargs
+        )
 
     @classmethod
     def from_aug_llms(
@@ -227,7 +234,9 @@ def from_aug_llms(
     **kwargs,
 ) -> SequentialAgentConfig:
     """Create a SequentialAgentConfig from a list of AugLLMConfig instances."""
-    return SequentialAgentConfig.from_aug_llms(aug_llms, name, id, state_schema, **kwargs)
+    return SequentialAgentConfig.from_aug_llms(
+        aug_llms, name, id, state_schema, **kwargs
+    )
 
 
 def from_components(
@@ -238,7 +247,9 @@ def from_components(
     **kwargs,
 ) -> SequentialAgentConfig:
     """Create a SequentialAgentConfig from a list of components."""
-    return SequentialAgentConfig.from_components(components, name, id, state_schema, **kwargs)
+    return SequentialAgentConfig.from_components(
+        components, name, id, state_schema, **kwargs
+    )
 
 
 def from_steps(
@@ -250,7 +261,9 @@ def from_steps(
     **kwargs,
 ) -> SequentialAgentConfig:
     """Create a SequentialAgentConfig from a list of steps."""
-    return SequentialAgentConfig.from_steps(steps, name, id, entry_point, state_schema, **kwargs)
+    return SequentialAgentConfig.from_steps(
+        steps, name, id, entry_point, state_schema, **kwargs
+    )
 
 
 def get_step_by_name(config: SequentialAgentConfig, name: str) -> StepConfig | None:

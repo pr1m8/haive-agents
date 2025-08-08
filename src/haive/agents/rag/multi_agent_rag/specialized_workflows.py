@@ -139,7 +139,10 @@ class FLAREAgent(MultiAgent):
         ]
 
         super().__init__(
-            agents=agents, execution_mode="conditional", state_schema=FLAREState, **kwargs
+            agents=agents,
+            execution_mode="conditional",
+            state_schema=FLAREState,
+            **kwargs,
         )
 
     def build_custom_graph(self) -> Any:
@@ -237,7 +240,10 @@ class DynamicRAGAgent(MultiAgent):
         ]
 
         super().__init__(
-            agents=agents, execution_mode="sequential", state_schema=DynamicRAGState, **kwargs
+            agents=agents,
+            execution_mode="sequential",
+            state_schema=DynamicRAGState,
+            **kwargs,
         )
 
     def build_custom_graph(self) -> Any:
@@ -345,7 +351,10 @@ class DebateRAGAgent(MultiAgent):
         self._debate_positions = debate_positions
 
         super().__init__(
-            agents=agents, execution_mode="conditional", state_schema=DebateRAGState, **kwargs
+            agents=agents,
+            execution_mode="conditional",
+            state_schema=DebateRAGState,
+            **kwargs,
         )
 
     def build_custom_graph(self) -> Any:
@@ -446,7 +455,10 @@ class AdaptiveThresholdRAGAgent(MultiAgent):
         ]
 
         super().__init__(
-            agents=agents, execution_mode="conditional", state_schema=DynamicRAGState, **kwargs
+            agents=agents,
+            execution_mode="conditional",
+            state_schema=DynamicRAGState,
+            **kwargs,
         )
 
     def build_custom_graph(self) -> Any:

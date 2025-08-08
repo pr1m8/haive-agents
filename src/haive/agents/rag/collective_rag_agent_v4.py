@@ -2,12 +2,12 @@
 
 from pydantic import Field
 
-from haive.agents.multi.enhanced_multi_agent_v4 import EnhancedMultiAgentV4
+from haive.agents.multi.agent import MultiAgent
 from haive.agents.rag.simple.agent import SimpleRAGAgent
 from haive.agents.rag.synthesis_agent import SynthesisAgent
 
 
-class CollectiveRAGAgent(EnhancedMultiAgentV4):
+class CollectiveRAGAgent(MultiAgent):
     """Collective RAG = Multiple SimpleRAGAgent + SynthesisAgent, parallel then sequential."""
 
     agents: list = Field(

@@ -23,27 +23,37 @@ class PlanExecuteV3Config(BaseModel):
         step_result_in_context: Store step results in shared context
     """
 
-    model_config = ConfigDict(str_strip_whitespace=True, validate_assignment=True, extra="forbid")
+    model_config = ConfigDict(
+        str_strip_whitespace=True, validate_assignment=True, extra="forbid"
+    )
 
     max_steps: int = Field(
         default=10, ge=1, le=50, description="Maximum number of steps allowed in a plan"
     )
 
-    max_retries: int = Field(default=3, ge=0, le=10, description="Maximum retry attempts per step")
+    max_retries: int = Field(
+        default=3, ge=0, le=10, description="Maximum retry attempts per step"
+    )
 
     timeout_per_step: float = Field(
         default=30.0, gt=0, le=300, description="Timeout in seconds for each step"
     )
 
-    parallel_execution: bool = Field(default=False, description="Enable parallel step execution")
+    parallel_execution: bool = Field(
+        default=False, description="Enable parallel step execution"
+    )
 
-    validate_plan: bool = Field(default=True, description="Validate plan before execution")
+    validate_plan: bool = Field(
+        default=True, description="Validate plan before execution"
+    )
 
     replan_on_failure: bool = Field(
         default=True, description="Automatically replan on execution failure"
     )
 
-    enable_monitoring: bool = Field(default=True, description="Enable execution monitoring")
+    enable_monitoring: bool = Field(
+        default=True, description="Enable execution monitoring"
+    )
 
     max_replanning_attempts: int = Field(
         default=3, ge=0, le=10, description="Maximum replanning attempts"
@@ -85,8 +95,16 @@ class PlanExecuteV3Config(BaseModel):
 
     def get_planning_temperature(self, default: float) -> float:
         """Get planning temperature or use default."""
-        return self.planning_temperature if self.planning_temperature is not None else default
+        return (
+            self.planning_temperature
+            if self.planning_temperature is not None
+            else default
+        )
 
     def get_execution_temperature(self, default: float) -> float:
         """Get execution temperature or use default."""
-        return self.execution_temperature if self.execution_temperature is not None else default
+        return (
+            self.execution_temperature
+            if self.execution_temperature is not None
+            else default
+        )

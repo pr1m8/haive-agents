@@ -78,7 +78,9 @@ class ResearchAgent(Agent[ResearchAgentConfig]):
         """Get or create the retriever from the vector store."""
         if not hasattr(self, "_retriever"):
             if not self.vectorstore:
-                logger.warning("Vector store not available, retriever cannot be created")
+                logger.warning(
+                    "Vector store not available, retriever cannot be created"
+                )
                 return None
             self._retriever = create_retriever_from_vectorstore(
                 self.vectorstore, search_type="similarity", search_kwargs={"k": 5}
@@ -120,11 +122,15 @@ class ResearchAgent(Agent[ResearchAgentConfig]):
         graph_builder.add_node("extract_topic", self.extract_topic)
         graph_builder.add_node("generate_report_plan", self.generate_report_plan)
         graph_builder.add_node("generate_search_queries", self.generate_search_queries)
-        graph_builder.add_node("recommend_document_loaders", self.recommend_document_loaders)
+        graph_builder.add_node(
+            "recommend_document_loaders", self.recommend_document_loaders
+        )
         graph_builder.add_node("execute_searches", self.execute_searches)
         graph_builder.add_node("evaluate_sources", self.evaluate_sources)
         graph_builder.add_node("write_section", self.write_section)
-        graph_builder.add_node("check_section_completion", self.check_section_completion)
+        graph_builder.add_node(
+            "check_section_completion", self.check_section_completion
+        )
         graph_builder.add_node("consolidate_findings", self.consolidate_findings)
         graph_builder.add_node("assess_confidence", self.assess_confidence)
         graph_builder.add_node("compile_final_report", self.compile_final_report)
@@ -186,9 +192,7 @@ class ResearchAgent(Agent[ResearchAgentConfig]):
             # Add additional context if available
             additional_context = response.get("additional_context")
             if additional_context:
-                state.input_context = (
-                    f"{state.input_context or ''}\n\nAdditional context: {additional_context}"
-                )
+                state.input_context = f"{state.input_context or ''}\n\nAdditional context: {additional_context}"
 
         state.current_step = "extract_topic"
 
@@ -300,7 +304,9 @@ class ResearchAgent(Agent[ResearchAgentConfig]):
             source_loaders = loader_mapping.get(source, ["WebBaseLoader"])
             for loader_name in source_loaders:
                 if loader_name in self._available_loaders:
-                    recommended_loaders[loader_name] = self._available_loaders[loader_name]
+                    recommended_loaders[loader_name] = self._available_loaders[
+                        loader_name
+                    ]
 
         # Store recommended loaders in state
         state.data_sources = [
@@ -342,7 +348,9 @@ class ResearchAgent(Agent[ResearchAgentConfig]):
             try:
                 # Load documents using the appropriate loader
                 if data_source == "web":
-                    loader = self._create_document_loader("WebBaseLoader", web_path=query_text)
+                    loader = self._create_document_loader(
+                        "WebBaseLoader", web_path=query_text
+                    )
                     documents = loader.load()
 
                 elif data_source == "academic" and "arxiv" in query_text.lower():
@@ -353,12 +361,16 @@ class ResearchAgent(Agent[ResearchAgentConfig]):
 
                 elif data_source == "github" and "/" in query_text:
                     # Assuming format "owner/repo"
-                    loader = self._create_document_loader("GitHubIssuesLoader", repo=query_text)
+                    loader = self._create_document_loader(
+                        "GitHubIssuesLoader", repo=query_text
+                    )
                     documents = loader.load()
 
                 elif data_source == "news" and query_text.isdigit():
                     # Assuming HN story ID
-                    loader = self._create_document_loader("HNLoader", story_id=int(query_text))
+                    loader = self._create_document_loader(
+                        "HNLoader", story_id=int(query_text)
+                    )
                     documents = loader.load()
 
                 # Process results
@@ -385,7 +397,9 @@ class ResearchAgent(Agent[ResearchAgentConfig]):
                     state.vectorstore_documents.extend(documents)
 
             except Exception as e:
-                logger.exception(f"Error executing search for query '{query_text}': {e}")
+                logger.exception(
+                    f"Error executing search for query '{query_text}': {e}"
+                )
                 results.append({"error": str(e), "query": query_text})
 
             # Update query with results
@@ -449,8 +463,9 @@ class ResearchAgent(Agent[ResearchAgentConfig]):
         state.sources.extend(sources)
 
         # Get current section and update sources
-        if state.current_section_index is not None and state.current_section_index < len(
-            state.report_sections
+        if (
+            state.current_section_index is not None
+            and state.current_section_index < len(state.report_sections)
         ):
             current_section = state.report_sections[state.current_section_index]
             current_section.sources.extend(sources)
@@ -486,12 +501,12 @@ class ResearchAgent(Agent[ResearchAgentConfig]):
         # Use RAG if we have documents and a vector store
         if self.retriever and state.vectorstore_documents:
             try:
-                query = (
-                    f"Information about {current_section.name} related to {state.research_topic}"
-                )
+                query = f"Information about {current_section.name} related to {state.research_topic}"
                 relevant_docs = self.retriever.invoke(query)
 
-                research_context += "Additional relevant information from vector store:\n\n"
+                research_context += (
+                    "Additional relevant information from vector store:\n\n"
+                )
                 for i, doc in enumerate(relevant_docs[:3]):  # Limit to top 3
                     research_context += f"--- Document {i + 1} ---\n"
                     research_context += doc.page_content[:500] + "...\n\n"
@@ -573,7 +588,9 @@ class ResearchAgent(Agent[ResearchAgentConfig]):
                 if isinstance(response, dict):
                     findings.append(response)
             except Exception as e:
-                logger.exception(f"Error extracting findings from section {section.name}: {e}")
+                logger.exception(
+                    f"Error extracting findings from section {section.name}: {e}"
+                )
 
         # Update state with findings
         state.research_findings = {
@@ -596,7 +613,9 @@ class ResearchAgent(Agent[ResearchAgentConfig]):
             1 for source in state.sources if source.get("reliability") == "HIGH"
         )
         recent_sources = sum(
-            1 for source in state.sources if source.get("freshness") in ["VERY_RECENT", "RECENT"]
+            1
+            for source in state.sources
+            if source.get("freshness") in ["VERY_RECENT", "RECENT"]
         )
 
         # Format key findings
@@ -678,11 +697,17 @@ class ResearchAgent(Agent[ResearchAgentConfig]):
 
     def generate_markdown_report(self, state: dict[str, Any]) -> str:
         """Generate a markdown report from the final state."""
-        if isinstance(state, dict) and "final_report" in state and state["final_report"]:
+        if (
+            isinstance(state, dict)
+            and "final_report" in state
+            and state["final_report"]
+        ):
             return state["final_report"]
 
         # If no final report, create a basic one from sections
-        report = f"# Research Report: {state.get('research_topic', 'Untitled Research')}\n\n"
+        report = (
+            f"# Research Report: {state.get('research_topic', 'Untitled Research')}\n\n"
+        )
 
         if state.get("research_question"):
             report += f"**Research Question:** {state['research_question']}\n\n"

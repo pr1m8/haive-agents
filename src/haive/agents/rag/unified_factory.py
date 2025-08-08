@@ -94,15 +94,25 @@ class RAGFactory:
 
         # Route to appropriate implementation
         if style == RAGStyle.CHAIN:
-            return RAGFactory._create_chain(rag_type, documents, llm_config, agent_name, **kwargs)
+            return RAGFactory._create_chain(
+                rag_type, documents, llm_config, agent_name, **kwargs
+            )
         if style == RAGStyle.MULTI:
-            return RAGFactory._create_multi(rag_type, documents, llm_config, agent_name, **kwargs)
+            return RAGFactory._create_multi(
+                rag_type, documents, llm_config, agent_name, **kwargs
+            )
         # TRADITIONAL
-        return RAGFactory._create_traditional(rag_type, documents, llm_config, agent_name, **kwargs)
+        return RAGFactory._create_traditional(
+            rag_type, documents, llm_config, agent_name, **kwargs
+        )
 
     @staticmethod
     def _create_chain(
-        rag_type: RAGType, documents: list[Document], llm_config: LLMConfig, name: str, **kwargs
+        rag_type: RAGType,
+        documents: list[Document],
+        llm_config: LLMConfig,
+        name: str,
+        **kwargs,
     ) -> ChainAgent:
         if rag_type == RAGType.AGENTIC_ROUTER:
             return create_agentic_rag_router_chain(documents, llm_config, name)
@@ -129,17 +139,27 @@ class RAGFactory:
 
     @staticmethod
     def _create_multi(
-        rag_type: RAGType, documents: list[Document], llm_config: LLMConfig, name: str, **kwargs
+        rag_type: RAGType,
+        documents: list[Document],
+        llm_config: LLMConfig,
+        name: str,
+        **kwargs,
     ) -> "ChainMultiAgent":
         # Create chain version first
-        chain = RAGFactory._create_chain(rag_type, documents, llm_config, name, **kwargs)
+        chain = RAGFactory._create_chain(
+            rag_type, documents, llm_config, name, **kwargs
+        )
 
         # Convert to multi-agent
         return ChainMultiAgent.from_chain(chain, name=name)
 
     @staticmethod
     def _create_traditional(
-        rag_type: RAGType, documents: list[Document], llm_config: LLMConfig, name: str, **kwargs
+        rag_type: RAGType,
+        documents: list[Document],
+        llm_config: LLMConfig,
+        name: str,
+        **kwargs,
     ) -> Agent:
         # Remove name from kwargs to avoid conflicts
         filtered_kwargs = {k: v for k, v in kwargs.items() if k != "name"}
@@ -165,7 +185,9 @@ class RAGFactory:
             )
 
         if rag_type == RAGType.FLARE:
-            return FLARERAGAgent.from_documents(documents, llm_config, name=name, **filtered_kwargs)
+            return FLARERAGAgent.from_documents(
+                documents, llm_config, name=name, **filtered_kwargs
+            )
 
         if rag_type == RAGType.SPECULATIVE:
             return SpeculativeRAGAgent.from_documents(
@@ -202,7 +224,10 @@ class RAGFactory:
 
 # Convenience functions
 def create_rag(
-    rag_type: str | RAGType, documents: list[Document], style: str | RAGStyle = "chain", **kwargs
+    rag_type: str | RAGType,
+    documents: list[Document],
+    style: str | RAGStyle = "chain",
+    **kwargs,
 ) -> Agent | ChainAgent:
     """Simple function to create any RAG agent."""
     if isinstance(rag_type, str):
@@ -213,7 +238,9 @@ def create_rag(
     return RAGFactory.create(rag_type, documents, style=style, **kwargs)
 
 
-def create_rag_chain(rag_type: str | RAGType, documents: list[Document], **kwargs) -> ChainAgent:
+def create_rag_chain(
+    rag_type: str | RAGType, documents: list[Document], **kwargs
+) -> ChainAgent:
     """Create a RAG agent as a ChainAgent."""
     return create_rag(rag_type, documents, style="chain", **kwargs)
 

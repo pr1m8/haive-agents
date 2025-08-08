@@ -111,7 +111,9 @@ class SafeCompatibilityTester:
                 )
 
             # Perform basic compatibility check
-            compat_result = self._basic_schema_compatibility_check(source_schema, target_schema)
+            compat_result = self._basic_schema_compatibility_check(
+                source_schema, target_schema
+            )
 
             # Analyze schemas in detail
             source_analysis = self.analyzer.analyze_schema(source_schema)
@@ -131,18 +133,26 @@ class SafeCompatibilityTester:
                 compatibility_score=self._calculate_compatibility_score(compat_result),
                 issues=self._extract_issues(compat_result, detailed_report),
                 missing_fields=getattr(compat_result, "missing_required_fields", []),
-                conflicting_fields=self._find_conflicting_fields(source_analysis, target_analysis),
-                suggested_mappings=self._generate_field_mappings(source_analysis, target_analysis),
+                conflicting_fields=self._find_conflicting_fields(
+                    source_analysis, target_analysis
+                ),
+                suggested_mappings=self._generate_field_mappings(
+                    source_analysis, target_analysis
+                ),
                 recommended_adapters=self._recommend_adapters(compat_result),
-                safe_to_chain=level in [CompatibilityLevel.PERFECT, CompatibilityLevel.COMPATIBLE],
+                safe_to_chain=level
+                in [CompatibilityLevel.PERFECT, CompatibilityLevel.COMPATIBLE],
                 quality_assessment=self._assess_quality(compat_result),
                 detailed_analysis={
                     "source_fields": len(source_analysis.fields),
                     "target_fields": len(target_analysis.fields),
                     "shared_fields": len(
-                        set(source_analysis.fields.keys()) & set(target_analysis.fields.keys())
+                        set(source_analysis.fields.keys())
+                        & set(target_analysis.fields.keys())
                     ),
-                    "conversion_paths": self._find_conversion_paths(source_schema, target_schema),
+                    "conversion_paths": self._find_conversion_paths(
+                        source_schema, target_schema
+                    ),
                 },
             )
 
@@ -178,7 +188,9 @@ class SafeCompatibilityTester:
                 compatible_pairs=0,
                 total_pairs=0,
                 compatibility_matrix={},
-                workflow_recommendations=["Single agent workflow - no compatibility issues"],
+                workflow_recommendations=[
+                    "Single agent workflow - no compatibility issues"
+                ],
                 required_adapters=[],
                 risk_assessment="Low - single agent workflow",
             )
@@ -204,7 +216,9 @@ class SafeCompatibilityTester:
         overall_compatible = compatible_pairs == total_pairs
 
         # Generate workflow recommendations
-        recommendations = self._generate_workflow_recommendations(compatibility_matrix, agents)
+        recommendations = self._generate_workflow_recommendations(
+            compatibility_matrix, agents
+        )
 
         # Identify required adapters
         required_adapters = self._identify_required_adapters(compatibility_matrix)
@@ -297,7 +311,9 @@ class SafeCompatibilityTester:
             logger.warning(f"Could not extract input schema from {agent}: {e!s}")
             return None
 
-    def _assess_compatibility_level(self, compat_result, detailed_report) -> CompatibilityLevel:
+    def _assess_compatibility_level(
+        self, compat_result, detailed_report
+    ) -> CompatibilityLevel:
         """Assess the compatibility level based on results."""
         if getattr(compat_result, "is_compatible", False):
             if not getattr(compat_result, "missing_required_fields", []):
@@ -344,12 +360,16 @@ class SafeCompatibilityTester:
                 target_field = target_analysis.fields[field_name]
 
                 # Check for type conflicts
-                if getattr(source_field, "type", None) != getattr(target_field, "type", None):
+                if getattr(source_field, "type", None) != getattr(
+                    target_field, "type", None
+                ):
                     conflicts.append(field_name)
 
         return conflicts
 
-    def _generate_field_mappings(self, source_analysis, target_analysis) -> dict[str, str]:
+    def _generate_field_mappings(
+        self, source_analysis, target_analysis
+    ) -> dict[str, str]:
         """Generate suggested field mappings between schemas."""
         mappings = {}
 
@@ -378,7 +398,9 @@ class SafeCompatibilityTester:
         }
 
         for base, syns in synonyms.items():
-            if (field1 == base and field2 in syns) or (field2 == base and field1 in syns):
+            if (field1 == base and field2 in syns) or (
+                field2 == base and field1 in syns
+            ):
                 return True
 
         return False
@@ -430,7 +452,9 @@ class SafeCompatibilityTester:
 
         return paths
 
-    def _generate_workflow_recommendations(self, compatibility_matrix, agents) -> list[str]:
+    def _generate_workflow_recommendations(
+        self, compatibility_matrix, agents
+    ) -> list[str]:
         """Generate recommendations for improving workflow compatibility."""
         recommendations = []
 
@@ -528,7 +552,9 @@ class SafeCompatibilityTester:
 
         try:
             # Simple field-based compatibility check
-            if hasattr(source_schema, "__fields__") and hasattr(target_schema, "__fields__"):
+            if hasattr(source_schema, "__fields__") and hasattr(
+                target_schema, "__fields__"
+            ):
                 source_fields = set(source_schema.__fields__.keys())
                 target_fields = set(target_schema.__fields__.keys())
 

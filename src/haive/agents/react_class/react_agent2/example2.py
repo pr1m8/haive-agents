@@ -56,7 +56,10 @@ def example_basic_react_agent() -> Any:
 
     # Create a React agent with these tools
     agent = create_react_agent(
-        tools=[search, calculator], name="basic_react_agent", model="gpt-4o", temperature=0.7
+        tools=[search, calculator],
+        name="basic_react_agent",
+        model="gpt-4o",
+        temperature=0.7,
     )
 
     # Run the agent with a question
@@ -142,7 +145,11 @@ def example_memory_agent() -> Any:
 
     # Create a React agent with memory
     agent = create_react_agent(
-        tools=[get_weather], name="memory_agent", model="gpt-4o", temperature=0.7, use_memory=True
+        tools=[get_weather],
+        name="memory_agent",
+        model="gpt-4o",
+        temperature=0.7,
+        use_memory=True,
     )
 
     # Create a thread ID for this conversation

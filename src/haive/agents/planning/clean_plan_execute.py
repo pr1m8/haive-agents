@@ -204,7 +204,11 @@ Otherwise, fill out the plan. Only add steps to the plan that still NEED to be d
     # Define branches for routing
     branches = [
         # After execution, check if we should continue or replan
-        (executor, should_continue, {"agent": executor, "replan": replanner, "END": "END"}),
+        (
+            executor,
+            should_continue,
+            {"agent": executor, "replan": replanner, "END": "END"},
+        ),
         # After replanning, decide next action
         (replanner, route_after_replan, {"agent": executor, "END": "END"}),
     ]

@@ -22,6 +22,7 @@ from haive.agents.rag.base.agent import BaseRAGAgent
 from haive.agents.rag.common.answer_generators.prompts import RAG_ANSWER_STANDARD
 from haive.agents.rag.models import HyDEResult
 from haive.agents.simple.agent import SimpleAgent
+
 # from haive.agents.rag.utils.structured_output_enhancer import create_hyde_enhancer  # Commented out due to missing dependency
 
 
@@ -115,7 +116,9 @@ class EnhancedHyDERAGAgent(SequentialAgent):
             return cls._create_with_enhancement_pattern(
                 documents, llm_config, embedding_model, **kwargs
             )
-        return cls._create_traditional_pattern(documents, llm_config, embedding_model, **kwargs)
+        return cls._create_traditional_pattern(
+            documents, llm_config, embedding_model, **kwargs
+        )
 
     @classmethod
     def _create_with_enhancement_pattern(
@@ -150,12 +153,16 @@ Consider how well the hypothetical document would serve for semantic retrieval."
 
         # Step 3: Enhanced retrieval using structured output
         enhanced_retriever = EnhancedHyDERetriever(
-            documents=documents, embedding_model=embedding_model, name="Enhanced HyDE Retriever"
+            documents=documents,
+            embedding_model=embedding_model,
+            name="Enhanced HyDE Retriever",
         )
 
         # Step 4: Final answer generation
         answer_agent = SimpleAgent(
-            engine=AugLLMConfig(llm_config=llm_config, prompt_template=RAG_ANSWER_STANDARD),
+            engine=AugLLMConfig(
+                llm_config=llm_config, prompt_template=RAG_ANSWER_STANDARD
+            ),
             name="Answer Generator",
         )
 
@@ -196,7 +203,9 @@ Consider how well the hypothetical document would serve for semantic retrieval."
         )
 
         answer_agent = SimpleAgent(
-            engine=AugLLMConfig(llm_config=llm_config, prompt_template=RAG_ANSWER_STANDARD),
+            engine=AugLLMConfig(
+                llm_config=llm_config, prompt_template=RAG_ANSWER_STANDARD
+            ),
             name="Answer Generator",
         )
 
@@ -211,10 +220,16 @@ class EnhancedHyDERetriever(Agent):
     """Enhanced retriever that handles both enhancement pattern and traditional outputs."""
 
     # Define as Pydantic fields
-    documents: list[Document] = Field(default_factory=list, description="Documents for retrieval")
-    embedding_model: str | None = Field(default=None, description="Embedding model to use")
+    documents: list[Document] = Field(
+        default_factory=list, description="Documents for retrieval"
+    )
+    embedding_model: str | None = Field(
+        default=None, description="Embedding model to use"
+    )
 
-    def __init__(self, documents: list[Document], embedding_model: str | None = None, **kwargs):
+    def __init__(
+        self, documents: list[Document], embedding_model: str | None = None, **kwargs
+    ):
         super().__init__(documents=documents, embedding_model=embedding_model, **kwargs)
 
     def build_graph(self) -> Any:
@@ -240,7 +255,9 @@ class EnhancedHyDERetriever(Agent):
                 retrieval_query = refined_query or hyp_doc
             else:
                 # Fall back to raw hypothetical content (enhancement pattern)
-                retrieval_query = state.get("hypothetical_content", state.get("query", ""))
+                retrieval_query = state.get(
+                    "hypothetical_content", state.get("query", "")
+                )
 
             # Create base retriever on-demand
             base_retriever = BaseRAGAgent.from_documents(
@@ -323,8 +340,12 @@ def demonstrate_enhancement_vs_traditional() -> Dict[str, Any]:
 
     # Sample documents
     docs = [
-        Document(page_content="Machine learning uses algorithms to learn patterns from data."),
-        Document(page_content="Neural networks are inspired by biological neural networks."),
+        Document(
+            page_content="Machine learning uses algorithms to learn patterns from data."
+        ),
+        Document(
+            page_content="Neural networks are inspired by biological neural networks."
+        ),
         Document(
             page_content="Deep learning uses multiple layers for complex pattern recognition."
         ),

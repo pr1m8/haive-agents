@@ -16,11 +16,12 @@ import logging
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any, Protocol
-from haive.core.registry import ComponentMetadata
-from haive.core.graph.patterns.base import ComponentType
-from haive.core.models.embeddings.base import BaseEmbeddingConfig
+
 from haive.core.engine.embeddings import EmbeddingsEngineConfig
 from haive.core.engine.vectorstore.vectorstore import VectorStoreConfig
+from haive.core.graph.patterns.base import ComponentType
+from haive.core.models.embeddings.base import BaseEmbeddingConfig
+from haive.core.registry import ComponentMetadata
 
 EnhancedComponentRegistry = Any
 
@@ -37,12 +38,13 @@ except ImportError:
     discover_tools = lambda: []
     get_all_tools = lambda: []
     UnifiedHaiveDiscovery = Any
+from typing import TYPE_CHECKING
+
 from langchain_community.vectorstores import Chroma
 from langchain_core.documents import Document
 from langchain_core.vectorstores import VectorStore
 from langchain_openai import OpenAIEmbeddings
-from pydantic import BaseModel, Field, model_validator, ConfigDict
-from typing import TYPE_CHECKING
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 if TYPE_CHECKING:
     from haive.agents.discovery.selection_strategies import (
@@ -67,12 +69,22 @@ def _lazy_import_strategies():
     global AdaptiveSelectionStrategy, ContextualSelectionStrategy, EnsembleSelectionStrategy
     if BaseSelectionStrategy is None:
         from haive.agents.discovery.selection_strategies import (
-            BaseSelectionStrategy as _BaseSelectionStrategy,
-            SemanticSelectionStrategy as _SemanticSelectionStrategy,
-            CapabilityBasedStrategy as _CapabilityBasedStrategy,
             AdaptiveSelectionStrategy as _AdaptiveSelectionStrategy,
+        )
+        from haive.agents.discovery.selection_strategies import (
+            BaseSelectionStrategy as _BaseSelectionStrategy,
+        )
+        from haive.agents.discovery.selection_strategies import (
+            CapabilityBasedStrategy as _CapabilityBasedStrategy,
+        )
+        from haive.agents.discovery.selection_strategies import (
             ContextualSelectionStrategy as _ContextualSelectionStrategy,
+        )
+        from haive.agents.discovery.selection_strategies import (
             EnsembleSelectionStrategy as _EnsembleSelectionStrategy,
+        )
+        from haive.agents.discovery.selection_strategies import (
+            SemanticSelectionStrategy as _SemanticSelectionStrategy,
         )
 
         BaseSelectionStrategy = _BaseSelectionStrategy
@@ -214,7 +226,11 @@ class VectorBasedToolSelector(BaseModel):
             all_results = self.component_registry.search_components(
                 query, component_types=[ComponentType.TOOL], max_results=20
             )
-            return [r for r in all_results if r.similarity_score >= self.similarity_threshold]
+            return [
+                r
+                for r in all_results
+                if r.similarity_score >= self.similarity_threshold
+            ]
         if not self.vector_store_config:
             return []
         vector_store = self.vector_store_config.create_vectorstore()
@@ -238,7 +254,8 @@ class VectorBasedToolSelector(BaseModel):
             similar_tools = await self._select_top_k(query)
             query_analysis = QueryAnalyzer().analyze_query(query)
             capability_tools = self.component_registry.find_by_capabilities(
-                query_analysis.inferred_capabilities, component_types=[ComponentType.TOOL]
+                query_analysis.inferred_capabilities,
+                component_types=[ComponentType.TOOL],
             )
             all_tools = {t.name: t for t in similar_tools}
             for tool in capability_tools:
@@ -248,9 +265,12 @@ class VectorBasedToolSelector(BaseModel):
                     existing = all_tools[tool.name]
                     existing.capability_match_score = tool.capability_match_score
                     existing.composite_score = (
-                        existing.similarity_score * 0.6 + existing.capability_match_score * 0.4
+                        existing.similarity_score * 0.6
+                        + existing.capability_match_score * 0.4
                     )
-            sorted_tools = sorted(all_tools.values(), key=lambda t: t.composite_score, reverse=True)
+            sorted_tools = sorted(
+                all_tools.values(), key=lambda t: t.composite_score, reverse=True
+            )
             return sorted_tools[: self.max_tools]
         return await self._select_top_k(query)
 
@@ -314,7 +334,9 @@ class QueryAnalyzer(BaseModel):
         complexity = min(len(words) / 20.0, 1.0)
         if any((conj in query.lower() for conj in ["and", "or", "then", "but"])):
             complexity += 0.2
-        if any((step in query.lower() for step in ["first", "then", "finally", "after"])):
+        if any(
+            (step in query.lower() for step in ["first", "then", "finally", "after"])
+        ):
             complexity += 0.3
         return min(complexity, 1.0)
 
@@ -358,7 +380,9 @@ class CapabilityMatcher(BaseModel):
             self.capability_matrix[name] = capabilities
 
     def match_tools(
-        self, required_capabilities: list[str], optional_capabilities: list[str] | None = None
+        self,
+        required_capabilities: list[str],
+        optional_capabilities: list[str] | None = None,
     ) -> list[tuple[str, float]]:
         """Match tools based on capabilities."""
         if self.component_registry:
@@ -368,7 +392,9 @@ class CapabilityMatcher(BaseModel):
             return [(r.name, r.capability_match_score) for r in results]
         matches = []
         for tool_name, tool_capabilities in self.capability_matrix.items():
-            required_match = all((cap in tool_capabilities for cap in required_capabilities))
+            required_match = all(
+                (cap in tool_capabilities for cap in required_capabilities)
+            )
             if not required_match:
                 continue
             score = len(set(required_capabilities).intersection(set(tool_capabilities)))
@@ -403,7 +429,8 @@ class SemanticDiscoveryEngine(BaseModel):
     """Main semantic discovery engine combining all capabilities."""
 
     vector_selector: VectorBasedToolSelector = Field(
-        default_factory=VectorBasedToolSelector, description="Vector-based tool selector"
+        default_factory=VectorBasedToolSelector,
+        description="Vector-based tool selector",
     )
     query_analyzer: QueryAnalyzer = Field(
         default_factory=QueryAnalyzer, description="Query analyzer"
@@ -412,7 +439,9 @@ class SemanticDiscoveryEngine(BaseModel):
         default_factory=CapabilityMatcher, description="Capability matcher"
     )
     selection_strategy: BaseSelectionStrategy = Field(
-        default_factory=lambda: (_lazy_import_strategies(), SemanticSelectionStrategy)[1](),
+        default_factory=lambda: (_lazy_import_strategies(), SemanticSelectionStrategy)[
+            1
+        ](),
         description="Selection strategy to use",
     )
     component_registry: EnhancedComponentRegistry | None = Field(
@@ -442,7 +471,9 @@ class SemanticDiscoveryEngine(BaseModel):
                 tools = get_all_tools(tool_components)
         tool_metadata = []
         for tool in tools:
-            metadata = self.component_registry.register_component(tool, ComponentType.TOOL)
+            metadata = self.component_registry.register_component(
+                tool, ComponentType.TOOL
+            )
             tool_metadata.append(metadata)
         self.vector_selector.index_tools(tools)
         self.capability_matcher.build_capability_matrix(tools)
@@ -503,14 +534,18 @@ class SemanticDiscoveryEngine(BaseModel):
                 if all((cap in result.capabilities for cap in required_capabilities)):
                     filtered.append(result)
             return filtered[:max_tools]
-        matches = self.capability_matcher.match_tools(required_capabilities, optional_capabilities)
+        matches = self.capability_matcher.match_tools(
+            required_capabilities, optional_capabilities
+        )
         results = []
         for tool_name, score in matches[:max_tools]:
             metadata = ComponentMetadata(
                 name=tool_name,
                 component_type=ComponentType.TOOL,
                 description=f"Tool: {tool_name}",
-                capabilities=self.capability_matcher.capability_matrix.get(tool_name, []),
+                capabilities=self.capability_matcher.capability_matrix.get(
+                    tool_name, []
+                ),
                 capability_match_score=score,
             )
             results.append(metadata)

@@ -6,7 +6,10 @@ from typing import Any, Dict, List, Optional
 
 from haive.core.graph.dynamic_graph_builder import DynamicGraph
 from langchain_core.messages import AIMessage
-from langchain_core.output_parsers.openai_tools import JsonOutputToolsParser, PydanticToolsParser
+from langchain_core.output_parsers.openai_tools import (
+    JsonOutputToolsParser,
+    PydanticToolsParser,
+)
 from langchain_core.runnables import RunnableConfig
 from langchain_core.runnables import chain as as_runnable
 from langgraph.graph import END
@@ -48,16 +51,22 @@ class MCTSAgent(Agent):
         self._setup_chains()
 
         # Add nodes to the graph
-        gb.add_node(name="generate_initial_response", config=self._generate_initial_response)
+        gb.add_node(
+            name="generate_initial_response", config=self._generate_initial_response
+        )
 
         gb.add_node(name="expand", config=self._expand)
 
         # Add conditional edges
         gb.add_conditional_edges(
-            "generate_initial_response", self._should_continue, {"end": END, "expand": "expand"}
+            "generate_initial_response",
+            self._should_continue,
+            {"end": END, "expand": "expand"},
         )
 
-        gb.add_conditional_edges("expand", self._should_continue, {"end": END, "expand": "expand"})
+        gb.add_conditional_edges(
+            "expand", self._should_continue, {"end": END, "expand": "expand"}
+        )
 
         # Set the entry point
         gb.set_entry_point("generate_initial_response")
@@ -115,7 +124,9 @@ class MCTSAgent(Agent):
             )
             return [gen.message for gen in chat_result.generations[0]]
 
-        self.expansion_chain = self.config.expansion_prompt_template | generate_candidates
+        self.expansion_chain = (
+            self.config.expansion_prompt_template | generate_candidates
+        )
 
     def _generate_initial_response(self, state: TreeState) -> dict[str, Any]:
         """Generate the initial candidate response."""
@@ -161,7 +172,9 @@ class MCTSAgent(Agent):
             # Create root node
             nodes = getattr(state, "nodes", None)
             serialize_messages = (
-                getattr(nodes, "serialize_messages", lambda x: x) if nodes else lambda x: x
+                getattr(nodes, "serialize_messages", lambda x: x)
+                if nodes
+                else lambda x: x
             )
             node_data = TreeNode(
                 messages=serialize_messages(output_messages),
@@ -294,7 +307,9 @@ class MCTSAgent(Agent):
             updated_nodes = nodes_store
             found_solution = getattr(state, "solved", False)
 
-            for candidate_msgs, reflection in zip(output_messages, reflections, strict=False):
+            for candidate_msgs, reflection in zip(
+                output_messages, reflections, strict=False
+            ):
                 # Create node
                 node_data = TreeNode(
                     messages=updated_nodes.serialize_messages(candidate_msgs),
@@ -332,7 +347,9 @@ class MCTSAgent(Agent):
             if best_solution and best_solution.is_solved:
                 # Update messages with best solution
                 solution_messages = updated_nodes.deserialize_messages(
-                    updated_nodes.get_trajectory(best_solution.node_id, include_reflections=False)
+                    updated_nodes.get_trajectory(
+                        best_solution.node_id, include_reflections=False
+                    )
                 )
                 updated_state["messages"] = solution_messages
 

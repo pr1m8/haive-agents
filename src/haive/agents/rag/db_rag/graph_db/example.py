@@ -37,7 +37,11 @@ import sys
 import time
 
 from haive.agents.rag.db_rag.graph_db.agent import GraphDBRAGAgent
-from haive.agents.rag.db_rag.graph_db.config import ExampleConfig, GraphDBConfig, GraphDBRAGConfig
+from haive.agents.rag.db_rag.graph_db.config import (
+    ExampleConfig,
+    GraphDBConfig,
+    GraphDBRAGConfig,
+)
 
 # Configure logging for better debugging
 logging.basicConfig(
@@ -129,7 +133,8 @@ def streaming_example():
 
         # Stream the execution
         for chunk in agent.stream(
-            {"question": question}, config={"configurable": {"thread_id": "example-stream"}}
+            {"question": question},
+            config={"configurable": {"thread_id": "example-stream"}},
         ):
             # Process each step
             for node_name, node_output in chunk.items():
@@ -372,7 +377,9 @@ def error_handling_example():
         agent = GraphDBRAGAgent(config)
 
         # Test 1: Query that might generate invalid Cypher
-        complex_question = "Show me all actors who have worked with directors who have won an Oscar"
+        complex_question = (
+            "Show me all actors who have worked with directors who have won an Oscar"
+        )
 
         # Use streaming to see the correction process
         for chunk in agent.stream({"question": complex_question}):
@@ -539,7 +546,9 @@ async def async_example():
 
         # Process all queries concurrently
         start_time = time.time()
-        tasks = [process_query(agent, question, i) for i, question in enumerate(queries, 1)]
+        tasks = [
+            process_query(agent, question, i) for i, question in enumerate(queries, 1)
+        ]
         results = await asyncio.gather(*tasks)
         time.time() - start_time
 

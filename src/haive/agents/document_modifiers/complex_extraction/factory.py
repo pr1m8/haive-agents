@@ -3,8 +3,12 @@ from haive.core.models.llm.base import AzureLLMConfig
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from pydantic import BaseModel
 
-from haive.agents.document_modifiers.complex_extraction.agent import ComplexExtractionAgent
-from haive.agents.document_modifiers.complex_extraction.config import ComplexExtractionAgentConfig
+from haive.agents.document_modifiers.complex_extraction.agent import (
+    ComplexExtractionAgent,
+)
+from haive.agents.document_modifiers.complex_extraction.config import (
+    ComplexExtractionAgentConfig,
+)
 
 
 # Helper function to create an extraction agent

@@ -171,7 +171,9 @@ class DocumentProcessingConfig(BaseModel):
 
     # Output
     structured_output: bool = Field(default=True)
-    response_format: str = Field(default="detailed", pattern="^(simple|detailed|comprehensive)$")
+    response_format: str = Field(
+        default="detailed", pattern="^(simple|detailed|comprehensive)$"
+    )
     include_sources: bool = Field(default=True)
     include_metadata: bool = Field(default=True)
 
@@ -190,12 +192,24 @@ class DocumentProcessingResult(BaseModel):
     """
 
     response: str = Field(description="Main response content")
-    sources: list[dict[str, Any]] = Field(default_factory=list, description="Source documents")
-    metadata: dict[str, Any] = Field(default_factory=dict, description="Processing metadata")
-    documents: list[Document] = Field(default_factory=list, description="Processed documents")
-    query_info: dict[str, Any] = Field(default_factory=dict, description="Query processing info")
-    timing: dict[str, float] = Field(default_factory=dict, description="Timing information")
-    statistics: dict[str, Any] = Field(default_factory=dict, description="Processing statistics")
+    sources: list[dict[str, Any]] = Field(
+        default_factory=list, description="Source documents"
+    )
+    metadata: dict[str, Any] = Field(
+        default_factory=dict, description="Processing metadata"
+    )
+    documents: list[Document] = Field(
+        default_factory=list, description="Processed documents"
+    )
+    query_info: dict[str, Any] = Field(
+        default_factory=dict, description="Query processing info"
+    )
+    timing: dict[str, float] = Field(
+        default_factory=dict, description="Timing information"
+    )
+    statistics: dict[str, Any] = Field(
+        default_factory=dict, description="Processing statistics"
+    )
 
     class Config:
         arbitrary_types_allowed = True
@@ -296,7 +310,9 @@ class DocumentProcessingAgent:
         self.rag_agent = SimpleAgent(name=f"{self.name}_rag", engine=self.engine)
 
         # Document Processing Agent
-        self.processing_agent = SimpleAgent(name=f"{self.name}_processor", engine=self.engine)
+        self.processing_agent = SimpleAgent(
+            name=f"{self.name}_processor", engine=self.engine
+        )
 
     def _create_rag_agent(self) -> BaseRAGAgent:
         """Create RAG agent based on configuration."""
@@ -310,7 +326,9 @@ class DocumentProcessingAgent:
                     # return AdaptiveRAGAgent(name=f"{self.name}_rag", engine=self.engine)
                     raise ImportError("AdaptiveRAGAgent not available")
                 except ImportError:
-                    logger.warning("AdaptiveRAGAgent not available, falling back to BaseRAGAgent")
+                    logger.warning(
+                        "AdaptiveRAGAgent not available, falling back to BaseRAGAgent"
+                    )
 
             elif self.config.rag_strategy == "self_rag":
                 try:
@@ -321,7 +339,9 @@ class DocumentProcessingAgent:
                     # )
                     raise ImportError("SelfRAGAgent not available")
                 except ImportError:
-                    logger.warning("SelfRAGAgent not available, falling back to BaseRAGAgent")
+                    logger.warning(
+                        "SelfRAGAgent not available, falling back to BaseRAGAgent"
+                    )
 
             elif self.config.rag_strategy == "hyde":
                 try:
@@ -332,7 +352,9 @@ class DocumentProcessingAgent:
                     # )
                     raise ImportError("HyDEAgent not available")
                 except ImportError:
-                    logger.warning("HyDEAgent not available, falling back to BaseRAGAgent")
+                    logger.warning(
+                        "HyDEAgent not available, falling back to BaseRAGAgent"
+                    )
 
             elif self.config.rag_strategy == "multi_strategy":
                 try:
@@ -349,7 +371,9 @@ class DocumentProcessingAgent:
             return BaseRAGAgent(name=f"{self.name}_rag", engine=self.engine)
 
         except Exception as e:
-            logger.exception(f"Error creating RAG agent: {e}, falling back to BaseRAGAgent")
+            logger.exception(
+                f"Error creating RAG agent: {e}, falling back to BaseRAGAgent"
+            )
             return BaseRAGAgent(name=f"{self.name}_rag", engine=self.engine)
 
     async def process_query(
@@ -422,7 +446,9 @@ class DocumentProcessingAgent:
             logger.exception(f"Error in document processing: {e}")
             raise
 
-    async def _discover_documents(self, state: DocumentProcessingState) -> DocumentProcessingState:
+    async def _discover_documents(
+        self, state: DocumentProcessingState
+    ) -> DocumentProcessingState:
         """Discover relevant documents using search capabilities."""
         state.processing_stage = "document_discovery"
 
@@ -456,7 +482,9 @@ class DocumentProcessingAgent:
             # This would need to be implemented based on the search agent's
             # output format
             state.current_sources = self._extract_sources_from_search(search_content)
-            state.search_results = [{"query": state.original_query, "result": search_content}]
+            state.search_results = [
+                {"query": state.original_query, "result": search_content}
+            ]
 
             state.operation_history.append(
                 {
@@ -473,7 +501,9 @@ class DocumentProcessingAgent:
 
         return state
 
-    async def _load_documents(self, state: DocumentProcessingState) -> DocumentProcessingState:
+    async def _load_documents(
+        self, state: DocumentProcessingState
+    ) -> DocumentProcessingState:
         """Load documents using auto-loader with bulk processing."""
         state.processing_stage = "document_loading"
 
@@ -524,7 +554,9 @@ class DocumentProcessingAgent:
 
         return state
 
-    async def _process_documents(self, state: DocumentProcessingState) -> DocumentProcessingState:
+    async def _process_documents(
+        self, state: DocumentProcessingState
+    ) -> DocumentProcessingState:
         """Process documents through annotation, summarization, and other pipelines."""
         state.processing_stage = "document_processing"
 
@@ -556,7 +588,9 @@ class DocumentProcessingAgent:
 
         return state
 
-    async def _annotate_documents(self, state: DocumentProcessingState) -> DocumentProcessingState:
+    async def _annotate_documents(
+        self, state: DocumentProcessingState
+    ) -> DocumentProcessingState:
         """Annotate documents with metadata and context."""
         # Use document modifier agents for annotation
         # This would integrate with existing document_modifiers
@@ -597,7 +631,9 @@ class DocumentProcessingAgent:
 
         return state
 
-    async def _summarize_documents(self, state: DocumentProcessingState) -> DocumentProcessingState:
+    async def _summarize_documents(
+        self, state: DocumentProcessingState
+    ) -> DocumentProcessingState:
         """Summarize documents using map-branch summarization."""
         # This would integrate with existing summarization agents
 
@@ -632,7 +668,9 @@ class DocumentProcessingAgent:
 
         return state
 
-    async def _rag_processing(self, state: DocumentProcessingState) -> DocumentProcessingState:
+    async def _rag_processing(
+        self, state: DocumentProcessingState
+    ) -> DocumentProcessingState:
         """Process query through RAG pipeline."""
         state.processing_stage = "rag_processing"
 
@@ -656,7 +694,9 @@ class DocumentProcessingAgent:
             await self.rag_agent.arun(rag_prompt)
 
             # Extract context documents and results (simplified for now)
-            state.context_documents = state.processed_documents[:10]  # Use first 10 documents
+            state.context_documents = state.processed_documents[
+                :10
+            ]  # Use first 10 documents
             state.retrieval_results = state.processed_documents
 
             state.operation_history.append(
@@ -675,7 +715,9 @@ class DocumentProcessingAgent:
 
         return state
 
-    async def _refine_query(self, state: DocumentProcessingState) -> DocumentProcessingState:
+    async def _refine_query(
+        self, state: DocumentProcessingState
+    ) -> DocumentProcessingState:
         """Refine query for better retrieval."""
         # This would integrate with existing query refinement components
 
@@ -763,7 +805,9 @@ class DocumentProcessingAgent:
 
         # Add document summaries
         if state.processed_documents:
-            context_parts.append(f"Document Content ({len(state.processed_documents)} documents):")
+            context_parts.append(
+                f"Document Content ({len(state.processed_documents)} documents):"
+            )
             for i, doc in enumerate(state.processed_documents[:5]):  # Limit to first 5
                 context_parts.append(f"Doc {i + 1}: {doc.page_content[:200]}...")
 
@@ -775,11 +819,15 @@ class DocumentProcessingAgent:
 
         # Add search results
         if state.search_results:
-            context_parts.append(f"Search Results: {len(state.search_results)} searches performed")
+            context_parts.append(
+                f"Search Results: {len(state.search_results)} searches performed"
+            )
 
         return "\n\n".join(context_parts)
 
-    def _extract_sources_from_search(self, search_result: str) -> list[str | dict[str, Any]]:
+    def _extract_sources_from_search(
+        self, search_result: str
+    ) -> list[str | dict[str, Any]]:
         """Extract sources from search agent result."""
         # This would need to be implemented based on the search agent's output format
         # For now, return empty list
@@ -794,7 +842,9 @@ class DocumentProcessingAgent:
                 "index": i,
                 "source": source,
                 "type": (
-                    "url" if isinstance(source, str) and source.startswith("http") else "file"
+                    "url"
+                    if isinstance(source, str) and source.startswith("http")
+                    else "file"
                 ),
                 "processed": i < len(state.processed_documents),
             }

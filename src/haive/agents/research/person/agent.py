@@ -160,13 +160,15 @@ class PersonResearchAgent(Agent[PersonResearchAgentConfig]):
         self.tavily_client = None
         if TAVILY_AVAILABLE:
             # Get API key from config or environment
-            tavily_api_key = config.agent_settings.get("tavily_api_key") or os.environ.get(
-                "TAVILY_API_KEY"
-            )
+            tavily_api_key = config.agent_settings.get(
+                "tavily_api_key"
+            ) or os.environ.get("TAVILY_API_KEY")
             if tavily_api_key:
                 self.tavily_client = AsyncTavilyClient(api_key=tavily_api_key)
             else:
-                logger.warning("No Tavily API key found. Web search will not be available.")
+                logger.warning(
+                    "No Tavily API key found. Web search will not be available."
+                )
 
         # Call parent initializer
         super().__init__(config)
@@ -187,12 +189,16 @@ class PersonResearchAgent(Agent[PersonResearchAgentConfig]):
             self.output_schema = PersonResearchOutputState
 
         # Create a graph builder with our schema
-        builder = StateGraph(self.state_schema, input=self.input_schema, output=self.output_schema)
+        builder = StateGraph(
+            self.state_schema, input=self.input_schema, output=self.output_schema
+        )
 
         # Add nodes
         builder.add_node("generate_queries", self.generate_queries)
         builder.add_node("research_person", self.research_person)
-        builder.add_node("gather_notes_extract_schema", self.gather_notes_extract_schema)
+        builder.add_node(
+            "gather_notes_extract_schema", self.gather_notes_extract_schema
+        )
         builder.add_node("reflection", self.reflection)
 
         # Add edges
@@ -222,7 +228,8 @@ class PersonResearchAgent(Agent[PersonResearchAgentConfig]):
         # Get configuration
         agent_config = get_config_from_runnable_config(config)
         max_search_queries = agent_config.get(
-            "max_search_queries", self.config.agent_settings.get("max_search_queries", 3)
+            "max_search_queries",
+            self.config.agent_settings.get("max_search_queries", 3),
         )
 
         # Get query generator engine
@@ -283,7 +290,8 @@ class PersonResearchAgent(Agent[PersonResearchAgentConfig]):
         # Get configuration
         agent_config = get_config_from_runnable_config(config)
         max_search_results = agent_config.get(
-            "max_search_results", self.config.agent_settings.get("max_search_results", 3)
+            "max_search_results",
+            self.config.agent_settings.get("max_search_results", 3),
         )
 
         # Check if Tavily client is available
@@ -428,7 +436,9 @@ class PersonResearchAgent(Agent[PersonResearchAgentConfig]):
                 elif hasattr(result, "dict"):
                     result_dict = result.dict()
                 else:
-                    result_dict = {k: getattr(result, k) for k in result.__annotations__}
+                    result_dict = {
+                        k: getattr(result, k) for k in result.__annotations__
+                    }
 
                 return {"info": result_dict}
             except Exception as e:
@@ -482,7 +492,8 @@ class PersonResearchAgent(Agent[PersonResearchAgentConfig]):
         # Get configuration
         agent_config = get_config_from_runnable_config(config)
         max_reflection_steps = agent_config.get(
-            "max_reflection_steps", self.config.agent_settings.get("max_reflection_steps", 0)
+            "max_reflection_steps",
+            self.config.agent_settings.get("max_reflection_steps", 0),
         )
 
         # If we have satisfactory results, end the process

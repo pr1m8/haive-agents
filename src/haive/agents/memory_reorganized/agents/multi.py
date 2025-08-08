@@ -15,19 +15,22 @@ from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import DeepSeekLLMConfig
 from pydantic import BaseModel, ConfigDict, Field
 
-from haive.agents.simple.agent import SimpleAgent
-
-from haive.agents.memory_reorganized.base.token_state import MemoryStateWithTokens
-
 # Import memory agents
-from haive.agents.memory_reorganized.agents.simple import SimpleMemoryAgent, TokenAwareMemoryConfig
+from haive.agents.memory_reorganized.agents.simple import (
+    SimpleMemoryAgent,
+    TokenAwareMemoryConfig,
+)
+from haive.agents.memory_reorganized.base.token_state import MemoryStateWithTokens
+from haive.agents.simple.agent import SimpleAgent
 
 # Optional imports with graceful fallback
 try:
     from haive.agents.memory_reorganized.coordination.agentic_rag_coordinator import (
         AgenticRAGCoordinator,
     )
-    from haive.agents.memory_reorganized.retrieval.advanced_rag import AdvancedRAGMemoryAgent
+    from haive.agents.memory_reorganized.retrieval.advanced_rag import (
+        AdvancedRAGMemoryAgent,
+    )
 
     HAS_RAG_MEMORY = True
 except ImportError:

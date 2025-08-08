@@ -104,5 +104,7 @@ class NodeManager:
                 node.parent = self.nodes[parent_id]
 
             node.children = [
-                self.nodes[child_id] for child_id in children_ids if child_id in self.nodes
+                self.nodes[child_id]
+                for child_id in children_ids
+                if child_id in self.nodes
             ]

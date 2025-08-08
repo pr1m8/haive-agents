@@ -289,7 +289,11 @@ def create_proper_plan_execute(
     # Define branches following LangGraph pattern
     branches = [
         # After execution: continue, replan, or end
-        (executor, should_continue, {"agent": executor, "replan": replanner, "__end__": "__end__"}),
+        (
+            executor,
+            should_continue,
+            {"agent": executor, "replan": replanner, "__end__": "__end__"},
+        ),
         # After replanning: continue or end
         (replanner, route_after_replan, {"agent": executor, "__end__": "__end__"}),
     ]

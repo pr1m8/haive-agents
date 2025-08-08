@@ -1,6 +1,8 @@
 """Self-Discover Executor Agent module."""
 
-from haive.agents.reasoning_and_critique.self_discover.executor.agent import ExecutorAgent
+from haive.agents.reasoning_and_critique.self_discover.executor.agent import (
+    ExecutorAgent,
+)
 from haive.agents.reasoning_and_critique.self_discover.executor.models import (
     ExecutionResult,
     StepResult,

@@ -10,6 +10,12 @@ import traceback
 from concurrent.futures import ThreadPoolExecutor
 from typing import Any
 
+from haive.core.engine.agent.agent import AgentArchitecture
+from haive.core.engine.aug_llm import compose_runnable
+from langchain_core.messages import AIMessage, SystemMessage
+from langchain_core.tools import BaseTool
+from langgraph.graph import END, START, StateGraph
+
 from .config import LLMCompilerAgentConfig
 from .models import (  # CompilerState,
     CompilerPlan,
@@ -19,11 +25,6 @@ from .models import (  # CompilerState,
 )
 from .output_parser import LLMCompilerPlanParser
 from .state import CompilerState
-from haive.core.engine.agent.agent import AgentArchitecture
-from haive.core.engine.aug_llm import compose_runnable
-from langchain_core.messages import AIMessage, SystemMessage
-from langchain_core.tools import BaseTool
-from langgraph.graph import END, START, StateGraph
 
 
 class LLMCompilerAgent(AgentArchitecture):
@@ -128,7 +129,9 @@ class LLMCompilerAgent(AgentArchitecture):
 
             # Add parameter info if available
             if hasattr(tool, "args_schema") and tool.args_schema:
-                schema_props = getattr(tool.args_schema, "schema", {}).get("properties", {})
+                schema_props = getattr(tool.args_schema, "schema", {}).get(
+                    "properties", {}
+                )
                 if schema_props:
                     desc += "\nParameters:"
                     for param_name, param_info in schema_props.items():
@@ -182,7 +185,9 @@ class LLMCompilerAgent(AgentArchitecture):
             A simple fallback plan
         """
         # Create a basic plan with a search and join step
-        plan = CompilerPlan(description=f"Fallback plan for: {query}", status="not_started")
+        plan = CompilerPlan(
+            description=f"Fallback plan for: {query}", status="not_started"
+        )
 
         # Find a search tool
         search_tool = next(
@@ -209,7 +214,10 @@ class LLMCompilerAgent(AgentArchitecture):
         else:
             # Just add a join step
             plan.add_compiler_step(
-                step_id=1, description="Generate final answer", tool_name="join", arguments={}
+                step_id=1,
+                description="Generate final answer",
+                tool_name="join",
+                arguments={},
             )
 
         return plan
@@ -239,7 +247,9 @@ class LLMCompilerAgent(AgentArchitecture):
 
             # Submit tasks
             for step in executable_steps:
-                future = executor.submit(self._execute_step, step, state.results, self.tool_map)
+                future = executor.submit(
+                    self._execute_step, step, state.results, self.tool_map
+                )
                 futures[step.id] = future
 
             # Wait for all to complete
@@ -261,7 +271,9 @@ class LLMCompilerAgent(AgentArchitecture):
         results = {**state.results, **new_results}
 
         # Check if we're done
-        is_done = state.plan.get_join_step() and state.plan.get_join_step().id in new_results
+        is_done = (
+            state.plan.get_join_step() and state.plan.get_join_step().id in new_results
+        )
 
         return {"results": results, "is_done": is_done}
 
@@ -398,7 +410,9 @@ class LLMCompilerAgent(AgentArchitecture):
             {"planner": "planner", "execute_tasks": "execute_tasks", "join": "join"},
         )
 
-        def should_replan(state: CompilerState, config: dict[str, Any] | None = None) -> bool:
+        def should_replan(
+            state: CompilerState, config: dict[str, Any] | None = None
+        ) -> bool:
             """Determines whether the agent should replan based on execution results.
 
             Args:
@@ -511,7 +525,9 @@ class LLMCompilerAgent(AgentArchitecture):
         initial_state = CompilerState(query=query)
 
         # Stream execution
-        yield from self.app.stream(initial_state, config=self.config.runnable_config, debug=True)
+        yield from self.app.stream(
+            initial_state, config=self.config.runnable_config, debug=True
+        )
 
 
 def main() -> None:

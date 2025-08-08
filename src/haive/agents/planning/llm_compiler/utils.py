@@ -4,11 +4,14 @@ import traceback
 from concurrent.futures import ThreadPoolExecutor, wait
 from typing import Any
 
-from .models import SchedulerInput, Task
 from langchain_core.messages import BaseMessage, FunctionMessage
 
+from .models import SchedulerInput, Task
 
-def schedule_pending_task(task: Task, observations: dict[int, Any], retry_after: float = 0.2):
+
+def schedule_pending_task(
+    task: Task, observations: dict[int, Any], retry_after: float = 0.2
+):
     while True:
         deps = task["dependencies"]
         if deps and (any(dep not in observations for dep in deps)):
@@ -49,10 +52,13 @@ def schedule_tasks(scheduler_input: SchedulerInput) -> list[FunctionMessage]:
             args_for_tasks[task["idx"]] = task["args"]
             if (
                 # Depends on other tasks
-                deps and (any(dep not in observations for dep in deps))
+                deps
+                and (any(dep not in observations for dep in deps))
             ):
                 futures.append(
-                    executor.submit(schedule_pending_task, task, observations, retry_after)
+                    executor.submit(
+                        schedule_pending_task, task, observations, retry_after
+                    )
                 )
             else:
                 # No deps or all deps satisfied
@@ -97,7 +103,9 @@ def _execute_task(task, observations, config):
         if isinstance(args, str):
             resolved_args = _resolve_arg(args, observations)
         elif isinstance(args, dict):
-            resolved_args = {key: _resolve_arg(val, observations) for key, val in args.items()}
+            resolved_args = {
+                key: _resolve_arg(val, observations) for key, val in args.items()
+            }
         else:
             # This will likely fail
             resolved_args = args
@@ -147,7 +155,9 @@ def schedule_task(task_inputs, config: dict[str, Any]):
     observations[task["idx"]] = observation
 
 
-def schedule_pending_task(task: Task, observations: dict[int, Any], retry_after: float = 0.2):
+def schedule_pending_task(
+    task: Task, observations: dict[int, Any], retry_after: float = 0.2
+):
     while True:
         deps = task["dependencies"]
         if deps and (any(dep not in observations for dep in deps)):

@@ -9,6 +9,7 @@ from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.documents import Document
+
 # from haive.core.fixtures.documents import conversation_documents  # Commented out - use default documents
 
 # Default documents for testing/examples
@@ -32,7 +33,9 @@ from haive.agents.rag.common.answer_generators.prompts import (
     RAG_ANSWER_STANDARD,
     RAG_ANSWER_WITH_CITATIONS,
 )
-from haive.agents.rag.common.document_graders.binary_grader.prompt import RAG_DOCUMENT_GRADE_BINARY
+from haive.agents.rag.common.document_graders.binary_grader.prompt import (
+    RAG_DOCUMENT_GRADE_BINARY,
+)
 from haive.agents.rag.common.document_graders.models import DocumentBinaryResponse
 from haive.agents.rag.multi_agent_rag.state import (
     DocumentGradingResult,
@@ -128,11 +131,14 @@ class SimpleRAGAgent(SimpleAgent):
     as the knowledge base. It can be composed with other agents for more complex workflows.
     """
 
-    def __init__(self, documents: list[Document] | None = None, max_documents: int = 5, **kwargs):
+    def __init__(
+        self, documents: list[Document] | None = None, max_documents: int = 5, **kwargs
+    ):
         # Set up default engine if none provided
         if "engine" not in kwargs:
             kwargs["engine"] = AugLLMConfig(
-                prompt_template=RAG_ANSWER_BASE_PROMPT_TEMPLATE, name="simple_rag_engine"
+                prompt_template=RAG_ANSWER_BASE_PROMPT_TEMPLATE,
+                name="simple_rag_engine",
             )
 
         # Set default name
@@ -168,7 +174,10 @@ class SimpleRAGAgent(SimpleAgent):
 
     @classmethod
     def from_documents(
-        cls, documents: list[Document], prompt_template: ChatPromptTemplate | None = None, **kwargs
+        cls,
+        documents: list[Document],
+        prompt_template: ChatPromptTemplate | None = None,
+        **kwargs,
     ) -> "SimpleRAGAgent":
         """Create SimpleRAGAgent from a document collection."""
         engine_config = AugLLMConfig(
@@ -178,7 +187,9 @@ class SimpleRAGAgent(SimpleAgent):
 
         return cls(engine=engine_config, documents=documents, **kwargs)
 
-    def retrieve_documents(self, query: str, top_k: int | None = None) -> list[Document]:
+    def retrieve_documents(
+        self, query: str, top_k: int | None = None
+    ) -> list[Document]:
         """Simple document retrieval based on text matching."""
         top_k = top_k or self.max_documents
 
@@ -201,7 +212,9 @@ class SimpleRAGAgent(SimpleAgent):
         return {
             "retrieved_documents": retrieved,
             "current_operation": RAGOperationType.RETRIEVE,
-            "retrieval_confidence": min(1.0, len(retrieved) / 3.0),  # Simple confidence measure
+            "retrieval_confidence": min(
+                1.0, len(retrieved) / 3.0
+            ),  # Simple confidence measure
         }
 
 
@@ -214,7 +227,9 @@ class SimpleRAGAnswerAgent(SimpleAgent):
 
     def __init__(self, use_citations: bool = False, **kwargs):
         # Choose appropriate prompt template
-        prompt_template = RAG_ANSWER_WITH_CITATIONS if use_citations else RAG_ANSWER_STANDARD
+        prompt_template = (
+            RAG_ANSWER_WITH_CITATIONS if use_citations else RAG_ANSWER_STANDARD
+        )
 
         # Set up default engine if none provided
         if "engine" not in kwargs:
@@ -282,7 +297,10 @@ class DocumentGradingAgent(SimpleAgent):
     """
 
     def __init__(
-        self, grading_mode: str = "binary", min_relevance_threshold: float = 0.5, **kwargs
+        self,
+        grading_mode: str = "binary",
+        min_relevance_threshold: float = 0.5,
+        **kwargs,
     ):
         # Set up structured output for grading results
         if grading_mode == "binary":
@@ -333,13 +351,13 @@ class DocumentGradingAgent(SimpleAgent):
     def grade_document(self, query: str, document: Document) -> DocumentGradingResult:
         """Grade a single document for relevance."""
         # Format the document for evaluation
-        doc_text = (
-            f"Title: {document.metadata.get('title', 'N/A')}\nContent: {document.page_content}"
-        )
+        doc_text = f"Title: {document.metadata.get('title', 'N/A')}\nContent: {document.page_content}"
 
         if self.grading_mode == "binary":
             # Use binary grading
-            response = self.engine.invoke({"query": query, "retrieved_documents": doc_text})
+            response = self.engine.invoke(
+                {"query": query, "retrieved_documents": doc_text}
+            )
 
             # Extract grading decision (this would be more sophisticated in
             # practice)
@@ -365,7 +383,9 @@ class DocumentGradingAgent(SimpleAgent):
             grader_type=self.grading_mode,
         )
 
-    def grade_documents(self, query: str, documents: list[Document]) -> list[DocumentGradingResult]:
+    def grade_documents(
+        self, query: str, documents: list[Document]
+    ) -> list[DocumentGradingResult]:
         """Grade multiple documents."""
         results = []
         for doc in documents:
@@ -389,7 +409,8 @@ class DocumentGradingAgent(SimpleAgent):
         relevant_docs = [
             result.document
             for result in grading_results
-            if result.is_relevant and result.relevance_score >= self.min_relevance_threshold
+            if result.is_relevant
+            and result.relevance_score >= self.min_relevance_threshold
         ]
 
         return {
@@ -434,7 +455,9 @@ class IterativeDocumentGradingAgent(DocumentGradingAgent):
                         document=doc,
                         relevance_score=custom_result.get("score", 0.5),
                         is_relevant=custom_result.get("relevant", True),
-                        grading_reason=custom_result.get("reason", "Custom grader result"),
+                        grading_reason=custom_result.get(
+                            "reason", "Custom grader result"
+                        ),
                         grader_type="custom",
                     )
                 except Exception as e:
@@ -462,7 +485,8 @@ class IterativeDocumentGradingAgent(DocumentGradingAgent):
         relevant_docs = [
             result.document
             for result in grading_results
-            if result.is_relevant and result.relevance_score >= self.min_relevance_threshold
+            if result.is_relevant
+            and result.relevance_score >= self.min_relevance_threshold
         ]
 
         return {
@@ -477,12 +501,18 @@ class IterativeDocumentGradingAgent(DocumentGradingAgent):
 # ============================================================================
 
 
-def create_simple_rag_agent(documents: list[Document] | None = None, **kwargs) -> SimpleRAGAgent:
+def create_simple_rag_agent(
+    documents: list[Document] | None = None, **kwargs
+) -> SimpleRAGAgent:
     """Create a simple RAG agent with default configuration."""
-    return SimpleRAGAgent.from_documents(documents=documents or conversation_documents, **kwargs)
+    return SimpleRAGAgent.from_documents(
+        documents=documents or conversation_documents, **kwargs
+    )
 
 
-def create_rag_answer_agent(use_citations: bool = False, **kwargs) -> SimpleRAGAnswerAgent:
+def create_rag_answer_agent(
+    use_citations: bool = False, **kwargs
+) -> SimpleRAGAnswerAgent:
     """Create a RAG answer agent with default configuration."""
     return SimpleRAGAnswerAgent(use_citations=use_citations, **kwargs)
 

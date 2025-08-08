@@ -4,8 +4,6 @@ from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import Field
 
-from haive.agents.simple.agent_v3 import SimpleAgentV3
-
 
 class AnswerAgent(SimpleAgentV3):
     """SimpleAgentV3 configured for answering questions based on retrieved documents."""

@@ -3,7 +3,11 @@
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import AzureLLMConfig
 
-from haive.agents.task_analysis.context.models import ContextDomain, ContextFlow, ContextRequirement
+from haive.agents.task_analysis.context.models import (
+    ContextDomain,
+    ContextFlow,
+    ContextRequirement,
+)
 from haive.agents.task_analysis.context.prompts import (
     CONTEXT_ANALYSIS_PROMPT,
     CONTEXT_FLOW_PROMPT,

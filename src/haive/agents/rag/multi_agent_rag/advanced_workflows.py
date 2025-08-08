@@ -106,7 +106,10 @@ class GraphRAGAgent(MultiAgent):
         agents = [entity_extractor, graph_builder, graph_traverser, graph_answer_agent]
 
         super().__init__(
-            agents=agents, execution_mode="sequential", state_schema=GraphRAGState, **kwargs
+            agents=agents,
+            execution_mode="sequential",
+            state_schema=GraphRAGState,
+            **kwargs,
         )
 
     def build_custom_graph(self) -> Any:
@@ -179,7 +182,10 @@ class AgenticGraphRAGAgent(MultiAgent):
         agents = [complexity_analyzer, routing_agent, reasoning_coordinator]
 
         super().__init__(
-            agents=agents, execution_mode="conditional", state_schema=AgenticRAGState, **kwargs
+            agents=agents,
+            execution_mode="conditional",
+            state_schema=AgenticRAGState,
+            **kwargs,
         )
 
     def build_custom_graph(self) -> Any:
@@ -251,7 +257,10 @@ class AgenticRAGRouterAgent(MultiAgent):
         agents = [query_classifier, strategy_selector, meta_evaluator]
 
         super().__init__(
-            agents=agents, execution_mode="sequential", state_schema=AgenticRAGState, **kwargs
+            agents=agents,
+            execution_mode="sequential",
+            state_schema=AgenticRAGState,
+            **kwargs,
         )
 
     def build_custom_graph(self) -> Any:
@@ -308,7 +317,10 @@ class QueryPlanningAgenticRAGAgent(MultiAgent):
         agents = [query_planner, plan_executor]
 
         super().__init__(
-            agents=agents, execution_mode="sequential", state_schema=AgenticRAGState, **kwargs
+            agents=agents,
+            execution_mode="sequential",
+            state_schema=AgenticRAGState,
+            **kwargs,
         )
 
     def build_custom_graph(self) -> Any:
@@ -383,7 +395,10 @@ class SelfReflectiveAgenticRAGAgent(MultiAgent):
         agents = [self_monitor, self_corrector, meta_learner]
 
         super().__init__(
-            agents=agents, execution_mode="sequential", state_schema=AgenticRAGState, **kwargs
+            agents=agents,
+            execution_mode="sequential",
+            state_schema=AgenticRAGState,
+            **kwargs,
         )
 
     def build_custom_graph(self) -> Any:
@@ -524,7 +539,10 @@ class SelfRouteRAGAgent(MultiAgent):
         agents = [initial_assessor, dynamic_router, result_synthesizer]
 
         super().__init__(
-            agents=agents, execution_mode="conditional", state_schema=AgenticRAGState, **kwargs
+            agents=agents,
+            execution_mode="conditional",
+            state_schema=AgenticRAGState,
+            **kwargs,
         )
 
     def build_custom_graph(self) -> Any:

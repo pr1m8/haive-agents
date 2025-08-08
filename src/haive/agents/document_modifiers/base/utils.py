@@ -1,6 +1,7 @@
 """Utility functions for document processing."""
 
 from typing import Any, List, Union
+
 from langchain_core.documents import Document
 
 

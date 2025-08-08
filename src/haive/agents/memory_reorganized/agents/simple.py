@@ -6,7 +6,7 @@ token limits, similar to LangMem's approach.
 
 import logging
 from datetime import datetime
-from typing import Any, Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Optional
 
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.schema import StateSchema
@@ -16,15 +16,15 @@ from langgraph.graph import END, START
 from langgraph.types import Command
 from pydantic import BaseModel, Field
 
-from haive.agents.simple.enhanced_agent_v3 import EnhancedSimpleAgent
-
-from haive.agents.memory_reorganized.base.memory_state_original import (  # Import original models for compatibility
+from haive.agents.memory_reorganized.base.memory_models_standalone import MemoryType
+from haive.agents.memory_reorganized.base.memory_state_original import (
     EnhancedMemoryItem,
     ImportanceLevel,
     MemoryState,
-    MemoryType as StateMemoryType,
 )
-from haive.agents.memory_reorganized.base.memory_models_standalone import MemoryType
+from haive.agents.memory_reorganized.base.memory_state_original import (
+    MemoryType as StateMemoryType,  # Import original models for compatibility
+)
 from haive.agents.memory_reorganized.base.token_state import MemoryStateWithTokens
 from haive.agents.memory_reorganized.core.memory_tools import (
     MemoryConfig,
@@ -34,16 +34,26 @@ from haive.agents.memory_reorganized.core.memory_tools import (
     search_memory,
     store_memory,
 )
-from haive.agents.memory_reorganized.core.token_tracker import TokenThresholds, TokenTracker
+from haive.agents.memory_reorganized.core.token_tracker import (
+    TokenThresholds,
+    TokenTracker,
+)
+from haive.agents.simple.enhanced_agent_v3 import EnhancedSimpleAgent
 
 # Graph transformer imports - optional
 if TYPE_CHECKING:
-    from haive.agents.document_modifiers.kg.kg_base.models import GraphTransformer  # type: ignore
-    from haive.agents.document_modifiers.kg.kg_map_merge.models import (  # type: ignore
+    from haive.agents.document_modifiers.kg.kg_base.models import (
+        GraphTransformer,  # type: ignore
+    )
+    from haive.agents.document_modifiers.kg.kg_map_merge.models import (
         EntityNode,  # pyright: ignore[reportAssignmentType]
+    )
+    from haive.agents.document_modifiers.kg.kg_map_merge.models import (
         EntityRelationship,  # pyright: ignore[reportAssignmentType]
+    )
+    from haive.agents.document_modifiers.kg.kg_map_merge.models import (  # type: ignore; pyright: ignore[reportAssignmentType]
         KnowledgeGraph,
-    )  # pyright: ignore[reportAssignmentType]
+    )
 else:
     # Provide dummy types for runtime
     GraphTransformer = type("GraphTransformer", (), {})
@@ -57,7 +67,11 @@ try:
     )
     from haive.agents.document_modifiers.kg.kg_map_merge.models import (
         EntityNode as _EntityNode,
+    )
+    from haive.agents.document_modifiers.kg.kg_map_merge.models import (
         EntityRelationship as _EntityRelationship,
+    )
+    from haive.agents.document_modifiers.kg.kg_map_merge.models import (
         KnowledgeGraph as _KnowledgeGraph,
     )
 

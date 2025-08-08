@@ -1,5 +1,6 @@
 import threading
 from collections import defaultdict
+
 from pydantic._internal._model_construction import ModelMetaclass
 
 

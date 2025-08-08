@@ -36,9 +36,13 @@ class DirectoryLoaderAgent(DocumentLoaderAgent):
         default=None, description="Path to the directory to load"
     )
 
-    recursive: bool = Field(default=True, description="Whether to recursively load files")
+    recursive: bool = Field(
+        default=True, description="Whether to recursively load files"
+    )
 
-    glob_pattern: str | None = Field(default=None, description="Glob pattern for filtering files")
+    glob_pattern: str | None = Field(
+        default=None, description="Glob pattern for filtering files"
+    )
 
     include_extensions: list[str] | None = Field(
         default=None, description="List of file extensions to include"

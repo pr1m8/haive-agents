@@ -13,17 +13,24 @@ from pydantic import BaseModel, ConfigDict, Field, computed_field, field_validat
 class AbstractStep(BaseModel, ABC):
     """Abstract base step that other steps inherit from."""
 
-    model_config = ConfigDict(str_strip_whitespace=True, validate_assignment=True, extra="forbid")
+    model_config = ConfigDict(
+        str_strip_whitespace=True, validate_assignment=True, extra="forbid"
+    )
 
     # Core identity - every step needs these
     id: str = Field(
-        default_factory=lambda: f"step_{uuid4().hex[:8]}", description="Unique step identifier"
+        default_factory=lambda: f"step_{uuid4().hex[:8]}",
+        description="Unique step identifier",
     )
 
-    description: str = Field(..., min_length=1, max_length=1000, description="What this step does")
+    description: str = Field(
+        ..., min_length=1, max_length=1000, description="What this step does"
+    )
 
     # Dependencies - fundamental to any step
-    depends_on: list[str] = Field(default_factory=list, description="Step IDs this step depends on")
+    depends_on: list[str] = Field(
+        default_factory=list, description="Step IDs this step depends on"
+    )
 
     # Basic field validators
     @field_validator("id")

@@ -7,7 +7,7 @@ structure from haive-core for more flexible and type-safe planning.
 from enum import Enum
 from typing import List, Optional, Union
 
-from haive.core.common.structures import DefaultResult, Leaf, Tree, TreeNode
+from haive.core.common.structures import Leaf, Tree, TreeNode
 from pydantic import BaseModel, Field
 
 

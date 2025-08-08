@@ -112,9 +112,13 @@ class SimpleRAGState(StateSchema):
     )
 
     # Execution tracking
-    current_stage: str = Field(default="ready", description="Current stage of RAG pipeline")
+    current_stage: str = Field(
+        default="ready", description="Current stage of RAG pipeline"
+    )
 
-    stage_history: list[str] = Field(default_factory=list, description="History of pipeline stages")
+    stage_history: list[str] = Field(
+        default_factory=list, description="History of pipeline stages"
+    )
 
     # Source tracking
     document_sources: list[str] = Field(

@@ -41,12 +41,16 @@ def _parse_llm_compiler_action_args(args: str, tool: str | BaseTool) -> list[Any
         if f"{key}=" in args:
             idx = args.index(f"{key}=")
             if prev_idx is not None:
-                extracted_args[tool_key] = _ast_parse(args[prev_idx:idx].strip().rstrip(","))
+                extracted_args[tool_key] = _ast_parse(
+                    args[prev_idx:idx].strip().rstrip(",")
+                )
             args = args.split(f"{key}=", 1)[1]
             tool_key = key
             prev_idx = 0
     if prev_idx is not None:
-        extracted_args[tool_key] = _ast_parse(args[prev_idx:].strip().rstrip(",").rstrip(")"))
+        extracted_args[tool_key] = _ast_parse(
+            args[prev_idx:].strip().rstrip(",").rstrip(")")
+        )
     return extracted_args
 
 
@@ -74,7 +78,11 @@ class Task(TypedDict):
 
 
 def instantiate_task(
-    tools: Sequence[BaseTool], idx: int, tool_name: str, args: str | Any, thought: str | None = None
+    tools: Sequence[BaseTool],
+    idx: int,
+    tool_name: str,
+    args: str | Any,
+    thought: str | None = None,
 ) -> Task:
     if tool_name == "join":
         tool = "join"
@@ -86,7 +94,9 @@ def instantiate_task(
     tool_args = _parse_llm_compiler_action_args(args, tool)
     dependencies = _get_dependencies_from_graph(idx, tool_name, tool_args)
 
-    return Task(idx=idx, tool=tool, args=tool_args, dependencies=dependencies, thought=thought)
+    return Task(
+        idx=idx, tool=tool, args=tool_args, dependencies=dependencies, thought=thought
+    )
 
 
 class LLMCompilerPlanParser(BaseTransformOutputParser[dict], extra="allow"):
@@ -113,7 +123,10 @@ class LLMCompilerPlanParser(BaseTransformOutputParser[dict], extra="allow"):
         return list(self._transform([text]))
 
     def stream(
-        self, input: str | BaseMessage, config: RunnableConfig | None = None, **kwargs: Any | None
+        self,
+        input: str | BaseMessage,
+        config: RunnableConfig | None = None,
+        **kwargs: Any | None,
     ) -> Iterator[Task]:
         yield from self.transform([input], config, **kwargs)
 
@@ -141,7 +154,11 @@ class LLMCompilerPlanParser(BaseTransformOutputParser[dict], extra="allow"):
             idx, tool_name, args, _ = match.groups()
             idx = int(idx)
             task = instantiate_task(
-                tools=self.tools, idx=idx, tool_name=tool_name, args=args, thought=thought
+                tools=self.tools,
+                idx=idx,
+                tool_name=tool_name,
+                args=args,
+                thought=thought,
             )
             thought = None
         # Else it is just dropped

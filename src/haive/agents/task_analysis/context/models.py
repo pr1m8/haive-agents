@@ -101,7 +101,9 @@ class ContextRequirement(BaseModel):
             ContextFreshness.RECENT,
             ContextFreshness.REALTIME,
         ]
-        merged_fresh = max(self.freshness, other.freshness, key=lambda f: fresh_order.index(f))
+        merged_fresh = max(
+            self.freshness, other.freshness, key=lambda f: fresh_order.index(f)
+        )
 
         # Merge domains (avoiding duplicates)
         domain_names = {d.domain_name for d in self.domains}
@@ -112,16 +114,30 @@ class ContextRequirement(BaseModel):
 
         return ContextRequirement(
             size=merged_size,
-            estimated_tokens=max(self.estimated_tokens or 0, other.estimated_tokens or 0),
+            estimated_tokens=max(
+                self.estimated_tokens or 0, other.estimated_tokens or 0
+            ),
             domains=merged_domains,
             freshness=merged_fresh,
-            required_information=list(set(self.required_information + other.required_information)),
-            optional_information=list(set(self.optional_information + other.optional_information)),
-            integration_points=list(set(self.integration_points + other.integration_points)),
-            preprocessing_steps=list(set(self.preprocessing_steps + other.preprocessing_steps)),
-            postprocessing_steps=list(set(self.postprocessing_steps + other.postprocessing_steps)),
+            required_information=list(
+                set(self.required_information + other.required_information)
+            ),
+            optional_information=list(
+                set(self.optional_information + other.optional_information)
+            ),
+            integration_points=list(
+                set(self.integration_points + other.integration_points)
+            ),
+            preprocessing_steps=list(
+                set(self.preprocessing_steps + other.preprocessing_steps)
+            ),
+            postprocessing_steps=list(
+                set(self.postprocessing_steps + other.postprocessing_steps)
+            ),
             must_exclude=list(set(self.must_exclude + other.must_exclude)),
-            quality_requirements=list(set(self.quality_requirements + other.quality_requirements)),
+            quality_requirements=list(
+                set(self.quality_requirements + other.quality_requirements)
+            ),
         )
 
 

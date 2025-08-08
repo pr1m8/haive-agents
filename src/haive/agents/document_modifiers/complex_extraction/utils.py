@@ -11,13 +11,17 @@ from langgraph.graph import add_messages
 from langgraph.types import Command
 from pydantic import BaseModel
 
-from haive.agents.document_modifiers.complex_extraction.models import PatchFunctionParameters
+from haive.agents.document_modifiers.complex_extraction.models import (
+    PatchFunctionParameters,
+)
 
 
 def encode(state: BaseModel) -> dict:
     """Ensure the input is the correct format."""
     if isinstance(state.messages, PromptValue):
-        return Command(update={"messages": state.messages.to_messages(), "input_format": "list"})
+        return Command(
+            update={"messages": state.messages.to_messages(), "input_format": "list"}
+        )
     if isinstance(state.messages, list):
         return Command(update={"messages": state.messages, "input_format": "list"})
     raise TypeError(f"Unexpected input type: {type(state.messages)}")
@@ -40,7 +44,11 @@ def decode(state: BaseModel) -> dict:
 
     if hasattr(state, "messages") and state.messages:
         for message in reversed(state.messages):
-            if message.type == "ai" and hasattr(message, "tool_calls") and message.tool_calls:
+            if (
+                message.type == "ai"
+                and hasattr(message, "tool_calls")
+                and message.tool_calls
+            ):
                 # Extract data from tool calls
                 for tool_call in message.tool_calls:
                     # If we have a tool call with args, use that as extracted
@@ -138,4 +146,6 @@ class RetryStrategy(TypedDict, total=False):
         | None
     )
     """The function to use once validation fails."""
-    aggregate_messages: Callable[[Sequence[AnyMessage]], AIMessage] | None = default_aggregator
+    aggregate_messages: Callable[[Sequence[AnyMessage]], AIMessage] | None = (
+        default_aggregator
+    )

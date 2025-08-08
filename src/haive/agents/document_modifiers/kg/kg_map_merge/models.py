@@ -1,4 +1,5 @@
 from typing import Any
+
 from langchain_community.graphs.graph_document import Node, Relationship
 from pydantic import BaseModel, Field, model_validator
 
@@ -150,7 +151,9 @@ def main() -> None:
         },
     )
     country_node = EntityNode(
-        id="poland", type="Country", properties={"name": "Poland", "continent": "Europe"}
+        id="poland",
+        type="Country",
+        properties={"name": "Poland", "continent": "Europe"},
     )
     relationship = EntityRelationship(
         source="marie_curie",

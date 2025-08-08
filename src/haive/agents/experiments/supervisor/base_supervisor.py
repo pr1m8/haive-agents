@@ -5,11 +5,12 @@ handle tool synchronization, and support dynamic agent creation.
 """
 
 from typing import Any, Dict, List, Optional, Union
-from pydantic import BaseModel, Field
 
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.agents.react.agent import ReactAgent
 from langchain_core.tools import Tool
+from pydantic import BaseModel, Field
+
+from haive.agents.react.agent import ReactAgent
 
 
 class AgentMetadata(BaseModel):
@@ -18,7 +19,9 @@ class AgentMetadata(BaseModel):
     name: str = Field(..., description="Agent name/identifier")
     description: str = Field(..., description="Description of agent capabilities")
     agent_type: str = Field(..., description="Type/class of the agent")
-    capabilities: List[str] = Field(default_factory=list, description="List of agent capabilities")
+    capabilities: List[str] = Field(
+        default_factory=list, description="List of agent capabilities"
+    )
     created_at: str = Field(..., description="Creation timestamp")
     last_used: Optional[str] = Field(None, description="Last usage timestamp")
 
@@ -26,7 +29,9 @@ class AgentMetadata(BaseModel):
 class SupervisorState(BaseModel):
     """State model for supervisor agents."""
 
-    agents: Dict[str, AgentMetadata] = Field(default_factory=dict, description="Registered agents")
+    agents: Dict[str, AgentMetadata] = Field(
+        default_factory=dict, description="Registered agents"
+    )
     current_context: Dict[str, Any] = Field(
         default_factory=dict, description="Current execution context"
     )
@@ -44,7 +49,11 @@ class BaseSupervisor(ReactAgent):
     """
 
     def __init__(
-        self, name: str, engine: AugLLMConfig, agents: Optional[Dict[str, Any]] = None, **kwargs
+        self,
+        name: str,
+        engine: AugLLMConfig,
+        agents: Optional[Dict[str, Any]] = None,
+        **kwargs,
     ):
         """Initialize the supervisor.
 
@@ -142,7 +151,11 @@ class BaseSupervisor(ReactAgent):
                 {
                     "agent": agent_name,
                     "task": task,
-                    "result": str(result)[:200] + "..." if len(str(result)) > 200 else str(result),
+                    "result": (
+                        str(result)[:200] + "..."
+                        if len(str(result)) > 200
+                        else str(result)
+                    ),
                     "timestamp": datetime.datetime.now().isoformat(),
                 }
             )
@@ -185,7 +198,9 @@ class DynamicSupervisor(BaseSupervisor):
         """
         self.agent_creation_enabled = enable
 
-    def create_agent(self, name: str, description: str, agent_type: str = "simple") -> bool:
+    def create_agent(
+        self, name: str, description: str, agent_type: str = "simple"
+    ) -> bool:
         """Create a new agent dynamically.
 
         Args:

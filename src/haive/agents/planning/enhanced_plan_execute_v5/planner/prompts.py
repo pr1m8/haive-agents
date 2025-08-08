@@ -262,7 +262,14 @@ def get_planning_template(
 
         elif any(
             keyword in domain_lower
-            for keyword in ["creative", "design", "writing", "art", "innovation", "brainstorm"]
+            for keyword in [
+                "creative",
+                "design",
+                "writing",
+                "art",
+                "innovation",
+                "brainstorm",
+            ]
         ):
             return CREATIVE_PLANNING_TEMPLATE
 
@@ -271,13 +278,26 @@ def get_planning_template(
 
     if any(
         keyword in objective_lower
-        for keyword in ["research", "analyze", "investigate", "study", "find information"]
+        for keyword in [
+            "research",
+            "analyze",
+            "investigate",
+            "study",
+            "find information",
+        ]
     ):
         return RESEARCH_PLANNING_TEMPLATE
 
     elif any(
         keyword in objective_lower
-        for keyword in ["create", "design", "write", "brainstorm", "innovate", "develop"]
+        for keyword in [
+            "create",
+            "design",
+            "write",
+            "brainstorm",
+            "innovate",
+            "develop",
+        ]
     ):
         return CREATIVE_PLANNING_TEMPLATE
 
@@ -376,9 +396,11 @@ def create_planning_context(
         "complexity_level": complexity_level,
         "time_constraints": time_constraints or "No specific time constraints",
         "previous_attempts": format_previous_attempts(previous_attempts or []),
-        "lessons_learned": "Apply lessons from previous attempts"
-        if previous_attempts
-        else "No previous lessons",
+        "lessons_learned": (
+            "Apply lessons from previous attempts"
+            if previous_attempts
+            else "No previous lessons"
+        ),
         "additional_context": additional_context or "No additional context",
         "risk_tolerance": "moderate",
         "success_metrics": "Successful completion of the objective",

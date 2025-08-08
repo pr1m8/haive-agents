@@ -33,7 +33,9 @@ class PlanStep(BaseModel):
     description: str = Field(description="What this step accomplishes")
     evidence_id: str = Field(description="Evidence placeholder (e.g., '#E1')")
     tool_call: str | None = Field(default=None, description="Specific tool to use")
-    depends_on: list[str] = Field(default_factory=list, description="Evidence IDs this step needs")
+    depends_on: list[str] = Field(
+        default_factory=list, description="Evidence IDs this step needs"
+    )
 
 
 class ReWOOPlan(BaseModel):
@@ -51,7 +53,8 @@ class ReWOOPlan(BaseModel):
 
     reasoning: str = Field(description="Why this plan will solve the objective")
     expected_evidence: dict[str, str] = Field(
-        default_factory=dict, description="Map of evidence_id to expected content description"
+        default_factory=dict,
+        description="Map of evidence_id to expected content description",
     )
 
     total_steps: int = Field(description="Total number of steps")
@@ -67,7 +70,9 @@ class EvidenceItem(BaseModel):
     source: str = Field(description="Tool or source that provided this evidence")
     status: EvidenceStatus = Field(description="Collection status")
     timestamp: datetime = Field(default_factory=datetime.now)
-    metadata: dict[str, Any] = Field(default_factory=dict, description="Additional info")
+    metadata: dict[str, Any] = Field(
+        default_factory=dict, description="Additional info"
+    )
 
 
 class EvidenceCollection(BaseModel):
@@ -82,8 +87,12 @@ class EvidenceCollection(BaseModel):
     success_count: int = Field(description="Number of successful evidence items")
     failure_count: int = Field(description="Number of failed evidence items")
 
-    tools_used: list[str] = Field(default_factory=list, description="Tools that were invoked")
-    execution_notes: list[str] = Field(default_factory=list, description="Execution observations")
+    tools_used: list[str] = Field(
+        default_factory=list, description="Tools that were invoked"
+    )
+    execution_notes: list[str] = Field(
+        default_factory=list, description="Execution observations"
+    )
 
     completed_at: datetime = Field(default_factory=datetime.now)
 
@@ -97,11 +106,15 @@ class ReWOOSolution(BaseModel):
     final_answer: str = Field(description="Comprehensive final answer")
     reasoning: str = Field(description="How the evidence supports this answer")
 
-    evidence_used: list[str] = Field(description="Evidence IDs that contributed to answer")
+    evidence_used: list[str] = Field(
+        description="Evidence IDs that contributed to answer"
+    )
     confidence: float = Field(ge=0.0, le=1.0, description="Confidence in solution")
 
     synthesis_process: str = Field(description="How evidence was combined")
-    limitations: list[str] = Field(default_factory=list, description="Known limitations or gaps")
+    limitations: list[str] = Field(
+        default_factory=list, description="Known limitations or gaps"
+    )
 
     created_at: datetime = Field(default_factory=datetime.now)
 
@@ -114,8 +127,12 @@ class ReWOOV3Input(BaseModel):
 
     query: str = Field(description="User query to solve")
     context: str | None = Field(default=None, description="Additional context")
-    max_steps: int | None = Field(default=10, ge=1, le=20, description="Maximum planning steps")
-    tools_preference: list[str] | None = Field(default=None, description="Preferred tools to use")
+    max_steps: int | None = Field(
+        default=10, ge=1, le=20, description="Maximum planning steps"
+    )
+    tools_preference: list[str] | None = Field(
+        default=None, description="Preferred tools to use"
+    )
 
 
 class ReWOOV3Output(BaseModel):
@@ -139,7 +156,9 @@ class ReWOOV3Output(BaseModel):
     # Detailed results
     reasoning_process: str = Field(description="How the solution was derived")
     evidence_summary: str = Field(description="Summary of evidence collected")
-    limitations: list[str] = Field(default_factory=list, description="Known limitations")
+    limitations: list[str] = Field(
+        default_factory=list, description="Known limitations"
+    )
 
     # Internal references
     plan_id: str = Field(description="Internal plan reference")

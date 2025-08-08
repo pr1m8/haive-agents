@@ -1,8 +1,8 @@
 """Comprehensive ReactAgent → SimpleAgent Patterns with V3, V4, and Enhanced Base Agent.
 
 This demonstrates all variations of ReactAgent → SimpleAgent workflows:
-1. V3: ReactAgent → SimpleAgentV3 (structured output)
-2. V4: EnhancedMultiAgentV4 composition
+1. V3: ReactAgent → SimpleAgent (structured output)
+2. V4: MultiAgent composition
 3. Enhanced Base: Using enhanced base agent with hooks
 4. Reflection: ReactAgent → SimpleAgentV3 → ReflectionAgent
 5. Graded Reflection: ReactAgent → GradingAgent → SimpleAgentV3 → ReflectionAgent
@@ -24,9 +24,9 @@ from haive.agents.base.pre_post_agent_mixin import (
     create_graded_reflection_agent,
     create_reflection_agent,
 )
-from haive.agents.multi.enhanced_multi_agent_v4 import EnhancedMultiAgentV4
+from haive.agents.multi.agent import MultiAgent
 from haive.agents.react.agent import ReactAgent
-from haive.agents.simple.agent_v3 import SimpleAgentV3
+from haive.agents.simple.agent import SimpleAgent
 
 
 # Structured output models
@@ -114,7 +114,7 @@ class ReactToStructuredV3:
         )
 
         # Create SimpleAgentV3 for structured output
-        self.structuring_agent = SimpleAgentV3(
+        self.structuring_agent = SimpleAgent(
             name=f"{name}_structurer",
             engine=structuring_config
             or AugLLMConfig(
@@ -124,7 +124,10 @@ class ReactToStructuredV3:
             ),
             prompt_template=ChatPromptTemplate.from_messages(
                 [
-                    ("system", "Convert the following analysis into structured format."),
+                    (
+                        "system",
+                        "Convert the following analysis into structured format.",
+                    ),
                     (
                         "human",
                         """Analysis from reasoning agent:
@@ -172,16 +175,22 @@ Convert this into the required structured format. Ensure all fields are properly
 
 
 # =============================================================================
-# PATTERN 2: V4 Architecture - EnhancedMultiAgentV4 Composition
+# PATTERN 2: V4 Architecture - MultiAgent Composition
 # =============================================================================
 
 
-class ReactToStructuredV4(EnhancedMultiAgentV4):
-    """V4 Pattern: EnhancedMultiAgentV4 with ReactAgent → SimpleAgentV3."""
+class ReactToStructuredV4(MultiAgent):
+    """V4 Pattern: MultiAgent with ReactAgent → SimpleAgentV3."""
 
-    reasoning_agent: ReactAgent = Field(..., description="Agent for reasoning and tool usage")
-    structuring_agent: SimpleAgentV3 = Field(..., description="Agent for structured output")
-    structured_output_model: type[BaseModel] = Field(..., description="Output model type")
+    reasoning_agent: ReactAgent = Field(
+        ..., description="Agent for reasoning and tool usage"
+    )
+    structuring_agent: SimpleAgentV3 = Field(
+        ..., description="Agent for structured output"
+    )
+    structured_output_model: type[BaseModel] = Field(
+        ..., description="Output model type"
+    )
 
     def __init__(self, **data):
         # Set up agents for V4 architecture
@@ -233,7 +242,7 @@ class ReactToStructuredV4(EnhancedMultiAgentV4):
             tools=tools or [],
         )
 
-        structuring_agent = SimpleAgentV3(
+        structuring_agent = SimpleAgent(
             name=f"{name}_structurer",
             engine=AugLLMConfig(
                 system_message="Convert analysis results into structured format.",
@@ -281,7 +290,7 @@ class ReactWithReflection:
         )
 
         # Create SimpleAgentV3 with structured output
-        base_structuring_agent = SimpleAgentV3(
+        base_structuring_agent = SimpleAgent(
             name=f"{name}_structurer",
             engine=structuring_config
             or AugLLMConfig(
@@ -356,7 +365,7 @@ class ReactWithGradedReflection:
         )
 
         # Create base structuring agent
-        base_structuring_agent = SimpleAgentV3(
+        base_structuring_agent = SimpleAgent(
             name=f"{name}_structurer",
             engine=AugLLMConfig(
                 system_message="Convert analysis into high-quality structured format.",
@@ -423,7 +432,7 @@ def create_v4_pattern(
     tools: list | None = None,
     structured_output_model: type[BaseModel] = TaskAnalysis,
 ) -> ReactToStructuredV4:
-    """Create V4 pattern: EnhancedMultiAgentV4 composition."""
+    """Create V4 pattern: MultiAgent composition."""
     return ReactToStructuredV4.create_analysis_workflow(
         name=name, tools=tools, structured_output_model=structured_output_model
     )
@@ -479,7 +488,9 @@ async def example_v4_pattern():
         structured_output_model=ProblemAnalysis,
     )
 
-    result = await workflow.arun("Analyze the problem of customer service delays in our company")
+    result = await workflow.arun(
+        "Analyze the problem of customer service delays in our company"
+    )
 
     return result
 
@@ -492,7 +503,9 @@ async def example_reflection_pattern():
         structured_output_model=TaskAnalysis,
     )
 
-    result = await workflow.arun("Analyze the task of implementing a new customer feedback system")
+    result = await workflow.arun(
+        "Analyze the task of implementing a new customer feedback system"
+    )
 
     if isinstance(result, dict) and "processing_stages" in result:
         pass

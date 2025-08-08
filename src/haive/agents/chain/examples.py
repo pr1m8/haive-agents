@@ -156,7 +156,9 @@ def create_agentic_router_declarative(documents: list[Document]):
         # Branch based on selected strategy
         .add_branch(
             from_node="select_strategy",
-            condition=lambda state: state.get("strategy_decision", {}).get("strategy", "simple"),
+            condition=lambda state: state.get("strategy_decision", {}).get(
+                "strategy", "simple"
+            ),
             branches={
                 "simple": "simple_rag",
                 "multi_query": "multi_query_rag",
@@ -257,11 +259,25 @@ def create_complex_flow_from_spec() -> Any:
     """Create a complex flow using raw ChainSpec."""
     # Define nodes
     nodes = [
-        NodeSpec(name="input_processor", node=lambda s: {"processed": True}, node_type="callable"),
-        NodeSpec(name="analyzer", node=lambda s: {"analysis": "complete"}, node_type="callable"),
-        NodeSpec(name="branch_decider", node=lambda s: {"path": "A"}, node_type="callable"),
-        NodeSpec(name="path_a", node=lambda s: {"result": "A done"}, node_type="callable"),
-        NodeSpec(name="path_b", node=lambda s: {"result": "B done"}, node_type="callable"),
+        NodeSpec(
+            name="input_processor",
+            node=lambda s: {"processed": True},
+            node_type="callable",
+        ),
+        NodeSpec(
+            name="analyzer",
+            node=lambda s: {"analysis": "complete"},
+            node_type="callable",
+        ),
+        NodeSpec(
+            name="branch_decider", node=lambda s: {"path": "A"}, node_type="callable"
+        ),
+        NodeSpec(
+            name="path_a", node=lambda s: {"result": "A done"}, node_type="callable"
+        ),
+        NodeSpec(
+            name="path_b", node=lambda s: {"result": "B done"}, node_type="callable"
+        ),
         NodeSpec(name="merger", node=lambda s: {"merged": True}, node_type="callable"),
     ]
 
@@ -308,6 +324,8 @@ def create_rag_with_fallback() -> Any:
         # Flow
         .add_sequence("primary_rag", "check_success")
         # Branch on success
-        .add_branch("check_success", "success", {True: "use_primary", False: "fallback_rag"})
+        .add_branch(
+            "check_success", "success", {True: "use_primary", False: "fallback_rag"}
+        )
         .build()
     )

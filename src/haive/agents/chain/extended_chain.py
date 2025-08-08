@@ -6,16 +6,15 @@ complex multi-step agent workflows with easy-to-use chain syntax.
 
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional, Union, Callable
 from abc import ABC, abstractmethod
-
-from pydantic import BaseModel, Field
-from langchain_core.messages import BaseMessage
-from langchain_core.prompts import ChatPromptTemplate
+from typing import Any, Callable, Dict, List, Optional, Union
 
 from haive.core.engine.agent import Agent, AgentConfig
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.schema.state_schema import StateSchema
+from langchain_core.messages import BaseMessage
+from langchain_core.prompts import ChatPromptTemplate
+from pydantic import BaseModel, Field
 
 
 class ChainNode(BaseModel):
@@ -23,8 +22,12 @@ class ChainNode(BaseModel):
 
     name: str = Field(..., description="Name of the chain node")
     agent: Any = Field(..., description="The agent for this node")
-    config: Optional[Dict[str, Any]] = Field(default=None, description="Node configuration")
-    dependencies: List[str] = Field(default_factory=list, description="Dependencies on other nodes")
+    config: Optional[Dict[str, Any]] = Field(
+        default=None, description="Node configuration"
+    )
+    dependencies: List[str] = Field(
+        default_factory=list, description="Dependencies on other nodes"
+    )
 
 
 class ChainEdge(BaseModel):
@@ -43,7 +46,8 @@ class ChainConfig(AgentConfig):
     nodes: List[ChainNode] = Field(default_factory=list, description="Chain nodes")
     edges: List[ChainEdge] = Field(default_factory=list, description="Chain edges")
     execution_mode: str = Field(
-        default="sequential", description="Execution mode: sequential, parallel, conditional"
+        default="sequential",
+        description="Execution mode: sequential, parallel, conditional",
     )
     max_iterations: int = Field(default=10, description="Maximum chain iterations")
 
@@ -52,10 +56,16 @@ class ChainState(StateSchema):
     """State schema for chain execution."""
 
     current_node: str = Field(default="", description="Current executing node")
-    node_results: Dict[str, Any] = Field(default_factory=dict, description="Results from each node")
+    node_results: Dict[str, Any] = Field(
+        default_factory=dict, description="Results from each node"
+    )
     iteration_count: int = Field(default=0, description="Current iteration count")
-    completed_nodes: List[str] = Field(default_factory=list, description="List of completed nodes")
-    chain_complete: bool = Field(default=False, description="Whether chain execution is complete")
+    completed_nodes: List[str] = Field(
+        default_factory=list, description="List of completed nodes"
+    )
+    chain_complete: bool = Field(
+        default=False, description="Whether chain execution is complete"
+    )
 
 
 class ChainBuilder:

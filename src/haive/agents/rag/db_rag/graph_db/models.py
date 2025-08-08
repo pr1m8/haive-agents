@@ -57,7 +57,9 @@ class PropertyFilter(BaseModel):
         ValueError: If filter_type is not one of the valid operators.
     """
 
-    node_label: str = Field(description="The label of the node to which this property belongs")
+    node_label: str = Field(
+        description="The label of the node to which this property belongs"
+    )
     property_key: str = Field(description="The key of the property being filtered")
     property_value: Any | None = Field(
         description="The value that the property is being matched against"
@@ -82,7 +84,9 @@ class PropertyFilter(BaseModel):
         """
         valid_types = {"=", "!=", ">", "<", ">=", "<="}
         if v not in valid_types:
-            raise ValueError(f"Invalid filter type '{v}'. Must be one of: {', '.join(valid_types)}")
+            raise ValueError(
+                f"Invalid filter type '{v}'. Must be one of: {', '.join(valid_types)}"
+            )
         return v
 
 
@@ -117,7 +121,8 @@ class CypherQueryOutput(BaseModel):
 
     query: str = Field(..., description="The generated Cypher query")
     parameters: dict[str, Any] | None = Field(
-        default=None, description="Query parameters if placeholders are used (e.g., $name)"
+        default=None,
+        description="Query parameters if placeholders are used (e.g., $name)",
     )
 
     @field_validator("query")
@@ -188,12 +193,16 @@ class ValidateCypherOutput(BaseModel):
         ... )
     """
 
-    is_valid: bool = Field(default=True, description="Whether the Cypher query is valid")
+    is_valid: bool = Field(
+        default=True, description="Whether the Cypher query is valid"
+    )
     errors: list[str] | None = Field(
-        default=[], description="List of syntax or semantic errors in the Cypher statement"
+        default=[],
+        description="List of syntax or semantic errors in the Cypher statement",
     )
     filters: list[PropertyFilter] | None = Field(
-        default=[], description="Property-based filters detected in the Cypher statement"
+        default=[],
+        description="Property-based filters detected in the Cypher statement",
     )
 
 
@@ -227,7 +236,9 @@ class GuardrailsOutput(BaseModel):
         to ensure the decision is valid.
     """
 
-    decision: str = Field(description="Routing decision: 'end' or one of the allowed categories")
+    decision: str = Field(
+        description="Routing decision: 'end' or one of the allowed categories"
+    )
     allowed_categories: list[str] = Field(
         default=["movie", "sports", "music"],
         description="List of allowed categories for this domain",
@@ -266,9 +277,15 @@ class GuardrailsOutput(BaseModel):
 class Config(BaseModel):
     """Top-level configuration class for Graph DB RAG models."""
 
-    domain_name: str = Field(default="general", description="Domain name for the configuration")
-    allowed_categories: List[str] = Field(default_factory=list, description="Allowed categories")
-    validation_enabled: bool = Field(default=True, description="Whether validation is enabled")
+    domain_name: str = Field(
+        default="general", description="Domain name for the configuration"
+    )
+    allowed_categories: List[str] = Field(
+        default_factory=list, description="Allowed categories"
+    )
+    validation_enabled: bool = Field(
+        default=True, description="Whether validation is enabled"
+    )
 
 
 def validate_cypher_syntax(query: str) -> bool:
@@ -306,7 +323,14 @@ def validate_filter_type(filter_type: str) -> bool:
     Returns:
         True if filter type is valid, False otherwise
     """
-    valid_types = ["equals", "contains", "starts_with", "ends_with", "greater_than", "less_than"]
+    valid_types = [
+        "equals",
+        "contains",
+        "starts_with",
+        "ends_with",
+        "greater_than",
+        "less_than",
+    ]
     return filter_type in valid_types
 
 

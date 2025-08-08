@@ -142,7 +142,9 @@ def create_handoff_tool(state: "SupervisorStateWithTools", agent_name: str) -> A
                         last_message = messages[-1]
                         if hasattr(last_message, "content"):
                             response = last_message.content
-                        elif isinstance(last_message, dict) and "content" in last_message:
+                        elif (
+                            isinstance(last_message, dict) and "content" in last_message
+                        ):
                             response = last_message["content"]
                         else:
                             response = str(last_message)
@@ -162,7 +164,9 @@ def create_handoff_tool(state: "SupervisorStateWithTools", agent_name: str) -> A
                     engine = agent.engine
                     if hasattr(engine, "name"):
                         engine_name = engine.name
-                    elif hasattr(engine, "llm_config") and hasattr(engine.llm_config, "model"):
+                    elif hasattr(engine, "llm_config") and hasattr(
+                        engine.llm_config, "model"
+                    ):
                         engine_name = f"{engine.llm_config.model}"
 
                 # Add response as HumanMessage with agent/engine info
@@ -198,9 +202,9 @@ def create_handoff_tool(state: "SupervisorStateWithTools", agent_name: str) -> A
     """
 
     # Decorate as tool
-    decorated_tool = tool(description=f"Hand off task to {agent_name}. {agent_info.description}")(
-        handoff_tool
-    )
+    decorated_tool = tool(
+        description=f"Hand off task to {agent_name}. {agent_info.description}"
+    )(handoff_tool)
 
     # Ensure name is set correctly
     decorated_tool.name = f"handoff_to_{agent_name}"
@@ -271,7 +275,9 @@ def create_choice_tool(state: "SupervisorStateWithTools") -> Any:
             return f"Error validating choice: {e!s}"
 
     # Update tool description with current options
-    agent_list = "\n".join([f"- {name}: {info.description}" for name, info in state.agents.items()])
+    agent_list = "\n".join(
+        [f"- {name}: {info.description}" for name, info in state.agents.items()]
+    )
 
     choose_agent.__doc__ = f"""Choose which agent should handle the task.
 
@@ -307,7 +313,9 @@ def create_add_agent_tool() -> Any:
     """
 
     @tool
-    def request_agent(capability: str, reason: str, requirements: list[str] | None = None) -> str:
+    def request_agent(
+        capability: str, reason: str, requirements: list[str] | None = None
+    ) -> str:
         """Request a new agent with specific capability.
 
         Use this when you identify a missing capability needed for the task.

@@ -13,7 +13,9 @@ class Step(BaseModel):
     status: Literal["not_started", "in_progress", "complete"] = Field(
         default="not_started", description="Current status of the step"
     )
-    result: str | None = Field(default=None, description="Result of executing this step")
+    result: str | None = Field(
+        default=None, description="Result of executing this step"
+    )
 
     def add_result(self, result: str) -> None:
         """Add result and mark step as complete."""
@@ -29,7 +31,9 @@ class Plan(BaseModel):
     """A plan containing steps to execute."""
 
     description: str = Field(..., description="Overall description of the plan")
-    steps: list[Step] = Field(default_factory=list, description="List of steps in the plan")
+    steps: list[Step] = Field(
+        default_factory=list, description="List of steps in the plan"
+    )
     status: Literal["not_started", "in_progress", "complete"] = Field(
         default="not_started", description="Overall status of the plan"
     )
@@ -61,16 +65,21 @@ class Act(BaseModel):
     """Action to take - either respond or create new plan."""
 
     action: Response | Plan = Field(
-        ..., description="Action to perform. Use Response for final answer, Plan for more steps."
+        ...,
+        description="Action to perform. Use Response for final answer, Plan for more steps.",
     )
 
 
 class ExecutionResult(BaseModel):
     """Result of executing a step."""
 
-    step_id: int | None = Field(default=None, description="ID of the step that was executed")
+    step_id: int | None = Field(
+        default=None, description="ID of the step that was executed"
+    )
     result: str = Field(..., description="Result of the execution")
-    step_completed: bool = Field(default=False, description="Whether the step is now complete")
+    step_completed: bool = Field(
+        default=False, description="Whether the step is now complete"
+    )
 
 
 # Rebuild forward references

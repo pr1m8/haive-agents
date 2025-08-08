@@ -107,7 +107,8 @@ class SimpleHYDERAGAgent(SequentialAgent):
         )
 
         hypothesis_agent = SimpleAgent(
-            name="HYDE Hypothesis Generator", engine=AugLLMConfig(prompt_template=hyde_prompt)
+            name="HYDE Hypothesis Generator",
+            engine=AugLLMConfig(prompt_template=hyde_prompt),
         )
 
         # Create retrieval agent

@@ -5,7 +5,10 @@ import traceback
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import DeepSeekLLMConfig
 
-from haive.agents.memory_v2.simple_memory_agent import SimpleMemoryAgent, TokenAwareMemoryConfig
+from haive.agents.memory_v2.simple_memory_agent import (
+    SimpleMemoryAgent,
+    TokenAwareMemoryConfig,
+)
 
 
 def test_state_schema():
@@ -15,10 +18,14 @@ def test_state_schema():
 
     aug_config = AugLLMConfig(llm_config=deepseek_config)
 
-    memory_config = TokenAwareMemoryConfig(max_context_tokens=2000, storage_backend="in_memory")
+    memory_config = TokenAwareMemoryConfig(
+        max_context_tokens=2000, storage_backend="in_memory"
+    )
 
     # Create agent
-    agent = SimpleMemoryAgent(name="test_debug", engine=aug_config, memory_config=memory_config)
+    agent = SimpleMemoryAgent(
+        name="test_debug", engine=aug_config, memory_config=memory_config
+    )
 
     # Check if graph is built correctly
     if hasattr(agent, "_app") and agent._app:

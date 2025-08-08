@@ -62,7 +62,9 @@ from langgraph.prebuilt import ValidationNode
 from langgraph.types import Command
 from pydantic import BaseModel
 
-from haive.agents.document_modifiers.complex_extraction.config import ComplexExtractionAgentConfig
+from haive.agents.document_modifiers.complex_extraction.config import (
+    ComplexExtractionAgentConfig,
+)
 from haive.agents.document_modifiers.complex_extraction.models import (
     PatchFunctionParameters,
     RetryStrategy,

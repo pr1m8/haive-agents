@@ -134,7 +134,9 @@ class IntegratedMemorySystem:
                 "i think",
                 "my opinion",
             ]
-            has_conversational = any(ind in content_lower for ind in conversational_indicators)
+            has_conversational = any(
+                ind in content_lower for ind in conversational_indicators
+            )
 
             # Check for long-term importance indicators
             persistent_indicators = [
@@ -241,7 +243,10 @@ the best memory system(s) to use:
         }
 
         coordinator = SimpleMultiAgent(
-            name="memory_coordinator", engine=self.engine, agents=agents, mode="sequential"
+            name="memory_coordinator",
+            engine=self.engine,
+            agents=agents,
+            mode="sequential",
         )
 
         return coordinator
@@ -271,7 +276,9 @@ the best memory system(s) to use:
 
         if mode == MemorySystemMode.INTELLIGENT:
             # Let router decide
-            routing = await self.router.arun(f"Analyze this content for memory storage: {content}")
+            routing = await self.router.arun(
+                f"Analyze this content for memory storage: {content}"
+            )
 
             if "structured" in routing.lower():
                 mode = MemorySystemMode.STRUCTURED
@@ -298,7 +305,9 @@ the best memory system(s) to use:
             results["systems_used"].append("react")
 
         if mode in [MemorySystemMode.PERSISTENT, MemorySystemMode.HYBRID]:
-            longterm_result = await self.longterm_memory.run(content, extract_memories=True)
+            longterm_result = await self.longterm_memory.run(
+                content, extract_memories=True
+            )
             results["longterm_storage"] = longterm_result
             results["systems_used"].append("longterm")
 
@@ -345,7 +354,9 @@ the best memory system(s) to use:
         all_results = {}
 
         if "graph" in systems_to_query or "all" in systems_to_query:
-            graph_result = await self.graph_memory.query_graph(query, query_type="natural")
+            graph_result = await self.graph_memory.query_graph(
+                query, query_type="natural"
+            )
             all_results["graph"] = graph_result
             results["systems_queried"].append("graph")
 
@@ -357,7 +368,9 @@ the best memory system(s) to use:
             results["systems_queried"].append("react")
 
         if "longterm" in systems_to_query or "all" in systems_to_query:
-            longterm_result = await self.longterm_memory.run(query, extract_memories=False)
+            longterm_result = await self.longterm_memory.run(
+                query, extract_memories=False
+            )
             all_results["longterm"] = longterm_result
             results["systems_queried"].append("longterm")
 
@@ -426,7 +439,9 @@ Synthesize these results into a comprehensive answer.
         recent_memories = await self.react_memory.arun(
             "List my 10 most recent memories", auto_save=False
         )
-        analytics["systems"]["react"] = {"recent_activity": recent_memories[:200] + "..."}
+        analytics["systems"]["react"] = {
+            "recent_activity": recent_memories[:200] + "..."
+        }
 
         # Long-term memory stats
         analytics["systems"]["longterm"] = {
@@ -541,7 +556,9 @@ async def create_research_assistant():
 
     # Create custom tools using the memory system
     @tool
-    async def remember_paper(title: str, authors: str, key_findings: str, relevance: str) -> str:
+    async def remember_paper(
+        title: str, authors: str, key_findings: str, relevance: str
+    ) -> str:
         """Remember details about a research paper."""
         memory_content = f"""
         Research Paper: {title}
@@ -555,7 +572,9 @@ async def create_research_assistant():
             mode=MemorySystemMode.HYBRID,  # Store in multiple systems
         )
 
-        return f"Stored paper information in {len(result['systems_used'])} memory systems"
+        return (
+            f"Stored paper information in {len(result['systems_used'])} memory systems"
+        )
 
     @tool
     async def find_related_papers(topic: str) -> str:

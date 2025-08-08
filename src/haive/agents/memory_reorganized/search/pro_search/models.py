@@ -29,7 +29,9 @@ class ProSearchResponse(SearchResponse):
     Extends the base SearchResponse with pro search specific fields.
     """
 
-    search_type: str = Field(default="ProSearch", description="Type of search performed")
+    search_type: str = Field(
+        default="ProSearch", description="Type of search performed"
+    )
     refinements: list[SearchRefinement] = Field(
         default_factory=list, description="Query refinements made"
     )
@@ -39,11 +41,15 @@ class ProSearchResponse(SearchResponse):
     user_preferences_applied: dict[str, Any] = Field(
         default_factory=dict, description="User preferences considered"
     )
-    reasoning_steps: list[str] = Field(default_factory=list, description="Reasoning steps taken")
+    reasoning_steps: list[str] = Field(
+        default_factory=list, description="Reasoning steps taken"
+    )
     follow_up_questions: list[str] = Field(
         default_factory=list, description="Suggested follow-up questions"
     )
-    depth_level: int = Field(default=1, ge=1, le=5, description="Depth level of search (1-5)")
+    depth_level: int = Field(
+        default=1, ge=1, le=5, description="Depth level of search (1-5)"
+    )
 
     class Config:
         """Pydantic configuration."""
@@ -96,10 +102,16 @@ class ProSearchRequest(BaseModel):
     """Request model for pro search operations."""
 
     query: str = Field(..., min_length=1, max_length=1000, description="Search query")
-    context: dict[str, Any] | None = Field(default=None, description="Additional context")
-    depth_level: int = Field(default=3, ge=1, le=5, description="Desired depth level (1-5)")
+    context: dict[str, Any] | None = Field(
+        default=None, description="Additional context"
+    )
+    depth_level: int = Field(
+        default=3, ge=1, le=5, description="Desired depth level (1-5)"
+    )
     include_reasoning: bool = Field(default=True, description="Include reasoning steps")
-    generate_follow_ups: bool = Field(default=True, description="Generate follow-up questions")
+    generate_follow_ups: bool = Field(
+        default=True, description="Generate follow-up questions"
+    )
     use_preferences: bool = Field(default=True, description="Apply user preferences")
 
     class Config:

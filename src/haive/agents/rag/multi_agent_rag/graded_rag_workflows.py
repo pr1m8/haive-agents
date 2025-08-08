@@ -152,7 +152,10 @@ class FullyGradedRAGAgent(MultiAgent):
         ]
 
         super().__init__(
-            agents=agents, execution_mode="sequential", state_schema=GradedRAGState, **kwargs
+            agents=agents,
+            execution_mode="sequential",
+            state_schema=GradedRAGState,
+            **kwargs,
         )
 
     def build_custom_graph(self) -> Any:
@@ -246,7 +249,10 @@ class AdaptiveGradedRAGAgent(MultiAgent):
         ]
 
         super().__init__(
-            agents=agents, execution_mode="sequential", state_schema=GradedRAGState, **kwargs
+            agents=agents,
+            execution_mode="sequential",
+            state_schema=GradedRAGState,
+            **kwargs,
         )
 
     def build_custom_graph(self) -> Any:
@@ -337,7 +343,10 @@ class MultiCriteriaGradedRAGAgent(MultiAgent):
         self._grading_criteria = grading_criteria
 
         super().__init__(
-            agents=agents, execution_mode="sequential", state_schema=GradedRAGState, **kwargs
+            agents=agents,
+            execution_mode="sequential",
+            state_schema=GradedRAGState,
+            **kwargs,
         )
 
     def build_custom_graph(self) -> Any:
@@ -410,7 +419,10 @@ class ReflexiveGradedRAGAgent(MultiAgent):
         agents = [self_assessor, strategy_adapter, reflexive_executor]
 
         super().__init__(
-            agents=agents, execution_mode="sequential", state_schema=GradedRAGState, **kwargs
+            agents=agents,
+            execution_mode="sequential",
+            state_schema=GradedRAGState,
+            **kwargs,
         )
 
     def build_custom_graph(self) -> Any:

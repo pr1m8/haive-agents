@@ -41,7 +41,12 @@ from langchain_core.documents import Document
 from langchain_core.prompts import ChatPromptTemplate
 
 from haive.agents.chain import ChainAgent, flow_with_edges
-from haive.agents.rag.models import FusionResult, HyDEResult, SpeculativeResult, StepBackResult
+from haive.agents.rag.models import (
+    FusionResult,
+    HyDEResult,
+    SpeculativeResult,
+    StepBackResult,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -64,7 +69,9 @@ class RAGChainCollection:
     """
 
     @staticmethod
-    def create_simple_rag(documents: list[Document], llm_config: LLMConfig) -> ChainAgent:
+    def create_simple_rag(
+        documents: list[Document], llm_config: LLMConfig
+    ) -> ChainAgent:
         """Create a simple RAG agent with basic retrieve-and-generate pattern.
 
         This is the most straightforward RAG implementation: retrieve relevant
@@ -114,7 +121,10 @@ class RAGChainCollection:
             llm_config=llm_config,
             prompt_template=ChatPromptTemplate.from_messages(
                 [
-                    ("system", "Generate a hypothetical document that would answer this query"),
+                    (
+                        "system",
+                        "Generate a hypothetical document that would answer this query",
+                    ),
                     ("human", "{query}"),
                 ]
             ),
@@ -139,7 +149,10 @@ class RAGChainCollection:
             llm_config=llm_config,
             prompt_template=ChatPromptTemplate.from_messages(
                 [
-                    ("system", "Answer using context and the hypothetical document insight"),
+                    (
+                        "system",
+                        "Answer using context and the hypothetical document insight",
+                    ),
                     (
                         "human",
                         """Original Query: {query}
@@ -156,7 +169,9 @@ class RAGChainCollection:
         return ChainAgent(hyde_generator, enhanced_retrieve, answerer, name="HyDE RAG")
 
     @staticmethod
-    def create_fusion_rag(documents: list[Document], llm_config: LLMConfig) -> ChainAgent:
+    def create_fusion_rag(
+        documents: list[Document], llm_config: LLMConfig
+    ) -> ChainAgent:
         """Fusion RAG - multiple queries with reciprocal rank fusion."""
         # Multi-query generator
         multi_query_gen = AugLLMConfig(
@@ -211,7 +226,9 @@ class RAGChainCollection:
         return ChainAgent(multi_query_gen, fusion_rank, synthesizer, name="Fusion RAG")
 
     @staticmethod
-    def create_step_back_rag(documents: list[Document], llm_config: LLMConfig) -> ChainAgent:
+    def create_step_back_rag(
+        documents: list[Document], llm_config: LLMConfig
+    ) -> ChainAgent:
         """Step-Back RAG - abstract reasoning before specific answer."""
         # Step-back reasoner
         step_back = AugLLMConfig(
@@ -244,7 +261,10 @@ class RAGChainCollection:
             llm_config=llm_config,
             prompt_template=ChatPromptTemplate.from_messages(
                 [
-                    ("system", "Answer using both abstract reasoning and specific context"),
+                    (
+                        "system",
+                        "Answer using both abstract reasoning and specific context",
+                    ),
                     (
                         "human",
                         """Original Query: {query}
@@ -261,7 +281,9 @@ class RAGChainCollection:
         return ChainAgent(step_back, context_retrieve, answerer, name="Step-Back RAG")
 
     @staticmethod
-    def create_speculative_rag(documents: list[Document], llm_config: LLMConfig) -> ChainAgent:
+    def create_speculative_rag(
+        documents: list[Document], llm_config: LLMConfig
+    ) -> ChainAgent:
         """Speculative RAG - generate and verify hypotheses."""
         # Hypothesis generator
         hypothesis_gen = AugLLMConfig(
@@ -312,10 +334,14 @@ class RAGChainCollection:
             output_key="response",
         )
 
-        return ChainAgent(hypothesis_gen, verify_hypotheses, synthesizer, name="Speculative RAG")
+        return ChainAgent(
+            hypothesis_gen, verify_hypotheses, synthesizer, name="Speculative RAG"
+        )
 
     @staticmethod
-    def create_memory_aware_rag(documents: list[Document], llm_config: LLMConfig) -> ChainAgent:
+    def create_memory_aware_rag(
+        documents: list[Document], llm_config: LLMConfig
+    ) -> ChainAgent:
         """Memory-Aware RAG - uses conversation memory."""
 
         # Memory analyzer
@@ -326,7 +352,9 @@ class RAGChainCollection:
 
             # Extract relevant past context (simplified)
             past_topics = ["AI", "machine learning"] if len(messages) > 1 else []
-            temporal_context = "Continuing previous discussion" if past_topics else "New topic"
+            temporal_context = (
+                "Continuing previous discussion" if past_topics else "New topic"
+            )
 
             return {
                 "relevant_memories": past_topics,
@@ -350,7 +378,10 @@ class RAGChainCollection:
             llm_config=llm_config,
             prompt_template=ChatPromptTemplate.from_messages(
                 [
-                    ("system", "Answer considering conversation history and temporal context"),
+                    (
+                        "system",
+                        "Answer considering conversation history and temporal context",
+                    ),
                     (
                         "human",
                         """Current Query: {query}
@@ -365,17 +396,24 @@ class RAGChainCollection:
             output_key="response",
         )
 
-        return ChainAgent(analyze_memory, memory_retrieve, answerer, name="Memory-Aware RAG")
+        return ChainAgent(
+            analyze_memory, memory_retrieve, answerer, name="Memory-Aware RAG"
+        )
 
     @staticmethod
-    def create_flare_rag(documents: list[Document], llm_config: LLMConfig) -> ChainAgent:
+    def create_flare_rag(
+        documents: list[Document], llm_config: LLMConfig
+    ) -> ChainAgent:
         """FLARE RAG - forward-looking active retrieval."""
         # Initial answer attempt
         initial_gen = AugLLMConfig(
             llm_config=llm_config,
             prompt_template=ChatPromptTemplate.from_messages(
                 [
-                    ("system", "Provide initial answer, noting what additional info you need"),
+                    (
+                        "system",
+                        "Provide initial answer, noting what additional info you need",
+                    ),
                     ("human", "{query}"),
                 ]
             ),
@@ -393,7 +431,9 @@ class RAGChainCollection:
 
             if needs_more_info:
                 # Retrieve additional context
-                additional_context = "\n".join([doc.page_content for doc in documents[1:3]])
+                additional_context = "\n".join(
+                    [doc.page_content for doc in documents[1:3]]
+                )
                 return {
                     "additional_context": additional_context,
                     "needs_refinement": True,
@@ -429,7 +469,10 @@ class RAGChainCollection:
 
 # Factory functions for easy creation
 def create_rag_chain(
-    rag_type: str, documents: list[Document], llm_config: LLMConfig | None = None, **kwargs
+    rag_type: str,
+    documents: list[Document],
+    llm_config: LLMConfig | None = None,
+    **kwargs,
 ) -> ChainAgent:
     """Create any RAG chain by type."""
     if not llm_config:
@@ -466,7 +509,9 @@ def create_rag_pipeline(
     llm_config: LLMConfig | None = None,
 ) -> ChainAgent:
     """Create a pipeline of multiple RAG approaches."""
-    chains = [create_rag_chain(rag_type, documents, llm_config) for rag_type in rag_types]
+    chains = [
+        create_rag_chain(rag_type, documents, llm_config) for rag_type in rag_types
+    ]
 
     if combination_strategy == "sequential":
         # Sequential execution
@@ -476,7 +521,9 @@ def create_rag_pipeline(
         def combiner(state: dict[str, Any]):
             return {"combined_responses": [state.get("response", "")]}
 
-        return flow_with_edges([*chains, combiner], *[f"{i}->-1" for i in range(len(chains))])
+        return flow_with_edges(
+            [*chains, combiner], *[f"{i}->-1" for i in range(len(chains))]
+        )
     raise ValueError(f"Unknown combination strategy: {combination_strategy}")
 
 

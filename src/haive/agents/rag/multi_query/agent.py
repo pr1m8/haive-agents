@@ -105,7 +105,9 @@ class MultiRetrievalAgent(Agent):
 
             # Rank documents by combined score
             ranked_docs = sorted(
-                doc_scores.values(), key=lambda x: x["score"] + sum(x["positions"]), reverse=True
+                doc_scores.values(),
+                key=lambda x: x["score"] + sum(x["positions"]),
+                reverse=True,
             )
 
             # Extract unique documents
@@ -176,7 +178,9 @@ class MultiQueryRAGAgent(SequentialAgent):
 
         # Step 4: Answer generation
         answer_agent = SimpleAgent(
-            engine=AugLLMConfig(llm_config=llm_config, prompt_template=RAG_ANSWER_STANDARD),
+            engine=AugLLMConfig(
+                llm_config=llm_config, prompt_template=RAG_ANSWER_STANDARD
+            ),
             name="Answer Generator",
         )
 

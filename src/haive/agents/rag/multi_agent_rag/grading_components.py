@@ -398,7 +398,8 @@ class CompositeGradingAgent:
         """Calculate overall pipeline score."""
         # Average document relevance
         doc_score = (
-            sum(g.get("relevance_score", 0) for g in document_grades) / len(document_grades)
+            sum(g.get("relevance_score", 0) for g in document_grades)
+            / len(document_grades)
             if document_grades
             else 0
         )
@@ -410,6 +411,8 @@ class CompositeGradingAgent:
         hallucination_penalty = hallucination_grade.get("hallucination_score", 0)
 
         # Weighted combination
-        overall = (0.3 * doc_score + 0.5 * answer_score) * (1 - 0.5 * hallucination_penalty)
+        overall = (0.3 * doc_score + 0.5 * answer_score) * (
+            1 - 0.5 * hallucination_penalty
+        )
 
         return min(max(overall, 0.0), 1.0)

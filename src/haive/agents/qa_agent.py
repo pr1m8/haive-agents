@@ -61,7 +61,13 @@ You are a highly intelligent AI assistant specializing in **retrieval-augmented 
 
 # Define the union type for contents
 ContentType = Annotated[
-    str | list[str] | Document | list[Document] | BaseMessage | list[BaseMessage] | dict[str, Any],
+    str
+    | list[str]
+    | Document
+    | list[Document]
+    | BaseMessage
+    | list[BaseMessage]
+    | dict[str, Any],
     Field(
         description="Content to extract QA pairs from. Can be text, documents, messages, or structured data."
     ),

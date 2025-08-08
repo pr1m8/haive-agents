@@ -26,9 +26,15 @@ class ComplexityVector(BaseModel):
     execution: float = Field(
         ..., ge=0, le=10, description="Parallelization and coordination complexity"
     )
-    knowledge: float = Field(..., ge=0, le=10, description="Domain expertise requirements")
-    integration: float = Field(..., ge=0, le=10, description="System and API integration needs")
-    uncertainty: float = Field(..., ge=0, le=10, description="Unknown factors and research needs")
+    knowledge: float = Field(
+        ..., ge=0, le=10, description="Domain expertise requirements"
+    )
+    integration: float = Field(
+        ..., ge=0, le=10, description="System and API integration needs"
+    )
+    uncertainty: float = Field(
+        ..., ge=0, le=10, description="Unknown factors and research needs"
+    )
 
     # Computed fields
     overall_level: ComplexityLevel | None = None
@@ -85,27 +91,39 @@ class ComplexityFactors(BaseModel):
     task_depth: int = Field(..., ge=1, description="Maximum depth of task tree")
     task_breadth: int = Field(..., ge=1, description="Maximum parallel branches")
     total_subtasks: int = Field(..., ge=0, description="Total number of subtasks")
-    dependency_density: float = Field(..., ge=0, le=1, description="Ratio of dependencies to tasks")
+    dependency_density: float = Field(
+        ..., ge=0, le=1, description="Ratio of dependencies to tasks"
+    )
 
     # Execution factors
     parallelization_ratio: float = Field(
         ..., ge=0, le=1, description="Ratio of parallelizable tasks"
     )
     join_complexity: int = Field(..., ge=0, description="Number of complex join points")
-    coordination_points: int = Field(..., ge=0, description="Number of coordination needs")
+    coordination_points: int = Field(
+        ..., ge=0, description="Number of coordination needs"
+    )
 
     # Knowledge factors
     domain_count: int = Field(..., ge=1, description="Number of knowledge domains")
     expertise_level: str = Field(..., description="Required expertise level")
-    learning_curve: str = Field(default="moderate", description="Steepness of learning curve")
+    learning_curve: str = Field(
+        default="moderate", description="Steepness of learning curve"
+    )
 
     # Integration factors
     external_systems: int = Field(..., ge=0, description="Number of external systems")
-    api_complexity: str = Field(default="simple", description="API integration complexity")
-    data_transformations: int = Field(..., ge=0, description="Number of data transformations")
+    api_complexity: str = Field(
+        default="simple", description="API integration complexity"
+    )
+    data_transformations: int = Field(
+        ..., ge=0, description="Number of data transformations"
+    )
 
     # Uncertainty factors
-    unknown_requirements: int = Field(..., ge=0, description="Number of unclear requirements")
+    unknown_requirements: int = Field(
+        ..., ge=0, description="Number of unclear requirements"
+    )
     research_components: int = Field(..., ge=0, description="Number of research tasks")
     solution_confidence: float = Field(
         ..., ge=0, le=1, description="Confidence in solution approach"

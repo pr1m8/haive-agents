@@ -1,12 +1,13 @@
 from typing import Any
 
-from haive.agents.react_class.react_agent2.models import ReactState, Thought
 from haive.core.engine.agent.agent import AgentConfig
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import AzureLLMConfig
 from langchain_core.output_parsers import PydanticOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import Field
+
+from haive.agents.react_class.react_agent2.models import ReactState, Thought
 
 
 class ReactAgentConfig(AgentConfig):
@@ -61,7 +62,8 @@ Action Input: <your final answer>
 
     # Max iterations
     max_iterations: int = Field(
-        default=10, description="Maximum number of iterations before forcing termination."
+        default=10,
+        description="Maximum number of iterations before forcing termination.",
     )
 
     # Max retries per tool
@@ -72,7 +74,9 @@ Action Input: <your final answer>
     # Model settings
     model: str = Field(default="gpt-4o", description="Model to use for thinking.")
 
-    temperature: float = Field(default=0.7, description="Temperature for the thinking LLM.")
+    temperature: float = Field(
+        default=0.7, description="Temperature for the thinking LLM."
+    )
 
     # AugLLM for thinking (will be created in from_scratch)
     think_llm: AugLLMConfig | None = None
@@ -112,7 +116,9 @@ Action Input: <your final answer>
             for name, tool in tools.items():
                 tool_names.append(name)
                 description = (
-                    tool.__doc__ if hasattr(tool, "__doc__") and tool.__doc__ else f"Tool: {name}"
+                    tool.__doc__
+                    if hasattr(tool, "__doc__") and tool.__doc__
+                    else f"Tool: {name}"
                 )
                 tool_descriptions.append(f"- {name}: {description}")
         elif isinstance(tools, list):
@@ -164,12 +170,17 @@ Action Input: <your final answer>
                 ),
                 ("human", "{input}"),
                 ("placeholder", "{messages}"),
-                ("placeholder", "{steps}"),  # ✅ Corrected: Use "user" instead of "steps"
+                (
+                    "placeholder",
+                    "{steps}",
+                ),  # ✅ Corrected: Use "user" instead of "steps"
             ]
         )
 
         # Create LLM config
-        llm_config = AzureLLMConfig(model=model, parameters={"temperature": temperature})
+        llm_config = AzureLLMConfig(
+            model=model, parameters={"temperature": temperature}
+        )
 
         # Create AugLLM for thinking
         think_llm = AugLLMConfig(

@@ -1,7 +1,7 @@
-"""Enhanced Plan & Execute V6 - Using EnhancedMultiAgentV4 with Universal Structured Output.
+"""Enhanced Plan & Execute V6 - Using MultiAgent with Universal Structured Output.
 
 This module provides the next-generation Plan & Execute implementation using:
-- EnhancedMultiAgentV4 for multi-agent orchestration
+- MultiAgent for multi-agent orchestration
 - Universal structured output pattern (Agent.with_structured_output)
 - BasePlannerAgent and BaseExecutorAgent from base planning components
 - Modern Haive architecture with hooks, recompilation, and state management
@@ -9,7 +9,7 @@ This module provides the next-generation Plan & Execute implementation using:
 ## Key Features
 
 - **Universal Structured Output**: Any agent can have structured output via mixins
-- **EnhancedMultiAgentV4**: Modern multi-agent coordination with conditional routing
+- **MultiAgent**: Modern multi-agent coordination with conditional routing
 - **Base Planning Components**: Uses BasePlannerAgent and BaseExecutorAgent
 - **Real Component Testing**: No mocks, actual LLM execution and tool usage
 - **Modern Architecture**: Hooks, recompilation, state management, type safety
@@ -23,7 +23,7 @@ BaseExecutorAgent.with_structured_output(ExecutionResult)
     ↓ (structured ExecutionResult output)
 Conditional Routing (should_continue)
     ↓
-EnhancedMultiAgentV4 orchestration
+MultiAgent orchestration
 ```
 
 ## Usage
@@ -74,7 +74,7 @@ result = await agent.arun("Complex multi-step research task")
 ## Status: Production Ready
 
 This implementation showcases the full power of modern Haive architecture:
-- EnhancedMultiAgentV4 coordination
+- MultiAgent coordination
 - Universal structured output patterns
 - Base planning components
 - Real component integration
@@ -86,15 +86,16 @@ import logging
 import time
 from typing import Any, Optional
 
-from haive.agents.multi.enhanced_multi_agent_v4 import EnhancedMultiAgentV4
-from haive.agents.planning.base.agents.planner import BasePlannerAgent
-from haive.agents.planning.base.agents.executor import BaseExecutorAgent
-from haive.agents.planning.base.models import BasePlan, PlanContent
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.schema.prebuilt.multi_agent_state import MultiAgentState
 from haive.tools.tools.search_tools import tavily_search_tool
 from langgraph.graph import END
 from pydantic import BaseModel, Field
+
+from haive.agents.multi.agent import MultiAgent
+from haive.agents.planning.base.agents.executor import BaseExecutorAgent
+from haive.agents.planning.base.agents.planner import BasePlannerAgent
+from haive.agents.planning.base.models import BasePlan, PlanContent
 
 logger = logging.getLogger(__name__)
 
@@ -109,7 +110,9 @@ class ExecutionResult(BaseModel):
     step_id: str = Field(..., description="ID of the step that was executed")
     success: bool = Field(..., description="Whether the step completed successfully")
     output: str = Field(..., description="The actual output/result from execution")
-    tools_used: list[str] = Field(default_factory=list, description="Tools that were actually used")
+    tools_used: list[str] = Field(
+        default_factory=list, description="Tools that were actually used"
+    )
     execution_time: Optional[str] = Field(
         default=None, description="How long the step took to execute"
     )
@@ -127,9 +130,13 @@ class ExecutionResult(BaseModel):
 class PlanningDecision(BaseModel):
     """Decision model for routing and coordination."""
 
-    action: str = Field(..., description="What action to take next: continue, replan, complete")
+    action: str = Field(
+        ..., description="What action to take next: continue, replan, complete"
+    )
     reasoning: str = Field(..., description="Why this action was chosen")
-    confidence: float = Field(..., ge=0.0, le=1.0, description="Confidence in this decision (0-1)")
+    confidence: float = Field(
+        ..., ge=0.0, le=1.0, description="Confidence in this decision (0-1)"
+    )
     final_answer: Optional[str] = Field(
         default=None, description="Final answer if the task is complete"
     )
@@ -157,7 +164,9 @@ class PlanExecuteState(MultiAgentState):
     completed_steps: list[str] = Field(
         default_factory=list, description="IDs of successfully completed steps"
     )
-    failed_steps: list[str] = Field(default_factory=list, description="IDs of steps that failed")
+    failed_steps: list[str] = Field(
+        default_factory=list, description="IDs of steps that failed"
+    )
     iteration_count: int = Field(default=0, description="Number of planning iterations")
     replan_count: int = Field(default=0, description="Number of times we've replanned")
 
@@ -213,7 +222,9 @@ def should_continue_v6(state: PlanExecuteState) -> str:
     return "planner_structured"
 
 
-def get_next_step_v6(plan: BasePlan[PlanContent], completed_steps: list[str]) -> Optional[str]:
+def get_next_step_v6(
+    plan: BasePlan[PlanContent], completed_steps: list[str]
+) -> Optional[str]:
     """Get the next step ID to execute based on plan and completed steps."""
     if not plan or not plan.steps:
         return None
@@ -260,7 +271,9 @@ def process_planner_output_v6(
     return updates
 
 
-def process_executor_output_v6(state: PlanExecuteState, executor_result: ExecutionResult) -> dict:
+def process_executor_output_v6(
+    state: PlanExecuteState, executor_result: ExecutionResult
+) -> dict:
     """Process executor output and update state."""
     updates = {}
 
@@ -284,7 +297,8 @@ def process_executor_output_v6(state: PlanExecuteState, executor_result: Executi
         # Get next step if available and executor says it's ready
         if executor_result.next_step_ready and state.current_plan:
             next_step = get_next_step_v6(
-                state.current_plan, updates.get("completed_steps", state.completed_steps)
+                state.current_plan,
+                updates.get("completed_steps", state.completed_steps),
             )
             updates["current_step_id"] = next_step
         else:
@@ -305,7 +319,7 @@ def create_enhanced_plan_execute_v6(
     executor_tools: Optional[list] = None,
     max_iterations: int = 20,
     enable_hooks: bool = True,
-) -> EnhancedMultiAgentV4:
+) -> MultiAgent:
     """Create enhanced Plan & Execute V6 using modern Haive patterns.
 
     Args:
@@ -317,7 +331,7 @@ def create_enhanced_plan_execute_v6(
         enable_hooks: Whether to enable the hooks system
 
     Returns:
-        EnhancedMultiAgentV4: Complete planning workflow system
+        MultiAgent: Complete planning workflow system
 
     Examples:
         Basic usage::
@@ -370,7 +384,7 @@ def create_enhanced_plan_execute_v6(
     )
 
     # Create the multi-agent workflow
-    workflow = EnhancedMultiAgentV4(
+    workflow = MultiAgent(
         name=name,
         agents=[
             planner,  # BasePlannerAgent instance
@@ -396,7 +410,11 @@ def create_enhanced_plan_execute_v6(
     workflow.add_conditional_edges(
         from_agent="executor_structured",  # From structured execution output
         condition=should_continue_v6,
-        routes={"executor_structured": "executor", "planner_structured": "planner", END: END},
+        routes={
+            "executor_structured": "executor",
+            "planner_structured": "planner",
+            END: END,
+        },
     )
 
     # Add monitoring hooks if enabled
@@ -407,7 +425,7 @@ def create_enhanced_plan_execute_v6(
     return workflow
 
 
-def _add_monitoring_hooks_v6(workflow: EnhancedMultiAgentV4) -> None:
+def _add_monitoring_hooks_v6(workflow: MultiAgent) -> None:
     """Add comprehensive monitoring hooks to the V6 workflow."""
 
     # Workflow-level monitoring hooks
@@ -421,8 +439,12 @@ def _add_monitoring_hooks_v6(workflow: EnhancedMultiAgentV4) -> None:
     def log_workflow_complete(context):
         duration = ""
         if hasattr(context, "metadata") and "workflow_start_time" in context.metadata:
-            duration = f" in {time.time() - context.metadata['workflow_start_time']:.2f}s"
-        logger.info(f"✅ Planning workflow V6 completed{duration}: {context.agent_name}")
+            duration = (
+                f" in {time.time() - context.metadata['workflow_start_time']:.2f}s"
+            )
+        logger.info(
+            f"✅ Planning workflow V6 completed{duration}: {context.agent_name}"
+        )
 
     @workflow.on_error
     def log_workflow_error(context):
@@ -443,7 +465,9 @@ def _add_monitoring_hooks_v6(workflow: EnhancedMultiAgentV4) -> None:
                     elif context.event == HookEvent.AFTER_RUN:
                         logger.debug(f"  ✓ Agent completed: {agent_name}")
                     elif context.event == HookEvent.ON_ERROR:
-                        logger.error(f"  ❌ Agent error in {agent_name}: {context.error}")
+                        logger.error(
+                            f"  ❌ Agent error in {agent_name}: {context.error}"
+                        )
 
                 return agent_execution_hook
 
@@ -458,7 +482,9 @@ def _add_monitoring_hooks_v6(workflow: EnhancedMultiAgentV4) -> None:
 # ============================================================================
 
 
-def create_research_plan_execute_v6(executor_tools: Optional[list] = None) -> EnhancedMultiAgentV4:
+def create_research_plan_execute_v6(
+    executor_tools: Optional[list] = None,
+) -> MultiAgent:
     """Create a plan and execute agent optimized for research tasks."""
     research_tools = [tavily_search_tool]
     if executor_tools:
@@ -475,7 +501,7 @@ def create_research_plan_execute_v6(executor_tools: Optional[list] = None) -> En
     )
 
 
-def create_simple_plan_execute_v6(executor_tools: Optional[list] = None) -> EnhancedMultiAgentV4:
+def create_simple_plan_execute_v6(executor_tools: Optional[list] = None) -> MultiAgent:
     """Create a simple plan and execute agent with default settings."""
     return create_enhanced_plan_execute_v6(
         name="SimplePlanExecuteV6", executor_tools=executor_tools or []

@@ -119,7 +119,7 @@ def show_example_output():
         print(f"  {i:2d}. {step.objective}")
 
     # Show computed properties
-    print(f"\nComputed Properties:")
+    print("\nComputed Properties:")
     print(
         f"  - Current Step: {plan.current_step.objective if plan.current_step else 'None'}"
     )
@@ -176,13 +176,13 @@ def main():
     # Mark current as in progress
     plan.steps[5].status = Status.IN_PROGRESS
 
-    print(f"After completing first 5 steps:")
+    print("After completing first 5 steps:")
     print(f"  Progress: {plan.progress_percentage:.1f}%")
     print(f"  Current: {plan.current_step.objective if plan.current_step else 'None'}")
     print(f"  Completed: {plan.completed_count}/{plan.total_steps}")
 
     # Show completed steps
-    print(f"\nCompleted Steps:")
+    print("\nCompleted Steps:")
     for step in plan.completed_steps:
         print(f"  ✓ {step.objective}")
 

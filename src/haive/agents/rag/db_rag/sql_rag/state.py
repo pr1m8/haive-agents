@@ -69,11 +69,15 @@ class OutputState(BaseModel):
     """
 
     answer: str = Field(description="The answer to the question")
-    sql_statement: str = Field(default="", description="The SQL statement that was executed")
+    sql_statement: str = Field(
+        default="", description="The SQL statement that was executed"
+    )
     hallucination_check: str | None = Field(
         default=None, description="Result of hallucination check"
     )
-    answer_grade: str | None = Field(default=None, description="Result of answer grading")
+    answer_grade: str | None = Field(
+        default=None, description="Result of answer grading"
+    )
 
 
 class OverallState(InputState, OutputState):
@@ -137,15 +141,21 @@ class OverallState(InputState, OutputState):
     steps: list[str] = Field(
         default_factory=list, description="Steps executed in the agent workflow"
     )
-    next_action: str = Field(default="", description="The next action to take in the workflow")
+    next_action: str = Field(
+        default="", description="The next action to take in the workflow"
+    )
     analysis: dict[str, Any] = Field(
-        default_factory=dict, description="Analysis of the query structure and requirements"
+        default_factory=dict,
+        description="Analysis of the query structure and requirements",
     )
     sql_errors: list[str] = Field(
-        default_factory=list, description="Errors found in the SQL statement during validation"
+        default_factory=list,
+        description="Errors found in the SQL statement during validation",
     )
     sql_query: str = Field(default="", description="The SQL query to execute")
-    query_result: str = Field(default=None, description="Raw text results from the database query")
+    query_result: str = Field(
+        default=None, description="Raw text results from the database query"
+    )
     database_records: Any = Field(
         default=None, description="Structured results from the database query"
     )

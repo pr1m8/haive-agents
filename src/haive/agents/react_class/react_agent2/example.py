@@ -4,10 +4,11 @@ import logging
 from datetime import datetime
 from typing import Any
 
-from haive.agents.react_class.react_agent2.agent import create_react_agent
 from haive.core.graph.tool_config import ToolConfig
 from langchain_core.messages import HumanMessage
 from langchain_core.tools import tool
+
+from haive.agents.react_class.react_agent2.agent import create_react_agent
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -140,7 +141,9 @@ def run_custom_tool_routing_example():
             description="Search the internal database for information.",
         ),
         ToolConfig(
-            tool=search_web, name="search_web", description="Search the web for public information."
+            tool=search_web,
+            name="search_web",
+            description="Search the web for public information.",
         ),
         ToolConfig(
             tool=analyze_data,

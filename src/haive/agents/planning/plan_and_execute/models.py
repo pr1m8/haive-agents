@@ -9,7 +9,9 @@ class Step(BaseModel):
 
     id: int
     description: str
-    status: Literal["not_started", "in_progress", "complete"] = Field(default="not_started")
+    status: Literal["not_started", "in_progress", "complete"] = Field(
+        default="not_started"
+    )
     steps: list["Step"] | None = Field(default_factory=list)  # ✅ Use `default_factory`
     result: str | None = None  # ✅ No `default` Field
 
@@ -20,7 +22,9 @@ class Step(BaseModel):
 
     def is_complete(self) -> bool:
         """Check if the step and all its nested steps are complete."""
-        return self.status == "complete" and all(step.is_complete() for step in self.steps or [])
+        return self.status == "complete" and all(
+            step.is_complete() for step in self.steps or []
+        )
 
     def remove_completed_substeps(self) -> None:
         """Removes substeps that have been marked as complete."""
@@ -45,7 +49,9 @@ class Step(BaseModel):
 class Plan(BaseModel):
     """Represents a plan containing a recursive structure of steps."""
 
-    description: str = Field(..., description="Description of the plan")  # ✅ `default` removed
+    description: str = Field(
+        ..., description="Description of the plan"
+    )  # ✅ `default` removed
     status: Literal["not_started", "in_progress", "complete"] = "not_started"
     steps: list[Step] = Field(
         default_factory=list

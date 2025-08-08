@@ -36,7 +36,9 @@ def prepare_tools(tools: list[BaseTool | dict[str, Any] | Callable]) -> list[Bas
                         StructuredTool.from_function(
                             func=tool["func"],
                             name=tool.get("name", tool["func"].__name__),
-                            description=tool.get("description", tool["func"].__doc__ or ""),
+                            description=tool.get(
+                                "description", tool["func"].__doc__ or ""
+                            ),
                             return_direct=tool.get("return_direct", False),
                             args_schema=tool.get("args_schema", None),
                             coroutine=inspect.iscoroutinefunction(tool["func"]),
@@ -77,7 +79,9 @@ def tools_router(state: dict[str, Any]) -> str | list[Send]:
     last_message = messages[-1]
 
     # Check if the message has tool calls
-    if isinstance(last_message, AIMessage) and getattr(last_message, "tool_calls", None):
+    if isinstance(last_message, AIMessage) and getattr(
+        last_message, "tool_calls", None
+    ):
         # Version 1: One node handles all tool calls
         return "execute_tools"
 
@@ -102,9 +106,13 @@ def tools_router_v2(state: dict[str, Any]) -> str | list[Send]:
     last_message = messages[-1]
 
     # Check if the message has tool calls
-    if isinstance(last_message, AIMessage) and getattr(last_message, "tool_calls", None):
+    if isinstance(last_message, AIMessage) and getattr(
+        last_message, "tool_calls", None
+    ):
         # Version 2: Each tool call gets its own node instance
-        return [Send("execute_tools", tool_call) for tool_call in last_message.tool_calls]
+        return [
+            Send("execute_tools", tool_call) for tool_call in last_message.tool_calls
+        ]
 
     # No tool calls, so we're done
     return END
@@ -138,7 +146,9 @@ def create_tool_executor(tools: list[BaseTool]) -> Callable:
         last_message = messages[-1]
 
         # Check if the message has tool calls
-        if not isinstance(last_message, AIMessage) or not getattr(last_message, "tool_calls", None):
+        if not isinstance(last_message, AIMessage) or not getattr(
+            last_message, "tool_calls", None
+        ):
             return state
 
         # Execute each tool call
@@ -193,7 +203,9 @@ def create_tool_executor(tools: list[BaseTool]) -> Callable:
                 error_msg = f"Tool {tool_name} not found"
 
                 # Create a ToolMessage with the error
-                tool_message = ToolMessage(content=error_msg, tool_call_id=tool_id, name=tool_name)
+                tool_message = ToolMessage(
+                    content=error_msg, tool_call_id=tool_id, name=tool_name
+                )
                 new_messages.append(tool_message)
 
                 # Save the error
@@ -227,7 +239,9 @@ def create_tool_executor_v2(tools: list[BaseTool]) -> Callable:
     # Create a mapping of tool names to tools
     tool_map = {tool.name: tool for tool in tools}
 
-    def execute_single_tool(state: dict[str, Any], tool_call: dict[str, Any]) -> dict[str, Any]:
+    def execute_single_tool(
+        state: dict[str, Any], tool_call: dict[str, Any]
+    ) -> dict[str, Any]:
         """Execute a single tool based on the provided tool call.
 
         Args:
@@ -263,7 +277,9 @@ def create_tool_executor_v2(tools: list[BaseTool]) -> Callable:
                 error_msg = f"Error executing tool {tool_name}: {e!s}"
 
                 # Create a ToolMessage with the error
-                tool_message = ToolMessage(content=error_msg, tool_call_id=tool_id, name=tool_name)
+                tool_message = ToolMessage(
+                    content=error_msg, tool_call_id=tool_id, name=tool_name
+                )
 
                 # Save the error
                 tool_result = {
@@ -276,7 +292,9 @@ def create_tool_executor_v2(tools: list[BaseTool]) -> Callable:
             error_msg = f"Tool {tool_name} not found"
 
             # Create a ToolMessage with the error
-            tool_message = ToolMessage(content=error_msg, tool_call_id=tool_id, name=tool_name)
+            tool_message = ToolMessage(
+                content=error_msg, tool_call_id=tool_id, name=tool_name
+            )
 
             # Save the error
             tool_result = {
@@ -329,7 +347,9 @@ def filter_tools_for_query(tools: list[BaseTool], query: str) -> list[BaseTool]:
         scored_tools.append((tool, score))
 
     # Sort by score and return tools
-    sorted_tools = [tool for tool, score in sorted(scored_tools, key=lambda x: x[1], reverse=True)]
+    sorted_tools = [
+        tool for tool, score in sorted(scored_tools, key=lambda x: x[1], reverse=True)
+    ]
 
     # Return all tools for now, but in a real system you might limit to top N
     return sorted_tools

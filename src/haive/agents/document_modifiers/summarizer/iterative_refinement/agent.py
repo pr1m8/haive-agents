@@ -27,11 +27,15 @@ class IterativeSummarizer(Agent[IterativeSummarizerConfig]):
     async def generate_initial_summary(
         self, state: IterativeSummarizerState, config: RunnableConfig
     ):
-        summary = await self.engines["initial_summary"].ainvoke(state.contents[0], config)
+        summary = await self.engines["initial_summary"].ainvoke(
+            state.contents[0], config
+        )
         return Command(update={"summary": summary, "index": 1})
 
     # And a node that refines the summary based on the next document
-    async def refine_summary(self, state: IterativeSummarizerState, config: RunnableConfig):
+    async def refine_summary(
+        self, state: IterativeSummarizerState, config: RunnableConfig
+    ):
         content = state.contents[state.index]
         summary = await self.engines["refine_summary"].ainvoke(
             {"existing_answer": state.summary, "context": content}, config
@@ -47,4 +51,6 @@ class IterativeSummarizer(Agent[IterativeSummarizerConfig]):
         self.graph.add_conditional_edges(
             "generate_initial_summary", self.state_schema.should_refine
         )
-        self.graph.add_conditional_edges("refine_summary", self.state_schema.should_refine)
+        self.graph.add_conditional_edges(
+            "refine_summary", self.state_schema.should_refine
+        )

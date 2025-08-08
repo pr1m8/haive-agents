@@ -34,7 +34,9 @@ class SocialMediaConversation(BaseConversationAgent):
     mode: Literal["social_media"] = Field(default="social_media")
 
     # Platform configuration
-    platform_type: Literal["twitter", "instagram", "tiktok", "generic"] = Field(default="generic")
+    platform_type: Literal["twitter", "instagram", "tiktok", "generic"] = Field(
+        default="generic"
+    )
     viral_threshold: int = Field(default=10)
 
     # Engagement settings
@@ -128,7 +130,9 @@ class SocialMediaConversation(BaseConversationAgent):
         """Handler for reply_to_post tool."""
         return f"@{reply_to} {content}"
 
-    def _share_post_handler(self, original_author: str, comment: str | None = None) -> str:
+    def _share_post_handler(
+        self, original_author: str, comment: str | None = None
+    ) -> str:
         """Handler for share_post tool."""
         if comment:
             return f"RT @{original_author}: {comment}"
@@ -193,7 +197,9 @@ class SocialMediaConversation(BaseConversationAgent):
             return {"current_speaker": selected[0], "pending_speakers": selected[1:]}
         return {"current_speaker": selected[0] if selected else None}
 
-    def _prepare_agent_input(self, state: SocialMediaState, agent_name: str) -> dict[str, Any]:
+    def _prepare_agent_input(
+        self, state: SocialMediaState, agent_name: str
+    ) -> dict[str, Any]:
         """Prepare input with social media context."""
         base_input = super()._prepare_agent_input(state, agent_name)
 
@@ -214,10 +220,14 @@ Keep it under {self.char_limits.get(state.platform_type, 500)} characters!"""
         for msg in state.messages[-5:]:
             if isinstance(msg, AIMessage) and hasattr(msg, "name"):
                 post_likes = state.likes.get(str(msg.name), 0)
-                recent_posts.append(f"@{msg.name}: {msg.content[:100]}... ({post_likes}❤️)")
+                recent_posts.append(
+                    f"@{msg.name}: {msg.content[:100]}... ({post_likes}❤️)"
+                )
 
         if recent_posts:
-            feed_msg = SystemMessage(content="Recent posts:\n" + "\n".join(recent_posts))
+            feed_msg = SystemMessage(
+                content="Recent posts:\n" + "\n".join(recent_posts)
+            )
             base_input["messages"] = [
                 context_msg,
                 feed_msg,
@@ -313,7 +323,9 @@ Keep it under {self.char_limits.get(state.platform_type, 500)} characters!"""
 
         return update
 
-    def _check_custom_end_conditions(self, state: SocialMediaState) -> dict[str, Any] | None:
+    def _check_custom_end_conditions(
+        self, state: SocialMediaState
+    ) -> dict[str, Any] | None:
         """Check for viral threshold."""
         # Check if anyone went viral
         for speaker, like_count in state.likes.items():
@@ -325,7 +337,9 @@ Keep it under {self.char_limits.get(state.platform_type, 500)} characters!"""
 
         return None
 
-    def _create_conclusion(self, state: SocialMediaState, reason: str) -> dict[str, Any]:
+    def _create_conclusion(
+        self, state: SocialMediaState, reason: str
+    ) -> dict[str, Any]:
         """Create social media style conclusion."""
         # Get top posts
         top_posts = sorted(state.likes.items(), key=lambda x: x[1], reverse=True)[:3]
@@ -340,7 +354,9 @@ Keep it under {self.char_limits.get(state.platform_type, 500)} characters!"""
                 summary_parts.append(f"{i}. @{author} - {likes} likes")
 
         if state.trending_topics:
-            summary_parts.append(f"\n📈 Trending: {', '.join(state.trending_topics[:3])}")
+            summary_parts.append(
+                f"\n📈 Trending: {', '.join(state.trending_topics[:3])}"
+            )
 
         conclusion_msg = SystemMessage(content="\n".join(summary_parts))
 

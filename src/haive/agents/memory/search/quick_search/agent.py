@@ -217,7 +217,10 @@ Process the query efficiently and provide a clear, concise response."""
         return "factual"
 
     async def process_search(
-        self, query: str, context: dict[str, Any] | None = None, save_to_memory: bool = True
+        self,
+        query: str,
+        context: dict[str, Any] | None = None,
+        save_to_memory: bool = True,
     ) -> QuickSearchResponse:
         """Process a quick search query.
 

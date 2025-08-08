@@ -186,7 +186,9 @@ class GraphMemoryAgent:
 
             # Create indexes for better query performance
             self.graph.query("CREATE INDEX IF NOT EXISTS FOR (n:Person) ON (n.name)")
-            self.graph.query("CREATE INDEX IF NOT EXISTS FOR (n:Organization) ON (n.name)")
+            self.graph.query(
+                "CREATE INDEX IF NOT EXISTS FOR (n:Organization) ON (n.name)"
+            )
 
             # Create user index for multi-user support
             self.graph.query("CREATE INDEX IF NOT EXISTS FOR (n:Memory) ON (n.user_id)")
@@ -213,7 +215,9 @@ class GraphMemoryAgent:
                 self.config.node_properties if self.config.extract_properties else False
             ),
             relationship_properties=(
-                self.config.relationship_properties if self.config.extract_properties else False
+                self.config.relationship_properties
+                if self.config.extract_properties
+                else False
             ),
             strict_mode=False,
         )
@@ -240,7 +244,9 @@ class GraphMemoryAgent:
             self.graph_rag_agent = GraphDBRAGAgent(rag_config)
         else:
             self.graph_rag_agent = None
-            self.logger.warning("GraphDBRAGAgent not available - using basic Cypher chain only")
+            self.logger.warning(
+                "GraphDBRAGAgent not available - using basic Cypher chain only"
+            )
 
         # Create Cypher QA chain for direct queries
         llm = self.config.llm_config.instantiate()
@@ -403,8 +409,12 @@ class GraphMemoryAgent:
                     RETURN r
                     """
 
-                    source_id = f"{rel.source.type}_{rel.source.id}_{self.config.user_id}"
-                    target_id = f"{rel.target.type}_{rel.target.id}_{self.config.user_id}"
+                    source_id = (
+                        f"{rel.source.type}_{rel.source.id}_{self.config.user_id}"
+                    )
+                    target_id = (
+                        f"{rel.target.type}_{rel.target.id}_{self.config.user_id}"
+                    )
 
                     self.graph.query(
                         query,
@@ -438,7 +448,9 @@ class GraphMemoryAgent:
             {
                 "id": f"memory_{datetime.now().timestamp()}_{self.config.user_id}",
                 "user_id": self.config.user_id,
-                "content": (graph_documents[0].source.page_content if graph_documents else ""),
+                "content": (
+                    graph_documents[0].source.page_content if graph_documents else ""
+                ),
                 "timestamp": datetime.now().isoformat(),
                 "nodes_created": nodes_created,
                 "relationships_created": relationships_created,
@@ -551,7 +563,9 @@ class GraphMemoryAgent:
         # Search in appropriate indexes
         if node_type == "Person" or node_type is None:
             if hasattr(self, "person_vector_index"):
-                person_results = self.person_vector_index.similarity_search_with_score(query, k=k)
+                person_results = self.person_vector_index.similarity_search_with_score(
+                    query, k=k
+                )
                 results.extend(
                     [
                         {"type": "Person", "content": doc.page_content, "score": score}
@@ -561,7 +575,9 @@ class GraphMemoryAgent:
 
         if node_type == "Concept" or node_type is None:
             if hasattr(self, "concept_vector_index"):
-                concept_results = self.concept_vector_index.similarity_search_with_score(query, k=k)
+                concept_results = (
+                    self.concept_vector_index.similarity_search_with_score(query, k=k)
+                )
                 results.extend(
                     [
                         {"type": "Concept", "content": doc.page_content, "score": score}
@@ -575,7 +591,10 @@ class GraphMemoryAgent:
         return results[:k]
 
     async def get_memory_subgraph(
-        self, entity_name: str, max_depth: int = 2, relationship_types: list[str] | None = None
+        self,
+        entity_name: str,
+        max_depth: int = 2,
+        relationship_types: list[str] | None = None,
     ) -> dict[str, Any]:
         """Get a subgraph centered around an entity.
 
@@ -598,7 +617,9 @@ class GraphMemoryAgent:
         LIMIT 100
         """
 
-        paths = self.graph.query(query, {"name": entity_name, "user_id": self.config.user_id})
+        paths = self.graph.query(
+            query, {"name": entity_name, "user_id": self.config.user_id}
+        )
 
         # Extract unique nodes and relationships
         nodes = set()
@@ -659,7 +680,10 @@ class GraphMemoryAgent:
         }
 
     async def run(
-        self, input_text: str, mode: GraphMemoryMode | None = None, auto_store: bool = True
+        self,
+        input_text: str,
+        mode: GraphMemoryMode | None = None,
+        auto_store: bool = True,
     ) -> dict[str, Any]:
         """Main entry point for the agent.
 
@@ -688,7 +712,9 @@ class GraphMemoryAgent:
             results["extracted_graph"] = {
                 "documents": len(graph_docs),
                 "total_nodes": sum(len(doc.nodes) for doc in graph_docs),
-                "total_relationships": sum(len(doc.relationships) for doc in graph_docs),
+                "total_relationships": sum(
+                    len(doc.relationships) for doc in graph_docs
+                ),
             }
 
             if auto_store and mode != GraphMemoryMode.EXTRACT_ONLY:
@@ -752,7 +778,9 @@ async def example_graph_memory():
     await agent.query_graph("Who did I meet at conferences recently?")
 
     # Search similar memories
-    await agent.search_similar_memories("machine learning engineers", node_type="Person")
+    await agent.search_similar_memories(
+        "machine learning engineers", node_type="Person"
+    )
 
     # Get subgraph around John Doe
     await agent.get_memory_subgraph("John Doe", max_depth=2)

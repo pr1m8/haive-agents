@@ -23,11 +23,13 @@ Example:
 """
 
 from typing import Any
+
 from haive.core.common.models.dynamic_choice_model import DynamicChoiceModel
 from haive.core.schema.prebuilt.messages.messages_with_token_usage import (
     MessagesStateWithTokenUsage,
 )
 from pydantic import Field, field_validator, model_validator
+
 from haive.agents.dynamic_supervisor.models import AgentInfo, AgentInfoV2
 from haive.agents.dynamic_supervisor.tools import create_agent_tools
 
@@ -58,7 +60,8 @@ class SupervisorState(MessagesStateWithTokenUsage):
         default_factory=dict, description="Registry of available agents by name"
     )
     active_agents: list[str] = Field(
-        default_factory=list, description="List of currently active agent names (unique)"
+        default_factory=list,
+        description="List of currently active agent names (unique)",
     )
     last_executed_agent: str | None = Field(
         default=None, description="Name of the last executed agent"
@@ -83,7 +86,9 @@ class SupervisorState(MessagesStateWithTokenUsage):
         """
         return list(dict.fromkeys(v)) if v else []
 
-    def add_agent(self, name: str, agent: Any, description: str, active: bool = True) -> None:
+    def add_agent(
+        self, name: str, agent: Any, description: str, active: bool = True
+    ) -> None:
         """Add an agent to the registry.
 
         Args:
@@ -95,7 +100,9 @@ class SupervisorState(MessagesStateWithTokenUsage):
         Example:
             state.add_agent("search", search_agent, "Web search expert", active=True)
         """
-        agent_info = AgentInfo(agent=agent, name=name, description=description, active=active)
+        agent_info = AgentInfo(
+            agent=agent, name=name, description=description, active=active
+        )
         self.agents[name] = agent_info
         if active and name not in self.active_agents:
             self.active_agents.append(name)
@@ -167,7 +174,11 @@ class SupervisorState(MessagesStateWithTokenUsage):
         Returns:
             Dict mapping agent names to descriptions
         """
-        return {name: info.description for name, info in self.agents.items() if info.is_active()}
+        return {
+            name: info.description
+            for name, info in self.agents.items()
+            if info.is_active()
+        }
 
     def list_all_agents(self) -> dict[str, str]:
         """List all agents (active and inactive) with descriptions.
@@ -205,7 +216,9 @@ class SupervisorStateWithTools(SupervisorState):
     """
 
     agent_choice_model: DynamicChoiceModel = Field(
-        default_factory=lambda: DynamicChoiceModel(model_name="AgentChoice", include_end=True),
+        default_factory=lambda: DynamicChoiceModel(
+            model_name="AgentChoice", include_end=True
+        ),
         description="Dynamic choice model for agent selection validation",
     )
     generated_tools: list[str] = Field(
@@ -232,7 +245,9 @@ class SupervisorStateWithTools(SupervisorState):
 
     def _update_choice_model(self) -> None:
         """Update choice model with current agents."""
-        current_options = [opt for opt in self.agent_choice_model.option_names if opt != "END"]
+        current_options = [
+            opt for opt in self.agent_choice_model.option_names if opt != "END"
+        ]
         for option in current_options:
             if option not in self.agents:
                 self.agent_choice_model.remove_option_by_name(option)
@@ -256,7 +271,9 @@ class SupervisorStateWithTools(SupervisorState):
         """
         return create_agent_tools(self)
 
-    def add_agent(self, name: str, agent: Any, description: str, active: bool = True) -> None:
+    def add_agent(
+        self, name: str, agent: Any, description: str, active: bool = True
+    ) -> None:
         """Override to trigger tool regeneration."""
         super().add_agent(name, agent, description, active)
         self._sync_internal()
@@ -296,5 +313,6 @@ class SupervisorStateV2(MessagesStateWithTokenUsage):
 
     model_config = {"arbitrary_types_allowed": True}
     agents: dict[str, AgentInfoV2] = Field(
-        default_factory=dict, description="Registry of available agents (serializable version)"
+        default_factory=dict,
+        description="Registry of available agents (serializable version)",
     )

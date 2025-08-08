@@ -58,8 +58,8 @@ Note:
 """
 
 from haive.agents.document_modifiers.base import (
-    normalize_contents,
     documents_to_strings,
+    normalize_contents,
     strings_to_documents,
 )
 from haive.agents.document_modifiers.kg.kg_map_merge.config import (

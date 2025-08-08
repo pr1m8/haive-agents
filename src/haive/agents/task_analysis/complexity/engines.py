@@ -3,7 +3,10 @@
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import AzureLLMConfig
 
-from haive.agents.task_analysis.complexity.models import ComplexityFactors, ComplexityVector
+from haive.agents.task_analysis.complexity.models import (
+    ComplexityFactors,
+    ComplexityVector,
+)
 from haive.agents.task_analysis.complexity.prompts import (
     COMPLEXITY_ASSESSMENT_PROMPT,
     COMPLEXITY_COMPARISON_PROMPT,

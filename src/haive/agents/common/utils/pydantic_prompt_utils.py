@@ -39,9 +39,12 @@ class PydanticPromptConfig(BaseModel):
         default=True, description="Whether to include field type information"
     )
     include_constraints: bool = Field(
-        default=True, description="Whether to include field constraints (min/max length, etc.)"
+        default=True,
+        description="Whether to include field constraints (min/max length, etc.)",
     )
-    include_examples: bool = Field(default=False, description="Whether to include example values")
+    include_examples: bool = Field(
+        default=False, description="Whether to include example values"
+    )
     use_json_format: bool = Field(
         default=False, description="Whether to request JSON format output"
     )
@@ -149,7 +152,9 @@ def analyze_type_annotation(annotation: type) -> dict[str, Any]:
     return type_info
 
 
-def generate_field_description(field_analysis: dict[str, Any], style: PromptStyle) -> str:
+def generate_field_description(
+    field_analysis: dict[str, Any], style: PromptStyle
+) -> str:
     """Generate a description for a field based on analysis and style.
 
     Args:
@@ -206,7 +211,11 @@ def generate_field_description(field_analysis: dict[str, Any], style: PromptStyl
         return "\n".join(parts)
 
     if style == PromptStyle.NATURAL:
-        base = f"Provide {desc.lower()}" if desc else f"Provide the {name.replace('_', ' ')}"
+        base = (
+            f"Provide {desc.lower()}"
+            if desc
+            else f"Provide the {name.replace('_', ' ')}"
+        )
 
         if type_info["is_enum"] and type_info["enum_values"]:
             values = ", ".join(f"'{v}'" for v in type_info["enum_values"])
@@ -270,7 +279,9 @@ def create_pydantic_prompt(
     if config.style == PromptStyle.SCHEMA_BASED:
         # Include JSON schema
         schema = model_class.model_json_schema()
-        prompt_parts.append(f"\nJSON Schema:\n```json\n{json.dumps(schema, indent=2)}\n```")
+        prompt_parts.append(
+            f"\nJSON Schema:\n```json\n{json.dumps(schema, indent=2)}\n```"
+        )
 
     # Add field descriptions
     if config.style == PromptStyle.NATURAL:
@@ -299,7 +310,9 @@ def create_pydantic_prompt(
 
     system_prompt = "\n".join(prompt_parts)
 
-    return ChatPromptTemplate.from_messages([("system", system_prompt), ("human", "{query}")])
+    return ChatPromptTemplate.from_messages(
+        [("system", system_prompt), ("human", "{query}")]
+    )
 
 
 def create_example_from_model(model_class: type[BaseModel]) -> str:
@@ -431,7 +444,9 @@ def quick_pydantic_prompt(
     Returns:
         ChatPromptTemplate for the model
     """
-    config = PydanticPromptConfig(style=style, use_json_format=use_json, include_examples=True)
+    config = PydanticPromptConfig(
+        style=style, use_json_format=use_json, include_examples=True
+    )
 
     return create_pydantic_prompt(
         model_class=model_class,

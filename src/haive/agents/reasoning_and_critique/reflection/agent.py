@@ -4,9 +4,6 @@ import logging
 from datetime import datetime
 from typing import Any
 
-from haive.agents.reasoning_and_critique.reflection.config import ReflectionAgentConfig
-from haive.agents.reasoning_and_critique.reflection.state import ReflectionAgentState
-from haive.agents.simple.agent import SimpleAgent
 from haive.core.engine.agent.agent import register_agent
 from haive.core.graph.dynamic_graph_builder import DynamicGraph
 from langchain_core.messages import AIMessage
@@ -14,6 +11,10 @@ from langchain_core.output_parsers.openai_tools import PydanticToolsParser
 from langchain_core.prompts import ChatPromptTemplate
 from langgraph.graph import END, START
 from langgraph.types import Command
+
+from haive.agents.reasoning_and_critique.reflection.config import ReflectionAgentConfig
+from haive.agents.reasoning_and_critique.reflection.state import ReflectionAgentState
+from haive.agents.simple.agent import SimpleAgent
 
 # Set up logging
 logger = logging.getLogger(__name__)

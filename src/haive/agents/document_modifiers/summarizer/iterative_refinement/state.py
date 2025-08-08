@@ -34,13 +34,17 @@ class IterativeSummarizerInput(BaseModel):
 class IterativeSummarizerOutput(BaseModel):
     """Output for the summarizer – stores the final summary result."""
 
-    summary: str = Field(default="", description="The final summary of the input contents.")
+    summary: str = Field(
+        default="", description="The final summary of the input contents."
+    )
 
 
 class IterativeSummarizerState(IterativeSummarizerInput, IterativeSummarizerOutput):
     """Full state for the iterative summarizer agent – tracks progress and summary."""
 
-    index: int = Field(default=0, description="The current index of the document being summarized.")
+    index: int = Field(
+        default=0, description="The current index of the document being summarized."
+    )
 
     def should_refine(self) -> Literal["refine_summary", "__end__"]:
         return "refine_summary" if self.index < len(self.contents) else "__end__"

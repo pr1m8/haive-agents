@@ -5,9 +5,10 @@ Provides declarative specification and building of complex agent chains
 with branching, loops, and conditional execution.
 """
 
-from typing import Any, Callable, Dict, List, Optional, Union
-from pydantic import BaseModel, Field
 from dataclasses import dataclass
+from typing import Any, Callable, Dict, List, Optional, Union
+
+from pydantic import BaseModel, Field
 
 
 @dataclass
@@ -70,7 +71,9 @@ class ChainBuilder:
         self.entry_point = "START"
         self.exit_points = ["END"]
 
-    def add_node(self, name: str, node: Any, node_type: str = "agent") -> "ChainBuilder":
+    def add_node(
+        self, name: str, node: Any, node_type: str = "agent"
+    ) -> "ChainBuilder":
         """Add a node to the chain."""
         self.nodes.append(NodeSpec(name=name, node=node, node_type=node_type))
         return self
@@ -90,7 +93,12 @@ class ChainBuilder:
     ) -> "ChainBuilder":
         """Add conditional branching."""
         self.branches.append(
-            BranchSpec(from_node=from_node, condition=condition, branches=branches, default=default)
+            BranchSpec(
+                from_node=from_node,
+                condition=condition,
+                branches=branches,
+                default=default,
+            )
         )
         return self
 

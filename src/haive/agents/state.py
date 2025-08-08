@@ -1,10 +1,11 @@
 import logging
 from typing import Any
 
-from haive.agents.web_nav.models import BBox, Prediction
 from langchain_core.messages import BaseMessage
 from playwright.async_api import Page
 from pydantic import BaseModel, ConfigDict, Field
+
+from haive.agents.web_nav.models import BBox, Prediction
 
 # -----------------------------------------------------------------------------
 # Debugging Utility
@@ -32,17 +33,25 @@ class WebNavState(BaseModel):
     # Use private attribute to store Page object
     _page: Page | None = None
 
-    page_url: str | None = Field(default=None, description="URL of the Playwright page.")
+    page_url: str | None = Field(
+        default=None, description="URL of the Playwright page."
+    )
     input: str = Field(..., description="User request.")
     img: str | None = Field(
         default=None, description="Base64 encoded screenshot (plain, no prefix)."
     )
-    bboxes: list[BBox] = Field(default_factory=list, description="Bounding boxes from annotation.")
-    prediction: Prediction | None = Field(default=None, description="The agent's output.")
+    bboxes: list[BBox] = Field(
+        default_factory=list, description="Bounding boxes from annotation."
+    )
+    prediction: Prediction | None = Field(
+        default=None, description="The agent's output."
+    )
     scratchpad: list[BaseMessage] = Field(
         default_factory=list, description="Intermediate system messages."
     )
-    observation: str | None = Field(default=None, description="The most recent tool response.")
+    observation: str | None = Field(
+        default=None, description="The most recent tool response."
+    )
 
     model_config = ConfigDict(
         arbitrary_types_allowed=True,

@@ -11,7 +11,9 @@ from haive.agents.document_modifiers.kg.kg_map_merge.models import (
 )
 
 
-def create_node_extraction_config(model: str = "gpt-4o", temperature: float = 0.7) -> AugLLMConfig:
+def create_node_extraction_config(
+    model: str = "gpt-4o", temperature: float = 0.7
+) -> AugLLMConfig:
     """Create an AugLLMConfig for entity node extraction.
 
     Args:
@@ -111,7 +113,9 @@ def create_relationship_extraction_config(
     )
 
 
-def create_graph_extraction_config(model: str = "gpt-4o", temperature: float = 0.7) -> AugLLMConfig:
+def create_graph_extraction_config(
+    model: str = "gpt-4o", temperature: float = 0.7
+) -> AugLLMConfig:
     """Create an AugLLMConfig for comprehensive knowledge graph extraction.
 
     Args:
@@ -144,7 +148,10 @@ def create_graph_extraction_config(model: str = "gpt-4o", temperature: float = 0
         3. Assess and score relationship confidence
         4. Provide supporting evidence for relationships""",
             ),
-            ("human", "Extract a comprehensive knowledge graph from this text:\n{context}"),
+            (
+                "human",
+                "Extract a comprehensive knowledge graph from this text:\n{context}",
+            ),
         ]
     )
 
@@ -157,7 +164,9 @@ def create_graph_extraction_config(model: str = "gpt-4o", temperature: float = 0
     )
 
 
-def create_graph_merger_config(model: str = "gpt-4o", temperature: float = 0.7) -> AugLLMConfig:
+def create_graph_merger_config(
+    model: str = "gpt-4o", temperature: float = 0.7
+) -> AugLLMConfig:
     """Create an AugLLMConfig for merging knowledge graphs.
 
     Args:
@@ -210,7 +219,9 @@ def create_graph_merger_config(model: str = "gpt-4o", temperature: float = 0.7) 
     )
 
 
-def kg_extraction_engine(model: str = "gpt-4o", temperature: float = 0.7) -> AugLLMConfig:
+def kg_extraction_engine(
+    model: str = "gpt-4o", temperature: float = 0.7
+) -> AugLLMConfig:
     """Create a comprehensive knowledge graph extraction engine.
 
     This is the main function for creating a complete KG extraction configuration.
@@ -225,7 +236,9 @@ def kg_extraction_engine(model: str = "gpt-4o", temperature: float = 0.7) -> Aug
     return create_graph_extraction_config(model=model, temperature=temperature)
 
 
-def merge_analysis_engine(model: str = "gpt-4o", temperature: float = 0.7) -> AugLLMConfig:
+def merge_analysis_engine(
+    model: str = "gpt-4o", temperature: float = 0.7
+) -> AugLLMConfig:
     """Create a merge analysis engine for knowledge graph merging.
 
     Args:
@@ -238,7 +251,9 @@ def merge_analysis_engine(model: str = "gpt-4o", temperature: float = 0.7) -> Au
     return create_graph_merger_config(model=model, temperature=temperature)
 
 
-def schema_extraction_engine(model: str = "gpt-4o", temperature: float = 0.7) -> AugLLMConfig:
+def schema_extraction_engine(
+    model: str = "gpt-4o", temperature: float = 0.7
+) -> AugLLMConfig:
     """Create a schema extraction engine for knowledge graph schema analysis.
 
     Args:

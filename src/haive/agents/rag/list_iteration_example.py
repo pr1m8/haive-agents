@@ -102,7 +102,9 @@ def create_entity_extractor() -> Any:
         """Entities extracted from text."""
 
         people: list[str] = Field(default_factory=list, description="Names of people")
-        organizations: list[str] = Field(default_factory=list, description="Organization names")
+        organizations: list[str] = Field(
+            default_factory=list, description="Organization names"
+        )
         locations: list[str] = Field(default_factory=list, description="Location names")
         dates: list[str] = Field(default_factory=list, description="Dates mentioned")
 

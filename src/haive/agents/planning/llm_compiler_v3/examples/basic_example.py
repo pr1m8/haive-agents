@@ -29,7 +29,9 @@ def text_analyzer(text: str) -> str:
     chars = len(text)
     sentences = text.count(".") + text.count("!") + text.count("?")
 
-    return f"Text Analysis: {len(words)} words, {chars} characters, {sentences} sentences"
+    return (
+        f"Text Analysis: {len(words)} words, {chars} characters, {sentences} sentences"
+    )
 
 
 @tool
@@ -123,7 +125,9 @@ async def error_handling_demo():
         raise Exception("This tool always fails for demonstration")
 
     # Create agent with failing tool
-    agent = LLMCompilerV3Agent(name="error_demo", tools=[calculator, failing_tool, text_analyzer])
+    agent = LLMCompilerV3Agent(
+        name="error_demo", tools=[calculator, failing_tool, text_analyzer]
+    )
 
     # Query that will trigger the failing tool
     error_query = """

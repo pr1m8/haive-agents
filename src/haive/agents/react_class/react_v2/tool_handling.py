@@ -76,7 +76,9 @@ class GeneralizedToolNode:
 
         # Process human assistance requests if any
         if human_assistance_calls:
-            request_call = human_assistance_calls[0]  # Use the first request if multiple
+            request_call = human_assistance_calls[
+                0
+            ]  # Use the first request if multiple
             human_request = request_call.get("args", {}).get("query", "")
             if not human_request:
                 human_request = "The assistant needs your input on this matter."

@@ -8,6 +8,7 @@ from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.prompts import ChatPromptTemplate
+
 from haive.agents.research.perplexity.pro_search.tasks.models import (
     ExecutionPlan,
     ReplanningAnalysis,

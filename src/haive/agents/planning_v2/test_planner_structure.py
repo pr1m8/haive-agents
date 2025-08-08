@@ -62,7 +62,7 @@ def test_plan_model():
     plan.steps[1].status = Status.COMPLETED
     plan.steps[2].status = Status.IN_PROGRESS
 
-    print(f"\nAfter marking some complete:")
+    print("\nAfter marking some complete:")
     print(f"  Completed: {plan.completed_count}")
     print(f"  Remaining: {plan.remaining_count}")
     print(f"  Progress: {plan.progress_percentage:.1f}%")

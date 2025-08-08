@@ -42,7 +42,9 @@ class IterativeGraphTransformerState(BaseModel):
                         f"Unsupported content type in `contents` at index {i}: {type(item)}"
                     )
         else:
-            raise ValueError(f"Expected `contents` to be str or list, got {type(contents)}")
+            raise ValueError(
+                f"Expected `contents` to be str or list, got {type(contents)}"
+            )
 
         values["contents"] = docs
         return values

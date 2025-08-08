@@ -243,7 +243,9 @@ class TaskStep(BaseModel):
 
     """
 
-    model_config = ConfigDict(extra="forbid", validate_assignment=True, use_enum_values=True)
+    model_config = ConfigDict(
+        extra="forbid", validate_assignment=True, use_enum_values=True
+    )
 
     name: str = Field(
         ...,
@@ -269,7 +271,9 @@ class TaskStep(BaseModel):
         ],
     )
 
-    task_type: TaskType = Field(..., description="The type of task this step represents")
+    task_type: TaskType = Field(
+        ..., description="The type of task this step represents"
+    )
 
     estimated_duration_minutes: float = Field(
         default=5.0,
@@ -279,11 +283,16 @@ class TaskStep(BaseModel):
     )
 
     required_resources: list[ResourceType] = Field(
-        default_factory=list, description="Resources needed to complete this step", max_length=10
+        default_factory=list,
+        description="Resources needed to complete this step",
+        max_length=10,
     )
 
     difficulty_level: int = Field(
-        default=1, description="Subjective difficulty level (1=easy, 5=very hard)", ge=1, le=5
+        default=1,
+        description="Subjective difficulty level (1=easy, 5=very hard)",
+        ge=1,
+        le=5,
     )
 
     can_be_automated: bool = Field(
@@ -394,7 +403,9 @@ class DependencyNode(BaseModel):
         examples=["lookup_birthday", "find_square_root", "step_2"],
     )
 
-    dependency_type: DependencyType = Field(..., description="Type of dependency relationship")
+    dependency_type: DependencyType = Field(
+        ..., description="Type of dependency relationship"
+    )
 
     condition: str | None = Field(
         default=None,
@@ -414,7 +425,9 @@ class DependencyNode(BaseModel):
     )
 
     description: str = Field(
-        default="", description="Human-readable description of the dependency", max_length=500
+        default="",
+        description="Human-readable description of the dependency",
+        max_length=500,
     )
 
     metadata: dict[str, Any] = Field(
@@ -497,7 +510,9 @@ class Task(BaseModel):
 
     """
 
-    model_config = ConfigDict(extra="forbid", validate_assignment=True, use_enum_values=True)
+    model_config = ConfigDict(
+        extra="forbid", validate_assignment=True, use_enum_values=True
+    )
 
     name: str = Field(
         ...,
@@ -512,7 +527,10 @@ class Task(BaseModel):
     )
 
     description: str = Field(
-        ..., description="Detailed description of the task", min_length=1, max_length=5000
+        ...,
+        description="Detailed description of the task",
+        min_length=1,
+        max_length=5000,
     )
 
     task_type: TaskType = Field(..., description="Primary type of this task")
@@ -532,7 +550,9 @@ class Task(BaseModel):
     )
 
     estimated_duration_minutes: float | None = Field(
-        default=None, description="Total estimated duration in minutes (calculated if None)", gt=0
+        default=None,
+        description="Total estimated duration in minutes (calculated if None)",
+        gt=0,
     )
 
     complexity_level: ComplexityLevel | None = Field(
@@ -560,7 +580,9 @@ class Task(BaseModel):
         ],
     )
 
-    priority: int = Field(default=3, description="Task priority (1=low, 5=critical)", ge=1, le=5)
+    priority: int = Field(
+        default=3, description="Task priority (1=low, 5=critical)", ge=1, le=5
+    )
 
     can_be_parallelized: bool = Field(
         default=True, description="Whether subtasks can potentially run in parallel"
@@ -659,7 +681,9 @@ class Task(BaseModel):
         # Simple heuristic: if we have multiple subtasks and not all are
         # sequential
         sequential_deps = [
-            d for d in self.dependencies if d.dependency_type == DependencyType.SEQUENTIAL
+            d
+            for d in self.dependencies
+            if d.dependency_type == DependencyType.SEQUENTIAL
         ]
         return len(sequential_deps) < len(self.subtasks) - 1
 

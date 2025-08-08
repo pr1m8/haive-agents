@@ -2,6 +2,14 @@
 
 from operator import add
 
+from haive.agents.chain.chain_examples import (
+    example_engines_as_nodes,
+    example_incremental_building,
+    example_mapped_flow,
+    example_nested_chains,
+    example_rag_router_simplified,
+    example_sequential_mixed,
+)
 from haive.agents.chain.declarative_chain import (
     BranchSpec,
     ChainBuilder,
@@ -11,14 +19,6 @@ from haive.agents.chain.declarative_chain import (
     NodeSpec,
     SequenceSpec,
     complex_rag,
-)
-from haive.agents.chain.chain_examples import (
-    example_engines_as_nodes,
-    example_incremental_building,
-    example_mapped_flow,
-    example_nested_chains,
-    example_rag_router_simplified,
-    example_sequential_mixed,
 )
 from haive.agents.chain.examples import (
     StrategyDecision,

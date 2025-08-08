@@ -3,7 +3,11 @@
 import decorator
 
 from haive.agents.research.open_perplexity.agent import ResearchAgent
-from haive.agents.research.open_perplexity.cli import main, run_research, visualize_state
+from haive.agents.research.open_perplexity.cli import (
+    main,
+    run_research,
+    visualize_state,
+)
 from haive.agents.research.open_perplexity.config import ResearchAgentConfig
 from haive.agents.research.open_perplexity.models import (
     ContentFreshness,

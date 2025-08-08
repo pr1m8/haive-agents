@@ -5,6 +5,7 @@ Supports dynamic planning, parallel execution, and adaptive replanning.
 from enum import Enum
 from typing import Any, Literal
 from uuid import uuid4
+
 from pydantic import BaseModel, Field, computed_field, field_validator, model_validator
 
 
@@ -37,8 +38,12 @@ class TaskDependency(BaseModel):
     dependency_type: Literal["requires", "blocks", "relates_to"] = Field(
         default="requires", description="Type of dependency relationship"
     )
-    is_strict: bool = Field(default=True, description="Whether this dependency must be satisfied")
-    condition: str | None = Field(default=None, description="Optional condition for the dependency")
+    is_strict: bool = Field(
+        default=True, description="Whether this dependency must be satisfied"
+    )
+    condition: str | None = Field(
+        default=None, description="Optional condition for the dependency"
+    )
 
 
 class TaskResource(BaseModel):
@@ -99,7 +104,9 @@ class TaskNode(BaseModel):
     task_type: Literal["action", "decision", "parallel", "sequential", "loop"] = Field(
         default="action", description="Type of task node"
     )
-    action: str | None = Field(default=None, description="Action to execute (for action nodes)")
+    action: str | None = Field(
+        default=None, description="Action to execute (for action nodes)"
+    )
     decision_criteria: str | None = Field(
         default=None, description="Decision criteria (for decision nodes)"
     )
@@ -115,8 +122,12 @@ class TaskNode(BaseModel):
     required_resources: list[TaskResource] = Field(
         default_factory=list, description="Required resources"
     )
-    metadata: TaskMetadata = Field(default_factory=TaskMetadata, description="Task metadata")
-    result: dict[str, Any] | None = Field(default=None, description="Task execution result")
+    metadata: TaskMetadata = Field(
+        default_factory=TaskMetadata, description="Task metadata"
+    )
+    result: dict[str, Any] | None = Field(
+        default=None, description="Task execution result"
+    )
 
     @field_validator("children")
     @classmethod
@@ -162,14 +173,18 @@ class TaskNode(BaseModel):
 class PlanningStrategy(BaseModel):
     """Strategy configuration for the planning process."""
 
-    max_depth: int = Field(default=5, ge=1, le=10, description="Maximum depth of task tree")
-    max_width: int = Field(default=10, ge=1, le=20, description="Maximum children per node")
+    max_depth: int = Field(
+        default=5, ge=1, le=10, description="Maximum depth of task tree"
+    )
+    max_width: int = Field(
+        default=10, ge=1, le=20, description="Maximum children per node"
+    )
     parallelization_threshold: int = Field(
         default=3, ge=2, description="Min tasks to create parallel node"
     )
-    decomposition_strategy: Literal["breadth_first", "depth_first", "balanced", "adaptive"] = Field(
-        default="balanced"
-    )
+    decomposition_strategy: Literal[
+        "breadth_first", "depth_first", "balanced", "adaptive"
+    ] = Field(default="balanced")
     optimization_goals: list[
         Literal[
             "minimize_time",
@@ -206,7 +221,9 @@ class TaskDecomposition(BaseModel):
     execution_order: Literal["sequential", "parallel", "mixed"] = Field(
         default="sequential", description="How subtasks should be executed"
     )
-    estimated_total_duration: int = Field(ge=0, description="Total estimated duration in seconds")
+    estimated_total_duration: int = Field(
+        ge=0, description="Total estimated duration in seconds"
+    )
     critical_path: list[str] = Field(
         default_factory=list, description="Task IDs forming the critical path"
     )
@@ -256,21 +273,33 @@ class PlanningState(BaseModel):
     context: dict[str, Any] = Field(
         default_factory=dict, description="Context information for planning"
     )
-    constraints: list[str] = Field(default_factory=list, description="Constraints to consider")
+    constraints: list[str] = Field(
+        default_factory=list, description="Constraints to consider"
+    )
     strategy: PlanningStrategy = Field(
         default_factory=PlanningStrategy, description="Planning strategy configuration"
     )
-    root_task: TaskNode | None = Field(default=None, description="Root of the task tree")
+    root_task: TaskNode | None = Field(
+        default=None, description="Root of the task tree"
+    )
     all_tasks: dict[str, TaskNode] = Field(
         default_factory=dict, description="All tasks indexed by ID"
     )
-    completed_tasks: set[str] = Field(default_factory=set, description="IDs of completed tasks")
-    failed_tasks: set[str] = Field(default_factory=set, description="IDs of failed tasks")
-    active_tasks: set[str] = Field(default_factory=set, description="IDs of currently active tasks")
+    completed_tasks: set[str] = Field(
+        default_factory=set, description="IDs of completed tasks"
+    )
+    failed_tasks: set[str] = Field(
+        default_factory=set, description="IDs of failed tasks"
+    )
+    active_tasks: set[str] = Field(
+        default_factory=set, description="IDs of currently active tasks"
+    )
     resource_usage: dict[str, float] = Field(
         default_factory=dict, description="Current resource usage"
     )
-    planning_iterations: int = Field(default=0, description="Number of planning iterations")
+    planning_iterations: int = Field(
+        default=0, description="Number of planning iterations"
+    )
     replanning_triggers: list[str] = Field(
         default_factory=list, description="Events that triggered replanning"
     )
@@ -381,7 +410,9 @@ class ExecutionPlan(BaseModel):
     parallel_groups: list[list[str]] = Field(
         default_factory=list, description="Groups of task IDs that can run in parallel"
     )
-    estimated_duration: int = Field(ge=0, description="Estimated total duration in seconds")
+    estimated_duration: int = Field(
+        ge=0, description="Estimated total duration in seconds"
+    )
     resource_requirements: dict[str, float] = Field(
         default_factory=dict, description="Total resource requirements"
     )
@@ -402,7 +433,9 @@ class ExecutionPlan(BaseModel):
     @property
     def can_parallelize(self) -> bool:
         """Check if any parallelization is possible."""
-        return len(self.parallel_groups) > 1 or any((len(g) > 1 for g in self.parallel_groups))
+        return len(self.parallel_groups) > 1 or any(
+            (len(g) > 1 for g in self.parallel_groups)
+        )
 
 
 class ReplanningAnalysis(BaseModel):

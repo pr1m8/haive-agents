@@ -159,7 +159,10 @@ class TestAdvancedRAGMemoryAgent:
                 "InnovateTech develops AI-powered healthcare solutions.",
                 {"source": "company_website"},
             ),
-            ("Sarah has a PhD in Computer Science from MIT.", {"source": "linkedin_profile"}),
+            (
+                "Sarah has a PhD in Computer Science from MIT.",
+                {"source": "linkedin_profile"},
+            ),
         ]
 
         for content, metadata in memories:
@@ -188,7 +191,8 @@ class TestAdvancedRAGMemoryAgent:
         )
 
         await basic_agent.add_memory(
-            "Critical security vulnerability found in authentication system.", importance="critical"
+            "Critical security vulnerability found in authentication system.",
+            importance="critical",
         )
 
         await basic_agent.add_memory(
@@ -200,7 +204,10 @@ class TestAdvancedRAGMemoryAgent:
             "What important issues need attention?", include_analysis=True
         )
 
-        assert "critical" in result["answer"].lower() or "security" in result["answer"].lower()
+        assert (
+            "critical" in result["answer"].lower()
+            or "security" in result["answer"].lower()
+        )
 
     @pytest.mark.asyncio
     async def test_time_weighted_retrieval(self, basic_agent):
@@ -225,7 +232,8 @@ class TestAdvancedRAGMemoryAgent:
         basic_agent._init_retrievers()  # Reinitialize with time weighting
 
         result = await basic_agent.query_memory(
-            "What are the latest project updates?", strategy=RetrievalStrategy.DENSE_ONLY
+            "What are the latest project updates?",
+            strategy=RetrievalStrategy.DENSE_ONLY,
         )
 
         # Recent project should be prioritized
@@ -236,14 +244,23 @@ class TestAdvancedRAGMemoryAgent:
         """Test advanced features like reranking and query expansion."""
         # Add technical memories
         technical_memories = [
-            ("Graph Neural Networks use message passing for node representation learning.", "high"),
+            (
+                "Graph Neural Networks use message passing for node representation learning.",
+                "high",
+            ),
             (
                 "Attention mechanisms in transformers compute weighted averages of input sequences.",
                 "high",
             ),
             ("BERT uses bidirectional attention for contextual embeddings.", "high"),
-            ("GPT models employ causal attention masks for autoregressive generation.", "normal"),
-            ("Graph attention networks combine GNNs with attention mechanisms.", "critical"),
+            (
+                "GPT models employ causal attention masks for autoregressive generation.",
+                "normal",
+            ),
+            (
+                "Graph attention networks combine GNNs with attention mechanisms.",
+                "critical",
+            ),
         ]
 
         for content, importance in technical_memories:
@@ -303,7 +320,9 @@ class TestAdvancedRAGMemoryAgent:
         await basic_agent.add_memory("Acme Corporation was founded in 1995.")
 
         # Simple query should use simpler strategy
-        simple_result = await basic_agent.query_memory("Who is the CEO?", include_analysis=True)
+        simple_result = await basic_agent.query_memory(
+            "Who is the CEO?", include_analysis=True
+        )
 
         simple_strategy = simple_result["analysis"]["strategy_used"]
         assert simple_strategy in ["contextual", "hybrid", "dense_only"]
@@ -389,9 +408,18 @@ async def test_research_workflow():
             "BERT uses bidirectional training to achieve state-of-the-art results on NLP tasks.",
             "high",
         ),
-        ("GPT-3 demonstrates few-shot learning capabilities with 175 billion parameters.", "high"),
-        ("Vision Transformers apply transformer architecture to image classification.", "normal"),
-        ("The paper was published in NeurIPS 2017 and has over 50,000 citations.", "normal"),
+        (
+            "GPT-3 demonstrates few-shot learning capabilities with 175 billion parameters.",
+            "high",
+        ),
+        (
+            "Vision Transformers apply transformer architecture to image classification.",
+            "normal",
+        ),
+        (
+            "The paper was published in NeurIPS 2017 and has over 50,000 citations.",
+            "normal",
+        ),
     ]
 
     for content, importance in papers:

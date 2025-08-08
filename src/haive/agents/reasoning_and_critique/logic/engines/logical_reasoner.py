@@ -138,7 +138,10 @@ For each step specify:
 - Confidence level
 - Why this inference is valid""",
         ),
-        ("human", "Build a logical argument for this reasoning chain:\n{reasoning_chain}"),
+        (
+            "human",
+            "Build a logical argument for this reasoning chain:\n{reasoning_chain}",
+        ),
         MessagesPlaceholder(variable_name="messages", optional=True),
     ]
 )

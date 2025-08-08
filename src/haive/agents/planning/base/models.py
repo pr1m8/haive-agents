@@ -11,17 +11,17 @@ This module provides a sophisticated planning framework with:
 
 from __future__ import annotations
 
-from abc import ABC, abstractmethod
-from typing import Any, Callable, Dict, Generic, List, Optional, Set, TypeVar, Union
-from typing_extensions import Self
-from collections import deque
-from functools import wraps
 import asyncio
+import uuid
+from abc import ABC, abstractmethod
+from collections import deque
+from datetime import datetime
+from enum import Enum
+from functools import wraps
+from typing import Any, Callable, Dict, Generic, List, Optional, Set, TypeVar, Union
 
 from pydantic import BaseModel, Field, computed_field, field_validator, model_validator
-from enum import Enum
-import uuid
-from datetime import datetime
+from typing_extensions import Self
 
 # ============================================================================
 # TYPE DEFINITIONS AND ADVANCED GENERICS
@@ -121,8 +121,12 @@ class EventEmitter:
 class IntelligentStatusMixin(BaseModel, ABC):
     """Advanced mixin with intelligent status management and auto-adaptation."""
 
-    id: str = Field(default_factory=lambda: str(uuid.uuid4()), description="Unique identifier")
-    index: Optional[int] = Field(default=None, description="Index within parent container")
+    id: str = Field(
+        default_factory=lambda: str(uuid.uuid4()), description="Unique identifier"
+    )
+    index: Optional[int] = Field(
+        default=None, description="Index within parent container"
+    )
     status: TaskStatus = Field(default=TaskStatus.PENDING, description="Current status")
 
     # Timestamps with full lifecycle tracking
@@ -133,9 +137,15 @@ class IntelligentStatusMixin(BaseModel, ABC):
     failed_at: Optional[datetime] = Field(default=None)
 
     # Intelligent features
-    auto_status_propagation: bool = Field(default=True, description="Auto-propagate status changes")
-    auto_field_completion: bool = Field(default=True, description="Auto-complete missing fields")
-    adaptation_enabled: bool = Field(default=True, description="Enable dynamic adaptation")
+    auto_status_propagation: bool = Field(
+        default=True, description="Auto-propagate status changes"
+    )
+    auto_field_completion: bool = Field(
+        default=True, description="Auto-complete missing fields"
+    )
+    adaptation_enabled: bool = Field(
+        default=True, description="Enable dynamic adaptation"
+    )
 
     # Event system
     _event_emitter: EventEmitter = Field(default_factory=EventEmitter, exclude=True)
@@ -170,7 +180,9 @@ class IntelligentStatusMixin(BaseModel, ABC):
         if hasattr(self, "priority") and self.priority == Priority.MEDIUM:
             if hasattr(self, "description"):
                 desc = getattr(self, "description", "").lower()
-                if any(word in desc for word in ["urgent", "critical", "asap", "emergency"]):
+                if any(
+                    word in desc for word in ["urgent", "critical", "asap", "emergency"]
+                ):
                     self.priority = Priority.CRITICAL
                 elif any(word in desc for word in ["important", "high", "priority"]):
                     self.priority = Priority.HIGH
@@ -238,7 +250,9 @@ class IntelligentStatusMixin(BaseModel, ABC):
         completed = sum(1 for s in statuses if s == TaskStatus.COMPLETED)
         failed = sum(1 for s in statuses if s == TaskStatus.FAILED)
         in_progress = sum(
-            1 for s in statuses if s in [TaskStatus.IN_PROGRESS, TaskStatus.PARALLEL_RUNNING]
+            1
+            for s in statuses
+            if s in [TaskStatus.IN_PROGRESS, TaskStatus.PARALLEL_RUNNING]
         )
 
         old_status = self.status
@@ -257,7 +271,9 @@ class IntelligentStatusMixin(BaseModel, ABC):
                 self.started_at = datetime.now()
         else:
             new_status = (
-                TaskStatus.READY if self._dependencies_met() else TaskStatus.WAITING_FOR_DEPENDENCY
+                TaskStatus.READY
+                if self._dependencies_met()
+                else TaskStatus.WAITING_FOR_DEPENDENCY
             )
 
         if new_status != old_status:
@@ -499,7 +515,9 @@ class IntelligentSequence(List[PlanContent], Generic[T]):
         for step in getattr(plan, "steps", []):
             if hasattr(step, "id") and step.id == target_id:
                 return True
-            if hasattr(step, "steps") and self._contains_plan_recursive(step, target_id):
+            if hasattr(step, "steps") and self._contains_plan_recursive(
+                step, target_id
+            ):
                 return True
 
         return False
@@ -524,7 +542,9 @@ class BaseStep(IntelligentStatusMixin):
 
     # Advanced dependencies
     depends_on: List[str] = Field(default_factory=list, description="Hard dependencies")
-    soft_depends_on: List[str] = Field(default_factory=list, description="Soft dependencies")
+    soft_depends_on: List[str] = Field(
+        default_factory=list, description="Soft dependencies"
+    )
     blocks: List[str] = Field(default_factory=list, description="What this blocks")
 
     # Execution requirements
@@ -646,7 +666,9 @@ class BaseStep(IntelligentStatusMixin):
             self.update_status(TaskStatus.FAILED)
             raise
 
-    def add_feedback(self, feedback: str, quality_score: Optional[float] = None) -> Self:
+    def add_feedback(
+        self, feedback: str, quality_score: Optional[float] = None
+    ) -> Self:
         """Add execution feedback."""
         self.feedback.append(feedback)
         if quality_score is not None:
@@ -668,11 +690,17 @@ class BasePlan(IntelligentStatusMixin, Generic[T]):
     success_criteria: str = Field(..., description="Success measurement")
 
     # Maximum flexibility content - can contain anything
-    steps: IntelligentSequence[PlanContent] = Field(default_factory=lambda: IntelligentSequence([]))
+    steps: IntelligentSequence[PlanContent] = Field(
+        default_factory=lambda: IntelligentSequence([])
+    )
 
     # Execution strategy
-    execution_mode: str = Field(default="sequential", description="How to execute steps")
-    parallel_limit: Optional[int] = Field(default=None, description="Max parallel execution")
+    execution_mode: str = Field(
+        default="sequential", description="How to execute steps"
+    )
+    parallel_limit: Optional[int] = Field(
+        default=None, description="Max parallel execution"
+    )
 
     # Advanced planning metadata
     plan_type: str = Field(default="flexible")
@@ -935,7 +963,9 @@ class BasePlan(IntelligentStatusMixin, Generic[T]):
         # Type distribution
         for item in all_items:
             item_type = type(item).__name__
-            stats["type_distribution"][item_type] = stats["type_distribution"].get(item_type, 0) + 1
+            stats["type_distribution"][item_type] = (
+                stats["type_distribution"].get(item_type, 0) + 1
+            )
 
         return stats
 
@@ -1103,7 +1133,9 @@ class Task(IntelligentStatusMixin):
         base_complexity = self.primary_plan.complexity_score
 
         # Add complexity from alternatives
-        alt_complexity = sum(plan.complexity_score for plan in self.alternative_plans) * 0.1
+        alt_complexity = (
+            sum(plan.complexity_score for plan in self.alternative_plans) * 0.1
+        )
 
         return min(base_complexity + alt_complexity, 1.0)
 
@@ -1170,7 +1202,11 @@ class Task(IntelligentStatusMixin):
         ]
 
         status["contingency_plans"] = [
-            {"id": plan.id, "title": plan.title, "trigger": plan.context.get("trigger_condition")}
+            {
+                "id": plan.id,
+                "title": plan.title,
+                "trigger": plan.context.get("trigger_condition"),
+            }
             for plan in self.contingency_plans
         ]
 

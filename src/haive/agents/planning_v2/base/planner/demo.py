@@ -67,7 +67,7 @@ async def demo_planner():
     )
 
     print(f"Objective: {result_dynamic.objective}")
-    print(f"First 3 steps:")
+    print("First 3 steps:")
     for i, step in enumerate(result_dynamic.steps[:3], 1):
         print(f"{i}. {step.description}")
 

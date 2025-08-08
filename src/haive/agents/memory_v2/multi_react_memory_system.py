@@ -13,7 +13,7 @@ from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.tools import tool
 
 from haive.agents.memory_v2.react_memory_agent import ReactMemoryAgent
-from haive.agents.multi.enhanced_multi_agent_v4 import EnhancedMultiAgentV4
+from haive.agents.multi.agent import MultiAgent
 from haive.agents.react.agent import ReactAgent
 
 
@@ -278,9 +278,9 @@ Memory types:
 
         return router_agent
 
-    def _create_coordinator(self) -> EnhancedMultiAgentV4:
+    def _create_coordinator(self) -> MultiAgent:
         """Create coordinator multi-agent."""
-        # Convert memory agents to dict for EnhancedMultiAgentV4
+        # Convert memory agents to dict for MultiAgent
         agents_dict = {
             memory_type.value: agent.agent  # Use the underlying ReactAgent
             for memory_type, agent in self.memory_agents.items()
@@ -289,7 +289,7 @@ Memory types:
         # Add router agent
         agents_dict["router"] = self.router_agent
 
-        coordinator = EnhancedMultiAgentV4(
+        coordinator = MultiAgent(
             name="memory_coordinator",
             engine=self.engine,
             agents=agents_dict,
@@ -335,7 +335,9 @@ Memory types:
             "user_id": self.user_id,
         }
 
-    async def store_memory(self, content: str, memory_type: MemoryType | None = None) -> str:
+    async def store_memory(
+        self, content: str, memory_type: MemoryType | None = None
+    ) -> str:
         """Store a memory in the appropriate system.
 
         Args:
@@ -454,7 +456,9 @@ async def example_multi_memory_system():
     )
 
     # Query that touches multiple systems
-    await system.process_query("What am I currently working on and when did I last meet with Bob?")
+    await system.process_query(
+        "What am I currently working on and when did I last meet with Bob?"
+    )
 
     # Specific procedural query
     await system.process_query("How do I make coffee?")

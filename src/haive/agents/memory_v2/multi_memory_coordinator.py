@@ -37,7 +37,10 @@ except ImportError:
     HAS_ADVANCED_RAG = False
 
 try:
-    from haive.agents.memory_v2.graph_memory_agent import GraphMemoryAgent, GraphMemoryConfig
+    from haive.agents.memory_v2.graph_memory_agent import (
+        GraphMemoryAgent,
+        GraphMemoryConfig,
+    )
 
     HAS_GRAPH_MEMORY = True
 except ImportError:

@@ -1,6 +1,8 @@
 """Module exports."""
 
-from haive.agents.document_modifiers.kg.kg_map_merge.config import ParallelKGTransformerConfig
+from haive.agents.document_modifiers.kg.kg_map_merge.config import (
+    ParallelKGTransformerConfig,
+)
 from haive.agents.document_modifiers.kg.kg_map_merge.engines import (
     create_graph_extraction_config,
     create_graph_merger_config,

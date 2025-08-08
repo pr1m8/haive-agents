@@ -7,6 +7,7 @@ to execute agent handoffs stored in state.
 import logging
 import pickle
 from typing import Any
+
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.schema.state_schema import StateSchema
 from langchain_core.messages import AIMessage, HumanMessage, ToolMessage
@@ -14,6 +15,7 @@ from langchain_core.tools import BaseTool, tool
 
 # from langgraph_supervisor import create_forward_message_tool, create_handoff_tool  # Module doesn't exist
 from pydantic import BaseModel, Field, model_validator
+
 from haive.agents.base.agent import Agent
 from haive.agents.react.agent import ReactAgent
 
@@ -48,13 +50,16 @@ class SupervisorReactState(StateSchema):
 
     messages: list[Any] = Field(default_factory=list)
     registered_agents: dict[str, AgentEntry] = Field(
-        default_factory=dict, description="Registered agents stored as serialized entries"
+        default_factory=dict,
+        description="Registered agents stored as serialized entries",
     )
     handoff_tools: dict[str, BaseTool] = Field(
         default_factory=dict, description="Handoff tools mapped to agent names"
     )
     current_agent: str | None = Field(None, description="Currently active agent")
-    last_handoff_result: Any | None = Field(None, description="Result from last handoff")
+    last_handoff_result: Any | None = Field(
+        None, description="Result from last handoff"
+    )
 
     @model_validator(mode="after")
     def sync_tools_with_agents(self) -> "SupervisorReactState":
@@ -101,14 +106,18 @@ class StaticSupervisor(ReactAgent):
         """Update the engine's tools based on registered agents."""
         if not self.main_engine:
             return
-        state = self.get_state() if hasattr(self, "get_state") else SupervisorReactState()
+        state = (
+            self.get_state() if hasattr(self, "get_state") else SupervisorReactState()
+        )
         tools = []
         tools.extend(state.handoff_tools.values())
         tools.append(create_forward_message_tool())
         tools.append(self._create_list_agents_tool())
         if hasattr(self.main_engine, "tools"):
             self.main_engine.tools = tools
-        elif hasattr(self.main_engine, "config") and hasattr(self.main_engine.config, "tools"):
+        elif hasattr(self.main_engine, "config") and hasattr(
+            self.main_engine.config, "tools"
+        ):
             self.main_engine.config.tools = tools
 
     def _create_list_agents_tool(self) -> BaseTool:
@@ -117,7 +126,11 @@ class StaticSupervisor(ReactAgent):
         @tool
         def list_agents() -> str:
             """List all available agents and their capabilities."""
-            state = self.get_state() if hasattr(self, "get_state") else SupervisorReactState()
+            state = (
+                self.get_state()
+                if hasattr(self, "get_state")
+                else SupervisorReactState()
+            )
             agents = state.registered_agents
             if not agents:
                 return "No agents registered."
@@ -134,7 +147,9 @@ class StaticSupervisor(ReactAgent):
         This updates the state and triggers tool synchronization.
         """
         entry = AgentEntry.from_agent(name, description, agent)
-        current_state = self.get_state() if hasattr(self, "get_state") else SupervisorReactState()
+        current_state = (
+            self.get_state() if hasattr(self, "get_state") else SupervisorReactState()
+        )
         current_state.registered_agents[name] = entry
         if hasattr(self, "update_state"):
             self.update_state(current_state)

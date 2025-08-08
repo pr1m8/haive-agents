@@ -63,7 +63,9 @@ class SimpleMemoryAgentDeepSeek(SimpleAgent):
         self.memory_state = MemoryState(user_id=user_id, max_memories=max_memories)
 
         # Token-aware state
-        self.token_state = MemoryStateWithTokens(messages=[], total_tokens=0, current_memories=[])
+        self.token_state = MemoryStateWithTokens(
+            messages=[], total_tokens=0, current_memories=[]
+        )
 
         # Update system message to include memory awareness
         if self.engine and hasattr(self.engine, "system_message"):
@@ -75,7 +77,9 @@ class SimpleMemoryAgentDeepSeek(SimpleAgent):
                 "memories stored."
             )
 
-        logger.info(f"Initialized SimpleMemoryAgentDeepSeek: {name} for user: {user_id}")
+        logger.info(
+            f"Initialized SimpleMemoryAgentDeepSeek: {name} for user: {user_id}"
+        )
 
     def _classify_input(self, user_input: str) -> dict[str, Any]:
         """Classify user input to determine if it's a memory operation.
@@ -100,16 +104,23 @@ class SimpleMemoryAgentDeepSeek(SimpleAgent):
             "who is",
             "what is",
         ]
-        is_query = any(keyword in lower_input for keyword in query_keywords) or "?" in user_input
+        is_query = (
+            any(keyword in lower_input for keyword in query_keywords)
+            or "?" in user_input
+        )
 
         # Determine memory type
         memory_type = MemoryType.CONVERSATIONAL
-        if any(word in lower_input for word in ["fact", "is", "are", "works at", "located"]):
+        if any(
+            word in lower_input for word in ["fact", "is", "are", "works at", "located"]
+        ):
             memory_type = MemoryType.FACTUAL
 
         # Determine importance
         importance = ImportanceLevel.MEDIUM
-        if any(word in lower_input for word in ["important", "critical", "urgent", "must"]):
+        if any(
+            word in lower_input for word in ["important", "critical", "urgent", "must"]
+        ):
             importance = ImportanceLevel.HIGH
         elif any(word in lower_input for word in ["minor", "trivial", "maybe"]):
             importance = ImportanceLevel.LOW
@@ -135,7 +146,10 @@ class SimpleMemoryAgentDeepSeek(SimpleAgent):
             Confirmation message
         """
         memory = EnhancedMemoryItem(
-            content=content, memory_type=memory_type, importance=importance, user_id=self.user_id
+            content=content,
+            memory_type=memory_type,
+            importance=importance,
+            user_id=self.user_id,
         )
 
         self.memory_state.add_memory_item(memory)
@@ -181,7 +195,11 @@ class SimpleMemoryAgentDeepSeek(SimpleAgent):
 
         context_parts = ["Relevant memories:"]
         for i, memory in enumerate(memories, 1):
-            timestamp = memory.created_at.strftime("%Y-%m-%d %H:%M") if memory.created_at else ""
+            timestamp = (
+                memory.created_at.strftime("%Y-%m-%d %H:%M")
+                if memory.created_at
+                else ""
+            )
             context_parts.append(
                 f"{i}. [{memory.memory_type.value}] {memory.content} "
                 f"(importance: {memory.importance.value}, time: {timestamp})"
@@ -251,7 +269,9 @@ class SimpleMemoryAgentDeepSeek(SimpleAgent):
         return {
             "total_memories": self.memory_state.stats.total_memories,
             "memories_by_type": dict(self.memory_state.stats.memories_by_type),
-            "memories_by_importance": dict(self.memory_state.stats.memories_by_importance),
+            "memories_by_importance": dict(
+                self.memory_state.stats.memories_by_importance
+            ),
             "user_id": self.user_id,
         }
 

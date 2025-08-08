@@ -8,15 +8,21 @@ from pydantic import BaseModel, Field, field_validator
 class SelectedModule(BaseModel):
     """A reasoning module selected for a specific problem."""
 
-    module_id: str = Field(description="Identifier for the module (e.g., '1', '4', '10')")
+    module_id: str = Field(
+        description="Identifier for the module (e.g., '1', '4', '10')"
+    )
     module_name: str = Field(description="Name or brief description of the module")
-    rationale: str = Field(description="Explanation of why this module is relevant for the task")
+    rationale: str = Field(
+        description="Explanation of why this module is relevant for the task"
+    )
 
 
 class ModuleSelectionResult(BaseModel):
     """Result of the module selection stage."""
 
-    selected_modules: list[SelectedModule] = Field(description="List of selected reasoning modules")
+    selected_modules: list[SelectedModule] = Field(
+        description="List of selected reasoning modules"
+    )
 
     def format_for_next_stage(self) -> str:
         """Format the selected modules for the adaptation stage."""
@@ -41,14 +47,20 @@ class AdaptedModule(BaseModel):
     """An adapted version of a reasoning module for a specific task."""
 
     original_module_id: str = Field(description="Reference to the original module ID")
-    adapted_description: str = Field(description="Customized description for this specific task")
-    application_strategy: str = Field(description="How to apply this module to the specific task")
+    adapted_description: str = Field(
+        description="Customized description for this specific task"
+    )
+    application_strategy: str = Field(
+        description="How to apply this module to the specific task"
+    )
 
 
 class ModuleAdaptationResult(BaseModel):
     """Result of the module adaptation stage."""
 
-    adapted_modules: list[AdaptedModule] = Field(description="List of adapted reasoning modules")
+    adapted_modules: list[AdaptedModule] = Field(
+        description="List of adapted reasoning modules"
+    )
 
     def format_for_next_stage(self) -> str:
         """Format the adapted modules for the structure stage."""
@@ -64,14 +76,20 @@ class ReasoningStep(BaseModel):
     """A step in the reasoning plan."""
 
     step_id: str = Field(description="Identifier for the step (e.g., 'step1', 'step2')")
-    description: str = Field(description="Description of what to determine in this step")
-    related_module_ids: list[str] | None = Field(default=None, description="IDs of related modules")
+    description: str = Field(
+        description="Description of what to determine in this step"
+    )
+    related_module_ids: list[str] | None = Field(
+        default=None, description="IDs of related modules"
+    )
 
 
 class ReasoningStructure(BaseModel):
     """A structured reasoning plan."""
 
-    steps: list[ReasoningStep] = Field(description="List of steps in the reasoning plan")
+    steps: list[ReasoningStep] = Field(
+        description="List of steps in the reasoning plan"
+    )
 
     def format_for_next_stage(self) -> str:
         """Format the reasoning structure as JSON for the reasoning stage."""
@@ -96,7 +114,9 @@ class ReasoningOutputStep(BaseModel):
 
     step_id: str = Field(description="Identifier for the step")
     reasoning: str = Field(description="Detailed reasoning for this step")
-    result: Any | None = Field(default=None, description="Result of this step (if applicable)")
+    result: Any | None = Field(
+        default=None, description="Result of this step (if applicable)"
+    )
 
 
 class ReasoningOutput(BaseModel):
@@ -106,7 +126,9 @@ class ReasoningOutput(BaseModel):
         description="List of completed reasoning steps"
     )
     final_answer: str = Field(description="Final answer to the problem")
-    confidence: float | None = Field(default=None, description="Confidence in the answer (0-1)")
+    confidence: float | None = Field(
+        default=None, description="Confidence in the answer (0-1)"
+    )
 
     def format_complete_reasoning(self) -> str:
         """Format the complete reasoning process."""

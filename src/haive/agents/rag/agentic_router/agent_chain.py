@@ -39,7 +39,9 @@ class StrategyDecision(BaseModel):
 
 
 def create_agentic_rag_router_chain(
-    documents: list[Document], llm_config: LLMConfig | None = None, name: str = "Agentic RAG Router"
+    documents: list[Document],
+    llm_config: LLMConfig | None = None,
+    name: str = "Agentic RAG Router",
 ) -> ChainAgent:
     """Create an agentic RAG router using ChainAgent.
 

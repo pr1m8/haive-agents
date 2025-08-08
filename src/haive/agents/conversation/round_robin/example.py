@@ -123,7 +123,9 @@ def example_panel_discussion() -> None:
     result = conversation.invoke(
         {
             "messages": [
-                SystemMessage(content="Welcome to our panel discussion on AI's impact on society.")
+                SystemMessage(
+                    content="Welcome to our panel discussion on AI's impact on society."
+                )
             ]
         }
     )

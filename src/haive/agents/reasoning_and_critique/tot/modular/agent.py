@@ -2,15 +2,16 @@ import logging
 import random
 from typing import Any
 
-from haive.agents.tot.modular.branches import ToTBranch
-from haive.agents.tot.modular.config import ToTAgentConfig
-from haive.agents.tot.modular.models import Candidate, CandidateList, CandidateScore
-from haive.agents.tot.modular.state import ToTState
 from haive.core.engine.agent.agent import Agent, register_agent
 from haive.core.graph.dynamic_graph_builder import DynamicGraph
 from langchain_core.messages import AIMessage, HumanMessage
 from langgraph.types import Command
 from pydantic import BaseModel
+
+from haive.agents.tot.modular.branches import ToTBranch
+from haive.agents.tot.modular.config import ToTAgentConfig
+from haive.agents.tot.modular.models import Candidate, CandidateList, CandidateScore
+from haive.agents.tot.modular.state import ToTState
 
 logger = logging.getLogger(__name__)
 
@@ -18,7 +19,11 @@ logger = logging.getLogger(__name__)
 @register_agent(ToTAgentConfig)
 class ToTAgent(Agent[ToTAgentConfig]):
     def get_state_value(self, state: dict | BaseModel, key: str, default=None):
-        return state.get(key, default) if isinstance(state, dict) else getattr(state, key, default)
+        return (
+            state.get(key, default)
+            if isinstance(state, dict)
+            else getattr(state, key, default)
+        )
 
     def setup_workflow(self) -> None:
         logger.debug(f"Setting up workflow for ToTAgent {self.config.name}")
@@ -31,7 +36,9 @@ class ToTAgent(Agent[ToTAgentConfig]):
         gb.add_edge(self.config.expand_node_name, self.config.score_node_name)
         gb.add_edge(self.config.score_node_name, self.config.prune_node_name)
 
-        gb.add_conditional_edges(self.config.prune_node_name, condition_or_branch=ToTBranch(self))
+        gb.add_conditional_edges(
+            self.config.prune_node_name, condition_or_branch=ToTBranch(self)
+        )
 
         gb.set_entry_point(self.config.expand_node_name)
         self.graph = gb.build()
@@ -41,7 +48,9 @@ class ToTAgent(Agent[ToTAgentConfig]):
         logger.debug("Running expand node")
         k = self.config.candidates_per_expansion
         seed = self.get_state_value(state, "current_seed")
-        seed_str = seed["content"] if isinstance(seed, dict) else getattr(seed, "content", "")
+        seed_str = (
+            seed["content"] if isinstance(seed, dict) else getattr(seed, "content", "")
+        )
 
         try:
             if self.config.expand_llm_config.structured_output_model is None:
@@ -56,7 +65,9 @@ class ToTAgent(Agent[ToTAgentConfig]):
 
             candidates = []
             if isinstance(result, CandidateList):
-                candidates = [Candidate(content=item.content) for item in result.candidates[:k]]
+                candidates = [
+                    Candidate(content=item.content) for item in result.candidates[:k]
+                ]
             elif isinstance(result, dict):
                 for item in result.get("candidates", [])[:k]:
                     content = (
@@ -98,11 +109,15 @@ class ToTAgent(Agent[ToTAgentConfig]):
                 for c in candidates:
                     content = c["content"] if isinstance(c, dict) else c.content
                     score, feedback = self.config.score_function(problem, content)
-                    scored.append(Candidate(content=content, score=score, feedback=feedback))
+                    scored.append(
+                        Candidate(content=content, score=score, feedback=feedback)
+                    )
 
             elif self.config.score_llm_config:
                 if self.config.score_llm_config.structured_output_model is None:
-                    self.config.score_llm_config.structured_output_model = CandidateScore
+                    self.config.score_llm_config.structured_output_model = (
+                        CandidateScore
+                    )
                 score_llm = self.config.score_llm_config.create_runnable()
 
                 for c in candidates:
@@ -110,14 +125,18 @@ class ToTAgent(Agent[ToTAgentConfig]):
                     res = score_llm.invoke({"problem": problem, "candidate": content})
                     score = getattr(res, "score", res.get("score", 0.0))
                     feedback = getattr(res, "feedback", res.get("feedback", ""))
-                    scored.append(Candidate(content=content, score=score, feedback=feedback))
+                    scored.append(
+                        Candidate(content=content, score=score, feedback=feedback)
+                    )
 
             else:
                 for c in candidates:
                     content = c["content"] if isinstance(c, dict) else c.content
                     scored.append(
                         Candidate(
-                            content=content, score=random.random(), feedback="No scoring method."
+                            content=content,
+                            score=random.random(),
+                            feedback="No scoring method.",
                         )
                     )
 
@@ -172,7 +191,10 @@ class ToTAgent(Agent[ToTAgentConfig]):
         if isinstance(input_data, str):
             msg = HumanMessage(content=input_data)
             state = ToTState(
-                problem=input_data, messages=[msg], depth=0, max_depth=self.config.max_depth
+                problem=input_data,
+                messages=[msg],
+                depth=0,
+                max_depth=self.config.max_depth,
             ).model_dump()
         else:
             state = input_data.copy()

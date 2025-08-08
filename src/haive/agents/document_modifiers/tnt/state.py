@@ -57,7 +57,9 @@ class TaxonomyGenerationState(BaseModel):
     # The raw docs; we inject summaries within them in the first step
     documents: list[Doc] = Field(description="The raw documents.")
     # Indices to be concise
-    minibatches: list[list[int]] = Field(default=[], description="The indices to be concise.")
+    minibatches: list[list[int]] = Field(
+        default=[], description="The indices to be concise."
+    )
     # Candidate Taxonomies (full trajectory)
     clusters: Annotated[list[list[dict]], operator.add] = Field(
         default=[], description="The candidate taxonomies."

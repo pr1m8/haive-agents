@@ -24,7 +24,9 @@ class HallucinationClaim(BaseModel):
 
     claim: str = Field(description="The specific claim being evaluated")
     is_supported: bool = Field(description="Whether the claim is supported by sources")
-    support_type: str = Field(description="Type of support: explicit, inferred, or unsupported")
+    support_type: str = Field(
+        description="Type of support: explicit, inferred, or unsupported"
+    )
     source_reference: str | None = Field(
         default=None, description="Reference to supporting source if available"
     )
@@ -45,15 +47,21 @@ class HallucinationDetectionResponse(BaseModel):
     query: str = Field(description="Original query")
     generated_answer: str = Field(description="The AI-generated answer being evaluated")
     overall_hallucination_score: float = Field(
-        ge=0.0, le=1.0, description="Overall hallucination score (0.0 = no hallucinations)"
+        ge=0.0,
+        le=1.0,
+        description="Overall hallucination score (0.0 = no hallucinations)",
     )
-    claim_analysis: list[HallucinationClaim] = Field(description="Analysis of individual claims")
+    claim_analysis: list[HallucinationClaim] = Field(
+        description="Analysis of individual claims"
+    )
     supported_claims: list[str] = Field(description="Claims well-supported by sources")
     unsupported_claims: list[str] = Field(description="Claims lacking source support")
     contradictory_claims: list[str] = Field(
         default_factory=list, description="Claims that contradict the sources"
     )
-    recommendations: list[str] = Field(description="Recommendations for improving answer accuracy")
+    recommendations: list[str] = Field(
+        description="Recommendations for improving answer accuracy"
+    )
 
 
 class HallucinationBinaryResponse(BaseModel):
@@ -61,7 +69,9 @@ class HallucinationBinaryResponse(BaseModel):
 
     query: str = Field(description="Original query")
     generated_answer: str = Field(description="Answer being evaluated")
-    hallucination_detected: bool = Field(description="Whether hallucination was detected")
+    hallucination_detected: bool = Field(
+        description="Whether hallucination was detected"
+    )
     severity_level: Literal["none", "minor", "moderate", "major", "severe"] = Field(
         description="none, minor, moderate, major, or severe"
     )

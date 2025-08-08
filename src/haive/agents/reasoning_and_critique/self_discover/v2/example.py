@@ -5,7 +5,9 @@ from haive.agents.reasoning_and_critique.self_discover.v2.agent import (
     DEFAULT_REASONING_MODULES,
     self_discovery,
 )
-from haive.agents.reasoning_and_critique.self_discover.v2.state import SelfDiscoveryState
+from haive.agents.reasoning_and_critique.self_discover.v2.state import (
+    SelfDiscoveryState,
+)
 
 
 def run_self_discovery_example() -> None:
@@ -23,13 +25,17 @@ def run_self_discovery_example() -> None:
 
     # Run on first task
 
-    state1 = SelfDiscoveryState(task_description=task1, reasoning_modules=reasoning_modules_str)
+    state1 = SelfDiscoveryState(
+        task_description=task1, reasoning_modules=reasoning_modules_str
+    )
 
     self_discovery.invoke(state1)
 
     # Run on second task
 
-    state2 = SelfDiscoveryState(task_description=task2, reasoning_modules=reasoning_modules_str)
+    state2 = SelfDiscoveryState(
+        task_description=task2, reasoning_modules=reasoning_modules_str
+    )
 
     result2 = self_discovery.invoke(state2)
 

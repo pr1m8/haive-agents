@@ -52,12 +52,16 @@ class ToTBranch(Branch):
         if isinstance(best_candidate, dict):
             score = best_candidate.get("score")
             content = best_candidate.get("content", "")
-            threshold_reached = score is not None and score >= self.agent.config.threshold
+            threshold_reached = (
+                score is not None and score >= self.agent.config.threshold
+            )
         else:
             # Assume it's a Candidate object with attributes
             score = getattr(best_candidate, "score", None)
             content = getattr(best_candidate, "content", "")
-            threshold_reached = score is not None and score >= self.agent.config.threshold
+            threshold_reached = (
+                score is not None and score >= self.agent.config.threshold
+            )
 
         # If we should terminate
         if max_depth_reached or threshold_reached:

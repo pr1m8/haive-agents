@@ -27,10 +27,14 @@ class ChainMultiAgent(MultiAgent):
     """
 
     execution_mode: ExecutionMode = Field(default=ExecutionMode.SEQUENTIAL)
-    chain_config: dict[str, Any] | None = Field(default=None, description="Chain configuration")
+    chain_config: dict[str, Any] | None = Field(
+        default=None, description="Chain configuration"
+    )
 
     @classmethod
-    def from_chain(cls, chain: ChainAgent, name: str | None = None, **kwargs) -> "ChainMultiAgent":
+    def from_chain(
+        cls, chain: ChainAgent, name: str | None = None, **kwargs
+    ) -> "ChainMultiAgent":
         """Create a MultiAgent from a ChainAgent."""
         # Extract agents from the chain's nodes
         agents = []
@@ -126,11 +130,15 @@ def chain_multi(*nodes: NodeLike, name: str = "Chain Multi") -> ChainMultiAgent:
 
 def sequential_multi(*agents: Agent, name: str = "Sequential Multi") -> ChainMultiAgent:
     """Create a sequential multi-agent system."""
-    return ChainMultiAgent(name=name, agents=list(agents), execution_mode=ExecutionMode.SEQUENCE)
+    return ChainMultiAgent(
+        name=name, agents=list(agents), execution_mode=ExecutionMode.SEQUENCE
+    )
 
 
 def conditional_multi(
-    agents: list[Agent], conditions: dict[str, Callable], name: str = "Conditional Multi"
+    agents: list[Agent],
+    conditions: dict[str, Callable],
+    name: str = "Conditional Multi",
 ) -> ChainMultiAgent:
     """Create a conditional multi-agent system."""
     # Convert conditions to ChainAgent edges format

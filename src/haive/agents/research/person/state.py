@@ -61,7 +61,8 @@ class PersonResearchInputState(BaseModel):
         description="The json schema defines the information the agent is tasked with filling out.",
     )
     user_notes: dict[str, Any] | None = Field(
-        default=None, description="Any notes from the user to start the research process."
+        default=None,
+        description="Any notes from the user to start the research process.",
     )
 
 
@@ -75,19 +76,24 @@ class PersonResearchState(BaseModel):
         description="The json schema defines the information the agent is tasked with filling out.",
     )
     user_notes: str | None = Field(
-        default=None, description="Any notes from the user to start the research process."
+        default=None,
+        description="Any notes from the user to start the research process.",
     )
     search_queries: list[str] | None = Field(
-        default=None, description="List of generated search queries to find relevant information"
+        default=None,
+        description="List of generated search queries to find relevant information",
     )
     completed_notes: Annotated[list[str], operator.add] = Field(
-        default_factory=list, description="Notes from completed research related to the schema"
+        default_factory=list,
+        description="Notes from completed research related to the schema",
     )
     info: dict[str, Any] | None = Field(
-        default=None, description="A dictionary containing the extracted and processed information."
+        default=None,
+        description="A dictionary containing the extracted and processed information.",
     )
     is_satisfactory: bool | None = Field(
-        default=None, description="True if all required fields are well populated, False otherwise"
+        default=None,
+        description="True if all required fields are well populated, False otherwise",
     )
     reflection_steps_taken: int = Field(
         default=0, description="Number of times the reflection node has been executed"
@@ -113,4 +119,6 @@ class PersonResearchAgentConfig(BaseModel):
     max_search_results: int = Field(
         default=3, description="Maximum number of search results per query"
     )
-    max_reflection_steps: int = Field(default=0, description="Maximum number of reflection steps")
+    max_reflection_steps: int = Field(
+        default=0, description="Maximum number of reflection steps"
+    )

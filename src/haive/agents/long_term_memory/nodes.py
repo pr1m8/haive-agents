@@ -1,13 +1,16 @@
 import tiktoken
-from haive.agents.long_term_memory.state import LongTermMemoryState
-from haive.agents.long_term_memory.tools import search_recall_memories
 from langchain_core.messages import get_buffer_string
 from langchain_core.runnables import RunnableConfig
+
+from haive.agents.long_term_memory.state import LongTermMemoryState
+from haive.agents.long_term_memory.tools import search_recall_memories
 
 tokenizer = tiktoken.encoding_for_model("gpt-4o")
 
 
-def load_memories(state: LongTermMemoryState, config: RunnableConfig) -> LongTermMemoryState:
+def load_memories(
+    state: LongTermMemoryState, config: RunnableConfig
+) -> LongTermMemoryState:
     """Load memories for the current conversation.
 
     Args:

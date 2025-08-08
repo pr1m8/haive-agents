@@ -14,7 +14,9 @@ class BaseDBConfig(ABC, BaseModel, Generic[T]):
     configurations should implement, regardless of database type.
     """
 
-    db_type: str = Field(description="Type of database (e.g., 'sql', 'graph', 'document')")
+    db_type: str = Field(
+        description="Type of database (e.g., 'sql', 'graph', 'document')"
+    )
 
     @abstractmethod
     def get_connection_string(self) -> str:

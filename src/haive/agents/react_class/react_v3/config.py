@@ -7,12 +7,14 @@ ReAct (Reasoning and Acting) pattern for tool-using agents.
 
 import logging
 from typing import Any
+
 from haive.core.engine.agent.agent import AgentConfig
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.schema.state_schema import StateSchema
 from langchain_core.tools import BaseTool
 from langgraph.pregel import RetryPolicy
 from pydantic import Field, model_validator
+
 from haive.agents.react_class.react_v3.agent import ReactAgent
 
 logger = logging.getLogger(__name__)
@@ -32,10 +34,15 @@ class ReactAgentConfig(AgentConfig):
         default_factory=list, description="List of tools that the agent can use"
     )
     state_schema: type[StateSchema] | None = Field(
-        default=None, description="Schema for agent state (auto-derived if not provided)"
+        default=None,
+        description="Schema for agent state (auto-derived if not provided)",
     )
-    reasoning_node_name: str = Field(default="reasoning", description="Name for the reasoning node")
-    tool_node_name: str = Field(default="tools", description="Name for the tool execution node")
+    reasoning_node_name: str = Field(
+        default="reasoning", description="Name for the reasoning node"
+    )
+    tool_node_name: str = Field(
+        default="tools", description="Name for the tool execution node"
+    )
     system_prompt: str = Field(
         default="You are a helpful assistant with access to tools. When you need information or need to perform an action, use the appropriate tool. First think about what you need to accomplish, then select the right tool for the task.",
         description="System prompt for the agent",
@@ -46,10 +53,13 @@ class ReactAgentConfig(AgentConfig):
     tool_retry: RetryPolicy | None = Field(
         default=None, description="Retry policy for tool execution node"
     )
-    max_iterations: int = Field(default=10, description="Maximum number of reasoning-tool cycles")
+    max_iterations: int = Field(
+        default=10, description="Maximum number of reasoning-tool cycles"
+    )
     visualize: bool = Field(default=True, description="Whether to visualize the graph")
     include_tool_names_in_prompt: bool = Field(
-        default=True, description="Whether to explicitly include tool names in the system prompt"
+        default=True,
+        description="Whether to explicitly include tool names in the system prompt",
     )
     model_config = {"arbitrary_types_allowed": True}
 
@@ -74,7 +84,9 @@ class ReactAgentConfig(AgentConfig):
             )
         if self.include_tool_names_in_prompt and self.tools:
             tool_names = [f"- {tool.name}: {tool.description}" for tool in self.tools]
-            tool_section = "\n\nYou have access to the following tools:\n" + "\n".join(tool_names)
+            tool_section = "\n\nYou have access to the following tools:\n" + "\n".join(
+                tool_names
+            )
             self.system_prompt += tool_section
         return self
 

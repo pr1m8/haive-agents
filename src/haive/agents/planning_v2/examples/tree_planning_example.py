@@ -2,7 +2,6 @@
 
 from haive.agents.planning_v2 import (
     PlanContent,
-    PlanResult,
     PlanStatus,
     TaskPlan,
     create_phased_plan,
@@ -221,7 +220,7 @@ def example_tree_navigation():
         print(f"Found by path [0,1]: {found.content.objective}")
 
     # Access node IDs
-    print(f"\nNode IDs:")
+    print("\nNode IDs:")
     print(f"  Phase 1: {phase1.node_id}")
     print(f"  Task 1.1: {task1.node_id}")
     print(f"  Task 1.2: {task2.node_id}")
@@ -229,7 +228,7 @@ def example_tree_navigation():
     print(f"  Task 2.1: {task3.node_id}")
 
     # Tree metrics
-    print(f"\nTree metrics:")
+    print("\nTree metrics:")
     print(f"  Total nodes: {plan.total_nodes}")
     print(f"  Tree height: {plan.height}")
     print(f"  Direct children: {plan.child_count}")
