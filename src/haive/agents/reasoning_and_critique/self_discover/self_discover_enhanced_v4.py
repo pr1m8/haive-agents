@@ -14,7 +14,7 @@ from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field
 
-from haive.agents.simple.agent_v3 import SimpleAgentV3
+from haive.agents.simple.agent import SimpleAgent
 
 # ==========================
 # State Management - Following LangGraph Tutorial Pattern
@@ -40,13 +40,17 @@ class SelfDiscoverState(TypedDict):
 class ModuleSelectionOutput(BaseModel):
     """Output from module selector - string format."""
 
-    selected_modules: str = Field(description="Selected reasoning modules as formatted text")
+    selected_modules: str = Field(
+        description="Selected reasoning modules as formatted text"
+    )
 
 
 class AdaptedModulesOutput(BaseModel):
     """Output from module adapter - string format."""
 
-    adapted_modules: str = Field(description="Adapted reasoning modules as formatted text")
+    adapted_modules: str = Field(
+        description="Adapted reasoning modules as formatted text"
+    )
 
 
 class ReasoningStructureOutput(BaseModel):
@@ -128,7 +132,10 @@ class SelfDiscoverAdapter(SimpleAgentV3):
     prompt_template: ChatPromptTemplate = Field(
         default_factory=lambda: ChatPromptTemplate.from_messages(
             [
-                ("system", "You adapt reasoning modules to be specific for the given task."),
+                (
+                    "system",
+                    "You adapt reasoning modules to be specific for the given task.",
+                ),
                 ("human", "{messages}"),
             ]
         )
@@ -188,7 +195,9 @@ class SelfDiscoverExecutor(SimpleAgentV3):
 # ==========================
 
 
-async def run_self_discover_workflow(task: str, modules: str | None = None) -> dict[str, Any]:
+async def run_self_discover_workflow(
+    task: str, modules: str | None = None
+) -> dict[str, Any]:
     """Run the Self-Discover workflow sequentially.
 
     Args:
@@ -215,7 +224,9 @@ async def run_self_discover_workflow(task: str, modules: str | None = None) -> d
     # Extract and format selected modules
     selected_modules_text = ""
     if isinstance(selector_result, dict) and "selected_modules" in selector_result:
-        output = ModuleSelectionOutput(selected_modules=selector_result["selected_modules"])
+        output = ModuleSelectionOutput(
+            selected_modules=selector_result["selected_modules"]
+        )
         selected_modules_text = output.format_as_text()
     elif hasattr(selector_result, "selected_modules"):
         selected_modules_text = selector_result.format_as_text()

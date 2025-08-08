@@ -7,13 +7,15 @@ from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field
 
-from haive.agents.simple.agent_v3 import SimpleAgentV3
+from haive.agents.simple.agent import SimpleAgent
 
 
 class ModuleSelectionOutput(BaseModel):
     """Output from module selector - string format."""
 
-    selected_modules: str = Field(description="Selected reasoning modules as formatted text")
+    selected_modules: str = Field(
+        description="Selected reasoning modules as formatted text"
+    )
 
 
 class SelfDiscoverSelector(SimpleAgentV3):

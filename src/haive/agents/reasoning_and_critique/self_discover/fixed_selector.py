@@ -7,7 +7,7 @@ from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import Field
 
-from haive.agents.simple.agent_v3 import SimpleAgentV3
+from haive.agents.simple.agent import SimpleAgent
 
 from .self_discover_enhanced_v4 import ModuleSelectionOutput
 
@@ -55,11 +55,15 @@ Select 3-5 most relevant modules for solving this task. For each module, provide
             # Extract the required fields
             task = input_data.get("task", "")
             available_modules = input_data.get("available_modules", "")
-            system_message = input_data.get("system_message", self.engine.system_message)
+            system_message = input_data.get(
+                "system_message", self.engine.system_message
+            )
 
             # Format the prompt with all variables
             formatted_messages = self.prompt_template.format_messages(
-                task=task, available_modules=available_modules, system_message=system_message
+                task=task,
+                available_modules=available_modules,
+                system_message=system_message,
             )
 
             # Return as messages for the graph

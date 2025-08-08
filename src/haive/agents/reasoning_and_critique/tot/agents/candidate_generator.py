@@ -6,13 +6,15 @@ This agent generates multiple candidate solutions for a given problem.
 from haive.core.engine.aug_llm import AugLLMConfig
 from pydantic import BaseModel, Field
 
-from haive.agents.simple.agent_v3 import SimpleAgentV3
+from haive.agents.simple.agent import SimpleAgent
 
 
 class CandidateGeneration(BaseModel):
     """Structured output for candidate generation."""
 
-    reasoning: str = Field(description="Reasoning about different approaches to solve the problem")
+    reasoning: str = Field(
+        description="Reasoning about different approaches to solve the problem"
+    )
 
     candidates: list[str] = Field(
         description="List of candidate solutions", min_items=1, max_items=10
@@ -64,11 +66,14 @@ For planning problems: Try different sequences, priorities""",
             )
 
         # Use composition - create the underlying agent
-        self.agent = SimpleAgentV3(name=name, engine=engine)
+        self.agent = SimpleAgent(name=name, engine=engine)
 
     @classmethod
     def create(
-        cls, name: str = "candidate_generator", expansion_count: int = 5, temperature: float = 0.7
+        cls,
+        name: str = "candidate_generator",
+        expansion_count: int = 5,
+        temperature: float = 0.7,
     ) -> "CandidateGenerator":
         """Create a CandidateGenerator with proper configuration."""
         return cls(name=name, expansion_count=expansion_count, temperature=temperature)
@@ -90,7 +95,9 @@ For planning problems: Try different sequences, priorities""",
                 f"\nUse this solution as inspiration (but create diverse alternatives):\n{seed_solution}"
             )
 
-        prompt_parts.append(f"\nGenerate {self.expansion_count} different candidate solutions.")
+        prompt_parts.append(
+            f"\nGenerate {self.expansion_count} different candidate solutions."
+        )
 
         return "\n\n".join(prompt_parts)
 

@@ -1,6 +1,6 @@
 """Tree of Thoughts Multi-Agent Implementation.
 
-This implements the complete Tree of Thoughts algorithm using EnhancedMultiAgentV4
+This implements the complete Tree of Thoughts algorithm using MultiAgent
 with proper LangGraph routing, conditional edges, and send-based branching.
 """
 
@@ -11,8 +11,12 @@ from haive.core.schema.prebuilt.multi_agent_state import MultiAgentState
 from langgraph.constants import Send
 from pydantic import BaseModel, Field
 
-from haive.agents.reasoning_and_critique.tot.agents.candidate_generator import CandidateGenerator
-from haive.agents.reasoning_and_critique.tot.agents.solution_scorer import SolutionScorer
+from haive.agents.reasoning_and_critique.tot.agents.candidate_generator import (
+    CandidateGenerator,
+)
+from haive.agents.reasoning_and_critique.tot.agents.solution_scorer import (
+    SolutionScorer,
+)
 
 
 class TOTCommand(BaseModel):
@@ -76,7 +80,9 @@ class TreeOfThoughtsAgent:
             name="tot_generator", expansion_count=5, temperature=generation_temperature
         )
 
-        self.solution_scorer = SolutionScorer(name="tot_scorer", temperature=scoring_temperature)
+        self.solution_scorer = SolutionScorer(
+            name="tot_scorer", temperature=scoring_temperature
+        )
 
         # Store engine for any coordination needs
         self.engine = engine or AugLLMConfig(temperature=0.5)
@@ -235,7 +241,9 @@ class TreeOfThoughtsAgent:
             "score": best_score,
             "is_complete": best_details.is_complete if best_details else False,
             "has_errors": best_details.has_errors if best_details else True,
-            "reasoning": (best_details.reasoning if best_details else "No reasoning available"),
+            "reasoning": (
+                best_details.reasoning if best_details else "No reasoning available"
+            ),
             "all_candidates_explored": len(state.get("candidates", [])),
             "final_beam_size": len(best_candidates),
         }
@@ -315,7 +323,9 @@ class TreeOfThoughtsAgent:
         )
 
         # Select top candidates for beam search
-        scored_solutions = [(s.solution, s.score) for s in initial_scores.scored_solutions]
+        scored_solutions = [
+            (s.solution, s.score) for s in initial_scores.scored_solutions
+        ]
         scored_solutions.sort(key=lambda x: x[1], reverse=True)
 
         best_candidates = [sol for sol, _ in scored_solutions[: self.beam_size]]
@@ -344,7 +354,9 @@ class TreeOfThoughtsAgent:
             )
 
             # Update beam search
-            scored_solutions = [(s.solution, s.score) for s in all_scores.scored_solutions]
+            scored_solutions = [
+                (s.solution, s.score) for s in all_scores.scored_solutions
+            ]
             scored_solutions.sort(key=lambda x: x[1], reverse=True)
 
             best_candidates = [sol for sol, _ in scored_solutions[: self.beam_size]]
@@ -369,11 +381,15 @@ class TreeOfThoughtsAgent:
             "score": best_score,
             "is_complete": best_details.is_complete if best_details else False,
             "has_errors": best_details.has_errors if best_details else True,
-            "reasoning": (best_details.reasoning if best_details else "No reasoning available"),
+            "reasoning": (
+                best_details.reasoning if best_details else "No reasoning available"
+            ),
             "all_candidates_explored": len(candidates),
             "final_beam_size": len(best_candidates),
             "iterations_completed": (
-                min(iteration + 1, self.max_iterations) if "iteration" in locals() else 1
+                min(iteration + 1, self.max_iterations)
+                if "iteration" in locals()
+                else 1
             ),
         }
 

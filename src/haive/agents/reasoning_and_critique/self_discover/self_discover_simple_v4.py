@@ -13,8 +13,8 @@ from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field
 
-from haive.agents.multi.enhanced_multi_agent_v4 import EnhancedMultiAgentV4
-from haive.agents.simple.agent_v3 import SimpleAgentV3
+from haive.agents.multi.agent import MultiAgent
+from haive.agents.simple.agent import SimpleAgent
 
 
 # Simple output models
@@ -59,7 +59,7 @@ MODULES = """1. Pattern Analysis - Identify patterns and structures
 def create_agents():
     """Create the four agents for Self-Discover."""
     # 1. Selector - picks relevant modules
-    selector = SimpleAgentV3(
+    selector = SimpleAgent(
         name="selector",
         engine=AugLLMConfig(temperature=0.3, structured_output_model=ModuleList),
         prompt_template=ChatPromptTemplate.from_messages(
@@ -79,7 +79,7 @@ Select the most relevant modules and format them clearly.""",
     )
 
     # 2. Adapter - makes modules task-specific
-    adapter = SimpleAgentV3(
+    adapter = SimpleAgent(
         name="adapter",
         engine=AugLLMConfig(temperature=0.5, structured_output_model=AdaptedModules),
         prompt_template=ChatPromptTemplate.from_messages(
@@ -99,12 +99,15 @@ Adapt each module with specific strategies for this task.""",
     )
 
     # 3. Structurer - creates step-by-step plan
-    structurer = SimpleAgentV3(
+    structurer = SimpleAgent(
         name="structurer",
         engine=AugLLMConfig(temperature=0.3, structured_output_model=Plan),
         prompt_template=ChatPromptTemplate.from_messages(
             [
-                ("system", "Create a clear step-by-step plan using the adapted modules."),
+                (
+                    "system",
+                    "Create a clear step-by-step plan using the adapted modules.",
+                ),
                 (
                     "human",
                     """Task: {task}
@@ -119,7 +122,7 @@ Create a numbered step-by-step plan to solve this task.""",
     )
 
     # 4. Executor - follows plan to solve
-    executor = SimpleAgentV3(
+    executor = SimpleAgent(
         name="executor",
         engine=AugLLMConfig(temperature=0.7, structured_output_model=Solution),
         prompt_template=ChatPromptTemplate.from_messages(
@@ -146,7 +149,7 @@ def create_self_discover_simple():
     agents = create_agents()
 
     # Use sequential execution
-    multi_agent = EnhancedMultiAgentV4(
+    multi_agent = MultiAgent(
         agents=agents, execution_mode="sequential", name="self_discover_simple"
     )
 

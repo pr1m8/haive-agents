@@ -18,7 +18,7 @@ from haive.core.schema import StateSchema
 from langchain_core.prompts import PromptTemplate
 from pydantic import Field
 
-from haive.agents.multi.clean import MultiAgent
+from haive.agents.multi.agent import MultiAgent
 from haive.agents.reasoning_and_critique.self_discover.models import (
     AdaptedModule,
     ReasoningStructure,
@@ -52,7 +52,9 @@ class SelfDiscoverMultiAgentState(StateSchema):
     reasoning_results: dict[str, str] = Field(
         default_factory=dict, description="Results from executing each reasoning step"
     )
-    final_answer: str | None = Field(default=None, description="Final answer to the task")
+    final_answer: str | None = Field(
+        default=None, description="Final answer to the task"
+    )
 
 
 def get_default_reasoning_modules() -> list[str]:
@@ -274,7 +276,9 @@ def create_self_discover_with_conditional_routing() -> MultiAgent:
     reasoner = create_reasoner_agent()
     error_handler = SimpleAgent(
         name="error_handler",
-        engine=AugLLMConfig(system_message="You handle errors and provide helpful feedback."),
+        engine=AugLLMConfig(
+            system_message="You handle errors and provide helpful feedback."
+        ),
     )
 
     # Create multi-agent with entry point

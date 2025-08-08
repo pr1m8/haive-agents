@@ -3,7 +3,7 @@
 This implementation:
 1. Uses SimpleAgentV3 for enhanced features
 2. No custom __init__ overrides
-3. Uses EnhancedMultiAgentV4 for sequential composition
+3. Uses MultiAgent for sequential composition
 4. Consolidates Pydantic models to avoid conflicts
 5. Follows "no mocks" testing philosophy
 """
@@ -14,18 +14,24 @@ from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field, field_validator
 
-from haive.agents.multi.enhanced_multi_agent_v4 import EnhancedMultiAgentV4
-from haive.agents.simple.agent_v3 import SimpleAgentV3
+from haive.agents.multi.agent import MultiAgent
+from haive.agents.simple.agent import SimpleAgent
 
 
 # Consolidated Pydantic Models (fixing conflicts)
 class SelectedModule(BaseModel):
     """A reasoning module selected for a specific problem."""
 
-    module_number: int = Field(description="The module number from the available list (1-20)")
+    module_number: int = Field(
+        description="The module number from the available list (1-20)"
+    )
     module_name: str = Field(description="Name or brief description of the module")
-    relevance_explanation: str = Field(description="Why this module is relevant for the task")
-    contribution: str = Field(description="How this module will contribute to solving the task")
+    relevance_explanation: str = Field(
+        description="Why this module is relevant for the task"
+    )
+    contribution: str = Field(
+        description="How this module will contribute to solving the task"
+    )
 
 
 class ModuleSelectionResult(BaseModel):
@@ -35,7 +41,9 @@ class ModuleSelectionResult(BaseModel):
     selected_modules: list[SelectedModule] = Field(
         description="List of selected reasoning modules (3-5 modules)"
     )
-    selection_rationale: str = Field(description="Overall rationale for the module selection")
+    selection_rationale: str = Field(
+        description="Overall rationale for the module selection"
+    )
 
     @field_validator("selected_modules")
     @classmethod
@@ -63,7 +71,9 @@ class AdaptedModule(BaseModel):
 
     module_number: int = Field(description="Original module number")
     module_name: str = Field(description="Original module name")
-    adapted_description: str = Field(description="Task-specific adaptation of this module")
+    adapted_description: str = Field(
+        description="Task-specific adaptation of this module"
+    )
     application_strategy: str = Field(
         description="Specific strategy for applying this module to the task"
     )
@@ -72,7 +82,9 @@ class AdaptedModule(BaseModel):
 class ModuleAdaptationResult(BaseModel):
     """Result of the module adaptation stage."""
 
-    adapted_modules: list[AdaptedModule] = Field(description="List of adapted reasoning modules")
+    adapted_modules: list[AdaptedModule] = Field(
+        description="List of adapted reasoning modules"
+    )
 
     def format_for_structurer(self) -> str:
         """Format adapted modules for the structurer stage."""
@@ -98,7 +110,9 @@ class ReasoningStep(BaseModel):
 class ReasoningStructure(BaseModel):
     """A structured reasoning plan."""
 
-    steps: list[ReasoningStep] = Field(description="Sequential steps in the reasoning plan")
+    steps: list[ReasoningStep] = Field(
+        description="Sequential steps in the reasoning plan"
+    )
 
     @field_validator("steps")
     @classmethod
@@ -132,7 +146,9 @@ class ExecutionStep(BaseModel):
 class ReasoningExecution(BaseModel):
     """Complete reasoning execution with all steps and final answer."""
 
-    completed_steps: list[ExecutionStep] = Field(description="List of completed reasoning steps")
+    completed_steps: list[ExecutionStep] = Field(
+        description="List of completed reasoning steps"
+    )
     final_answer: str = Field(description="Final answer to the problem")
     confidence_level: str = Field(description="Confidence level: HIGH, MEDIUM, or LOW")
     explanation: str = Field(description="Brief explanation of the final answer")
@@ -162,9 +178,9 @@ DEFAULT_REASONING_MODULES = """1. Critical Thinking: Question assumptions, ident
 
 
 # Create individual agents using Field defaults (no __init__ override)
-def create_selector_agent() -> SimpleAgentV3:
+def create_selector_agent() -> SimpleAgent:
     """Create the selector agent with proper configuration."""
-    return SimpleAgentV3(
+    return SimpleAgent(
         name="self_discover_selector",
         engine=AugLLMConfig(
             temperature=0.3,
@@ -192,9 +208,9 @@ Select the most relevant modules and explain your choices.""",
     )
 
 
-def create_adapter_agent() -> SimpleAgentV3:
+def create_adapter_agent() -> SimpleAgent:
     """Create the adapter agent with proper configuration."""
-    return SimpleAgentV3(
+    return SimpleAgent(
         name="self_discover_adapter",
         engine=AugLLMConfig(
             temperature=0.5,
@@ -218,9 +234,9 @@ Create task-specific versions of each module with concrete application strategie
     )
 
 
-def create_structurer_agent() -> SimpleAgentV3:
+def create_structurer_agent() -> SimpleAgent:
     """Create the structurer agent with proper configuration."""
-    return SimpleAgentV3(
+    return SimpleAgent(
         name="self_discover_structurer",
         engine=AugLLMConfig(
             temperature=0.3,
@@ -247,9 +263,9 @@ Design a comprehensive reasoning plan with clear steps that will lead to solving
     )
 
 
-def create_executor_agent() -> SimpleAgentV3:
+def create_executor_agent() -> SimpleAgent:
     """Create the executor agent with proper configuration."""
-    return SimpleAgentV3(
+    return SimpleAgent(
         name="self_discover_executor",
         engine=AugLLMConfig(
             temperature=0.7,
@@ -276,17 +292,17 @@ Work through each step carefully and provide your final answer.""",
     )
 
 
-def create_self_discover_sequential() -> EnhancedMultiAgentV4:
+def create_self_discover_sequential() -> MultiAgent:
     """Create the complete Self-Discover sequential workflow.
 
     This follows the proper pattern from CLAUDE.md:
-    - Uses EnhancedMultiAgentV4 for composition
+    - Uses MultiAgent for composition
     - No custom classes or __init__ overrides
     - Clear sequential execution
     - Proper state handling between agents
 
     Returns:
-        EnhancedMultiAgentV4 configured for Self-Discover workflow
+        MultiAgent configured for Self-Discover workflow
     """
     # Create the four agents
     selector = create_selector_agent()
@@ -295,7 +311,7 @@ def create_self_discover_sequential() -> EnhancedMultiAgentV4:
     executor = create_executor_agent()
 
     # Compose into sequential workflow
-    return EnhancedMultiAgentV4(
+    return MultiAgent(
         agents=[selector, adapter, structurer, executor],
         execution_mode="sequential",
         name="self_discover_sequential_v2",

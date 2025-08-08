@@ -1,8 +1,8 @@
-"""Self-Discover V4 - Using SimpleAgentV3 and EnhancedMultiAgentV4.
+"""Self-Discover V4 - Using SimpleAgentV3 and MultiAgent.
 
 Clean implementation following CLAUDE.md patterns:
 - SimpleAgentV3 for individual agents
-- EnhancedMultiAgentV4 for orchestration
+- MultiAgent for orchestration
 - No custom __init__ overrides
 - Proper state handling
 """
@@ -15,8 +15,8 @@ from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field
 
-from haive.agents.multi.enhanced_multi_agent_v4 import EnhancedMultiAgentV4
-from haive.agents.simple.agent_v3 import SimpleAgentV3
+from haive.agents.multi.agent import MultiAgent
+from haive.agents.simple.agent import SimpleAgent
 
 # ==========================
 # Pydantic Models (Unified)
@@ -26,7 +26,9 @@ from haive.agents.simple.agent_v3 import SimpleAgentV3
 class SelectedModule(BaseModel):
     """A reasoning module selected for the task."""
 
-    module_number: int = Field(description="Module number from the list (1-20)", ge=1, le=20)
+    module_number: int = Field(
+        description="Module number from the list (1-20)", ge=1, le=20
+    )
     module_name: str = Field(description="Name of the reasoning module")
     explanation: str = Field(description="Why this module is relevant")
 
@@ -95,7 +97,9 @@ class FinalAnswer(BaseModel):
 
     reasoning_process: str = Field(description="Step-by-step reasoning")
     answer: str = Field(description="Final answer")
-    confidence: str = Field(description="HIGH, MEDIUM, or LOW", pattern="^(HIGH|MEDIUM|LOW)$")
+    confidence: str = Field(
+        description="HIGH, MEDIUM, or LOW", pattern="^(HIGH|MEDIUM|LOW)$"
+    )
 
 
 # ==========================
@@ -129,9 +133,9 @@ REASONING_MODULES = """1. Critical Thinking: Question assumptions, evaluate evid
 # ==========================
 
 
-def create_selector() -> SimpleAgentV3:
+def create_selector() -> SimpleAgent:
     """Create the module selector agent."""
-    return SimpleAgentV3(
+    return SimpleAgent(
         name="selector",
         engine=AugLLMConfig(
             temperature=0.3,
@@ -155,9 +159,9 @@ Select the most relevant modules and explain why.""",
     )
 
 
-def create_adapter() -> SimpleAgentV3:
+def create_adapter() -> SimpleAgent:
     """Create the module adapter agent."""
-    return SimpleAgentV3(
+    return SimpleAgent(
         name="adapter",
         engine=AugLLMConfig(
             temperature=0.5,
@@ -180,9 +184,9 @@ Adapt each module with a specific approach for this task.""",
     )
 
 
-def create_structurer() -> SimpleAgentV3:
+def create_structurer() -> SimpleAgent:
     """Create the plan structurer agent."""
-    return SimpleAgentV3(
+    return SimpleAgent(
         name="structurer",
         engine=AugLLMConfig(
             temperature=0.3,
@@ -205,9 +209,9 @@ Create a step-by-step plan using these modules.""",
     )
 
 
-def create_executor() -> SimpleAgentV3:
+def create_executor() -> SimpleAgent:
     """Create the plan executor agent."""
-    return SimpleAgentV3(
+    return SimpleAgent(
         name="executor",
         engine=AugLLMConfig(
             temperature=0.7,
@@ -235,12 +239,12 @@ Execute this plan step-by-step and provide the answer.""",
 # ==========================
 
 
-class SelfDiscoverV4(EnhancedMultiAgentV4):
+class SelfDiscoverV4(MultiAgent):
     """Self-Discover agent using V4 architecture.
 
     This is a clean implementation that:
     1. Uses SimpleAgentV3 for all agents
-    2. Uses EnhancedMultiAgentV4 for orchestration
+    2. Uses MultiAgent for orchestration
     3. Properly handles state between agents
     4. No custom __init__ overrides
     """
@@ -256,9 +260,13 @@ class SelfDiscoverV4(EnhancedMultiAgentV4):
         ]
 
         # Initialize parent with sequential execution
-        super().__init__(agents=agents, execution_mode="sequential", name=name, **kwargs)
+        super().__init__(
+            agents=agents, execution_mode="sequential", name=name, **kwargs
+        )
 
-    def prepare_initial_state(self, task: str, modules: str | None = None) -> dict[str, Any]:
+    def prepare_initial_state(
+        self, task: str, modules: str | None = None
+    ) -> dict[str, Any]:
         """Prepare the initial state for execution.
 
         Args:
