@@ -13,9 +13,15 @@ class Config(BaseModel):
     """Configuration for Labs Agent."""
 
     project_type: str = Field(default="analysis", description="Type of project")
-    max_work_time: float = Field(default=300.0, description="Maximum work time in seconds")
-    enable_code_execution: bool = Field(default=True, description="Enable code execution")
-    enable_visualization: bool = Field(default=True, description="Enable visualization creation")
+    max_work_time: float = Field(
+        default=300.0, description="Maximum work time in seconds"
+    )
+    enable_code_execution: bool = Field(
+        default=True, description="Enable code execution"
+    )
+    enable_visualization: bool = Field(
+        default=True, description="Enable visualization creation"
+    )
 
 
 class AssetType(str, Enum):
@@ -41,9 +47,13 @@ class ProjectAsset(BaseModel):
     file_path: str | None = Field(default=None, description="File path if saved")
     content: str | None = Field(default=None, description="Asset content or code")
     metadata: dict[str, Any] = Field(default_factory=dict, description="Asset metadata")
-    created_at: datetime = Field(default_factory=datetime.now, description="Creation timestamp")
+    created_at: datetime = Field(
+        default_factory=datetime.now, description="Creation timestamp"
+    )
     size_bytes: int = Field(default=0, description="Asset size in bytes")
-    downloadable: bool = Field(default=True, description="Whether asset can be downloaded")
+    downloadable: bool = Field(
+        default=True, description="Whether asset can be downloaded"
+    )
 
 
 class WorkflowStep(BaseModel):
@@ -53,11 +63,17 @@ class WorkflowStep(BaseModel):
     name: str = Field(..., description="Step name")
     description: str = Field(..., description="Step description")
     tool_used: str | None = Field(default=None, description="Tool used for this step")
-    input_data: dict[str, Any] = Field(default_factory=dict, description="Input data for step")
-    output_data: dict[str, Any] = Field(default_factory=dict, description="Output data from step")
+    input_data: dict[str, Any] = Field(
+        default_factory=dict, description="Input data for step"
+    )
+    output_data: dict[str, Any] = Field(
+        default_factory=dict, description="Output data from step"
+    )
     duration_seconds: float = Field(default=0.0, description="Step execution time")
     success: bool = Field(default=True, description="Whether step succeeded")
-    error_message: str | None = Field(default=None, description="Error message if failed")
+    error_message: str | None = Field(
+        default=None, description="Error message if failed"
+    )
 
 
 class InteractiveApp(BaseModel):
@@ -66,15 +82,21 @@ class InteractiveApp(BaseModel):
     app_id: str = Field(..., description="App identifier")
     name: str = Field(..., description="App name")
     description: str = Field(..., description="App description")
-    app_type: str = Field(..., description="Type of app (dashboard, slideshow, website)")
+    app_type: str = Field(
+        ..., description="Type of app (dashboard, slideshow, website)"
+    )
     html_content: str = Field(..., description="HTML content of the app")
     css_styles: str | None = Field(default=None, description="CSS styles")
     javascript_code: str | None = Field(default=None, description="JavaScript code")
-    data_sources: list[str] = Field(default_factory=list, description="Data sources used")
+    data_sources: list[str] = Field(
+        default_factory=list, description="Data sources used"
+    )
     interactive_elements: list[str] = Field(
         default_factory=list, description="Interactive elements"
     )
-    deployment_url: str | None = Field(default=None, description="Deployment URL if deployed")
+    deployment_url: str | None = Field(
+        default=None, description="Deployment URL if deployed"
+    )
 
 
 class LabsResponse(SearchResponse):
@@ -88,21 +110,31 @@ class LabsResponse(SearchResponse):
     workflow_steps: list[WorkflowStep] = Field(
         default_factory=list, description="Workflow steps executed"
     )
-    assets_created: list[ProjectAsset] = Field(default_factory=list, description="Assets created")
+    assets_created: list[ProjectAsset] = Field(
+        default_factory=list, description="Assets created"
+    )
     interactive_apps: list[InteractiveApp] = Field(
         default_factory=list, description="Interactive apps created"
     )
-    total_work_time: float = Field(default=0.0, description="Total work time in seconds")
-    tools_used: list[str] = Field(default_factory=list, description="Tools used in workflow")
+    total_work_time: float = Field(
+        default=0.0, description="Total work time in seconds"
+    )
+    tools_used: list[str] = Field(
+        default_factory=list, description="Tools used in workflow"
+    )
     code_execution_results: list[dict[str, Any]] = Field(
         default_factory=list, description="Code execution results"
     )
     data_analysis_results: dict[str, Any] = Field(
         default_factory=dict, description="Data analysis results"
     )
-    visualizations_created: int = Field(default=0, description="Number of visualizations created")
+    visualizations_created: int = Field(
+        default=0, description="Number of visualizations created"
+    )
     project_summary: str = Field(default="", description="Summary of project work")
-    next_steps: list[str] = Field(default_factory=list, description="Suggested next steps")
+    next_steps: list[str] = Field(
+        default_factory=list, description="Suggested next steps"
+    )
 
     class Config:
         """Pydantic configuration."""
@@ -190,11 +222,21 @@ class LabsRequest(BaseModel):
     project_type: str = Field(
         default="analysis", description="Type of project (analysis, dashboard, app)"
     )
-    data_sources: list[str] = Field(default_factory=list, description="Data sources to use")
-    required_tools: list[str] = Field(default_factory=list, description="Required tools")
-    output_format: str = Field(default="interactive", description="Desired output format")
-    enable_code_execution: bool = Field(default=True, description="Enable code execution")
-    create_interactive_app: bool = Field(default=True, description="Create interactive app")
+    data_sources: list[str] = Field(
+        default_factory=list, description="Data sources to use"
+    )
+    required_tools: list[str] = Field(
+        default_factory=list, description="Required tools"
+    )
+    output_format: str = Field(
+        default="interactive", description="Desired output format"
+    )
+    enable_code_execution: bool = Field(
+        default=True, description="Enable code execution"
+    )
+    create_interactive_app: bool = Field(
+        default=True, description="Create interactive app"
+    )
     max_work_time: int = Field(default=600, description="Maximum work time in seconds")
 
     class Config:

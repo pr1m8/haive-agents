@@ -20,8 +20,12 @@ class KnowledgeGraphState(BaseModel):
     contents: list[Document]
 
     # Graph documents and knowledge graphs
-    graph_documents: Annotated[list[GraphDocument], operator.add] = Field(default_factory=list)
-    knowledge_graphs: Annotated[list[KnowledgeGraph], operator.add] = Field(default_factory=list)
+    graph_documents: Annotated[list[GraphDocument], operator.add] = Field(
+        default_factory=list
+    )
+    knowledge_graphs: Annotated[list[KnowledgeGraph], operator.add] = Field(
+        default_factory=list
+    )
     final_knowledge_graph: KnowledgeGraph | None = Field(default=None)
 
     # Extracted components
@@ -33,7 +37,9 @@ class KnowledgeGraphState(BaseModel):
 
     def should_continue(
         self,
-    ) -> Literal["map_graph_documents", "map_nodes", "map_relationships", "merge_graphs", "end"]:
+    ) -> Literal[
+        "map_graph_documents", "map_nodes", "map_relationships", "merge_graphs", "end"
+    ]:
         """Determine the next step in the graph creation process."""
         if self.index < len(self.contents):
             return "map_graph_documents"

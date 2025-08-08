@@ -249,15 +249,23 @@ class DynamicActivationSupervisor(Agent):
             # Simple capability detection (can be enhanced)
             task_lower = task_description.lower()
 
-            if any(word in task_lower for word in ["calculate", "math", "compute", "number"]):
+            if any(
+                word in task_lower
+                for word in ["calculate", "math", "compute", "number"]
+            ):
                 capabilities.append("math")
             if any(word in task_lower for word in ["search", "find", "lookup", "web"]):
                 capabilities.append("search")
-            if any(word in task_lower for word in ["chart", "plot", "graph", "visualize"]):
+            if any(
+                word in task_lower for word in ["chart", "plot", "graph", "visualize"]
+            ):
                 capabilities.append("visualization")
             if any(word in task_lower for word in ["file", "read", "write", "process"]):
                 capabilities.append("file_processing")
-            if any(word in task_lower for word in ["data", "analyze", "process", "transform"]):
+            if any(
+                word in task_lower
+                for word in ["data", "analyze", "process", "transform"]
+            ):
                 capabilities.append("data_processing")
 
             return {
@@ -289,7 +297,9 @@ class DynamicActivationSupervisor(Agent):
 
         # Tool for discovering components
         @tool
-        def discover_components(query: str, max_results: int = 5) -> list[dict[str, Any]]:
+        def discover_components(
+            query: str, max_results: int = 5
+        ) -> list[dict[str, Any]]:
             """Discover components that match a query."""
             if self._discovery_agent:
                 # Use discovery agent if available
@@ -449,7 +459,9 @@ class DynamicActivationSupervisor(Agent):
         """
 
         # Execute through meta state for tracking
-        result = await self._meta_self.execute_agent(input_data=analysis_prompt, update_state=True)
+        result = await self._meta_self.execute_agent(
+            input_data=analysis_prompt, update_state=True
+        )
 
         # Parse capabilities from result
         capabilities = self._parse_capabilities(result.get("output", ""))
@@ -459,7 +471,9 @@ class DynamicActivationSupervisor(Agent):
 
         return {"capabilities_identified": capabilities, "analysis_complete": True}
 
-    async def _discover_components_node(self, state: DynamicActivationState) -> dict[str, Any]:
+    async def _discover_components_node(
+        self, state: DynamicActivationState
+    ) -> dict[str, Any]:
         """Discover components for missing capabilities."""
         discovered_components = []
 
@@ -488,7 +502,9 @@ class DynamicActivationSupervisor(Agent):
             "discovery_complete": True,
         }
 
-    async def _activate_components_node(self, state: DynamicActivationState) -> dict[str, Any]:
+    async def _activate_components_node(
+        self, state: DynamicActivationState
+    ) -> dict[str, Any]:
         """Activate components to satisfy missing capabilities."""
         activated_components = []
 
@@ -499,7 +515,10 @@ class DynamicActivationSupervisor(Agent):
                 item = state.registry.get_item(item_id)
                 if item and not item.is_active:
                     # Simple matching - check if capability is in description
-                    if capability in item.description.lower() or capability in item.name.lower():
+                    if (
+                        capability in item.description.lower()
+                        or capability in item.name.lower()
+                    ):
                         meta_state = state.activate_component(item_id)
                         if meta_state:
                             activated_components.append(item_id)
@@ -535,7 +554,9 @@ class DynamicActivationSupervisor(Agent):
         """
 
         # Execute through meta state
-        result = await self._meta_self.execute_agent(input_data=execution_prompt, update_state=True)
+        result = await self._meta_self.execute_agent(
+            input_data=execution_prompt, update_state=True
+        )
 
         return {
             "execution_result": result.get("output", ""),

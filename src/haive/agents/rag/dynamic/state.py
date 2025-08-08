@@ -9,7 +9,9 @@ from haive.agents.rag.base.state import BaseRAGState
 class DynamicRAGState(BaseRAGState):
     """State for Dynamic RAG."""
 
-    selected_sources: list[str] = Field(default_factory=list, description="Selected data sources")
+    selected_sources: list[str] = Field(
+        default_factory=list, description="Selected data sources"
+    )
     source_documents: dict[str, list[Document]] = Field(
         default_factory=dict, description="Documents by source"
     )

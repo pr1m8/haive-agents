@@ -17,8 +17,6 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.tools import tool
 from pydantic import BaseModel, Field
 
-from haive.agents.simple.agent_v3 import SimpleAgentV3
-
 
 # Structured output models for RAG
 class RetrievalResult(BaseModel):
@@ -26,7 +24,9 @@ class RetrievalResult(BaseModel):
 
     query: str = Field(description="Original search query")
     documents: list[str] = Field(description="Retrieved documents")
-    relevance_scores: list[float] = Field(description="Relevance scores for each document")
+    relevance_scores: list[float] = Field(
+        description="Relevance scores for each document"
+    )
     total_results: int = Field(description="Total number of results found")
 
 
@@ -73,10 +73,14 @@ class SimpleRAGAgent(SimpleAgentV3):
     """
 
     # Override default state schema to use MessagesState
-    state_schema: type = Field(default=MessagesState, description="RAG-specific state schema")
+    state_schema: type = Field(
+        default=MessagesState, description="RAG-specific state schema"
+    )
 
     # RAG-specific configuration
-    retrieval_top_k: int = Field(default=5, description="Number of documents to retrieve")
+    retrieval_top_k: int = Field(
+        default=5, description="Number of documents to retrieve"
+    )
     include_sources: bool = Field(default=True, description="Include source citations")
     min_confidence_threshold: float = Field(
         default=0.7, description="Minimum confidence for answers"
@@ -92,7 +96,9 @@ class SimpleRAGAgent(SimpleAgentV3):
 Always cite your sources and indicate confidence in your answers.
 If information is not available in the documents, say so clearly.""",
                 tools=[retrieve_documents],
-                structured_output_model=(AnswerWithSources if self.include_sources else None),
+                structured_output_model=(
+                    AnswerWithSources if self.include_sources else None
+                ),
             )
 
         # Set up RAG-specific prompt template
@@ -144,7 +150,10 @@ class IterativeRAGAgent(SimpleRAGAgent):
         # Add refinement prompt
         self.refinement_prompt = ChatPromptTemplate.from_messages(
             [
-                ("system", "You are refining a previous answer with additional context."),
+                (
+                    "system",
+                    "You are refining a previous answer with additional context.",
+                ),
                 (
                     "human",
                     """Previous Answer: {previous_answer}
@@ -169,9 +178,13 @@ class HybridRAGAgent(SimpleRAGAgent):
     - Combines results for comprehensive answers
     """
 
-    use_semantic_search: bool = Field(default=True, description="Enable semantic search")
+    use_semantic_search: bool = Field(
+        default=True, description="Enable semantic search"
+    )
     use_keyword_search: bool = Field(default=True, description="Enable keyword search")
-    use_knowledge_graph: bool = Field(default=False, description="Enable knowledge graph")
+    use_knowledge_graph: bool = Field(
+        default=False, description="Enable knowledge graph"
+    )
 
     def setup_agent(self) -> None:
         """Setup hybrid retrieval tools."""
@@ -262,7 +275,9 @@ async def example_iterative_rag():
     )
 
     # Complex query requiring refinement
-    result = await rag.arun("Explain the relationship between quantum computing and cryptography")
+    result = await rag.arun(
+        "Explain the relationship between quantum computing and cryptography"
+    )
 
     return result
 
@@ -271,10 +286,13 @@ async def example_hybrid_rag():
     """Example of hybrid retrieval."""
     # Create hybrid agent with all strategies
     rag = create_hybrid_rag_agent(
-        name="comprehensive_assistant", retrieval_strategies=["semantic", "keyword", "graph"]
+        name="comprehensive_assistant",
+        retrieval_strategies=["semantic", "keyword", "graph"],
     )
 
     # Query that benefits from multiple retrieval types
-    result = await rag.arun("Find all information about transformer architectures in NLP")
+    result = await rag.arun(
+        "Find all information about transformer architectures in NLP"
+    )
 
     return result

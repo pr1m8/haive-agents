@@ -1,6 +1,6 @@
 """Reflection agents using generic pre/post hook pattern."""
 
-from typing import Any, Generic, TypeVar, Literal
+from typing import Any, Generic, Literal, TypeVar
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.node.message_transformation_v2 import TransformationType
@@ -33,19 +33,35 @@ class PrePostMultiAgent(MultiAgent, Generic[TPreAgent, TMainAgent, TPostAgent]):
     """
 
     # Agent configuration
-    pre_agent: TPreAgent | None = Field(default=None, description="Pre-processing agent")
+    pre_agent: TPreAgent | None = Field(
+        default=None, description="Pre-processing agent"
+    )
     main_agent: TMainAgent = Field(..., description="Main processing agent")
-    post_agent: TPostAgent | None = Field(default=None, description="Post-processing agent")
+    post_agent: TPostAgent | None = Field(
+        default=None, description="Post-processing agent"
+    )
 
     # Message transformation config
-    use_pre_transform: bool = Field(default=False, description="Transform messages before main")
-    use_post_transform: bool = Field(default=False, description="Transform messages before post")
-    pre_transform_type: TransformationType = Field(default=TransformationType.AI_TO_HUMAN)
-    post_transform_type: TransformationType = Field(default=TransformationType.REFLECTION)
+    use_pre_transform: bool = Field(
+        default=False, description="Transform messages before main"
+    )
+    use_post_transform: bool = Field(
+        default=False, description="Transform messages before post"
+    )
+    pre_transform_type: TransformationType = Field(
+        default=TransformationType.AI_TO_HUMAN
+    )
+    post_transform_type: TransformationType = Field(
+        default=TransformationType.REFLECTION
+    )
 
     # Execution config
-    skip_pre_if_empty: bool = Field(default=True, description="Skip pre-agent if no input")
-    skip_post_if_empty: bool = Field(default=False, description="Skip post-agent if no output")
+    skip_pre_if_empty: bool = Field(
+        default=True, description="Skip pre-agent if no input"
+    )
+    skip_post_if_empty: bool = Field(
+        default=False, description="Skip post-agent if no output"
+    )
 
     def model_post_init(self, __context: Any) -> None:
         """Set up the agents list."""
@@ -65,7 +81,9 @@ class PrePostMultiAgent(MultiAgent, Generic[TPreAgent, TMainAgent, TPostAgent]):
         self.agents = {agent.name: agent for agent in agents_list}
 
 
-class StructuredOutputMultiAgent(PrePostMultiAgent[Agent, TMainAgent, StructuredOutputAgent]):
+class StructuredOutputMultiAgent(
+    PrePostMultiAgent[Agent, TMainAgent, StructuredOutputAgent]
+):
     """Any agent followed by structured output extraction.
 
     This is the pattern we already have:
@@ -75,7 +93,8 @@ class StructuredOutputMultiAgent(PrePostMultiAgent[Agent, TMainAgent, Structured
 
     # Always have post agent for structured output
     post_agent: StructuredOutputAgent = Field(
-        default_factory=lambda: StructuredOutputAgent(), description="Structured output extractor"
+        default_factory=lambda: StructuredOutputAgent(),
+        description="Structured output extractor",
     )
 
     # No message transform needed for structured output
@@ -113,12 +132,15 @@ class ReflectionMultiAgent(PrePostMultiAgent[Agent, TMainAgent, SimpleAgent]):
 
     # Reflection agent for post-processing
     post_agent: SimpleAgent = Field(
-        default_factory=lambda: SimpleAgent(name="reflector"), description="Reflection agent"
+        default_factory=lambda: SimpleAgent(name="reflector"),
+        description="Reflection agent",
     )
 
     # Always use reflection transform
     use_post_transform: bool = Field(default=True)
-    post_transform_type: TransformationType = Field(default=TransformationType.REFLECTION)
+    post_transform_type: TransformationType = Field(
+        default=TransformationType.REFLECTION
+    )
 
     # Reflection config
     reflection_config: ReflectionConfig = Field(default_factory=ReflectionConfig)
@@ -146,7 +168,9 @@ class ReflectionMultiAgent(PrePostMultiAgent[Agent, TMainAgent, SimpleAgent]):
         return cls(name=name, main_agent=main_agent, post_agent=reflector, **kwargs)
 
 
-class GradedReflectionMultiAgent(PrePostMultiAgent[SimpleAgent, TMainAgent, SimpleAgent]):
+class GradedReflectionMultiAgent(
+    PrePostMultiAgent[SimpleAgent, TMainAgent, SimpleAgent]
+):
     """Grade → Main → Reflect pattern.
 
     Pattern:
@@ -163,12 +187,15 @@ class GradedReflectionMultiAgent(PrePostMultiAgent[SimpleAgent, TMainAgent, Simp
 
     # Post-agent for reflection
     post_agent: SimpleAgent = Field(
-        default_factory=lambda: SimpleAgent(name="reflector"), description="Reflection agent"
+        default_factory=lambda: SimpleAgent(name="reflector"),
+        description="Reflection agent",
     )
 
     # Transform for reflection
     use_post_transform: bool = Field(default=True)
-    post_transform_type: TransformationType = Field(default=TransformationType.REFLECTION)
+    post_transform_type: TransformationType = Field(
+        default=TransformationType.REFLECTION
+    )
 
     # Grading output model
     grading_model: type[BaseModel] = Field(default=GradingResult)
@@ -198,11 +225,17 @@ class GradedReflectionMultiAgent(PrePostMultiAgent[SimpleAgent, TMainAgent, Simp
         # Create reflection agent
         reflector = SimpleAgent(
             name=f"{main_agent.name}_reflector",
-            engine=AugLLMConfig(system_message=reflection_system_prompt, temperature=0.3),
+            engine=AugLLMConfig(
+                system_message=reflection_system_prompt, temperature=0.3
+            ),
         )
 
         return cls(
-            name=name, pre_agent=grader, main_agent=main_agent, post_agent=reflector, **kwargs
+            name=name,
+            pre_agent=grader,
+            main_agent=main_agent,
+            post_agent=reflector,
+            **kwargs,
         )
 
 
@@ -212,7 +245,9 @@ class GradedReflectionMultiAgent(PrePostMultiAgent[SimpleAgent, TMainAgent, Simp
 class ReflectionAgent(SimpleAgent):
     """Simple reflection agent for improving responses."""
 
-    reflection_mode: str = Field(default="improve", description="Mode: improve, critique, or both")
+    reflection_mode: str = Field(
+        default="improve", description="Mode: improve, critique, or both"
+    )
 
     def model_post_init(self, __context: Any) -> None:
         """Set up reflection prompt."""
@@ -293,7 +328,9 @@ def create_graded_reflection_agent(
 ) -> GradingAgent | GradedReflectionMultiAgent:
     """Create grading agent or full graded reflection system."""
     if main_agent:
-        return GradedReflectionMultiAgent.create(main_agent=main_agent, name=name, **kwargs)
+        return GradedReflectionMultiAgent.create(
+            main_agent=main_agent, name=name, **kwargs
+        )
     # Just return grading agent
     return GradingAgent(
         name=name,
@@ -305,14 +342,20 @@ def create_graded_reflection_agent(
 def create_expert_agent(
     name: str,
     domain: str,
-    expertise_level: Literal["beginner", "intermediate", "expert", "world-class"] = "expert",
+    expertise_level: Literal[
+        "beginner", "intermediate", "expert", "world-class"
+    ] = "expert",
     **kwargs,
 ) -> ExpertAgent:
     """Create an expert agent."""
-    expertise_config = ExpertiseConfig(domain=domain, expertise_level=expertise_level, **kwargs)
+    expertise_config = ExpertiseConfig(
+        domain=domain, expertise_level=expertise_level, **kwargs
+    )
 
     return ExpertAgent(
-        name=name, expertise_config=expertise_config, engine=AugLLMConfig(temperature=0.7)
+        name=name,
+        expertise_config=expertise_config,
+        engine=AugLLMConfig(temperature=0.7),
     )
 
 

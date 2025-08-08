@@ -1,6 +1,6 @@
 """Tree of Thoughts Multi-Agent Implementation.
 
-This module implements Tree of Thoughts as a multi-agent system using EnhancedMultiAgentV4.
+This module implements Tree of Thoughts as a multi-agent system using MultiAgent.
 Each stage of the TOT algorithm is handled by a specialized agent.
 """
 
@@ -10,7 +10,7 @@ from typing import Any
 from haive.core.engine.aug_llm import AugLLMConfig
 from pydantic import BaseModel, Field
 
-from haive.agents.simple.agent_v3 import SimpleAgentV3
+from haive.agents.simple.agent import SimpleAgent
 
 # ===================================
 # Structured Output Models
@@ -20,7 +20,9 @@ from haive.agents.simple.agent_v3 import SimpleAgentV3
 class ProblemAnalysis(BaseModel):
     """Analysis of the problem to solve."""
 
-    problem_type: str = Field(description="Type of problem (math, logic, planning, etc.)")
+    problem_type: str = Field(
+        description="Type of problem (math, logic, planning, etc.)"
+    )
     key_constraints: list[str] = Field(description="Important constraints to consider")
     success_criteria: str = Field(description="What constitutes a valid solution")
     approach_hints: list[str] = Field(description="Suggested approaches to try")
@@ -48,7 +50,9 @@ class CandidateEvaluation(BaseModel):
 class BeamSelection(BaseModel):
     """Selection of best candidates for next iteration."""
 
-    selected_candidates: list[dict[str, Any]] = Field(description="Top candidates with scores")
+    selected_candidates: list[dict[str, Any]] = Field(
+        description="Top candidates with scores"
+    )
     should_continue: bool = Field(description="Whether to continue searching")
     reasoning: str = Field(description="Reasoning for selection and continuation")
 
@@ -102,7 +106,7 @@ class TreeOfThoughtsMultiAgent:
         }
 
         # Create specialized agents
-        self.problem_analyzer = SimpleAgentV3(
+        self.problem_analyzer = SimpleAgent(
             name="problem_analyzer",
             engine=AugLLMConfig(
                 temperature=temps["analyzer"],
@@ -115,7 +119,7 @@ class TreeOfThoughtsMultiAgent:
             ),
         )
 
-        self.candidate_generator = SimpleAgentV3(
+        self.candidate_generator = SimpleAgent(
             name="candidate_generator",
             engine=AugLLMConfig(
                 temperature=temps["generator"],
@@ -126,7 +130,7 @@ class TreeOfThoughtsMultiAgent:
             ),
         )
 
-        self.solution_evaluator = SimpleAgentV3(
+        self.solution_evaluator = SimpleAgent(
             name="solution_evaluator",
             engine=AugLLMConfig(
                 temperature=temps["evaluator"],
@@ -139,7 +143,7 @@ class TreeOfThoughtsMultiAgent:
             ),
         )
 
-        self.beam_selector = SimpleAgentV3(
+        self.beam_selector = SimpleAgent(
             name="beam_selector",
             engine=AugLLMConfig(
                 temperature=temps["selector"],
@@ -152,7 +156,7 @@ class TreeOfThoughtsMultiAgent:
             ),
         )
 
-        self.solution_synthesizer = SimpleAgentV3(
+        self.solution_synthesizer = SimpleAgent(
             name="solution_synthesizer",
             engine=AugLLMConfig(
                 temperature=temps["synthesizer"],
@@ -211,7 +215,9 @@ class TreeOfThoughtsMultiAgent:
                 Generate {self.expansion_count} new candidate solutions that improve upon or explore different approaches from the seed.
                 """
 
-                generation_result = await self.candidate_generator.arun(generation_prompt)
+                generation_result = await self.candidate_generator.arun(
+                    generation_prompt
+                )
 
                 # Step 3: Evaluate each generated candidate
 
@@ -328,7 +334,9 @@ Candidate {i + 1}:
             all_candidates.extend(depth_data["candidates"])
 
         # Sort by score and get top 5
-        sorted_candidates = sorted(all_candidates, key=lambda x: x["score"], reverse=True)[:5]
+        sorted_candidates = sorted(
+            all_candidates, key=lambda x: x["score"], reverse=True
+        )[:5]
 
         formatted = []
         for i, c in enumerate(sorted_candidates):
@@ -381,7 +389,9 @@ async def solve_with_tot_multi_agent(
     Returns:
         Solution dictionary
     """
-    tot = TreeOfThoughtsMultiAgent(max_depth=max_depth, beam_width=beam_width, threshold=threshold)
+    tot = TreeOfThoughtsMultiAgent(
+        max_depth=max_depth, beam_width=beam_width, threshold=threshold
+    )
     return await tot.solve(problem)
 
 

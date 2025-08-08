@@ -10,6 +10,7 @@ proper Haive base agent infrastructure:
 """
 
 from typing import Any, Literal
+
 from haive.core.common.mixins.tool_route_mixin import ToolRouteMixin
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.engine.retriever import BaseRetrieverConfig
@@ -18,6 +19,7 @@ from langchain_core.documents import Document
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.tools import BaseTool, StructuredTool
 from pydantic import BaseModel, Field, computed_field, model_validator
+
 from haive.agents.react.agent import ReactAgent
 
 
@@ -40,7 +42,9 @@ class QueryRewrite(BaseModel):
 class AgenticRAGState(BaseModel):
     """State schema for agentic RAG with retrieval metadata."""
 
-    messages: list[Any] = Field(default_factory=list, description="Conversation messages")
+    messages: list[Any] = Field(
+        default_factory=list, description="Conversation messages"
+    )
     retrieved_documents: list[Document] = Field(
         default_factory=list, description="Retrieved documents"
     )
@@ -50,8 +54,12 @@ class AgenticRAGState(BaseModel):
     query_rewrites: list[QueryRewrite] = Field(
         default_factory=list, description="Query rewrite history"
     )
-    retrieval_attempts: int = Field(default=0, description="Number of retrieval attempts")
-    max_retrieval_attempts: int = Field(default=3, description="Maximum retrieval attempts")
+    retrieval_attempts: int = Field(
+        default=0, description="Number of retrieval attempts"
+    )
+    max_retrieval_attempts: int = Field(
+        default=3, description="Maximum retrieval attempts"
+    )
 
 
 class AgenticRAGAgent(ReactAgent, ToolRouteMixin):
@@ -144,7 +152,10 @@ class AgenticRAGAgent(ReactAgent, ToolRouteMixin):
                     docs = []
                 if docs:
                     combined_content = "\\n\\n".join(
-                        [f"Document {i + 1}: {doc.page_content}" for i, doc in enumerate(docs[:5])]
+                        [
+                            f"Document {i + 1}: {doc.page_content}"
+                            for i, doc in enumerate(docs[:5])
+                        ]
                     )
                     return f"Retrieved {len(docs)} documents:\\n{combined_content}"
                 return "No relevant documents found for the query."
@@ -163,7 +174,9 @@ class AgenticRAGAgent(ReactAgent, ToolRouteMixin):
         def grade_document_relevance(context: str, question: str) -> str:
             """Grade whether retrieved documents are relevant to the question."""
             try:
-                result = self.grader_engine.invoke({"context": context, "question": question})
+                result = self.grader_engine.invoke(
+                    {"context": context, "question": question}
+                )
                 if hasattr(result, "binary_score"):
                     grade = result
                 elif isinstance(result, dict) and "binary_score" in result:
@@ -195,9 +208,7 @@ class AgenticRAGAgent(ReactAgent, ToolRouteMixin):
                     rewrite = QueryRewrite(**result)
                 else:
                     return f"Could not rewrite query: {original_query}"
-                return (
-                    f"Rewritten query: {rewrite.rewritten_query}\\nChanges: {rewrite.changes_made}"
-                )
+                return f"Rewritten query: {rewrite.rewritten_query}\\nChanges: {rewrite.changes_made}"
             except Exception as e:
                 return f"Error rewriting query: {e!s}"
 
@@ -252,7 +263,9 @@ class AgenticRAGAgent(ReactAgent, ToolRouteMixin):
         instead of complex __init__ logic.
         """
         retriever_engine = BaseRetrieverConfig.from_documents(
-            documents=documents, embedding_config=embedding_config, name="Agentic RAG Retriever"
+            documents=documents,
+            embedding_config=embedding_config,
+            name="Agentic RAG Retriever",
         )
         llm_engine = AugLLMConfig(
             llm_config=llm_config,
@@ -313,16 +326,25 @@ class AgenticRAGAgent(ReactAgent, ToolRouteMixin):
 
 
 def create_agentic_rag_agent(
-    documents: list[Document], llm_config: LLMConfig, embedding_config: Any | None = None, **kwargs
+    documents: list[Document],
+    llm_config: LLMConfig,
+    embedding_config: Any | None = None,
+    **kwargs,
 ) -> AgenticRAGAgent:
     """Create agentic RAG agent with sensible defaults."""
     return AgenticRAGAgent.from_documents(
-        documents=documents, llm_config=llm_config, embedding_config=embedding_config, **kwargs
+        documents=documents,
+        llm_config=llm_config,
+        embedding_config=embedding_config,
+        **kwargs,
     )
 
 
 def create_memory_aware_agentic_rag(
-    documents: list[Document], llm_config: LLMConfig, memory_config: Any | None = None, **kwargs
+    documents: list[Document],
+    llm_config: LLMConfig,
+    memory_config: Any | None = None,
+    **kwargs,
 ) -> AgenticRAGAgent:
     """Create agentic RAG with long-term memory capabilities."""
     agent = create_agentic_rag_agent(documents, llm_config, **kwargs)

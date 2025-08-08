@@ -102,7 +102,9 @@ def example_with_branching() -> Any:
     my_chain = (
         ExtendedChainAgent.from_list([classifier])
         .branch(
-            lambda s: s.get("type", "simple"), simple=simple_processor, complex=complex_processor
+            lambda s: s.get("type", "simple"),
+            simple=simple_processor,
+            complex=complex_processor,
         )
         .add_edge("node_1->node_3")  # simple to finalizer
         .add_edge("node_2->node_3")  # complex to finalizer

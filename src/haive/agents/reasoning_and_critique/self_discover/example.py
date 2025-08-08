@@ -21,7 +21,9 @@ def example_math_problem():
     """Example using SelfDiscover on a math problem."""
     problem = "Lisa has 10 apples. She gives 3 apples to her friend and then buys 5 more apples from the store. How many apples does Lisa have now?"
 
-    agent = create_self_discover_agent(name="math_problem_solver", model="gpt-4o", temperature=0.0)
+    agent = create_self_discover_agent(
+        name="math_problem_solver", model="gpt-4o", temperature=0.0
+    )
 
     agent.run(problem)
     # Print full reasoning process
@@ -161,7 +163,10 @@ def create_custom_domain_agent(
 
     # Create and return the agent
     return create_self_discover_agent(
-        name=f"{domain}_specialist", model=model, temperature=0.0, reasoning_modules=modules
+        name=f"{domain}_specialist",
+        model=model,
+        temperature=0.0,
+        reasoning_modules=modules,
     )
 
 
@@ -330,7 +335,9 @@ def example_advanced_configuration():
     # Print results
 
 
-def analyze_reasoning_process(agent_results: list[dict], output_file: str | None = None):
+def analyze_reasoning_process(
+    agent_results: list[dict], output_file: str | None = None
+):
     """Analyze the reasoning process across multiple problems to identify patterns.
 
     Args:
@@ -356,7 +363,9 @@ def analyze_reasoning_process(agent_results: list[dict], output_file: str | None
         if result.get("error"):
             analysis["failed_problems"] += 1
             error = result.get("error")
-            analysis["common_errors"][error] = analysis["common_errors"].get(error, 0) + 1
+            analysis["common_errors"][error] = (
+                analysis["common_errors"].get(error, 0) + 1
+            )
         else:
             analysis["successful_problems"] += 1
 

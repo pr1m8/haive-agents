@@ -4,7 +4,6 @@ This module provides utilities to handle LangGraph's AddableValuesDict
 return type and extract structured output cleanly.
 """
 
-import re
 from typing import Any, Dict, Generic, Optional, Type, TypeVar, Union
 
 from langgraph.pregel.io import AddableValuesDict
@@ -65,21 +64,24 @@ class StructuredOutputHandler(Generic[T]):
         ]
 
     def _generate_field_name(self) -> str:
-        """Generate field name from model name using snake_case."""
-        name = self.output_model.__name__
+        """Generate field name from model name using robust naming utilities."""
+        from haive.core.utils.naming import sanitize_tool_name
+
+        raw_name = self.output_model.__name__
+
+        # Use robust naming utilities to handle generic classes properly
+        base_name = sanitize_tool_name(raw_name)
+
         # Handle common suffixes
-        if name.endswith("Result"):
-            name = name[:-6]  # Remove 'Result'
-        elif name.endswith("Output"):
-            name = name[:-6]  # Remove 'Output'
+        if base_name.endswith("_result"):
+            name = base_name[:-7]  # Remove '_result'
+        elif base_name.endswith("_output"):
+            name = base_name[:-7]  # Remove '_output'
+        else:
+            name = base_name
 
-        # Convert CamelCase to snake_case
-        name = re.sub("(.)([A-Z][a-z]+)", r"\1_\2", name)
-        name = re.sub("([a-z0-9])([A-Z])", r"\1_\2", name).lower()
-
-        # Add _result suffix if not present
-        if not name.endswith("_result") and not name.endswith("_output"):
-            name += "_result"
+        # Add _result suffix
+        name += "_result"
 
         return name
 

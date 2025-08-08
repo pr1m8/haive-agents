@@ -147,7 +147,9 @@ def create_math_tot_agent(
         numbers = len(re.findall(r"\b\d+(?:\.\d+)?\b", solution))
 
         # Check for a clear final answer
-        has_answer = bool(re.search(r"answer|result|solution|=\s*\d+(?:\.\d+)?$", solution.lower()))
+        has_answer = bool(
+            re.search(r"answer|result|solution|=\s*\d+(?:\.\d+)?$", solution.lower())
+        )
 
         # Calculate a base score
         base_score = min(1.0, (equations + numbers) / 20)  # Normalize math content
@@ -213,14 +215,18 @@ def create_game24_tot_agent(
         formula: str = Field(
             description="Mathematical formula using all four numbers and basic operations"
         )
-        reasoning: str = Field(description="Step-by-step reasoning for how this formula works")
+        reasoning: str = Field(
+            description="Step-by-step reasoning for how this formula works"
+        )
 
         @field_validator("formula")
         @classmethod
         def validate_formula(cls, v) -> Any:
             """Validate the formula has basic math operators."""
             if not any(op in v for op in ["+", "-", "*", "/"]):
-                raise ValueError("Formula must contain at least one mathematical operator")
+                raise ValueError(
+                    "Formula must contain at least one mathematical operator"
+                )
             return v
 
     class EquationList(BaseModel):
@@ -337,7 +343,9 @@ def create_game24_tot_agent(
     class ScoreResult(BaseModel):
         """Score for a Game of 24 solution."""
 
-        score: float = Field(description="Score between 0.0 and 1.0, with 1.0 being exactly 24")
+        score: float = Field(
+            description="Score between 0.0 and 1.0, with 1.0 being exactly 24"
+        )
         feedback: str = Field(description="Explanation of the score and correctness")
 
     score_llm_config = AugLLMConfig(

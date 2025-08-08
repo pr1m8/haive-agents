@@ -30,7 +30,9 @@ class AgentRegistry:
     def register_agent(self, agent: ReactAgent, capability: str | None = None):
         """Register an agent as available."""
         self.available_agents[agent.name] = agent
-        self.agent_capabilities[agent.name] = capability or f"General tasks for {agent.name}"
+        self.agent_capabilities[agent.name] = (
+            capability or f"General tasks for {agent.name}"
+        )
         logger.info(f"Registered {agent.name} in registry")
 
     def get_agent(self, agent_name: str) -> ReactAgent | None:
@@ -183,13 +185,17 @@ class RegistrySupervisor(ReactAgent):
 
         logger.info("✅ Registry supervisor initialized")
 
-    def populate_registry(self, agents: list[ReactAgent], capabilities: list[str] | None = None):
+    def populate_registry(
+        self, agents: list[ReactAgent], capabilities: list[str] | None = None
+    ):
         """Populate the agent registry with available agents."""
         if capabilities and len(capabilities) != len(agents):
             capabilities = None
 
         for i, agent in enumerate(agents):
-            capability = capabilities[i] if capabilities else f"General tasks for {agent.name}"
+            capability = (
+                capabilities[i] if capabilities else f"General tasks for {agent.name}"
+            )
             self._registry.register_agent(agent, capability)
 
         logger.info(f"✅ Populated registry with {len(agents)} agents")
@@ -215,7 +221,9 @@ class RegistrySupervisor(ReactAgent):
             if name == "END":
                 descriptions.append("End the conversation")
             else:
-                capability = self._registry.agent_capabilities.get(name, f"Tasks for {name}")
+                capability = self._registry.agent_capabilities.get(
+                    name, f"Tasks for {name}"
+                )
                 descriptions.append(f"Route to {name}: {capability}")
 
         self._choice_model.option_names = agent_names
@@ -242,7 +250,9 @@ class RegistrySupervisor(ReactAgent):
 
         # Routing
         graph.add_conditional_edges(
-            "supervisor", self._route_from_supervisor, {"executor": "executor", "END": "__end__"}
+            "supervisor",
+            self._route_from_supervisor,
+            {"executor": "executor", "END": "__end__"},
         )
 
         # Executor loops back
@@ -379,7 +389,10 @@ Available in registry: {list(self._registry.get_available_agents().keys())}"""
             if isinstance(msg, ToolMessage):
                 if "select_active_agent" in getattr(msg, "name", ""):
                     agent_name = msg.content
-                    if agent_name != "NO_ACTIVE_AGENTS" and agent_name in self._active_agents:
+                    if (
+                        agent_name != "NO_ACTIVE_AGENTS"
+                        and agent_name in self._active_agents
+                    ):
                         return agent_name
                 elif "get_agent_from_registry" in getattr(msg, "name", ""):
                     # Agent was retrieved, should be in active now
@@ -455,7 +468,9 @@ if __name__ == "__main__":
             system_message="You are a research specialist. Find and analyze information.",
             temperature=0.3,
         )
-        research_agent = ReactAgent(name="research_agent", engine=research_engine, tools=[])
+        research_agent = ReactAgent(
+            name="research_agent", engine=research_engine, tools=[]
+        )
 
         # Coding agent
         coding_engine = AugLLMConfig(

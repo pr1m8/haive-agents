@@ -178,7 +178,9 @@ class ConditionalRAGMultiAgent(ConditionalAgent):
             destinations={
                 "grade": self.grading_agent,
                 "generate": self.answer_agent,
-                "refine": (self.query_refiner if self.query_refiner else self.retrieval_agent),
+                "refine": (
+                    self.query_refiner if self.query_refiner else self.retrieval_agent
+                ),
             },
             default=self.grading_agent,
         )
@@ -213,7 +215,9 @@ class IterativeRAGMultiAgent(SequentialAgent):
     ):
         # Create iterative grading agent with custom callable if provided
         if not iterative_grader:
-            iterative_grader = IterativeDocumentGradingAgent(custom_grader=custom_grader_callable)
+            iterative_grader = IterativeDocumentGradingAgent(
+                custom_grader=custom_grader_callable
+            )
 
         agents = [
             retrieval_agent or SIMPLE_RAG_AGENT,
@@ -279,7 +283,9 @@ class AdaptiveRAGMultiAgent(ConditionalAgent):
     ):
         self.simple_rag = simple_rag or BaseRAGMultiAgent(name="Simple RAG")
         self.complex_rag = complex_rag or IterativeRAGMultiAgent(name="Complex RAG")
-        self.consensus_rag = consensus_rag or ParallelRAGMultiAgent(name="Consensus RAG")
+        self.consensus_rag = consensus_rag or ParallelRAGMultiAgent(
+            name="Consensus RAG"
+        )
 
         agents = [self.simple_rag, self.complex_rag, self.consensus_rag]
 
@@ -401,7 +407,9 @@ def validate_multi_agent_compatibility(agents: list[Any]) -> dict[str, Any]:
         "individual_results": compatibility_results,
         "total_connections": len(compatibility_results),
         "compatible_connections": sum(
-            1 for result in compatibility_results.values() if result.get("compatible", False)
+            1
+            for result in compatibility_results.values()
+            if result.get("compatible", False)
         ),
     }
 
@@ -427,7 +435,9 @@ agent_list = [SIMPLE_RAG_AGENT, SIMPLE_RAG_ANSWER_AGENT]
 
 
 def create_sequential_rag_system(
-    documents: list[Document] | None = None, use_grading: bool = True, use_citations: bool = False
+    documents: list[Document] | None = None,
+    use_grading: bool = True,
+    use_citations: bool = False,
 ) -> SequentialAgent:
     """Create a sequential RAG system with configurable components."""
     # Create agents

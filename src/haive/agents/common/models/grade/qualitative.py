@@ -6,7 +6,9 @@ text-based assessments with sentiment analysis and quality indicators.
 
 from enum import Enum
 from typing import Any
+
 from pydantic import Field, field_validator, model_validator
+
 from haive.agents.common.models.grade.base import Grade, GradeType
 
 
@@ -89,10 +91,13 @@ class QualitativeGrade(Grade):
     """
 
     grade_type: GradeType = Field(
-        default=GradeType.QUALITATIVE, description="Type of grade model (always qualitative)"
+        default=GradeType.QUALITATIVE,
+        description="Type of grade model (always qualitative)",
     )
     quality_level: QualityLevel = Field(
-        ..., description="Overall quality assessment level", examples=["good", "excellent", "fair"]
+        ...,
+        description="Overall quality assessment level",
+        examples=["good", "excellent", "fair"],
     )
     sentiment: SentimentType = Field(
         default=SentimentType.NEUTRAL,
@@ -174,12 +179,21 @@ class QualitativeGrade(Grade):
             ValueError: If feedback is inconsistent with quality level
         """
         quality_to_sentiment = {
-            QualityLevel.EXCEPTIONAL: [SentimentType.VERY_POSITIVE, SentimentType.POSITIVE],
-            QualityLevel.EXCELLENT: [SentimentType.VERY_POSITIVE, SentimentType.POSITIVE],
+            QualityLevel.EXCEPTIONAL: [
+                SentimentType.VERY_POSITIVE,
+                SentimentType.POSITIVE,
+            ],
+            QualityLevel.EXCELLENT: [
+                SentimentType.VERY_POSITIVE,
+                SentimentType.POSITIVE,
+            ],
             QualityLevel.GOOD: [SentimentType.POSITIVE, SentimentType.NEUTRAL],
             QualityLevel.FAIR: [SentimentType.NEUTRAL, SentimentType.NEGATIVE],
             QualityLevel.POOR: [SentimentType.NEGATIVE, SentimentType.VERY_NEGATIVE],
-            QualityLevel.UNACCEPTABLE: [SentimentType.NEGATIVE, SentimentType.VERY_NEGATIVE],
+            QualityLevel.UNACCEPTABLE: [
+                SentimentType.NEGATIVE,
+                SentimentType.VERY_NEGATIVE,
+            ],
         }
         expected_sentiments = quality_to_sentiment[self.quality_level]
         if self.sentiment not in expected_sentiments:

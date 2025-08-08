@@ -20,7 +20,12 @@ from haive.agents.simple import SimpleAgent
 class FLAREAgentV2(MultiAgent, StateConfigMixin):
     """FLARE V2 - Configuration stored in FLAREState."""
 
-    def __init__(self, uncertainty_threshold: float = 0.3, max_retrieval_rounds: int = 3, **kwargs):
+    def __init__(
+        self,
+        uncertainty_threshold: float = 0.3,
+        max_retrieval_rounds: int = 3,
+        **kwargs,
+    ):
         generation_monitor = SimpleAgent(
             name="generation_monitor",
             instructions="""
@@ -78,7 +83,10 @@ class FLAREAgentV2(MultiAgent, StateConfigMixin):
         ]
 
         super().__init__(
-            agents=agents, execution_mode="conditional", state_schema=FLAREState, **kwargs
+            agents=agents,
+            execution_mode="conditional",
+            state_schema=FLAREState,
+            **kwargs,
         )
 
         self._initial_config = {
@@ -167,7 +175,10 @@ class DynamicRAGAgentV2(MultiAgent, StateConfigMixin):
         ]
 
         super().__init__(
-            agents=agents, execution_mode="sequential", state_schema=DynamicRAGState, **kwargs
+            agents=agents,
+            execution_mode="sequential",
+            state_schema=DynamicRAGState,
+            **kwargs,
         )
 
         self._initial_config = {
@@ -267,7 +278,10 @@ class DebateRAGAgentV2(MultiAgent, StateConfigMixin):
         agents.append(synthesis_judge)
 
         super().__init__(
-            agents=agents, execution_mode="conditional", state_schema=DebateRAGState, **kwargs
+            agents=agents,
+            execution_mode="conditional",
+            state_schema=DebateRAGState,
+            **kwargs,
         )
 
         self._initial_config = {

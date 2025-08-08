@@ -69,7 +69,9 @@ def expansion_workflow(state: ToTState) -> dict[str, Any]:
                 candidate = Candidate(
                     content=candidate_data,
                     depth=state.depth,
-                    parent_id=(state.seed.id if hasattr(state, "seed") and state.seed else None),
+                    parent_id=(
+                        state.seed.id if hasattr(state, "seed") and state.seed else None
+                    ),
                     expansion_index=i,
                 )
                 new_candidates.append(candidate)
@@ -143,7 +145,9 @@ def control_workflow(state: ToTState) -> dict[str, Any]:
                     "depth": 1,  # Increment depth
                 }
 
-                if best and (not state.best_solution or best.score > state.best_solution.score):
+                if best and (
+                    not state.best_solution or best.score > state.best_solution.score
+                ):
                     updates["best_solution"] = best
 
                 return updates
@@ -245,7 +249,11 @@ def create_tree_of_thoughts(
 
 # Convenience function for common use case
 def solve_with_tot(
-    problem: str, problem_type: str | None = None, max_depth: int = 5, beam_size: int = 3, **kwargs
+    problem: str,
+    problem_type: str | None = None,
+    max_depth: int = 5,
+    beam_size: int = 3,
+    **kwargs,
 ) -> dict[str, Any]:
     """Solve a problem using Tree of Thoughts."""
     system = create_tree_of_thoughts(max_depth=max_depth, beam_size=beam_size, **kwargs)

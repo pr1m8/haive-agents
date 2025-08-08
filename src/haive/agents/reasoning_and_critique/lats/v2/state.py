@@ -9,7 +9,8 @@ from haive.agents.reasoning_and_critique.lats.v2.models import TreeNode
 
 
 def update_nodes(
-    existing: dict[str, TreeNode] | None = None, updates: dict[str, TreeNode] | None = None
+    existing: dict[str, TreeNode] | None = None,
+    updates: dict[str, TreeNode] | None = None,
 ) -> dict[str, TreeNode]:
     """Custom reducer for tree nodes."""
     if existing is None:
@@ -36,12 +37,20 @@ class LATSState(MessagesState):
     max_depth: int = Field(default=5, description="Maximum tree depth")
     max_rollouts: int = Field(default=10, description="Maximum number of expansions")
     rollouts_completed: Annotated[int, operator.add] = Field(default=0)
-    exploration_weight: float = Field(default=1.0, description="UCT exploration parameter")
-    n_candidates: int = Field(default=5, description="Number of candidates per expansion")
+    exploration_weight: float = Field(
+        default=1.0, description="UCT exploration parameter"
+    )
+    n_candidates: int = Field(
+        default=5, description="Number of candidates per expansion"
+    )
 
     # Current search state
-    current_node_id: str | None = Field(default=None, description="Node being processed")
-    candidate_nodes: list[TreeNode] = Field(default_factory=list, description="Nodes to evaluate")
+    current_node_id: str | None = Field(
+        default=None, description="Node being processed"
+    )
+    candidate_nodes: list[TreeNode] = Field(
+        default_factory=list, description="Nodes to evaluate"
+    )
 
     # Results
     best_solution_id: str | None = Field(default=None)
@@ -80,7 +89,9 @@ class LATSState(MessagesState):
             if node.messages:
                 trajectory.append(f"Step {node.depth}:")
                 for msg in node.messages:
-                    trajectory.append(f"  {msg.get('role', 'unknown')}: {msg.get('content', '')}")
+                    trajectory.append(
+                        f"  {msg.get('role', 'unknown')}: {msg.get('content', '')}"
+                    )
 
             if node.reflection_text:
                 trajectory.append(

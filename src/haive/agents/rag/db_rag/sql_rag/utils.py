@@ -107,7 +107,9 @@ def get_all_toolkit_tools(toolkit: SQLDatabaseToolkit) -> list[BaseTool]:
     return toolkit.get_tools()
 
 
-def create_tool_node_with_fallback(tools: BaseTool | list[BaseTool]) -> RunnableWithFallbacks:
+def create_tool_node_with_fallback(
+    tools: BaseTool | list[BaseTool],
+) -> RunnableWithFallbacks:
     """Create a ToolNode with a fallback to handle errors gracefully.
 
     This function wraps tools in a ToolNode with error handling that
@@ -174,7 +176,8 @@ def handle_tool_error(state: dict[str, Any]) -> dict[str, Any]:
         return {
             "messages": [
                 ToolMessage(
-                    content=f"Error: {error!r}\nPlease fix your mistakes.", tool_call_id=tc["id"]
+                    content=f"Error: {error!r}\nPlease fix your mistakes.",
+                    tool_call_id=tc["id"],
                 )
                 for tc in tool_calls
             ]

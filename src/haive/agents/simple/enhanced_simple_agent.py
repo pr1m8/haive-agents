@@ -17,7 +17,7 @@ from langchain_core.messages import AIMessage
 from langgraph.graph import END, START
 from pydantic import Field, model_validator
 
-from haive.agents.base.enhanced_agent import Agent
+from haive.agents.base.agent import Agent
 
 logger = logging.getLogger(__name__)
 
@@ -83,9 +83,13 @@ class EnhancedSimpleAgent(Agent[AugLLMConfig]):
         default=None, ge=1, description="Maximum tokens for LLM responses"
     )
 
-    system_message: str | None = Field(default=None, description="System message for the LLM")
+    system_message: str | None = Field(
+        default=None, description="System message for the LLM"
+    )
 
-    tools: list[Any] = Field(default_factory=list, description="Tools available to the agent")
+    tools: list[Any] = Field(
+        default_factory=list, description="Tools available to the agent"
+    )
 
     # ========================================================================
     # ENGINE SETUP - ENHANCED PATTERN

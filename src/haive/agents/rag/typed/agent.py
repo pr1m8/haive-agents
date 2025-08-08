@@ -195,13 +195,17 @@ class TypedRAGAgent(BaseRAGAgent):
                     "main_query": query,
                     "category": category,
                     "subquery_results": formatted_results,
-                    "filtered_documents": [doc.page_content for doc in filtered_documents],
+                    "filtered_documents": [
+                        doc.page_content for doc in filtered_documents
+                    ],
                 }
             )
 
             if isinstance(aggregation_result, str):
                 aggregated_answer = aggregation_result
-            elif isinstance(aggregation_result, dict) and "answer" in aggregation_result:
+            elif (
+                isinstance(aggregation_result, dict) and "answer" in aggregation_result
+            ):
                 aggregated_answer = aggregation_result["answer"]
             else:
                 aggregated_answer = str(aggregation_result)
@@ -219,7 +223,9 @@ class TypedRAGAgent(BaseRAGAgent):
         documents = state["filtered_documents"]
 
         if not documents:
-            return {"answer": "I couldn't find any relevant information to answer your question."}
+            return {
+                "answer": "I couldn't find any relevant information to answer your question."
+            }
 
         # Use the answer generation component from src.config
         answer_generator = self.config.answer_generation_config.create_runnable()
@@ -238,7 +244,9 @@ class TypedRAGAgent(BaseRAGAgent):
 
         except Exception as e:
             logger.exception(f"Error generating answer: {e}")
-            return {"answer": "I encountered an error while generating an answer to your question."}
+            return {
+                "answer": "I encountered an error while generating an answer to your question."
+            }
 
     def setup_workflow(self) -> None:
         """Set up the Typed-RAG workflow."""

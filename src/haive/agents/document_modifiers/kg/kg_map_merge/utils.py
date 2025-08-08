@@ -9,10 +9,14 @@ from langchain_core.documents import Document
 from langchain_neo4j.graphs.graph_document import GraphDocument
 
 from haive.agents.document_modifiers.kg.kg_map_merge.agent import ParallelKGTransformer
-from haive.agents.document_modifiers.kg.kg_map_merge.config import ParallelKGTransformerConfig
+from haive.agents.document_modifiers.kg.kg_map_merge.config import (
+    ParallelKGTransformerConfig,
+)
 
 
-def visualize_graph(graph_document: GraphDocument, output_file: str = "knowledge_graph.png"):
+def visualize_graph(
+    graph_document: GraphDocument, output_file: str = "knowledge_graph.png"
+):
     """Visualize the graph document using NetworkX and matplotlib."""
     if not graph_document:
         return
@@ -44,7 +48,9 @@ def visualize_graph(graph_document: GraphDocument, output_file: str = "knowledge
     color_map = dict(zip(node_types, colors, strict=False))
 
     for node_type, color in color_map.items():
-        nodelist = [n for n, attr in G.nodes(data=True) if attr.get("type") == node_type]
+        nodelist = [
+            n for n, attr in G.nodes(data=True) if attr.get("type") == node_type
+        ]
         nx.draw_networkx_nodes(
             G,
             pos,
@@ -61,7 +67,9 @@ def visualize_graph(graph_document: GraphDocument, output_file: str = "knowledge
     edge_color_map = dict(zip(edge_types, edge_colors, strict=False))
 
     for edge_type, color in edge_color_map.items():
-        edgelist = [(u, v) for u, v, attr in G.edges(data=True) if attr.get("type") == edge_type]
+        edgelist = [
+            (u, v) for u, v, attr in G.edges(data=True) if attr.get("type") == edge_type
+        ]
         nx.draw_networkx_edges(
             G,
             pos,
@@ -80,7 +88,12 @@ def visualize_graph(graph_document: GraphDocument, output_file: str = "knowledge
     # Add edge labels
     edge_labels = nx.get_edge_attributes(G, "label")
     nx.draw_networkx_edge_labels(
-        G, pos, edge_labels=edge_labels, font_color="black", font_size=8, font_family="sans-serif"
+        G,
+        pos,
+        edge_labels=edge_labels,
+        font_color="black",
+        font_size=8,
+        font_family="sans-serif",
     )
 
     # Add legend

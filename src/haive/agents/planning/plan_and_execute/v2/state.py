@@ -11,9 +11,13 @@ class PlanAndExecuteState(MultiAgentState):
 
     input: str = Field(..., description="The original user query or objective")
     plan: Plan | None = Field(default=None, description="The current plan with steps")
-    past_steps: list[Step] = Field(default_factory=list, description="List of completed steps")
+    past_steps: list[Step] = Field(
+        default_factory=list, description="List of completed steps"
+    )
     response: str | None = Field(default=None, description="Current response or output")
-    final_response: str | None = Field(default=None, description="Final response when complete")
+    final_response: str | None = Field(
+        default=None, description="Final response when complete"
+    )
 
     def update_past_steps(self, step: Step) -> None:
         """Add completed step to past_steps."""

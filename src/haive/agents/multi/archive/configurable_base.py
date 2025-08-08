@@ -10,12 +10,14 @@ This module provides a general multi-agent base where you can:
 import logging
 from collections.abc import Callable
 from typing import Any
+
 from haive.core.graph.node.agent_node import AgentNodeConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.schema.agent_schema_composer import AgentSchemaComposer, BuildMode
 from haive.core.schema.state_schema import StateSchema
 from langgraph.graph import END, START
 from pydantic import Field, PrivateAttr, model_validator
+
 from haive.agents.base.agent import Agent
 
 logger = logging.getLogger(__name__)
@@ -93,7 +95,9 @@ class ConfigurableMultiAgent(Agent):
     schema_composition_method: str = Field(
         default="smart", description="Schema composition strategy"
     )
-    include_meta: bool = Field(default=True, description="Include meta state for coordination")
+    include_meta: bool = Field(
+        default=True, description="Include meta state for coordination"
+    )
     start_agent: str | Agent | None = Field(
         default=None, description="Agent to start execution with"
     )
@@ -201,7 +205,10 @@ class ConfigurableMultiAgent(Agent):
             if branch.default:
                 default_dest = self._normalize_destination(branch.default)
             graph.add_conditional_edges(
-                source_node, branch.condition, normalized_destinations, default=default_dest
+                source_node,
+                branch.condition,
+                normalized_destinations,
+                default=default_dest,
             )
         if self.start_agent:
             start_node = self._get_agent_node_name(self.start_agent)
@@ -246,7 +253,11 @@ def create_branching_multi_agent(
 ) -> ConfigurableMultiAgent:
     """Create a multi-agent system with conditional branches."""
     return ConfigurableMultiAgent(
-        name=name, agents=agents, branches=branches, state_schema_override=state_schema, **kwargs
+        name=name,
+        agents=agents,
+        branches=branches,
+        state_schema_override=state_schema,
+        **kwargs,
     )
 
 

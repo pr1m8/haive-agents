@@ -198,12 +198,12 @@ class BinaryGrade(Grade):
         display_value = self.get_display_value()
         confidence_pct = f"{self.confidence:.0%}"
 
-        return (
-            f"{emoji} {display_value} ({confidence_pct} confidence) | {self.justification[:50]}..."
-        )
+        return f"{emoji} {display_value} ({confidence_pct} confidence) | {self.justification[:50]}..."
 
     @classmethod
-    def create_pass(cls, justification: str, confidence: float = 1.0, **kwargs) -> "BinaryGrade":
+    def create_pass(
+        cls, justification: str, confidence: float = 1.0, **kwargs
+    ) -> "BinaryGrade":
         """Convenience method to create a passing grade.
 
         Args:
@@ -214,10 +214,14 @@ class BinaryGrade(Grade):
         Returns:
             BinaryGrade instance with value=True
         """
-        return cls(value=True, justification=justification, confidence=confidence, **kwargs)
+        return cls(
+            value=True, justification=justification, confidence=confidence, **kwargs
+        )
 
     @classmethod
-    def create_fail(cls, justification: str, confidence: float = 1.0, **kwargs) -> "BinaryGrade":
+    def create_fail(
+        cls, justification: str, confidence: float = 1.0, **kwargs
+    ) -> "BinaryGrade":
         """Convenience method to create a failing grade.
 
         Args:
@@ -228,4 +232,6 @@ class BinaryGrade(Grade):
         Returns:
             BinaryGrade instance with value=False
         """
-        return cls(value=False, justification=justification, confidence=confidence, **kwargs)
+        return cls(
+            value=False, justification=justification, confidence=confidence, **kwargs
+        )

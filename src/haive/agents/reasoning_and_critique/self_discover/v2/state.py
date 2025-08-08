@@ -12,30 +12,39 @@ class SelfDiscoveryState(MessagesState):
 
     # Input fields
     reasoning_modules: str = Field(
-        default="", description="Available reasoning modules to choose from (formatted string)"
+        default="",
+        description="Available reasoning modules to choose from (formatted string)",
     )
-    task_description: str = Field(default="", description="Description of the task to solve")
+    task_description: str = Field(
+        default="", description="Description of the task to solve"
+    )
 
     # Intermediate fields
     selected_modules: str | None = Field(
         default=None, description="Selected reasoning modules suitable for the task"
     )
     adapted_modules: str | None = Field(
-        default=None, description="Customized versions of the selected modules for this task"
+        default=None,
+        description="Customized versions of the selected modules for this task",
     )
     reasoning_structure: str | None = Field(
         default=None, description="Structured reasoning plan in JSON format"
     )
 
     # Output field
-    answer: str | None = Field(default=None, description="Final solution to the problem")
+    answer: str | None = Field(
+        default=None, description="Final solution to the problem"
+    )
 
     # Error handling and metadata (from original version)
-    error: str | None = Field(default=None, description="Error message if any step fails")
+    error: str | None = Field(
+        default=None, description="Error message if any step fails"
+    )
 
     # Optional metadata fields
     metadata: dict[str, Any] = Field(
-        default_factory=dict, description="Additional metadata for the reasoning process"
+        default_factory=dict,
+        description="Additional metadata for the reasoning process",
     )
 
     # Shared fields for LangGraph

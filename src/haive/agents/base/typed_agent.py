@@ -55,7 +55,9 @@ class BaseExecutor(ABC, Generic[TState]):
     def validate_state(self, state: TState) -> bool:
         """Validate that state has required components."""
         # Check required engines
-        return all(state.get_engine(engine_name) for engine_name in self.get_required_engines())
+        return all(
+            state.get_engine(engine_name) for engine_name in self.get_required_engines()
+        )
 
 
 class ToolExecutor(BaseExecutor[ToolExecutorState]):
@@ -262,7 +264,9 @@ class WorkflowAgent(BaseAgent):
         # Override in subclasses
         return False
 
-    async def determine_graph_modifications(self, state: WorkflowState) -> dict[str, Any]:
+    async def determine_graph_modifications(
+        self, state: WorkflowState
+    ) -> dict[str, Any]:
         """Determine what graph modifications to make."""
         # Override in subclasses
         return {}
@@ -401,7 +405,11 @@ class AdaptiveAgent(WorkflowAgent):
     """
 
     def __init__(
-        self, name: str, performance_metrics: list[str], adaptation_threshold: float = 0.7, **kwargs
+        self,
+        name: str,
+        performance_metrics: list[str],
+        adaptation_threshold: float = 0.7,
+        **kwargs,
     ):
         super().__init__(name, **kwargs)
         self.performance_metrics = performance_metrics
@@ -462,7 +470,9 @@ def create_executor(executor_type: str, name: str, **kwargs) -> BaseExecutor:
     raise TypeError(f"Unknown executor type: {executor_type}")
 
 
-def create_agent(agent_type: str, name: str, engine: Engine | None = None, **kwargs) -> BaseAgent:
+def create_agent(
+    agent_type: str, name: str, engine: Engine | None = None, **kwargs
+) -> BaseAgent:
     """Factory to create appropriate agent.
 
     Args:

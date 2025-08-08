@@ -33,7 +33,9 @@ class ReactAgentState(BaseModel):
     messages: Annotated[Sequence[BaseMessage], add_messages] = Field(
         default_factory=list, description="Messages in the conversation"
     )
-    remaining_iterations: int = Field(default=5, description="Number of remaining iterations")
+    remaining_iterations: int = Field(
+        default=5, description="Number of remaining iterations"
+    )
     iteration_count: int = Field(default=0, description="Current iteration count")
     tools_used: list[str] = Field(
         default_factory=list, description="List of tools used in this session"
@@ -49,9 +51,15 @@ class ReactAgentConfig(AgentConfig):
         default="You are a helpful assistant that can use tools to answer user questions.",
         description="System prompt for the agent",
     )
-    max_iterations: int = Field(default=5, description="Maximum number of interaction iterations")
-    tool_names: list[str] = Field(default_factory=list, description="Names of available tools")
-    temperature: float = Field(default=0.7, description="Temperature for LLM generation")
+    max_iterations: int = Field(
+        default=5, description="Maximum number of interaction iterations"
+    )
+    tool_names: list[str] = Field(
+        default_factory=list, description="Names of available tools"
+    )
+    temperature: float = Field(
+        default=0.7, description="Temperature for LLM generation"
+    )
     model: str = Field(default="gpt-4o", description="LLM model to use")
     parallel_tool_execution: bool = Field(
         default=True, description="Whether to execute tools in parallel (v2 style)"
@@ -81,7 +89,9 @@ class ReactAgentConfig(AgentConfig):
 
         llm_config = AugLLMConfig(
             name="react_agent_llm",
-            llm_config=AzureLLMConfig(model=model, parameters={"temperature": temperature}),
+            llm_config=AzureLLMConfig(
+                model=model, parameters={"temperature": temperature}
+            ),
             prompt_template=ChatPromptTemplate.from_messages(
                 [
                     ("system", system_prompt),
@@ -142,7 +152,11 @@ class ReactAgent(Agent[ReactAgentConfig]):
         )
 
         # Add the agent node
-        gb.add_node(name="agent", config=agent_node_config, input_mapping={"messages": "messages"})
+        gb.add_node(
+            name="agent",
+            config=agent_node_config,
+            input_mapping={"messages": "messages"},
+        )
 
         # Set up tools based on configuration
         if self.config.tool_routing:
@@ -176,7 +190,9 @@ class ReactAgent(Agent[ReactAgentConfig]):
         if self.config.structured_output_model is not None:
             structured_output_node = self._create_structured_output_node_config()
             gb.add_node(
-                name="generate_structured_output", config=structured_output_node, command_goto=END
+                name="generate_structured_output",
+                config=structured_output_node,
+                command_goto=END,
             )
 
         # Set entry point
@@ -208,7 +224,9 @@ class ReactAgent(Agent[ReactAgentConfig]):
             else:
                 destinations[END] = END
 
-            router_branch = Branch.from_function(self._should_continue, destinations=destinations)
+            router_branch = Branch.from_function(
+                self._should_continue, destinations=destinations
+            )
 
             gb.add_conditional_edges("agent", router_branch.evaluator)
 
@@ -262,10 +280,14 @@ class ReactAgent(Agent[ReactAgentConfig]):
 
         # Create a NodeConfig for the structured output node
         return NodeConfig(
-            name="generate_structured_output", engine=structured_output_node, command_goto=END
+            name="generate_structured_output",
+            engine=structured_output_node,
+            command_goto=END,
         )
 
-    def _should_continue(self, state: ReactAgentState) -> str | list[Send] | Literal["END"]:
+    def _should_continue(
+        self, state: ReactAgentState
+    ) -> str | list[Send] | Literal["END"]:
         """Determine if we should continue to tools or end."""
         # Check if we're out of iterations
         if state.remaining_iterations <= 0:
@@ -304,7 +326,9 @@ class ReactAgent(Agent[ReactAgentConfig]):
         # No tool calls, so we're done
         return END
 
-    def _route_to_specific_tools(self, state: ReactAgentState) -> str | list[Send] | Literal["END"]:
+    def _route_to_specific_tools(
+        self, state: ReactAgentState
+    ) -> str | list[Send] | Literal["END"]:
         """Route to specific tool nodes based on tool calls."""
         # Check if we're out of iterations
         if state.remaining_iterations <= 0:

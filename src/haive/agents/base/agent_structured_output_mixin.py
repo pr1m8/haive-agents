@@ -145,7 +145,9 @@ class StructuredOutputMixin:
                 )
         """
         tool_name = name or f"{cls.__name__.lower()}_structured_tool"
-        tool_description = description or f"Run {cls.__name__} and return structured output"
+        tool_description = (
+            description or f"Run {cls.__name__} and return structured output"
+        )
 
         def run_with_structured_output(input_text: str) -> T:
             """Run agent and convert to structured output."""
@@ -242,7 +244,9 @@ class StructuredOutputMixin:
             elif isinstance(output, list):
                 # Handle list of messages
                 if output and isinstance(output[0], BaseMessage):
-                    return self.ensure_structured_output(output[-1], output_model, handle_errors)
+                    return self.ensure_structured_output(
+                        output[-1], output_model, handle_errors
+                    )
                 content = str(output)
             else:
                 content = str(output)

@@ -67,7 +67,10 @@ from haive.agents.memory_v2.standalone_rag_memory import (
     create_conversation_memory_agent,
     create_unified_memory_agent,
 )
-from haive.agents.memory_v2.time_weighted_retriever import TimeWeightConfig, TimeWeightedRetriever
+from haive.agents.memory_v2.time_weighted_retriever import (
+    TimeWeightConfig,
+    TimeWeightedRetriever,
+)
 
 # Optional components that may have import issues - try to import gracefully
 try:
@@ -109,4 +112,6 @@ if DOCUMENT_CONVERTER_AVAILABLE:
     __all__.extend(["MessageDocumentConverter", "TimestampedDocument"])
 
 if EXTRACTION_AVAILABLE:
-    __all__.extend(["EXTRACTION_PROMPTS", "get_all_extraction_types", "get_extraction_prompt"])
+    __all__.extend(
+        ["EXTRACTION_PROMPTS", "get_all_extraction_types", "get_extraction_prompt"]
+    )

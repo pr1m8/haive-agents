@@ -5,7 +5,9 @@ from haive.core.engine.aug_llm import AugLLMConfig
 from pydantic import Field
 
 if TYPE_CHECKING:
-    from haive.agents.document_modifiers.summarizer.map_branch.agent import SummarizerAgent
+    from haive.agents.document_modifiers.summarizer.map_branch.agent import (
+        SummarizerAgent,
+    )
 from haive.agents.document_modifiers.summarizer.map_branch.engines import (
     map_aug_llm_config,
     reduce_augllm_config,
@@ -27,7 +29,8 @@ class SummarizerAgentConfig(AgentConfig):
         description="The configuration for the LLM",
     )
     token_max: int = Field(
-        default=1000, description="The maximum number of tokens to use for the summarizer"
+        default=1000,
+        description="The maximum number of tokens to use for the summarizer",
     )
     state_schema: SummaryState = Field(default=SummaryState)
     input_schema: InputState = Field(default=InputState)
@@ -38,6 +41,8 @@ class SummarizerAgentConfig(AgentConfig):
     )
 
     def build_agent(self) -> Any:
-        from haive.agents.document_modifiers.summarizer.map_branch.agent import SummarizerAgent
+        from haive.agents.document_modifiers.summarizer.map_branch.agent import (
+            SummarizerAgent,
+        )
 
         return SummarizerAgent(self)

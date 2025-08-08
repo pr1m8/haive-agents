@@ -52,7 +52,9 @@ class Hypothesis(BaseModel):
 
     # Confidence and quality
     confidence: HypothesisConfidence = Field(description="Initial confidence level")
-    confidence_score: float = Field(ge=0.0, le=1.0, description="Numerical confidence (0-1)")
+    confidence_score: float = Field(
+        ge=0.0, le=1.0, description="Numerical confidence (0-1)"
+    )
     plausibility: float = Field(ge=0.0, le=1.0, description="Plausibility assessment")
 
     # Supporting information
@@ -61,9 +63,13 @@ class Hypothesis(BaseModel):
     supporting_evidence: list[str] = Field(description="Initial supporting evidence")
 
     # Verification planning
-    verification_criteria: list[str] = Field(description="How to verify this hypothesis")
+    verification_criteria: list[str] = Field(
+        description="How to verify this hypothesis"
+    )
     required_evidence: list[str] = Field(description="Evidence needed for verification")
-    verification_complexity: str = Field(description="Complexity of verification process")
+    verification_complexity: str = Field(
+        description="Complexity of verification process"
+    )
 
     # Processing metadata
     generation_method: str = Field(description="How this hypothesis was generated")
@@ -89,20 +95,28 @@ class SpeculativeExecutionPlan(BaseModel):
     convergence_criteria: str = Field(description="When to stop processing")
 
     # Resource allocation
-    time_budget_per_hypothesis: str = Field(description="Time allocation per hypothesis")
+    time_budget_per_hypothesis: str = Field(
+        description="Time allocation per hypothesis"
+    )
     verification_thoroughness: str = Field(description="Thoroughness level")
 
     # Quality control
     minimum_verification_score: float = Field(
         ge=0.0, le=1.0, description="Minimum score for acceptance"
     )
-    required_consensus_level: float = Field(ge=0.0, le=1.0, description="Required agreement level")
+    required_consensus_level: float = Field(
+        ge=0.0, le=1.0, description="Required agreement level"
+    )
 
     # Iteration control
-    max_verification_rounds: int = Field(ge=1, le=5, description="Maximum verification iterations")
+    max_verification_rounds: int = Field(
+        ge=1, le=5, description="Maximum verification iterations"
+    )
     refinement_enabled: bool = Field(description="Whether to refine hypotheses")
 
-    execution_metadata: dict[str, Any] = Field(description="Additional execution parameters")
+    execution_metadata: dict[str, Any] = Field(
+        description="Additional execution parameters"
+    )
 
 
 class SpeculativeResult(BaseModel):
@@ -112,12 +126,18 @@ class SpeculativeResult(BaseModel):
     total_hypotheses_generated: int = Field(description="Total hypotheses created")
 
     # Hypothesis outcomes
-    verified_hypotheses: list[Hypothesis] = Field(description="Successfully verified hypotheses")
+    verified_hypotheses: list[Hypothesis] = Field(
+        description="Successfully verified hypotheses"
+    )
     refuted_hypotheses: list[Hypothesis] = Field(description="Refuted hypotheses")
-    inconclusive_hypotheses: list[Hypothesis] = Field(description="Inconclusive hypotheses")
+    inconclusive_hypotheses: list[Hypothesis] = Field(
+        description="Inconclusive hypotheses"
+    )
 
     # Quality metrics
-    overall_confidence: float = Field(ge=0.0, le=1.0, description="Overall confidence in results")
+    overall_confidence: float = Field(
+        ge=0.0, le=1.0, description="Overall confidence in results"
+    )
     verification_success_rate: float = Field(
         ge=0.0, le=1.0, description="Percentage successfully verified"
     )
@@ -126,16 +146,22 @@ class SpeculativeResult(BaseModel):
     )
 
     # Consensus analysis
-    consensus_level: float = Field(ge=0.0, le=1.0, description="Agreement between hypotheses")
+    consensus_level: float = Field(
+        ge=0.0, le=1.0, description="Agreement between hypotheses"
+    )
     conflicting_evidence: list[str] = Field(description="Identified conflicts")
-    confidence_distribution: dict[str, int] = Field(description="Distribution of confidence levels")
+    confidence_distribution: dict[str, int] = Field(
+        description="Distribution of confidence levels"
+    )
 
     # Final synthesis
     synthesized_answer: str = Field(description="Final synthesized answer")
     key_insights: list[str] = Field(description="Key insights discovered")
     limitations: list[str] = Field(description="Identified limitations")
 
-    processing_metadata: dict[str, Any] = Field(description="Processing statistics and metadata")
+    processing_metadata: dict[str, Any] = Field(
+        description="Processing statistics and metadata"
+    )
 
 
 # Enhanced prompts for speculative processing
@@ -356,7 +382,9 @@ class HypothesisGeneratorAgent(Agent):
         def generate_hypotheses(state: dict[str, Any]) -> dict[str, Any]:
             """Generate multiple hypotheses for the query."""
             query = getattr(state, "query", "")
-            context = getattr(state, "context", "") or getattr(state, "retrieved_documents", "")
+            context = getattr(state, "context", "") or getattr(
+                state, "retrieved_documents", ""
+            )
 
             # Format context
             if isinstance(context, list):
@@ -372,7 +400,9 @@ class HypothesisGeneratorAgent(Agent):
                 )
             else:
                 context_str = (
-                    str(context)[:800] + "..." if len(str(context)) > 800 else str(context)
+                    str(context)[:800] + "..."
+                    if len(str(context)) > 800
+                    else str(context)
                 )
 
             # Domain information extraction
@@ -389,7 +419,9 @@ class HypothesisGeneratorAgent(Agent):
 
             for i, hypothesis in enumerate(hypotheses):
                 hypothesis.id = f"hyp_{i + 1}"
-                hypothesis.generation_method = f"speculative_generation_{self.hypothesis_diversity}"
+                hypothesis.generation_method = (
+                    f"speculative_generation_{self.hypothesis_diversity}"
+                )
 
             return {
                 "hypotheses": hypotheses,
@@ -421,7 +453,11 @@ class HypothesisGeneratorAgent(Agent):
             if any(indicator in query_lower for indicator in indicators):
                 detected_types.append(domain_type)
 
-        return f"Query types: {', '.join(detected_types)}" if detected_types else "General query"
+        return (
+            f"Query types: {', '.join(detected_types)}"
+            if detected_types
+            else "General query"
+        )
 
 
 class ParallelVerificationAgent(Agent):
@@ -541,19 +577,27 @@ class ParallelVerificationAgent(Agent):
                 evidence = self._gather_evidence_for_hypothesis(hypothesis, query)
 
                 # Verify using evidence
-                verification_result = self._verify_single_hypothesis(hypothesis, evidence, query)
+                verification_result = self._verify_single_hypothesis(
+                    hypothesis, evidence, query
+                )
                 results[hypothesis.id] = verification_result
 
             except Exception as e:
-                logger.warning(f"Verification failed for hypothesis {hypothesis.id}: {e}")
+                logger.warning(
+                    f"Verification failed for hypothesis {hypothesis.id}: {e}"
+                )
                 # Mark as inconclusive on error
                 hypothesis.verification_status = VerificationStatus.INCONCLUSIVE
-                hypothesis.verification_reasoning = f"Verification failed due to error: {e!s}"
+                hypothesis.verification_reasoning = (
+                    f"Verification failed due to error: {e!s}"
+                )
                 results[hypothesis.id] = hypothesis
 
         return results
 
-    def _gather_evidence_for_hypothesis(self, hypothesis: Hypothesis, query: str) -> str:
+    def _gather_evidence_for_hypothesis(
+        self, hypothesis: Hypothesis, query: str
+    ) -> str:
         """Gather evidence for hypothesis verification."""
         try:
             # Create search query based on hypothesis
@@ -572,7 +616,10 @@ class ParallelVerificationAgent(Agent):
             # Format evidence
             evidence = (
                 "\n".join(
-                    [f"Evidence {i + 1}: {doc.page_content[:300]}..." for i, doc in enumerate(docs)]
+                    [
+                        f"Evidence {i + 1}: {doc.page_content[:300]}..."
+                        for i, doc in enumerate(docs)
+                    ]
                 )
                 if docs
                 else "No specific evidence found in documents"
@@ -602,7 +649,9 @@ class ParallelVerificationAgent(Agent):
                     "hypothesis_text": hypothesis.text,
                     "hypothesis_confidence": hypothesis.confidence,
                     "hypothesis_reasoning": hypothesis.reasoning,
-                    "verification_criteria": ", ".join(hypothesis.verification_criteria),
+                    "verification_criteria": ", ".join(
+                        hypothesis.verification_criteria
+                    ),
                     "evidence": evidence,
                     "context": f"Original query: {query}",
                 }
@@ -655,7 +704,9 @@ class SpeculativeRAGAgent(SequentialAgent):
 
         # Step 1: Hypothesis generation
         hypothesis_generator = HypothesisGeneratorAgent(
-            llm_config=llm_config, num_hypotheses=num_hypotheses, name="Hypothesis Generator"
+            llm_config=llm_config,
+            num_hypotheses=num_hypotheses,
+            name="Hypothesis Generator",
         )
 
         # Step 2: Parallel verification
@@ -713,7 +764,9 @@ def create_speculative_rag_agent(
         kwargs.setdefault("num_hypotheses", 5)
         kwargs.setdefault("verification_depth", "thorough")
 
-    return SpeculativeRAGAgent.from_documents(documents=documents, llm_config=llm_config, **kwargs)
+    return SpeculativeRAGAgent.from_documents(
+        documents=documents, llm_config=llm_config, **kwargs
+    )
 
 
 # I/O schema for compatibility

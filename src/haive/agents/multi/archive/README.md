@@ -5,11 +5,13 @@ This directory contains archived multi-agent implementations that are no longer 
 ## Archived Files
 
 ### Core Implementations
+
 - **base.py** - Base classes and types (mostly empty, referenced by supervisors)
 - **multi_agent.py** - Alternative MultiAgent implementation (used by simple_supervisor.py)
 - **multi_agent_v4.py** - Early V4 attempt (superseded by enhanced_multi_agent_v4.py)
 
 ### Enhanced Variants
+
 - **enhanced_clean_multi_agent.py** - Experimental clean multi-agent variant
 - **enhanced_multi_agent_standalone.py** - Standalone enhanced implementation
 - **enhanced_multi_agent_generic.py** - Generic typing experiments (moved from active)
@@ -17,10 +19,12 @@ This directory contains archived multi-agent implementations that are no longer 
 - **enhanced_sequential_agent.py** - Specialized sequential execution agent
 
 ### Supervisor Variants
+
 - **enhanced_dynamic_supervisor.py** - Dynamic supervisor experiments
 - **enhanced_supervisor_agent.py** - Supervisor agent experiments
 
 ### Experiments
+
 - **experiments/** - Various experimental implementations and patterns
   - list_multi_agent.py
   - proper_list_multi_agent.py

@@ -102,7 +102,9 @@ class EnhancedRAGConditionalAgent(CompatibilityEnhancedConditionalAgent):
 
         # Store agent references for conditional routing
         self.retrieval_agent = retrieval_agent or SIMPLE_RAG_AGENT
-        self.grading_agent = grading_agent or DocumentGradingAgent(name="Conditional Grading Agent")
+        self.grading_agent = grading_agent or DocumentGradingAgent(
+            name="Conditional Grading Agent"
+        )
         self.answer_agent = answer_agent or SIMPLE_RAG_ANSWER_AGENT
 
         # Add agents with compatibility checking
@@ -255,7 +257,9 @@ class SmartRAGFactory:
         remaining_agents = [
             a
             for a in agents
-            if not isinstance(a, SimpleRAGAgent | DocumentGradingAgent | SimpleRAGAnswerAgent)
+            if not isinstance(
+                a, SimpleRAGAgent | DocumentGradingAgent | SimpleRAGAnswerAgent
+            )
         ]
 
         for agent in remaining_agents:
@@ -309,7 +313,9 @@ class SmartRAGFactory:
             # Validate before returning
             report = system.get_compatibility_report()
             if not report["overall_compatible"]:
-                raise ValueError(f"Safe RAG system failed compatibility check: {report}")
+                raise ValueError(
+                    f"Safe RAG system failed compatibility check: {report}"
+                )
 
             system.visualize_compatibility()
 
@@ -328,7 +334,9 @@ def demonstrate_enhanced_rag_compatibility() -> None:
     """Demonstrate the enhanced RAG system with built-in compatibility checking."""
     # Example 1: Sequential RAG with automatic compatibility checking
 
-    sequential_rag = EnhancedRAGSequentialAgent(compatibility_mode=CompatibilityMode.ADAPTIVE)
+    sequential_rag = EnhancedRAGSequentialAgent(
+        compatibility_mode=CompatibilityMode.ADAPTIVE
+    )
 
     sequential_rag.visualize_compatibility()
 
@@ -371,7 +379,9 @@ enhanced_simple_rag_agent = SimpleRAGAgent.from_documents(
     conversation_documents, name="Enhanced Simple RAG Agent"
 )
 
-enhanced_simple_rag_answer_agent = SimpleRAGAnswerAgent(name="Enhanced Simple RAG Answer Agent")
+enhanced_simple_rag_answer_agent = SimpleRAGAnswerAgent(
+    name="Enhanced Simple RAG Answer Agent"
+)
 
 # Enhanced base RAG agent with compatibility checking
 enhanced_base_rag_agent = create_compatible_multi_agent(

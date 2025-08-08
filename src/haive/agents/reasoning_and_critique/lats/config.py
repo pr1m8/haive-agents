@@ -18,7 +18,9 @@ class LATSAgentConfig(AgentConfig):
     """
 
     # Core LATS parameters
-    max_iterations: int = Field(default=5, description="Maximum number of search iterations")
+    max_iterations: int = Field(
+        default=5, description="Maximum number of search iterations"
+    )
 
     max_depth: int = Field(default=5, description="Maximum depth of the search tree")
 
@@ -78,5 +80,8 @@ class LATSAgentConfig(AgentConfig):
             LATSAgentConfig instance
         """
         return cls(
-            reflection_engine=reflection_llm, action_engine=action_llm, tools=tools or [], **kwargs
+            reflection_engine=reflection_llm,
+            action_engine=action_llm,
+            tools=tools or [],
+            **kwargs,
         )

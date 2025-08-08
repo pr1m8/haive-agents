@@ -1,9 +1,12 @@
-from haive.agents.react_class.react_agent2.many_tools.engines import query_builder_aug_llm_config
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.messages import HumanMessage
 from haive.core.models.state import State
 from haive.core.models.vectorstore.base import VectorStoreConfig
 from langgraph.types import Command
+
+from haive.agents.react_class.react_agent2.many_tools.engines import (
+    query_builder_aug_llm_config,
+)
 
 
 def select_tools_with_repeat(
@@ -50,4 +53,6 @@ def select_tools(state: State, vs_config: VectorStoreConfig):
     query = last_user_message.content
     vector_store = vs_config.create_vector_store()
     tool_documents = vector_store.similarity_search(query)
-    return Command(update={"selected_tools": [document.id for document in tool_documents]})
+    return Command(
+        update={"selected_tools": [document.id for document in tool_documents]}
+    )

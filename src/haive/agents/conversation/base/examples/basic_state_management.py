@@ -34,7 +34,8 @@ def get_conversation_progress(state):
     return {
         "current_round": getattr(state, "current_round", 0),
         "max_rounds": getattr(state, "max_rounds", 10),
-        "completion": getattr(state, "current_round", 0) / getattr(state, "max_rounds", 10),
+        "completion": getattr(state, "current_round", 0)
+        / getattr(state, "max_rounds", 10),
     }
 
 
@@ -54,7 +55,9 @@ def demonstrate_basic_state_creation() -> Any:
 
     # Create conversation state
     state = create_conversation_state(
-        participants=[alice, bob, charlie], topic="Future of Artificial Intelligence", max_rounds=5
+        participants=[alice, bob, charlie],
+        topic="Future of Artificial Intelligence",
+        max_rounds=5,
     )
 
     return state, [alice, bob, charlie]

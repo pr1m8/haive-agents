@@ -91,12 +91,12 @@ class QueryRefinementResponse(BaseModel):
     )
 
 
-from haive.agents.simple.agent_v2 import SimpleAgentV2
+from haive.agents.simple import SimpleAgent
 from haive.core.engine.aug_llm import AugLLMConfig
 
 
 def agent_test(prompt, model, test_prompt):
-    agent = SimpleAgentV2(
+    agent = SimpleAgent(
         engine=AugLLMConfig(
             prompt_template=prompt,
             structured_output_model=model,
@@ -115,7 +115,7 @@ result.input_schema(query="hello").model_fields
 
 
 def agent_tester(prompt, model, test_prompt):
-    agent = SimpleAgentV2(
+    agent = SimpleAgent(
         engine=AugLLMConfig(
             prompt_template=prompt,
             structured_output_model=model,

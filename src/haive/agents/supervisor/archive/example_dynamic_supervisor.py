@@ -59,7 +59,9 @@ async def create_dynamic_supervisor_system():
 
     # Simple agents for basic tasks
     research_agent = SimpleAgent(name="research_specialist", engine=research_engine)
-    research_agent.capability = "research, information gathering, fact-finding, web search"
+    research_agent.capability = (
+        "research, information gathering, fact-finding, web search"
+    )
 
     writing_agent = SimpleAgent(name="content_writer", engine=writing_engine)
     writing_agent.capability = "writing, content creation, documentation, storytelling"
@@ -120,7 +122,9 @@ async def demonstrate_dynamic_capabilities(supervisor, analysis_engine):
     # Add analysis agent dynamically
 
     analysis_agent = SimpleAgent(name="data_analyst", engine=analysis_engine)
-    analysis_agent.capability = "analysis, data processing, pattern recognition, insights"
+    analysis_agent.capability = (
+        "analysis, data processing, pattern recognition, insights"
+    )
 
     # Register the new agent
     supervisor.register_agent_dynamically(
@@ -149,7 +153,9 @@ async def demonstrate_complex_workflow(supervisor):
     """Demonstrate a complex multi-step workflow."""
     # Initialize conversation
     messages = [
-        langchain_core.messages.SystemMessage(content="You are part of a research project team."),
+        langchain_core.messages.SystemMessage(
+            content="You are part of a research project team."
+        ),
         langchain_core.messages.HumanMessage(
             content="Let's research and write about the impact of AI on healthcare"
         ),
@@ -215,9 +221,7 @@ async def demonstrate_react_agent_integration(supervisor):
         Returns:
             Simulated search results
         """
-        return (
-            f"Search results for '{query}': [Result 1: Example content], [Result 2: More content]"
-        )
+        return f"Search results for '{query}': [Result 1: Example content], [Result 2: More content]"
 
     # Create engine for ReactAgent
     react_engine = AugLLMConfig(

@@ -75,7 +75,7 @@ submod_attrs = {
     "base": ["Agent"],
     "simple": ["SimpleAgent"],
     "react": ["ReactAgent"],
-    "multi": ["MultiAgent", "EnhancedMultiAgentV4"],
+    "multi": ["MultiAgent", "MultiAgent"],
     "rag": ["BaseRAGAgent", "SimpleRAGAgent"],
     "planning": ["PlanAndExecuteAgent"],
     "memory": ["BaseMemoryAgent"],

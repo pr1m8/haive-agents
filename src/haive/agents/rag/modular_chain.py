@@ -30,7 +30,9 @@ class ModularConfig(BaseModel):
     """Configuration for modular RAG."""
 
     modules: list[RAGModule] = Field(description="Modules to include")
-    routing_strategy: Literal["sequential", "conditional", "parallel"] = Field(default="sequential")
+    routing_strategy: Literal["sequential", "conditional", "parallel"] = Field(
+        default="sequential"
+    )
     quality_gates: bool = Field(default=True, description="Include quality checkpoints")
 
 
@@ -75,7 +77,10 @@ def create_modular_rag(
             filtered_docs = [
                 doc
                 for doc in documents
-                if any(word.lower() in doc.page_content.lower() for word in query.split()[:3])
+                if any(
+                    word.lower() in doc.page_content.lower()
+                    for word in query.split()[:3]
+                )
             ]
 
             return {
@@ -140,7 +145,9 @@ def create_modular_rag(
                 "verification_result": {
                     "is_supported": is_supported,
                     "confidence": confidence,
-                    "verified_answer": (answer if is_supported else "Answer needs more evidence"),
+                    "verified_answer": (
+                        answer if is_supported else "Answer needs more evidence"
+                    ),
                 }
             }
 

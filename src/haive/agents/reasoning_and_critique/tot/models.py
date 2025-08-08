@@ -5,7 +5,7 @@ including candidate solutions and structured output models.
 """
 
 import operator
-from typing import Any, Generic, Literal, TypeVar, Union, Optional, List
+from typing import Any, Generic, List, Literal, Optional, TypeVar, Union
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -20,15 +20,21 @@ class Candidate(BaseModel, Generic[T]):
     """
 
     content: T = Field(description="The candidate solution content")
-    metadata: dict[str, Any] = Field(default_factory=dict, description="Additional metadata")
+    metadata: dict[str, Any] = Field(
+        default_factory=dict, description="Additional metadata"
+    )
 
     # Use Pydantic v2 configuration
-    model_config = ConfigDict(validate_assignment=True, extra="allow", arbitrary_types_allowed=True)
+    model_config = ConfigDict(
+        validate_assignment=True, extra="allow", arbitrary_types_allowed=True
+    )
 
     def __str__(self) -> str:
         """String representation of the candidate."""
         content_str = str(self.content)
-        content_preview = content_str[:50] + "..." if len(content_str) > 50 else content_str
+        content_preview = (
+            content_str[:50] + "..." if len(content_str) > 50 else content_str
+        )
         return f"Candidate(content='{content_preview}')"
 
 
@@ -39,7 +45,9 @@ class Score(BaseModel):
     """
 
     value: float = Field(description="Numerical score between 0 and 1", ge=0, le=1)
-    feedback: Optional[str] = Field(default=None, description="Feedback explaining the score")
+    feedback: Optional[str] = Field(
+        default=None, description="Feedback explaining the score"
+    )
 
     model_config = ConfigDict(validate_assignment=True)
 
@@ -93,7 +101,8 @@ class ScoredCandidate(BaseModel, Generic[T]):
 
 
 def update_candidates(
-    existing: Optional[List[Any]] = None, updates: Optional[Union[List[Any], str]] = None
+    existing: Optional[List[Any]] = None,
+    updates: Optional[Union[List[Any], str]] = None,
 ) -> list[Any]:
     """Update candidate list, handling special cases like clearing.
 
@@ -161,7 +170,9 @@ class CandidateEvaluation(BaseModel):
     This model is used when the evaluator LLM produces structured output.
     """
 
-    value: float = Field(description="Score between 0 and 1, where 1 is perfect", ge=0, le=1)
+    value: float = Field(
+        description="Score between 0 and 1, where 1 is perfect", ge=0, le=1
+    )
 
     feedback: str = Field(description="Feedback explaining the score")
 
@@ -246,7 +257,9 @@ class EquationGeneration(BaseModel):
 
     reasoning: str = Field(description="The reasoning behind the generated equations")
 
-    equations: list[Equation] = Field(description="List of equation solutions", min_items=1)
+    equations: list[Equation] = Field(
+        description="List of equation solutions", min_items=1
+    )
 
     explanations: Optional[List[str]] = Field(
         default=None, description="Optional explanations for each equation"
@@ -279,7 +292,9 @@ class EquationGeneration(BaseModel):
         if self.explanations and len(self.explanations) == len(self.equations):
             for i, equation in enumerate(self.equations):
                 candidates.append(
-                    Candidate(content=equation, metadata={"explanation": self.explanations[i]})
+                    Candidate(
+                        content=equation, metadata={"explanation": self.explanations[i]}
+                    )
                 )
         else:
             # Otherwise just use the equations

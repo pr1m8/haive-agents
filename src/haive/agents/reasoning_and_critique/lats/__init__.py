@@ -6,7 +6,10 @@ from haive.agents.reasoning_and_critique.lats.agent import (  # check_node,; col
     create_lats_agent,
 )
 from haive.agents.reasoning_and_critique.lats.config import LATSAgentConfig
-from haive.agents.reasoning_and_critique.lats.models import Node as ModelNode, Reflection
+from haive.agents.reasoning_and_critique.lats.models import Node as ModelNode
+from haive.agents.reasoning_and_critique.lats.models import (
+    Reflection,
+)
 from haive.agents.reasoning_and_critique.lats.node import Node, NodeManager
 from haive.agents.reasoning_and_critique.lats.state import TreeState
 from haive.agents.reasoning_and_critique.lats.utils import (

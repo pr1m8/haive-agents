@@ -4,12 +4,18 @@ This module provides the foundational executor agent designed to carry out
 specific steps from plans using available tools, particularly search capabilities.
 """
 
-from haive.agents.react.agent import ReactAgent
+from typing import Any, List, Optional
+
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.tools.tools.search_tools import tavily_search_tool, tavily_qna, tavily_search_context
+from haive.tools.tools.search_tools import (
+    tavily_qna,
+    tavily_search_context,
+    tavily_search_tool,
+)
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import Field
-from typing import List, Optional, Any
+
+from haive.agents.react.agent import ReactAgent
 
 
 class BaseExecutorAgent(ReactAgent):

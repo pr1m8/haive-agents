@@ -2,12 +2,13 @@ import math
 import re
 
 import numexpr
-from haive.agents.planning.llm_compiler.models import ExecuteCode
 from langchain_core.messages import SystemMessage
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.runnables import RunnableConfig
 from langchain_core.tools import StructuredTool
 from langchain_openai import ChatOpenAI
+
+from haive.agents.planning.llm_compiler.models import ExecuteCode
 
 _MATH_DESCRIPTION = (
     "math(problem: str, context: Optional[list[str]]) -> float:\n"
@@ -105,13 +106,17 @@ def get_math_tool(llm: ChatOpenAI):
     extractor = prompt | llm.with_structured_output(ExecuteCode)
 
     def calculate_expression(
-        problem: str, context: list[str] | None = None, config: RunnableConfig | None = None
+        problem: str,
+        context: list[str] | None = None,
+        config: RunnableConfig | None = None,
     ):
         chain_input = {"problem": problem}
         if context:
             context_str = "\n".join(context)
             if context_str.strip():
-                context_str = _ADDITIONAL_CONTEXT_PROMPT.format(context=context_str.strip())
+                context_str = _ADDITIONAL_CONTEXT_PROMPT.format(
+                    context=context_str.strip()
+                )
                 chain_input["context"] = [SystemMessage(content=context_str)]
         code_model = extractor.invoke(chain_input, config)
         try:

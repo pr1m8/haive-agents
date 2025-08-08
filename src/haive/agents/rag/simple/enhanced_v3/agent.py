@@ -36,15 +36,21 @@ Examples:
 """
 
 from __future__ import annotations
+
 import logging
 import uuid
 from typing import Any
+
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.engine.vectorstore import VectorStoreConfig
-from haive.core.schema.prebuilt.enhanced_multi_agent_state import EnhancedMultiAgentState
+from haive.core.schema.prebuilt.enhanced_multi_agent_state import (
+    EnhancedMultiAgentState,
+)
 from langchain_core.documents import Document
 from pydantic import BaseModel, Field, field_validator, model_validator
+
 from haive.agents.multi.enhanced_multi_agent_v3 import EnhancedMultiAgent
+
 from .answer_generator_agent import SimpleAnswerAgent
 from .retriever_agent import RetrieverAgent
 from .state import SimpleRAGState
@@ -117,19 +123,30 @@ class SimpleRAGV3(EnhancedMultiAgent[RAGAgentCollection]):
         default_factory=lambda: AugLLMConfig(temperature=0.7),
         description="LLM configuration for answer generation",
     )
-    top_k: int = Field(default=5, ge=1, le=50, description="Number of documents to retrieve")
+    top_k: int = Field(
+        default=5, ge=1, le=50, description="Number of documents to retrieve"
+    )
     similarity_threshold: float = Field(
-        default=0.0, ge=0.0, le=1.0, description="Minimum similarity score for retrieved documents"
+        default=0.0,
+        ge=0.0,
+        le=1.0,
+        description="Minimum similarity score for retrieved documents",
     )
     structured_output_model: type[BaseModel] | None = Field(
         default=None, description="Pydantic model for structured output"
     )
     max_context_length: int = Field(
-        default=4000, ge=500, le=32000, description="Maximum context length for answer generation"
+        default=4000,
+        ge=500,
+        le=32000,
+        description="Maximum context length for answer generation",
     )
-    include_citations: bool = Field(default=True, description="Include source citations in answers")
+    include_citations: bool = Field(
+        default=True, description="Include source citations in answers"
+    )
     citation_style: str = Field(
-        default="inline", description="Citation style: 'inline', 'footnote', or 'numbered'"
+        default="inline",
+        description="Citation style: 'inline', 'footnote', or 'numbered'",
     )
     context_template: str | None = Field(
         default=None, description="Custom context template for answer generation"
@@ -238,10 +255,15 @@ class SimpleRAGV3(EnhancedMultiAgent[RAGAgentCollection]):
         if llm_config is None:
             llm_config = AugLLMConfig(temperature=0.7)
         temp_retriever = RetrieverAgent.from_documents(
-            documents=documents, embedding_model=embedding_config, name=f"{name}_temp_retriever"
+            documents=documents,
+            embedding_model=embedding_config,
+            name=f"{name}_temp_retriever",
         )
         return cls(
-            name=name, vector_store_config=temp_retriever.engine, llm_config=llm_config, **kwargs
+            name=name,
+            vector_store_config=temp_retriever.engine,
+            llm_config=llm_config,
+            **kwargs,
         )
 
     @classmethod
@@ -285,7 +307,10 @@ class SimpleRAGV3(EnhancedMultiAgent[RAGAgentCollection]):
         if llm_config is None:
             llm_config = AugLLMConfig(temperature=0.7)
         return cls(
-            name=name, vector_store_config=vector_store_config, llm_config=llm_config, **kwargs
+            name=name,
+            vector_store_config=vector_store_config,
+            llm_config=llm_config,
+            **kwargs,
         )
 
     def get_retriever_agent(self) -> RetrieverAgent:
@@ -297,7 +322,11 @@ class SimpleRAGV3(EnhancedMultiAgent[RAGAgentCollection]):
         return self.agents[1]
 
     async def retrieve_documents(
-        self, query: str, k: int | None = None, score_threshold: float | None = None, **kwargs
+        self,
+        query: str,
+        k: int | None = None,
+        score_threshold: float | None = None,
+        **kwargs,
     ) -> dict[str, Any]:
         """Retrieve documents using the retriever agent.
 
@@ -319,7 +348,9 @@ class SimpleRAGV3(EnhancedMultiAgent[RAGAgentCollection]):
         retriever = self.get_retriever_agent()
         return await retriever.arun(retrieval_input)
 
-    async def generate_answer(self, query: str, documents: list[Document], **kwargs) -> Any:
+    async def generate_answer(
+        self, query: str, documents: list[Document], **kwargs
+    ) -> Any:
         """Generate answer using the answer generation agent.
 
         Args:
@@ -360,7 +391,9 @@ class SimpleRAGV3(EnhancedMultiAgent[RAGAgentCollection]):
             "state_schema": self.state_schema.__name__ if self.state_schema else None,
         }
 
-    async def arun(self, input_data: str | dict[str, Any], debug: bool = False, **kwargs) -> Any:
+    async def arun(
+        self, input_data: str | dict[str, Any], debug: bool = False, **kwargs
+    ) -> Any:
         """Execute RAG pipeline using Enhanced MultiAgent V3 sequential execution.
 
         This leverages the Enhanced MultiAgent V3 infrastructure for:
@@ -396,7 +429,9 @@ class SimpleRAGV3(EnhancedMultiAgent[RAGAgentCollection]):
             if self.performance_mode:
                 performance_summary = self.analyze_agent_performance()
                 logger.info("📊 Performance Summary:")
-                for agent_name, metrics in performance_summary.get("agents", {}).items():
+                for agent_name, metrics in performance_summary.get(
+                    "agents", {}
+                ).items():
                     logger.info(
                         f"  {agent_name}: {metrics['success_rate']:.1%} success, {metrics['avg_duration']:.3f}s avg"
                     )

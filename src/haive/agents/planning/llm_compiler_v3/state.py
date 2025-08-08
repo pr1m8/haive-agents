@@ -21,7 +21,9 @@ class LLMCompilerStateSchema(MessagesState):
     # Core compiler state
     original_query: str = Field(default="", description="The original user query")
 
-    current_plan: CompilerPlan | None = Field(default=None, description="Current execution plan")
+    current_plan: CompilerPlan | None = Field(
+        default=None, description="Current execution plan"
+    )
 
     execution_results: list[ParallelExecutionResult] = Field(
         default_factory=list, description="Results from executed tasks"
@@ -32,7 +34,9 @@ class LLMCompilerStateSchema(MessagesState):
         default_factory=list, description="IDs of completed tasks"
     )
 
-    failed_task_ids: list[str] = Field(default_factory=list, description="IDs of failed tasks")
+    failed_task_ids: list[str] = Field(
+        default_factory=list, description="IDs of failed tasks"
+    )
 
     currently_executing: list[str] = Field(
         default_factory=list, description="IDs of tasks currently being executed"
@@ -49,7 +53,8 @@ class LLMCompilerStateSchema(MessagesState):
 
     # Task coordination state
     ready_tasks: list[CompilerTask] = Field(
-        default_factory=list, description="Tasks ready for execution (dependencies satisfied)"
+        default_factory=list,
+        description="Tasks ready for execution (dependencies satisfied)",
     )
 
     blocked_tasks: list[CompilerTask] = Field(
@@ -58,7 +63,8 @@ class LLMCompilerStateSchema(MessagesState):
 
     # Results storage for dependency resolution
     task_results: dict[str, Any] = Field(
-        default_factory=dict, description="Results indexed by task_id for dependency resolution"
+        default_factory=dict,
+        description="Results indexed by task_id for dependency resolution",
     )
 
     # Replanning state
@@ -132,7 +138,10 @@ class LLMCompilerStateSchema(MessagesState):
 
         for task in self.current_plan.tasks:
             # Skip already completed or failed tasks
-            if task.task_id in self.completed_task_ids or task.task_id in self.failed_task_ids:
+            if (
+                task.task_id in self.completed_task_ids
+                or task.task_id in self.failed_task_ids
+            ):
                 continue
 
             # Skip currently executing tasks
@@ -209,7 +218,11 @@ class LLMCompilerStateSchema(MessagesState):
     def should_replan(self) -> bool:
         """Determine if replanning is needed based on execution state."""
         # Replan if critical tasks failed and we can't proceed
-        if self.failed_task_ids and not self.ready_tasks and not self.currently_executing:
+        if (
+            self.failed_task_ids
+            and not self.ready_tasks
+            and not self.currently_executing
+        ):
             return True
 
         # Replan if more than 50% of tasks failed
@@ -230,7 +243,8 @@ class LLMCompilerStateSchema(MessagesState):
             "replan_count": self.replan_count,
             "total_execution_time": self.total_execution_time,
             "parallel_efficiency": self.parallel_efficiency_score,
-            "success_rate": len(self.completed_task_ids) / max(1, len(self.execution_results)),
+            "success_rate": len(self.completed_task_ids)
+            / max(1, len(self.execution_results)),
             "current_agent": self.current_agent,
             "next_agent": self.next_agent,
         }

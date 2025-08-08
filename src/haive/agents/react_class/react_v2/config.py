@@ -51,7 +51,9 @@ class ReactAgentConfig(SimpleAgentConfig):
         default=3, description="Maximum number of retries for tool execution failures."
     )
 
-    retry_delay: float = Field(default=0.5, description="Delay between retry attempts in seconds.")
+    retry_delay: float = Field(
+        default=0.5, description="Delay between retry attempts in seconds."
+    )
 
     parallel_tool_execution: bool = Field(
         default=False, description="Whether to execute multiple tool calls in parallel."
@@ -59,7 +61,8 @@ class ReactAgentConfig(SimpleAgentConfig):
 
     # Add missing fields for structured output
     use_structured_output_node: bool = Field(
-        default=False, description="Whether to use a structured output node for final responses."
+        default=False,
+        description="Whether to use a structured output node for final responses.",
     )
 
     structured_output_model: type[BaseModel] | None = Field(
@@ -71,7 +74,9 @@ class ReactAgentConfig(SimpleAgentConfig):
         default=ReactAgentState, description="Schema for the agent state."
     )
 
-    agent_node_name: str = Field(default="agent", description="Name for the agent (LLM) node")
+    agent_node_name: str = Field(
+        default="agent", description="Name for the agent (LLM) node"
+    )
 
     tools_node_prefix: str = Field(
         default="tool_", description="Prefix for auto-generated tool node names"
@@ -115,7 +120,9 @@ class ReactAgentConfig(SimpleAgentConfig):
             )
 
         # Create LLM config
-        llm_config = AzureLLMConfig(model=model, parameters={"temperature": temperature})
+        llm_config = AzureLLMConfig(
+            model=model, parameters={"temperature": temperature}
+        )
 
         # Create prompt template with tool descriptions
         messages = [
@@ -156,7 +163,10 @@ class ReactAgentConfig(SimpleAgentConfig):
         )
 
         # Create config
-        return cls(name=name or f"react_agent_{datetime.now().strftime('%Y%m%d_%H%M%S')}", **kwargs)
+        return cls(
+            name=name or f"react_agent_{datetime.now().strftime('%Y%m%d_%H%M%S')}",
+            **kwargs,
+        )
 
     @classmethod
     def with_structured_output(

@@ -89,7 +89,10 @@ class SimpleRAGWithMemoryAgent(MultiAgent):
         agents = [memory_agent, retrieval_agent, answer_agent]
 
         super().__init__(
-            agents=agents, execution_mode="sequential", state_schema=MemoryRAGState, **kwargs
+            agents=agents,
+            execution_mode="sequential",
+            state_schema=MemoryRAGState,
+            **kwargs,
         )
 
     def build_custom_graph(self) -> Any:
@@ -156,7 +159,10 @@ class SelfRAGAgent(MultiAgent):
         agents = [retrieval_checker, retrieval_agent, answer_agent]
 
         super().__init__(
-            agents=agents, execution_mode="conditional", state_schema=SelfRAGState, **kwargs
+            agents=agents,
+            execution_mode="conditional",
+            state_schema=SelfRAGState,
+            **kwargs,
         )
 
     def build_custom_graph(self) -> Any:
@@ -219,7 +225,10 @@ class MultiQueryRAGAgent(MultiAgent):
         agents = [query_expander, multi_retrieval_agent, synthesis_agent]
 
         super().__init__(
-            agents=agents, execution_mode="sequential", state_schema=MultiQueryRAGState, **kwargs
+            agents=agents,
+            execution_mode="sequential",
+            state_schema=MultiQueryRAGState,
+            **kwargs,
         )
 
     def build_custom_graph(self) -> Any:

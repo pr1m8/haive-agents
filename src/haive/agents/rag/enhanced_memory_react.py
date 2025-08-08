@@ -41,7 +41,9 @@ class MemoryEntry(BaseModel):
     content: str = Field(description="Memory content")
     memory_type: MemoryType = Field(description="Type of memory")
     timestamp: str = Field(description="When this memory was created")
-    relevance_score: float = Field(ge=0.0, le=1.0, description="Relevance to current query")
+    relevance_score: float = Field(
+        ge=0.0, le=1.0, description="Relevance to current query"
+    )
     context_tags: list[str] = Field(default_factory=list, description="Context tags")
 
 
@@ -115,12 +117,18 @@ def create_enhanced_memory_react_rag(
         )
 
         # Identify gaps in knowledge
-        memory_gaps = ["missing recent updates", "lacks specific examples"] if mock_memories else []
+        memory_gaps = (
+            ["missing recent updates", "lacks specific examples"]
+            if mock_memories
+            else []
+        )
 
         analysis = MemoryAnalysis(
             relevant_memories=mock_memories,
             memory_gaps=memory_gaps,
-            temporal_context=("Continuing conversation" if mock_memories else "New conversation"),
+            temporal_context=(
+                "Continuing conversation" if mock_memories else "New conversation"
+            ),
             confidence=0.8 if mock_memories else 0.4,
         )
 
@@ -415,7 +423,10 @@ def create_simple_memory_react_rag(
         llm_config=llm_config,
         prompt_template=ChatPromptTemplate.from_messages(
             [
-                ("system", "Provide final answer considering memory context and reasoning"),
+                (
+                    "system",
+                    "Provide final answer considering memory context and reasoning",
+                ),
                 (
                     "human",
                     """Query: {query}
@@ -435,7 +446,11 @@ def create_simple_memory_react_rag(
         return {"context": context}
 
     return ChainAgent(
-        check_memory, add_context, react_reasoner, memory_answerer, name="Simple Memory ReAct RAG"
+        check_memory,
+        add_context,
+        react_reasoner,
+        memory_answerer,
+        name="Simple Memory ReAct RAG",
     )
 
 

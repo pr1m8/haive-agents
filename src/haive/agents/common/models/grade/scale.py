@@ -6,7 +6,9 @@ satisfaction ratings, and custom ordinal scales.
 
 from enum import Enum
 from typing import Any
+
 from pydantic import Field, field_validator, model_validator
+
 from haive.agents.common.models.grade.base import Grade, GradeType
 
 
@@ -112,7 +114,8 @@ class ScaleGrade(Grade):
         examples=["likert_5", "satisfaction", "quality", "numeric_7", "custom"],
     )
     numeric_value: int | None = Field(
-        default=None, description="Numeric equivalent based on position in scale (1-indexed)"
+        default=None,
+        description="Numeric equivalent based on position in scale (1-indexed)",
     )
 
     @field_validator("scale_labels")
@@ -256,10 +259,14 @@ class ScaleGrade(Grade):
         """
         current_index = (self.numeric_value or 1) - 1
         return {
-            "lower": self.scale_labels[current_index - 1] if current_index > 0 else None,
-            "higher": self.scale_labels[current_index + 1]
-            if current_index < len(self.scale_labels) - 1
-            else None,
+            "lower": (
+                self.scale_labels[current_index - 1] if current_index > 0 else None
+            ),
+            "higher": (
+                self.scale_labels[current_index + 1]
+                if current_index < len(self.scale_labels) - 1
+                else None
+            ),
         }
 
     def to_display_string(self) -> str:
@@ -307,7 +314,13 @@ class ScaleGrade(Grade):
             value = value.value
         return cls(
             scale_value=value,
-            scale_labels=["strongly_disagree", "disagree", "neutral", "agree", "strongly_agree"],
+            scale_labels=[
+                "strongly_disagree",
+                "disagree",
+                "neutral",
+                "agree",
+                "strongly_agree",
+            ],
             scale_type="likert_5",
             justification=justification,
             **kwargs,
@@ -345,7 +358,12 @@ class ScaleGrade(Grade):
 
     @classmethod
     def create_numeric_scale(
-        cls, value: int, min_value: int = 1, max_value: int = 5, justification: str = "", **kwargs
+        cls,
+        value: int,
+        min_value: int = 1,
+        max_value: int = 5,
+        justification: str = "",
+        **kwargs,
     ) -> "ScaleGrade":
         """Create a numeric scale grade.
 
@@ -360,7 +378,9 @@ class ScaleGrade(Grade):
             ScaleGrade configured as numeric scale
         """
         if not min_value <= value <= max_value:
-            raise ValueError(f"Value {value} must be between {min_value} and {max_value}")
+            raise ValueError(
+                f"Value {value} must be between {min_value} and {max_value}"
+            )
         labels = [str(i) for i in range(min_value, max_value + 1)]
         return cls(
             scale_value=str(value),

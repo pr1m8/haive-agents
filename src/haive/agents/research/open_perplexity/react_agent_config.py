@@ -142,6 +142,8 @@ def create_research_rag_agent_config(
     )
 
     # Create BaseRAGConfig with proper retriever configuration
-    rag_config = BaseRAGConfig(name=name, engine=rag_engine, retriever_config=retriever_config)
+    rag_config = BaseRAGConfig(
+        name=name, engine=rag_engine, retriever_config=retriever_config
+    )
 
     return rag_config

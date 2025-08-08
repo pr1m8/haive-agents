@@ -227,7 +227,9 @@ class TestToolStep:
 
     def test_empty_tools_list(self) -> None:
         """Test validation fails for empty tools list."""
-        with pytest.raises(ValidationError, match="Available tools list cannot be empty"):
+        with pytest.raises(
+            ValidationError, match="Available tools list cannot be empty"
+        ):
             ToolStep(
                 description="No tools available",
                 tool_name="calculator",
@@ -341,7 +343,9 @@ class TestToolStepIntegration:
         )
 
         plan = ExecutionPlan(
-            name="Tool Step Plan", description="Plan using tool steps", steps=[step1, step2]
+            name="Tool Step Plan",
+            description="Plan using tool steps",
+            steps=[step1, step2],
         )
 
         assert plan.step_count == 2
@@ -401,13 +405,19 @@ if __name__ == "__main__":
     # Test invalid tool name
     with contextlib.suppress(ValidationError):
         ToolStep(
-            description="Invalid tool", tool_name="nonexistent", tool_args={}, available_tools=tools
+            description="Invalid tool",
+            tool_name="nonexistent",
+            tool_args={},
+            available_tools=tools,
         )
 
     # Test missing args
     with contextlib.suppress(ValidationError):
         ToolStep(
-            description="Missing args", tool_name="calculator", tool_args={}, available_tools=tools
+            description="Missing args",
+            tool_name="calculator",
+            tool_args={},
+            available_tools=tools,
         )
 
     # Test execution

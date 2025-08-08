@@ -22,6 +22,7 @@ logger = logging.getLogger(__name__)
 def setup_tavily_tool() -> BaseTool:
     """Set up Tavily search tool."""
     import os
+
     from pydantic import SecretStr
 
     api_key = os.environ.get("TAVILY_API_KEY", "dummy_key")
@@ -29,7 +30,9 @@ def setup_tavily_tool() -> BaseTool:
     return TavilySearchResults(api_wrapper=search, max_results=5)
 
 
-def run_mcts_agent_example(question: str, tools: list[BaseTool] | None = None) -> dict[str, Any]:
+def run_mcts_agent_example(
+    question: str, tools: list[BaseTool] | None = None
+) -> dict[str, Any]:
     """Run an example MCTS agent workflow with the given question.
 
     Args:

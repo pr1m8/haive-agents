@@ -29,8 +29,12 @@ class MemoryClassifierConfig(BaseModel):
     llm_config: AugLLMConfig = Field(
         default_factory=AugLLMConfig, description="LLM for classification"
     )
-    enable_entity_extraction: bool = Field(default=True, description="Extract named entities")
-    enable_sentiment_analysis: bool = Field(default=True, description="Analyze sentiment")
+    enable_entity_extraction: bool = Field(
+        default=True, description="Extract named entities"
+    )
+    enable_sentiment_analysis: bool = Field(
+        default=True, description="Analyze sentiment"
+    )
     enable_topic_modeling: bool = Field(default=True, description="Extract topics")
 
     # Classification thresholds
@@ -45,8 +49,12 @@ class MemoryClassifierConfig(BaseModel):
     )
 
     # Processing limits
-    max_content_length: int = Field(default=2000, description="Maximum content length for analysis")
-    batch_size: int = Field(default=10, description="Batch size for bulk classification")
+    max_content_length: int = Field(
+        default=2000, description="Maximum content length for analysis"
+    )
+    batch_size: int = Field(
+        default=10, description="Batch size for bulk classification"
+    )
 
 
 class MemoryClassifier:
@@ -69,8 +77,12 @@ class MemoryClassifier:
     def _setup_llm(self) -> None:
         """Setup LLM for classification tasks."""
         # Configure LLM for classification
-        self.config.llm_config.temperature = 0.1  # Low temperature for consistent classification
-        self.config.llm_config.max_tokens = 1000  # Sufficient for classification response
+        self.config.llm_config.temperature = (
+            0.1  # Low temperature for consistent classification
+        )
+        self.config.llm_config.max_tokens = (
+            1000  # Sufficient for classification response
+        )
 
         # Setup structured output for classification results
         self.config.llm_config.structured_output_model = MemoryClassificationResult
@@ -169,7 +181,9 @@ Determine:
             # Truncate content if too long
             if len(content) > self.config.max_content_length:
                 content = content[: self.config.max_content_length] + "..."
-                logger.warning(f"Content truncated to {self.config.max_content_length} characters")
+                logger.warning(
+                    f"Content truncated to {self.config.max_content_length} characters"
+                )
 
             # Prepare context strings
             user_context_str = str(user_context) if user_context else "None provided"
@@ -185,7 +199,9 @@ Determine:
             )
 
             # Get LLM classification
-            result = self.llm.invoke({"messages": [{"role": "user", "content": prompt}]})
+            result = self.llm.invoke(
+                {"messages": [{"role": "user", "content": prompt}]}
+            )
 
             # Extract structured result
             if hasattr(result, "content"):
@@ -212,7 +228,9 @@ Determine:
 
             # Use basic LLM for intent analysis (no structured output needed)
             basic_llm = AugLLMConfig(temperature=0.2).create_runnable()
-            result = basic_llm.invoke({"messages": [{"role": "user", "content": prompt}]})
+            result = basic_llm.invoke(
+                {"messages": [{"role": "user", "content": prompt}]}
+            )
 
             # Parse intent from response
             return self._parse_query_intent(
@@ -246,7 +264,9 @@ Determine:
             batch_results = []
             for content, context in zip(batch_contents, batch_contexts, strict=False):
                 result = self.classify_memory(
-                    content, context.get("user_context"), context.get("conversation_context")
+                    content,
+                    context.get("user_context"),
+                    context.get("conversation_context"),
                 )
                 batch_results.append(result)
 
@@ -273,7 +293,9 @@ Determine:
             MemoryEntry with full classification and metadata
         """
         # Classify the memory
-        classification = self.classify_memory(content, user_context, conversation_context)
+        classification = self.classify_memory(
+            content, user_context, conversation_context
+        )
 
         # Create memory entry
         entry = MemoryEntry(
@@ -312,7 +334,8 @@ Determine:
             # Extract importance score
             importance_score = 0.5  # Default
             score_match = re.search(
-                r"(?: Union[importance, score])[:\s]+([0-9]*\.?[0-9]+)", llm_response.lower()
+                r"(?: Union[importance, score])[:\s]+([0-9]*\.?[0-9]+)",
+                llm_response.lower(),
             )
             if score_match:
                 importance_score = min(1.0, max(0.0, float(score_match.group(1))))
@@ -361,10 +384,16 @@ Determine:
         ):
             memory_types.append(MemoryType.EPISODIC)
 
-        if any(word in content.lower() for word in ["how to", "steps", "process", "procedure"]):
+        if any(
+            word in content.lower()
+            for word in ["how to", "steps", "process", "procedure"]
+        ):
             memory_types.append(MemoryType.PROCEDURAL)
 
-        if any(word in content.lower() for word in ["prefer", "like", "dislike", "favorite"]):
+        if any(
+            word in content.lower()
+            for word in ["prefer", "like", "dislike", "favorite"]
+        ):
             memory_types.append(MemoryType.PREFERENCE)
 
         return MemoryClassificationResult(
@@ -377,7 +406,9 @@ Determine:
             reasoning="Fallback rule-based classification",
         )
 
-    def _parse_query_intent(self, llm_response: str, original_query: str) -> MemoryQueryIntent:
+    def _parse_query_intent(
+        self, llm_response: str, original_query: str
+    ) -> MemoryQueryIntent:
         """Parse LLM response for query intent analysis."""
         # Simple parsing for now - could be enhanced with structured output
         memory_types = []
@@ -393,7 +424,8 @@ Determine:
         ):
             complexity = "complex"
         elif any(
-            word in original_query.lower() for word in ["explain", "describe", "tell me about"]
+            word in original_query.lower()
+            for word in ["explain", "describe", "tell me about"]
         ):
             complexity = "moderate"
 

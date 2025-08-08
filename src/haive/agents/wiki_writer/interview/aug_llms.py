@@ -1,7 +1,8 @@
-from haive.agents.wiki_writer.interview.models import AnswerWithCitations, Queries
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import MessagesPlaceholder
 from langchain_core.prompts import ChatPromptTemplate
+
+from haive.agents.wiki_writer.interview.models import AnswerWithCitations, Queries
 
 GEN_QUESTION_PROMPT = gen_qn_prompt = ChatPromptTemplate.from_messages(
     [

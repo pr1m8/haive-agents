@@ -130,7 +130,9 @@ def parse_labels(output_text: str) -> dict:
         >>> print(result)
         {'category': 'Technology'}
     """
-    category_matches = re.findall(r"\s*<category>(.*?)</category>.*", output_text, re.DOTALL)
+    category_matches = re.findall(
+        r"\s*<category>(.*?)</category>.*", output_text, re.DOTALL
+    )
     categories = [{"category": category.strip()} for category in category_matches]
     if len(categories) > 1:
         logger.warning(f"Multiple selected categories: {categories}")

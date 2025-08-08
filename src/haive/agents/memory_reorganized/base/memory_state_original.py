@@ -134,7 +134,9 @@ class UnifiedMemoryEntry(BaseModel):
         )
 
     @classmethod
-    def from_knowledge_triple(cls, triple: EnhancedKnowledgeTriple) -> "UnifiedMemoryEntry":
+    def from_knowledge_triple(
+        cls, triple: EnhancedKnowledgeTriple
+    ) -> "UnifiedMemoryEntry":
         """Create from knowledge triple."""
         return cls(
             entry_type="knowledge_triple",
@@ -206,9 +208,13 @@ class MemoryState(BaseModel):
         self.memories.append(entry)
         self._update_stats()
 
-    def add_schema_memory(self, schema_memory: BaseModel, memory_type: MemoryType) -> None:
+    def add_schema_memory(
+        self, schema_memory: BaseModel, memory_type: MemoryType
+    ) -> None:
         """Add memory from original schema."""
-        enhanced_memory = EnhancedMemoryItem.from_schema_memory(schema_memory, memory_type)
+        enhanced_memory = EnhancedMemoryItem.from_schema_memory(
+            schema_memory, memory_type
+        )
         self.add_memory_item(enhanced_memory)
 
     def get_memory_items(self) -> list[EnhancedMemoryItem]:

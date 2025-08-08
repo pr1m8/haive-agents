@@ -7,7 +7,7 @@ for routing and state management.
 """
 
 import logging
-from typing import Any, Optional, Optional, Type
+from typing import Any, Optional, Type
 
 from haive.core.common.models.dynamic_choice_model import DynamicChoiceModel
 from langchain_core.tools import BaseTool

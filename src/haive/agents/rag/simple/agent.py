@@ -2,12 +2,12 @@
 
 from pydantic import Field
 
-from haive.agents.multi.enhanced_multi_agent_v4 import EnhancedMultiAgentV4
+from haive.agents.multi.agent import MultiAgent
 from haive.agents.rag.base.agent import BaseRAGAgent
 from haive.agents.rag.simple.answer_agent import AnswerAgent
 
 
-class SimpleRAGAgent(EnhancedMultiAgentV4):
+class SimpleRAGAgent(MultiAgent):
     """Simple RAG = BaseRAGAgent + AnswerAgent in sequence."""
 
     agents: list = Field(

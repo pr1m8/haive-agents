@@ -1,7 +1,5 @@
 import json
 
-from haive.agents.wiki_writer.interview.aug_llms import gen_qn_aug_llm_config, gen_queries_chain
-from haive.agents.wiki_writer.interview.state import InterviewState
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.tools.search_tools import tavily_search_tool
 from haive.core.utils.message_utils import swap_roles, tag_with_name
@@ -9,6 +7,12 @@ from langchain_core.messages import AIMessage, ToolMessage
 from langchain_core.runnables import RunnableConfig, RunnableLambda, chain
 from langchain_core.tools import BaseTool, StructuredTool
 from langgraph.types import Command
+
+from haive.agents.wiki_writer.interview.aug_llms import (
+    gen_qn_aug_llm_config,
+    gen_queries_chain,
+)
+from haive.agents.wiki_writer.interview.state import InterviewState
 
 
 @chain
@@ -39,7 +43,9 @@ async def gen_answer(
         queries["parsed"].queries, config, return_exceptions=True
     )
 
-    successful_results = [res for res in query_results if not isinstance(res, Exception)]
+    successful_results = [
+        res for res in query_results if not isinstance(res, Exception)
+    ]
     all_query_results = {
         res["url"]: res["content"] for results in successful_results for res in results
     }

@@ -135,7 +135,8 @@ class SimpleSupervisor(MultiAgent):
     # ========================================================================
 
     supervisor_llm: AugLLMConfig | None = Field(
-        default=None, description="LLM for routing decisions (uses default if not provided)"
+        default=None,
+        description="LLM for routing decisions (uses default if not provided)",
     )
 
     supervisor_prompt: ChatPromptTemplate | None = Field(
@@ -196,7 +197,9 @@ class SimpleSupervisor(MultiAgent):
             raise ValueError("No agents registered with supervisor")
 
         # Add supervisor decision node
-        supervisor_node = EngineNodeConfig(name="supervisor", engine=self.supervisor_llm)
+        supervisor_node = EngineNodeConfig(
+            name="supervisor", engine=self.supervisor_llm
+        )
         graph.add_node("supervisor", supervisor_node)
         graph.add_edge(START, "supervisor")
 
@@ -213,7 +216,10 @@ class SimpleSupervisor(MultiAgent):
 
             # Prepare agent descriptions
             descriptions = "\n".join(
-                [f"- {name}: {info.description}" for name, info in self.agent_info.items()]
+                [
+                    f"- {name}: {info.description}"
+                    for name, info in self.agent_info.items()
+                ]
             )
 
             # Use supervisor prompt

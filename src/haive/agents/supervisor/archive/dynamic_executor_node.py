@@ -129,7 +129,10 @@ class DynamicExecutorNode:
                     logger.debug(f"  Extracted field: {field_name}")
 
             # Ensure engines if needed
-            if "engines" in agent.state_schema.model_fields and "engines" not in agent_input:
+            if (
+                "engines" in agent.state_schema.model_fields
+                and "engines" not in agent_input
+            ):
                 if "engines" in state:
                     agent_input["engines"] = state["engines"]
                 elif hasattr(agent, "engines"):

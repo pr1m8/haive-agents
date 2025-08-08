@@ -36,7 +36,10 @@ Examples:
 # Core memory agents
 try:
     from haive.agents.memory_reorganized.agents.ltm import LongTermMemoryAgent
-    from haive.agents.memory_reorganized.agents.multi import MultiMemoryAgent, MultiMemoryConfig
+    from haive.agents.memory_reorganized.agents.multi import (
+        MultiMemoryAgent,
+        MultiMemoryConfig,
+    )
     from haive.agents.memory_reorganized.agents.react import ReactMemoryAgent
     from haive.agents.memory_reorganized.agents.simple import (
         SimpleMemoryAgent,
@@ -68,7 +71,9 @@ except ImportError:
 # Search functionality
 try:
     from haive.agents.memory_reorganized.search.pro_search.agent import ProSearchAgent
-    from haive.agents.memory_reorganized.search.quick_search.agent import QuickSearchAgent
+    from haive.agents.memory_reorganized.search.quick_search.agent import (
+        QuickSearchAgent,
+    )
 except ImportError:
     QuickSearchAgent = None
     ProSearchAgent = None
@@ -87,7 +92,9 @@ except ImportError:
 
 # Integration support
 try:
-    from haive.agents.memory_reorganized.integrations.langmem_agent import LTMAgent as LangMemAgent
+    from haive.agents.memory_reorganized.integrations.langmem_agent import (
+        LTMAgent as LangMemAgent,
+    )
 except ImportError:
     LangMemAgent = None
 

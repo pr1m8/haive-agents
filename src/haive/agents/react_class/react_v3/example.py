@@ -53,14 +53,18 @@ def get_current_weather(location: str) -> str:
     temp = temps.get(location, 70)
     weather = weathers[hash(location + str(time.time())) % len(weathers)]
 
-    return f"The current weather in {location} is {weather} with a temperature of {temp}°F"
+    return (
+        f"The current weather in {location} is {weather} with a temperature of {temp}°F"
+    )
 
 
 # Define a structured tool
 class Calculator(BaseModel):
     """Tool for performing simple calculations."""
 
-    operation: str = Field(description="Math operation: 'add', 'subtract', 'multiply', 'divide'")
+    operation: str = Field(
+        description="Math operation: 'add', 'subtract', 'multiply', 'divide'"
+    )
     a: float = Field(description="First number")
     b: float = Field(description="Second number")
 
@@ -108,7 +112,9 @@ def test_basic_react_agent() -> Any:
     )
 
     search_tool = Tool.from_function(
-        func=search_api, name="search", description="Search for information about a topic"
+        func=search_api,
+        name="search",
+        description="Search for information about a topic",
     )
 
     # Create agent with tools
@@ -154,7 +160,9 @@ def test_structured_tool_agent() -> Any:
     )
 
     # Show schema information
-    schema_composer = SchemaComposer.from_components([agent.config.engine, *agent.config.tools])
+    schema_composer = SchemaComposer.from_components(
+        [agent.config.engine, *agent.config.tools]
+    )
     schema_composer.build()
 
     # Display calculator tool schema
@@ -176,7 +184,9 @@ def test_retry_policy() -> Any:
 
     # Create a flaky tool
     search_tool = Tool.from_function(
-        func=search_api, name="search", description="Search for information about a topic"
+        func=search_api,
+        name="search",
+        description="Search for information about a topic",
     )
 
     # Create custom retry policy for the search tool
@@ -201,7 +211,9 @@ def test_retry_policy() -> Any:
     # Print interval progression
     interval = retry_policy.initial_interval
     for _i in range(1, retry_policy.max_attempts):
-        interval = min(interval * retry_policy.backoff_factor, retry_policy.max_interval)
+        interval = min(
+            interval * retry_policy.backoff_factor, retry_policy.max_interval
+        )
 
     # Run the agent
     query = "Can you search for information about quantum computing?"

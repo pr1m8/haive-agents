@@ -2,7 +2,9 @@ from pydantic import BaseModel, Field
 
 
 class AnswerWithCitations(BaseModel):
-    answer: str = Field(description="Comprehensive answer to the user's question with citations.")
+    answer: str = Field(
+        description="Comprehensive answer to the user's question with citations."
+    )
     cited_urls: list[str] = Field(description="List of urls cited in the answer.")
 
     @property

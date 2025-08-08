@@ -16,7 +16,9 @@ from haive.agents.reasoning_and_critique.self_discover.v2.prompts import (
     select_prompt,
     structured_prompt,
 )
-from haive.agents.reasoning_and_critique.self_discover.v2.state import SelfDiscoveryState
+from haive.agents.reasoning_and_critique.self_discover.v2.state import (
+    SelfDiscoveryState,
+)
 from haive.agents.simple.agent import SimpleAgent
 
 # Default reasoning modules

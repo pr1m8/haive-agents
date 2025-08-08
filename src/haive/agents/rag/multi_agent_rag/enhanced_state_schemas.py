@@ -28,11 +28,17 @@ class ConfigurableRAGState(RAGState):
     relevance_threshold: float = Field(
         default=0.5, description="Threshold for document relevance filtering"
     )
-    max_documents: int = Field(default=10, description="Maximum number of documents to use")
+    max_documents: int = Field(
+        default=10, description="Maximum number of documents to use"
+    )
 
     # Metadata
-    agent_name: str = Field(default="", description="Name of the agent using this state")
-    workflow_type: str = Field(default="", description="Type of RAG workflow being executed")
+    agent_name: str = Field(
+        default="", description="Name of the agent using this state"
+    )
+    workflow_type: str = Field(
+        default="", description="Type of RAG workflow being executed"
+    )
 
 
 class GradedRAGState(ConfigurableRAGState):
@@ -95,8 +101,12 @@ class DynamicRAGState(ConfigurableRAGState):
     adaptive_threshold: float = 0.7
 
     # Dynamic RAG configuration
-    min_retrievers: int = Field(default=1, description="Minimum number of active retrievers")
-    max_retrievers: int = Field(default=5, description="Maximum number of active retrievers")
+    min_retrievers: int = Field(
+        default=1, description="Minimum number of active retrievers"
+    )
+    max_retrievers: int = Field(
+        default=5, description="Maximum number of active retrievers"
+    )
     performance_threshold: float = Field(
         default=0.6, description="Minimum performance to keep retriever active"
     )
@@ -115,7 +125,9 @@ class DebateRAGState(ConfigurableRAGState):
     debate_winner: str | None = None
 
     # Debate configuration
-    position_names: list[str] = Field(default_factory=list, description="Names of debate positions")
+    position_names: list[str] = Field(
+        default_factory=list, description="Names of debate positions"
+    )
     max_debate_rounds: int = Field(default=3, description="Maximum rounds of debate")
     require_consensus: bool = Field(
         default=False, description="Whether consensus is required to end debate"
@@ -134,15 +146,22 @@ class AdaptiveThresholdRAGState(DynamicRAGState):
     retrieval_rounds: int = 0
 
     # Adaptive configuration
-    initial_threshold: float = Field(default=0.7, description="Starting retrieval threshold")
-    threshold_step: float = Field(default=0.1, description="Amount to adjust threshold by")
+    initial_threshold: float = Field(
+        default=0.7, description="Starting retrieval threshold"
+    )
+    threshold_step: float = Field(
+        default=0.1, description="Amount to adjust threshold by"
+    )
     min_threshold: float = Field(default=0.3, description="Minimum allowed threshold")
     max_threshold: float = Field(default=0.95, description="Maximum allowed threshold")
 
 
 # Helper function to create state with configuration
 def create_configured_state(
-    state_class: type[ConfigurableRAGState], agent_name: str, workflow_type: str, **config_kwargs
+    state_class: type[ConfigurableRAGState],
+    agent_name: str,
+    workflow_type: str,
+    **config_kwargs
 ) -> ConfigurableRAGState:
     """Create a state instance with configuration."""
     # Extract fields that belong to the state class
@@ -156,7 +175,9 @@ def create_configured_state(
             config_fields[key] = value
 
     # Create state with direct fields
-    state = state_class(agent_name=agent_name, workflow_type=workflow_type, **state_fields)
+    state = state_class(
+        agent_name=agent_name, workflow_type=workflow_type, **state_fields
+    )
 
     # Add additional config
     state.config.update(config_fields)

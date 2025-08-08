@@ -23,7 +23,9 @@ console = Console()
 
 async def demonstrate_integrated_supervisor():
     """Complete demonstration of integrated dynamic supervisor."""
-    console.print("\n[bold blue]🚀 Integrated Dynamic Multi-Agent Supervisor Demo[/bold blue]\n")
+    console.print(
+        "\n[bold blue]🚀 Integrated Dynamic Multi-Agent Supervisor Demo[/bold blue]\n"
+    )
 
     # Create integrated supervisor with all features enabled
     supervisor = IntegratedDynamicSupervisor(
@@ -50,7 +52,9 @@ async def demonstrate_integrated_supervisor():
 
     # Simulate tool calls for adding agents (in real usage, these would come
     # from LLM tool calls)
-    console.print("\n[yellow]Simulating: 'add a research agent that can search the web'[/yellow]")
+    console.print(
+        "\n[yellow]Simulating: 'add a research agent that can search the web'[/yellow]"
+    )
 
     # Manually add agents to demonstrate the flow (normally done via tool
     # calls)
@@ -167,7 +171,9 @@ async def demonstrate_integrated_supervisor():
                 console.print(f"{status} writing agent")
 
             elif "change" in request.lower() and "priority" in request.lower():
-                success = await supervisor.update_agent_config("research_agent", {"priority": 5})
+                success = await supervisor.update_agent_config(
+                    "research_agent", {"priority": 5}
+                )
                 status = "✅ Updated" if success else "❌ Failed to update"
                 console.print(f"{status} research agent priority")
 
@@ -195,7 +201,9 @@ async def demonstrate_dynamic_choice_model_integration():
     console.print("\n[bold blue]🎯 DynamicChoiceModel Integration Demo[/bold blue]\n")
 
     supervisor = IntegratedDynamicSupervisor(
-        name="choice_model_supervisor", engine=AugLLMConfig(), enable_agent_management_tools=True
+        name="choice_model_supervisor",
+        engine=AugLLMConfig(),
+        enable_agent_management_tools=True,
     )
 
     # Add agents one by one and show choice model updates
@@ -237,14 +245,18 @@ async def demonstrate_dynamic_choice_model_integration():
         choice_model = supervisor.registry_manager.get_agent_choice_model()
         console.print(f"Choice model after removal: {choice_model.option_names}")
 
-    console.print("\n[bold green]🎯 DynamicChoiceModel Integration Demo Complete![/bold green]")
+    console.print(
+        "\n[bold green]🎯 DynamicChoiceModel Integration Demo Complete![/bold green]"
+    )
 
 
 async def demonstrate_tool_routing():
     """Demonstrate tool-based routing to agents."""
     console.print("\n[bold blue]🔧 Tool-Based Routing Demo[/bold blue]\n")
 
-    supervisor = IntegratedDynamicSupervisor(name="tool_routing_supervisor", engine=AugLLMConfig())
+    supervisor = IntegratedDynamicSupervisor(
+        name="tool_routing_supervisor", engine=AugLLMConfig()
+    )
 
     # Add agents with different tool capabilities
     console.print("Setting up agents with different tools...")
@@ -267,12 +279,16 @@ async def demonstrate_tool_routing():
         # In real scenario: tools=[CalculatorTool(), PlotTool()]
     )
 
-    await supervisor.register_agent(math_agent, "Math agent with calculator and plotting tools")
+    await supervisor.register_agent(
+        math_agent, "Math agent with calculator and plotting tools"
+    )
 
     # Show tool-to-agent mapping
     if hasattr(supervisor, "_state") and supervisor._state:
         state = supervisor._state
-        console.print(f"Tool-to-agent mapping: {state.agent_registry.tool_to_agent_mapping}")
+        console.print(
+            f"Tool-to-agent mapping: {state.agent_registry.tool_to_agent_mapping}"
+        )
 
         # Simulate tool routing
         test_tools = ["search", "calculator", "wikipedia", "plot"]
@@ -288,7 +304,9 @@ async def demonstrate_tool_routing():
 
 async def main():
     """Run all integrated supervisor demonstrations."""
-    console.print("[bold magenta]Integrated Dynamic Multi-Agent Supervisor Examples[/bold magenta]")
+    console.print(
+        "[bold magenta]Integrated Dynamic Multi-Agent Supervisor Examples[/bold magenta]"
+    )
     console.print("=" * 60)
 
     try:

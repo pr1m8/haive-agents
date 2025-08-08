@@ -57,14 +57,17 @@ Examples:
 """
 
 from __future__ import annotations
+
 import logging
 from typing import Any
+
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.engine.retriever import BaseRetrieverConfig
 from haive.core.engine.vectorstore import VectorStoreConfig
 from langchain_core.documents import Document
 from pydantic import BaseModel, Field, field_validator, model_validator
-from haive.agents.multi.clean import MultiAgent
+
+from haive.agents.multi.agent import MultiAgent
 from haive.agents.rag.base.agent import BaseRAGAgent
 from haive.agents.simple.agent import SimpleAgent
 
@@ -129,14 +132,23 @@ class SimpleRAG(MultiAgent):
     """
 
     retriever_config: BaseRetrieverConfig | VectorStoreConfig = Field(
-        ..., description="Configuration for document retrieval (vector store or retriever)"
+        ...,
+        description="Configuration for document retrieval (vector store or retriever)",
     )
-    llm_config: AugLLMConfig = Field(..., description="Configuration for answer generation LLM")
+    llm_config: AugLLMConfig = Field(
+        ..., description="Configuration for answer generation LLM"
+    )
     top_k: int = Field(
-        default=5, ge=1, le=50, description="Number of documents to retrieve from vector store"
+        default=5,
+        ge=1,
+        le=50,
+        description="Number of documents to retrieve from vector store",
     )
     similarity_threshold: float = Field(
-        default=0.0, ge=0.0, le=1.0, description="Minimum similarity score for retrieved documents"
+        default=0.0,
+        ge=0.0,
+        le=1.0,
+        description="Minimum similarity score for retrieved documents",
     )
     structured_output_model: type[BaseModel] | None = Field(
         default=None, description="Pydantic model for structured output formatting"
@@ -157,15 +169,21 @@ class SimpleRAG(MultiAgent):
     def validate_context_template(cls, v: str) -> str:
         """Validate context template has required placeholders."""
         required_placeholders = {"{context}", "{query}"}
-        missing = required_placeholders - {ph for ph in required_placeholders if ph in v}
+        missing = required_placeholders - {
+            ph for ph in required_placeholders if ph in v
+        }
         if missing:
-            raise ValueError(f"Context template missing required placeholders: {missing}")
+            raise ValueError(
+                f"Context template missing required placeholders: {missing}"
+            )
         return v
 
     @model_validator(mode="after")
     def setup_rag_agents(self) -> SimpleRAG:
         """Setup the retriever and generator agents using the clean MultiAgent pattern."""
-        retriever_agent = BaseRAGAgent(name=f"{self.name}_retriever", engine=self.retriever_config)
+        retriever_agent = BaseRAGAgent(
+            name=f"{self.name}_retriever", engine=self.retriever_config
+        )
         generator_config = self.llm_config.model_copy()
         if not generator_config.system_message:
             generator_config.system_message = self.system_prompt_template
@@ -200,10 +218,15 @@ class SimpleRAG(MultiAgent):
             Configured SimpleRAG instance
         """
         retriever_agent = BaseRAGAgent.from_documents(
-            documents=documents, embedding_model=embedding_config, name=f"{name}_retriever"
+            documents=documents,
+            embedding_model=embedding_config,
+            name=f"{name}_retriever",
         )
         return cls(
-            name=name, retriever_config=retriever_agent.engine, llm_config=llm_config, **kwargs
+            name=name,
+            retriever_config=retriever_agent.engine,
+            llm_config=llm_config,
+            **kwargs,
         )
 
     @classmethod
@@ -225,7 +248,12 @@ class SimpleRAG(MultiAgent):
         Returns:
             Configured SimpleRAG instance
         """
-        return cls(name=name, retriever_config=vector_store_config, llm_config=llm_config, **kwargs)
+        return cls(
+            name=name,
+            retriever_config=vector_store_config,
+            llm_config=llm_config,
+            **kwargs,
+        )
 
     def get_retriever_agent(self) -> BaseRAGAgent:
         """Get the retriever agent from the agents dict."""
@@ -242,7 +270,11 @@ class SimpleRAG(MultiAgent):
         raise RuntimeError("SimpleAgent not found in agents")
 
     async def retrieve_documents(
-        self, query: str, k: int | None = None, score_threshold: float | None = None, **kwargs
+        self,
+        query: str,
+        k: int | None = None,
+        score_threshold: float | None = None,
+        **kwargs,
     ) -> list[Document]:
         """Retrieve documents using the retriever agent.
 
@@ -269,10 +301,16 @@ class SimpleRAG(MultiAgent):
             return result["documents"]
         if hasattr(result, "documents"):
             return list(result.documents)
-        logger.warning("Could not extract documents from retrieval result, using fallback")
-        return [Document(page_content=str(result), metadata={"source": "retrieval_result"})]
+        logger.warning(
+            "Could not extract documents from retrieval result, using fallback"
+        )
+        return [
+            Document(page_content=str(result), metadata={"source": "retrieval_result"})
+        ]
 
-    async def generate_answer(self, query: str, documents: list[Document], **kwargs) -> Any:
+    async def generate_answer(
+        self, query: str, documents: list[Document], **kwargs
+    ) -> Any:
         """Generate answer using the generator agent.
 
         Args:
@@ -294,7 +332,9 @@ class SimpleRAG(MultiAgent):
         generator = self.get_generator_agent()
         return await generator.arun(formatted_input, **kwargs)
 
-    async def arun(self, input_data: str | dict[str, Any], debug: bool = False, **kwargs) -> Any:
+    async def arun(
+        self, input_data: str | dict[str, Any], debug: bool = False, **kwargs
+    ) -> Any:
         """Execute RAG pipeline using clean MultiAgent sequential execution.
 
         This leverages the clean MultiAgent infrastructure for proper sequential
@@ -339,9 +379,11 @@ class SimpleRAG(MultiAgent):
             },
             "generation_config": {
                 "structured_output": self.structured_output_model is not None,
-                "system_prompt": self.system_prompt_template[:100] + "..."
-                if len(self.system_prompt_template) > 100
-                else self.system_prompt_template,
+                "system_prompt": (
+                    self.system_prompt_template[:100] + "..."
+                    if len(self.system_prompt_template) > 100
+                    else self.system_prompt_template
+                ),
             },
         }
 

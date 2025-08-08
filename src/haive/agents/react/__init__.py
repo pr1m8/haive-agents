@@ -5,7 +5,7 @@ and provide structured output with comprehensive debugging and observability.
 
 Available Implementations:
     - ReactAgent: Original implementation extending SimpleAgent
-    - ReactAgentV3: Enhanced implementation with structured output, hooks, and advanced features
+    - ReactAgent: Enhanced implementation with structured output, hooks, and advanced features
 
 Examples:
     Basic ReactAgent usage::
@@ -15,9 +15,9 @@ Examples:
 
         agent = ReactAgent(name="react_agent", engine=AugLLMConfig())
 
-    Enhanced ReactAgentV3 with structured output::
+    Enhanced ReactAgent with structured output::
 
-        from haive.agents.react import ReactAgentV3, create_react_agent
+        from haive.agents.react import ReactAgent, create_react_agent
         from langchain_core.tools import tool
         from pydantic import BaseModel, Field
 
@@ -39,7 +39,7 @@ Examples:
         )
 
         # Direct instantiation approach
-        agent = ReactAgentV3(
+        agent = ReactAgent(
             name="direct_react",
             engine=AugLLMConfig(
                 tools=[calculator],
@@ -53,7 +53,10 @@ See Also:
     haive.core.engine.aug_llm: AugLLMConfig for engine configuration
 """
 
-from haive.agents.react.agent import ReactAgent
-from haive.agents.react.agent_v3 import ReactAgentV3, create_react_agent, create_research_agent
+from haive.agents.react.agent import (
+    ReactAgent,
+    create_react_agent,
+    create_research_agent,
+)
 
-__all__ = ["ReactAgent", "ReactAgentV3", "create_react_agent", "create_research_agent"]
+__all__ = ["ReactAgent", "create_react_agent", "create_research_agent"]

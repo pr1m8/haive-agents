@@ -4,10 +4,10 @@ import logging
 import os
 import sys
 
-from haive.agents.lats.models import SerializedMessage
 from langchain_community.tools.tavily_search import TavilySearchResults
 from langchain_community.utilities.tavily_search import TavilySearchAPIWrapper
 
+from haive.agents.lats.models import SerializedMessage
 from haive.agents.reasoning_and_critique.lats.agent import create_lats_agent
 
 # Add project root to path for imports
@@ -30,7 +30,9 @@ def main():
     if os.environ.get("TAVILY_API_KEY"):
         from pydantic import SecretStr
 
-        search = TavilySearchAPIWrapper(tavily_api_key=SecretStr(os.environ["TAVILY_API_KEY"]))
+        search = TavilySearchAPIWrapper(
+            tavily_api_key=SecretStr(os.environ["TAVILY_API_KEY"])
+        )
         tavily_tool = TavilySearchResults(api_wrapper=search, max_results=5)
         tools.append(tavily_tool)
         logger.info("Tavily search tool added")

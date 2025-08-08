@@ -75,7 +75,9 @@ class JoinPoint(BaseModel):
     join_function: str = Field(
         default="merge", description="How to combine results (merge, sum, concat, etc.)"
     )
-    custom_logic: str | None = Field(default=None, description="Custom join logic description")
+    custom_logic: str | None = Field(
+        default=None, description="Custom join logic description"
+    )
 
     # Execution
     wait_for_all: bool = Field(

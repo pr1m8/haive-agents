@@ -31,21 +31,29 @@ from haive.core.schema.prebuilt.query_state import (
     RetrievalStrategy,
 )
 
-from haive.agents.document_processing import DocumentProcessingAgent, DocumentProcessingConfig
+from haive.agents.document_processing import (
+    DocumentProcessingAgent,
+    DocumentProcessingConfig,
+)
 
 
 async def basic_query_example():
     """Basic example using DocumentProcessingAgent with QueryState."""
     # Create basic configuration
     doc_config = DocumentProcessingConfig(
-        search_enabled=True, annotation_enabled=True, bulk_processing=True, rag_strategy="basic"
+        search_enabled=True,
+        annotation_enabled=True,
+        bulk_processing=True,
+        rag_strategy="basic",
     )
 
     # Create LLM configuration
     llm_config = AugLLMConfig(temperature=0.1, max_tokens=1000)
 
     # Create agent
-    agent = DocumentProcessingAgent(config=doc_config, engine=llm_config, name="basic_query_agent")
+    agent = DocumentProcessingAgent(
+        config=doc_config, engine=llm_config, name="basic_query_agent"
+    )
 
     # Create query state
     query_state = QueryState(
@@ -155,7 +163,9 @@ async def multi_source_example():
     llm_config = AugLLMConfig(temperature=0.1, max_tokens=1500)
 
     # Create agent
-    agent = DocumentProcessingAgent(config=doc_config, engine=llm_config, name="multi_source_agent")
+    agent = DocumentProcessingAgent(
+        config=doc_config, engine=llm_config, name="multi_source_agent"
+    )
 
     # Create query state
     query_state = QueryState(

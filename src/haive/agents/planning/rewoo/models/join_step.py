@@ -37,7 +37,8 @@ class JoinStep(AbstractStep):
 
     # Core join configuration
     join_strategy: JoinStrategy = Field(
-        default=JoinStrategy.WAIT_ALL, description="Strategy for joining parallel inputs"
+        default=JoinStrategy.WAIT_ALL,
+        description="Strategy for joining parallel inputs",
     )
 
     # Auto-detected parallel inputs (computed automatically)
@@ -71,7 +72,9 @@ class JoinStep(AbstractStep):
     @property
     def parallel_branch_count(self) -> int:
         """Number of parallel branches this step joins."""
-        return len(self.parallel_inputs) if self.parallel_inputs else len(self.depends_on)
+        return (
+            len(self.parallel_inputs) if self.parallel_inputs else len(self.depends_on)
+        )
 
     @computed_field
     @property
@@ -106,7 +109,8 @@ class JoinStep(AbstractStep):
         """Whether this join can be optimized for parallel execution."""
         return (
             self.is_join_point
-            and self.join_strategy in [JoinStrategy.WAIT_ANY, JoinStrategy.WAIT_MAJORITY]
+            and self.join_strategy
+            in [JoinStrategy.WAIT_ANY, JoinStrategy.WAIT_MAJORITY]
             and self.parallel_branch_count >= 2
         )
 
@@ -182,7 +186,9 @@ class JoinStep(AbstractStep):
         return "reduce_complex"
 
     # Dependency analysis methods (inspired by AutoTree's type detection)
-    def analyze_dependency_patterns(self, all_steps: list[AbstractStep]) -> dict[str, Any]:
+    def analyze_dependency_patterns(
+        self, all_steps: list[AbstractStep]
+    ) -> dict[str, Any]:
         """Analyze dependency patterns across all steps to detect DAG structure.
 
         Similar to how AutoTree analyzes type relationships, this analyzes
@@ -240,7 +246,9 @@ class JoinStep(AbstractStep):
                 for other_dep_id in self.depends_on:
                     if other_dep_id != dep_id:
                         other_dep = step_map.get(other_dep_id)
-                        if other_dep and self._has_dependency_path(dep_step, other_dep, step_map):
+                        if other_dep and self._has_dependency_path(
+                            dep_step, other_dep, step_map
+                        ):
                             is_independent = False
                             break
 
@@ -259,7 +267,10 @@ class JoinStep(AbstractStep):
         return opportunities
 
     def _has_dependency_path(
-        self, from_step: AbstractStep, to_step: AbstractStep, step_map: dict[str, AbstractStep]
+        self,
+        from_step: AbstractStep,
+        to_step: AbstractStep,
+        step_map: dict[str, AbstractStep],
     ) -> bool:
         """Check if there's a dependency path from one step to another."""
 
@@ -275,11 +286,16 @@ class JoinStep(AbstractStep):
             if not current_step:
                 return False
 
-            return any(dfs(dep_id, target_id, visited.copy()) for dep_id in current_step.depends_on)
+            return any(
+                dfs(dep_id, target_id, visited.copy())
+                for dep_id in current_step.depends_on
+            )
 
         return dfs(from_step.id, to_step.id, set())
 
-    def _identify_critical_path_members(self, step_map: dict[str, AbstractStep]) -> list[str]:
+    def _identify_critical_path_members(
+        self, step_map: dict[str, AbstractStep]
+    ) -> list[str]:
         """Identify which dependencies are on the critical path."""
         critical_members = []
 
@@ -294,7 +310,9 @@ class JoinStep(AbstractStep):
 
         return critical_members
 
-    def _suggest_dag_optimizations(self, step_map: dict[str, AbstractStep]) -> list[dict[str, Any]]:
+    def _suggest_dag_optimizations(
+        self, step_map: dict[str, AbstractStep]
+    ) -> list[dict[str, Any]]:
         """Suggest DAG-level optimizations."""
         optimizations = []
 
@@ -355,7 +373,11 @@ class JoinStep(AbstractStep):
 
         # Execute join function
         if self.join_function == "passthrough":
-            result = next(iter(self.parallel_results.values())) if self.parallel_results else None
+            result = (
+                next(iter(self.parallel_results.values()))
+                if self.parallel_results
+                else None
+            )
         elif self.join_function == "merge_two":
             result = self._merge_two_results()
         elif self.join_function == "merge_multiple":
@@ -422,7 +444,10 @@ class JoinStep(AbstractStep):
     ) -> "JoinStep":
         """Factory method to create a JoinStep with automatic detection."""
         return cls(
-            description=description, depends_on=dependencies, join_strategy=strategy, **kwargs
+            description=description,
+            depends_on=dependencies,
+            join_strategy=strategy,
+            **kwargs,
         )
 
     @classmethod
@@ -485,4 +510,6 @@ class JoinStep(AbstractStep):
                 parallel_potential += len(step.depends_on) - 1
 
         max_potential = len(steps) * 2  # Rough maximum
-        return min(parallel_potential / max_potential, 1.0) if max_potential > 0 else 0.0
+        return (
+            min(parallel_potential / max_potential, 1.0) if max_potential > 0 else 0.0
+        )

@@ -5,10 +5,14 @@ other agents, delegate tasks, and coordinate multi-agent workflows.
 """
 
 from typing import Any, Dict, List, Optional
+
 from langchain_core.tools import Tool, tool
 from pydantic import BaseModel, Field
 
-from haive.agents.experiments.supervisor.state_models import AgentMetadata, ExecutionContext
+from haive.agents.experiments.supervisor.state_models import (
+    AgentMetadata,
+    ExecutionContext,
+)
 
 
 class AgentHandoffInput(BaseModel):
@@ -88,7 +92,9 @@ def create_list_agents_tool(supervisor) -> Tool:
         Tool for listing agents
     """
 
-    def list_agents(include_inactive: bool = False, filter_by_type: Optional[str] = None) -> str:
+    def list_agents(
+        include_inactive: bool = False, filter_by_type: Optional[str] = None
+    ) -> str:
         """List all available agents.
 
         Args:
@@ -112,7 +118,10 @@ def create_list_agents_tool(supervisor) -> Tool:
                     continue
 
                 # Filter by type
-                if filter_by_type and metadata.agent_type.lower() != filter_by_type.lower():
+                if (
+                    filter_by_type
+                    and metadata.agent_type.lower() != filter_by_type.lower()
+                ):
                     continue
 
                 filtered_agents[name] = metadata
@@ -128,7 +137,9 @@ def create_list_agents_tool(supervisor) -> Tool:
                     f"- {name} ({metadata.agent_type}): {metadata.description} [{status}]"
                 )
 
-            return f"Available agents ({len(filtered_agents)}):\n" + "\n".join(agent_list)
+            return f"Available agents ({len(filtered_agents)}):\n" + "\n".join(
+                agent_list
+            )
 
         except Exception as e:
             return f"Error listing agents: {str(e)}"

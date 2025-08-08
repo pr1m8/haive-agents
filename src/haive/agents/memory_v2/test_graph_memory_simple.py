@@ -27,7 +27,9 @@ except ImportError:
 def test_graph_memory_config():
     """Test GraphMemoryConfig validation and creation."""
     # Test with DeepSeek to avoid quota issues
-    llm_config = AugLLMConfig(llm_config=DeepSeekLLMConfig(model="deepseek-chat", temperature=0.1))
+    llm_config = AugLLMConfig(
+        llm_config=DeepSeekLLMConfig(model="deepseek-chat", temperature=0.1)
+    )
 
     GraphMemoryConfig(
         user_id="test_user",
@@ -46,7 +48,9 @@ def test_graph_memory_tool_creation():
     llm_config = AugLLMConfig(llm_config=DeepSeekLLMConfig(model="deepseek-chat"))
 
     config = GraphMemoryConfig(
-        mode=GraphMemoryMode.EXTRACT_ONLY, llm_config=llm_config, enable_vector_index=False
+        mode=GraphMemoryMode.EXTRACT_ONLY,
+        llm_config=llm_config,
+        enable_vector_index=False,
     )
 
     # This will fail due to Neo4j connection, but we can test config

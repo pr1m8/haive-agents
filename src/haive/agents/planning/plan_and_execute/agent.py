@@ -18,13 +18,21 @@ class PlanAndExecuteAgent(Agent[PlanAndExecuteConfig]):
         self.config = config
 
         self.planner_runnable = compose_runnable(self.config.aug_llm_configs["planner"])
-        self.agent_executor_runnable = ReactAgentV4(engine=self.config.agent_executor_config).app
-        self.replanner_runnable = compose_runnable(self.config.aug_llm_configs["replanner"])
+        self.agent_executor_runnable = ReactAgentV4(
+            engine=self.config.agent_executor_config
+        ).app
+        self.replanner_runnable = compose_runnable(
+            self.config.aug_llm_configs["replanner"]
+        )
         super().__init__(config)
 
     async def planner(self, state: PlanAndExecuteState):
-        plan = await self.planner_runnable.ainvoke({"messages": [("user", state.input)]})
-        return Command(update={"plan": plan}, goto="execute_step", resume={"plan": plan.steps})
+        plan = await self.planner_runnable.ainvoke(
+            {"messages": [("user", state.input)]}
+        )
+        return Command(
+            update={"plan": plan}, goto="execute_step", resume={"plan": plan.steps}
+        )
 
     def setup_workflow(self) -> None:
         self.graph.add_node("planner", self.planner)
@@ -121,7 +129,9 @@ class PlanAndExecuteAgent(Agent[PlanAndExecuteConfig]):
             ]
         )
 
-        return Command(update={"plan": state.plan, "response": state.response}, goto="execute_step")
+        return Command(
+            update={"plan": state.plan, "response": state.response}, goto="execute_step"
+        )
 
     def should_end(self, state: PlanAndExecuteState):
         """Determines if the process should end.
@@ -134,11 +144,15 @@ class PlanAndExecuteAgent(Agent[PlanAndExecuteConfig]):
         """
         if state.response:
             return END
-        if state.plan and any(step.status == "not_started" for step in state.plan.steps):
+        if state.plan and any(
+            step.status == "not_started" for step in state.plan.steps
+        ):
             return "execute_step"
         return "replan_step"
 
-    async def arun(self, input_text: str | None = None, input_dict: dict[str, Any] | None = None):
+    async def arun(
+        self, input_text: str | None = None, input_dict: dict[str, Any] | None = None
+    ):
         if not self.graph:
             raise RuntimeError("Workflow graph is not set up.")
         if not self.app:
@@ -159,7 +173,9 @@ class PlanAndExecuteAgent(Agent[PlanAndExecuteConfig]):
                 output["messages"][-1]
 
             # Ensure update includes required fields
-            if not any(key in output for key in ["input", "plan", "past_steps", "response"]):
+            if not any(
+                key in output for key in ["input", "plan", "past_steps", "response"]
+            ):
                 raise ValueError("🚨 Missing required update fields:", output)
         self.save_state_history()
 

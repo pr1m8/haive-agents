@@ -32,7 +32,9 @@ class QueryClassification(BaseModel):
     secondary_type: QueryType | None = Field(
         default=None, description="Secondary type if applicable"
     )
-    complexity: Literal["simple", "medium", "complex"] = Field(description="Query complexity")
+    complexity: Literal["simple", "medium", "complex"] = Field(
+        description="Query complexity"
+    )
     confidence: float = Field(ge=0.0, le=1.0, description="Classification confidence")
 
 
@@ -49,13 +51,17 @@ class MergedResult(BaseModel):
     """Final merged result."""
 
     primary_answer: str = Field(description="Primary answer")
-    supporting_evidence: list[str] = Field(description="Supporting evidence from branches")
+    supporting_evidence: list[str] = Field(
+        description="Supporting evidence from branches"
+    )
     confidence_score: float = Field(ge=0.0, le=1.0, description="Overall confidence")
     sources_used: list[str] = Field(description="Sources used")
 
 
 def create_branched_rag_chain(
-    documents: list[Document], llm_config: LLMConfig | None = None, name: str = "Branched RAG"
+    documents: list[Document],
+    llm_config: LLMConfig | None = None,
+    name: str = "Branched RAG",
 ) -> ChainAgent:
     """Create a branched RAG system using ChainAgent."""
     if not llm_config:
@@ -97,7 +103,9 @@ def create_branched_rag_chain(
         relevant_docs = [
             doc
             for doc in documents
-            if any(word.lower() in doc.page_content.lower() for word in query.split()[:5])
+            if any(
+                word.lower() in doc.page_content.lower() for word in query.split()[:5]
+            )
         ][:3]
 
         # Extract precise facts
@@ -311,7 +319,10 @@ def create_adaptive_branched_rag(
         llm_config=llm_config,
         prompt_template=ChatPromptTemplate.from_messages(
             [
-                ("system", "Classify query type: factual, analytical, creative, or procedural"),
+                (
+                    "system",
+                    "Classify query type: factual, analytical, creative, or procedural",
+                ),
                 ("human", "{query}"),
             ]
         ),
@@ -447,7 +458,10 @@ def create_parallel_branched_rag(
         llm_config=llm_config,
         prompt_template=ChatPromptTemplate.from_messages(
             [
-                ("system", "Synthesize all branch responses into a comprehensive answer"),
+                (
+                    "system",
+                    "Synthesize all branch responses into a comprehensive answer",
+                ),
                 (
                     "human",
                     """Query: {query}

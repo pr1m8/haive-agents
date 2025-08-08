@@ -25,8 +25,12 @@ logger = logging.getLogger(__name__)
 class HallucinationGrade(BaseModel):
     """Single hallucination assessment."""
 
-    has_hallucination: bool = Field(description="Whether response contains hallucinations")
-    confidence_score: float = Field(ge=0.0, le=1.0, description="Confidence in assessment (0-1)")
+    has_hallucination: bool = Field(
+        description="Whether response contains hallucinations"
+    )
+    confidence_score: float = Field(
+        ge=0.0, le=1.0, description="Confidence in assessment (0-1)"
+    )
     hallucination_type: Literal["factual", "contextual", "logical", "none"] = Field(
         description="Type of hallucination detected"
     )
@@ -43,16 +47,26 @@ class AdvancedHallucinationGrade(BaseModel):
     """Advanced hallucination assessment with detailed analysis."""
 
     # Basic assessment
-    has_hallucination: bool = Field(description="Whether response contains hallucinations")
+    has_hallucination: bool = Field(
+        description="Whether response contains hallucinations"
+    )
     overall_confidence: float = Field(
         ge=0.0, le=1.0, description="Overall confidence in assessment"
     )
 
     # Detailed analysis
-    factual_accuracy: float = Field(ge=0.0, le=1.0, description="Factual accuracy score")
-    contextual_consistency: float = Field(ge=0.0, le=1.0, description="Consistency with context")
-    logical_coherence: float = Field(ge=0.0, le=1.0, description="Logical coherence score")
-    source_attribution: float = Field(ge=0.0, le=1.0, description="Proper source attribution")
+    factual_accuracy: float = Field(
+        ge=0.0, le=1.0, description="Factual accuracy score"
+    )
+    contextual_consistency: float = Field(
+        ge=0.0, le=1.0, description="Consistency with context"
+    )
+    logical_coherence: float = Field(
+        ge=0.0, le=1.0, description="Logical coherence score"
+    )
+    source_attribution: float = Field(
+        ge=0.0, le=1.0, description="Proper source attribution"
+    )
 
     # Specific hallucination types
     hallucination_types: list[str] = Field(
@@ -92,7 +106,9 @@ class RealtimeHallucinationCheck(BaseModel):
     risk_level: Literal["very_low", "low", "medium", "high", "very_high"] = Field(
         description="Risk level for hallucination"
     )
-    quick_flags: list[str] = Field(default_factory=list, description="Quick warning flags")
+    quick_flags: list[str] = Field(
+        default_factory=list, description="Quick warning flags"
+    )
     confidence: float = Field(ge=0.0, le=1.0, description="Confidence in assessment")
 
 
@@ -212,7 +228,9 @@ class HallucinationGraderAgent(Agent):
 
     name: str = "Hallucination Grader"
 
-    def __init__(self, llm_config: LLMConfig | None = None, threshold: float = 0.7, **kwargs):
+    def __init__(
+        self, llm_config: LLMConfig | None = None, threshold: float = 0.7, **kwargs
+    ):
         """Initialize hallucination grader.
 
         Args:
@@ -271,7 +289,9 @@ class HallucinationGraderAgent(Agent):
             )
 
             # Add processing metadata
-            is_flagged = grade.confidence_score >= self.threshold and grade.has_hallucination
+            is_flagged = (
+                grade.confidence_score >= self.threshold and grade.has_hallucination
+            )
 
             return {
                 "hallucination_grade": grade,
@@ -283,7 +303,9 @@ class HallucinationGraderAgent(Agent):
         # Add grading node
         AgentNodeConfig(
             name="hallucination_grader",
-            agent=SimpleAgent(engine=grading_engine, name="Hallucination Grader Engine"),
+            agent=SimpleAgent(
+                engine=grading_engine, name="Hallucination Grader Engine"
+            ),
         )
 
         graph.add_node("grade_hallucination", grade_hallucination)
@@ -299,7 +321,10 @@ class AdvancedHallucinationGraderAgent(Agent):
     name: str = "Advanced Hallucination Grader"
 
     def __init__(
-        self, llm_config: LLMConfig | None = None, enable_context_expansion: bool = True, **kwargs
+        self,
+        llm_config: LLMConfig | None = None,
+        enable_context_expansion: bool = True,
+        **kwargs,
     ):
         """Initialize advanced hallucination grader.
 
@@ -360,14 +385,18 @@ class AdvancedHallucinationGraderAgent(Agent):
                     "retrieved_documents": doc_context,
                     "generated_response": generated_response,
                     "web_search_results": str(web_search_results),
-                    "messages": (str(messages[-3:]) if messages else ""),  # Last 3 messages
+                    "messages": (
+                        str(messages[-3:]) if messages else ""
+                    ),  # Last 3 messages
                     "grading_results": str(grading_results),
                 }
             )
 
             # Calculate risk scores
             risk_score = 1.0 - min(
-                grade.factual_accuracy, grade.contextual_consistency, grade.logical_coherence
+                grade.factual_accuracy,
+                grade.contextual_consistency,
+                grade.logical_coherence,
             )
 
             # Determine actions needed
@@ -383,7 +412,8 @@ class AdvancedHallucinationGraderAgent(Agent):
                 "advanced_hallucination_grade": grade,
                 "hallucination_risk_score": risk_score,
                 "action_urgency_level": action_urgency,
-                "needs_immediate_attention": grade.severity_level in ["high", "critical"],
+                "needs_immediate_attention": grade.severity_level
+                in ["high", "critical"],
                 "is_response_reliable": grade.overall_confidence > 0.8
                 and not grade.has_hallucination,
                 "improvement_needed": len(grade.improvement_suggestions) > 0,
@@ -402,7 +432,10 @@ class RealtimeHallucinationGraderAgent(Agent):
     name: str = "Realtime Hallucination Grader"
 
     def __init__(
-        self, llm_config: LLMConfig | None = None, safety_threshold: float = 0.8, **kwargs
+        self,
+        llm_config: LLMConfig | None = None,
+        safety_threshold: float = 0.8,
+        **kwargs,
     ):
         """Initialize realtime hallucination grader.
 

@@ -2,12 +2,12 @@
 
 This version provides advanced multi-agent orchestration with generic typing support,
 performance tracking, and enhanced debugging capabilities. It follows the V3 pattern
-established by SimpleAgentV3 and ReactAgentV3.
+established by SimpleAgentV3 and ReactAgent.
 
 **Current Status**: This is the **V3 enhanced implementation** with advanced features.
 Use this when you need generic typing support, performance tracking, or complex routing
 patterns. For simpler use cases, use the default MultiAgent. For the latest features,
-use EnhancedMultiAgentV4.
+use MultiAgent.
 
 Key Features:
 - **Generic typing**: MultiAgent[AgentsT] for type-safe agent collections
@@ -15,7 +15,7 @@ Key Features:
 - **Rich debugging**: Comprehensive observability and capabilities display
 - **Multi-engine coordination**: Support for multiple LLM engines
 - **Advanced routing**: Conditional, branching, and adaptive patterns
-- **V3 consistency**: Follows patterns from SimpleAgentV3 and ReactAgentV3
+- **V3 consistency**: Follows patterns from SimpleAgentV3 and ReactAgent
 
 This version combines the best features from clean.py and enhanced_multi_agent_standalone.py:
 - Production-ready coordination from clean.py
@@ -57,7 +57,7 @@ Examples:
         result = await multi.arun("Process this data")
 
 See Also:
-    - :class:`haive.agents.multi.enhanced_multi_agent_v4.EnhancedMultiAgentV4`: Latest V4
+    - :class:`haive.agents.multi.enhanced_multi_agent_v4.MultiAgent`: Latest V4
     - :class:`haive.agents.multi.clean.MultiAgent`: Current default
     - :class:`haive.agents.simple.agent_v3.SimpleAgentV3`: V3 pattern reference
 """
@@ -70,7 +70,9 @@ from typing import Any, Generic, TypeVar, get_origin
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.node.agent_node_v3 import AgentNodeV3Config
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
-from haive.core.schema.prebuilt.enhanced_multi_agent_state import EnhancedMultiAgentState
+from haive.core.schema.prebuilt.enhanced_multi_agent_state import (
+    EnhancedMultiAgentState,
+)
 from haive.core.schema.prebuilt.multi_agent_state import MultiAgentState
 from pydantic import Field, field_validator, model_validator
 from rich.console import Console

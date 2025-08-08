@@ -7,8 +7,10 @@ A concrete step implementation that works with LangChain tools and validates:
 """
 
 from typing import Any
+
 from langchain_core.tools import BaseTool
 from pydantic import Field, computed_field, field_validator, model_validator
+
 from .steps import AbstractStep
 
 
@@ -34,7 +36,9 @@ class ToolStep(AbstractStep):
     @property
     def selected_tool(self) -> BaseTool | None:
         """The selected tool instance."""
-        return next((tool for tool in self.available_tools if tool.name == self.tool_name), None)
+        return next(
+            (tool for tool in self.available_tools if tool.name == self.tool_name), None
+        )
 
     @computed_field
     @property
@@ -127,12 +131,17 @@ class ToolStep(AbstractStep):
 
     def can_execute(self, completed_steps: set[str]) -> bool:
         """Check if this step can execute."""
-        return all((dep in completed_steps for dep in self.depends_on)) and self.is_tool_valid
+        return (
+            all((dep in completed_steps for dep in self.depends_on))
+            and self.is_tool_valid
+        )
 
     def execute(self, context: dict[str, Any]) -> Any:
         """Execute the tool with the provided arguments."""
         if not self.can_execute(context.get("completed_steps", set())):
-            raise ValueError("Step cannot be executed - dependencies not met or tool invalid")
+            raise ValueError(
+                "Step cannot be executed - dependencies not met or tool invalid"
+            )
         if not self.selected_tool:
             raise ValueError(f"Tool '{self.tool_name}' not found")
         try:

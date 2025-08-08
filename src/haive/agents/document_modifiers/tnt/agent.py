@@ -52,7 +52,8 @@ class TaxonomyAgentConfig(AgentConfig):
     """Agent configuration for generating a taxonomy from conversation history."""
 
     state_schema: TaxonomyGenerationState = Field(
-        default=TaxonomyGenerationState, description="The state of the taxonomy generation."
+        default=TaxonomyGenerationState,
+        description="The state of the taxonomy generation.",
     )
     visualize: bool = Field(default=True, description="Whether to visualize the agent.")
     name: str = Field(default="TaxonomyAgent", description="The name of the agent.")
@@ -100,12 +101,11 @@ class TaxonomyAgent(Agent[TaxonomyAgentConfig]):
             """Ensure batch function receives a list."""
             return self.summary_chain.batch(input_dict["documents"])  # Fix: Passes list
 
-        self.map_step = (
-            RunnableLambda(func=wrap_content)
-            | RunnablePassthrough.assign(  # Wraps content in a dictionary  # Assigns summaries key in dict
-                # Fix: Uses wrapped function
-                summaries=RunnableLambda(func=batch_summaries)
-            )
+        self.map_step = RunnableLambda(
+            func=wrap_content
+        ) | RunnablePassthrough.assign(  # Wraps content in a dictionary  # Assigns summaries key in dict
+            # Fix: Uses wrapped function
+            summaries=RunnableLambda(func=batch_summaries)
         )
 
         self.map_reduce_chain = self.map_step | self.reduce_summaries
@@ -127,7 +127,9 @@ class TaxonomyAgent(Agent[TaxonomyAgentConfig]):
                     {
                         # Handle missing key
                         "id": doc.get("id", "UNKNOWN_ID"),
-                        "content": doc.get("content", "UNKNOWN_CONTENT"),  # Handle missing key
+                        "content": doc.get(
+                            "content", "UNKNOWN_CONTENT"
+                        ),  # Handle missing key
                         "summary": summ_info.get("summary", "NO_SUMMARY"),
                         "explanation": summ_info.get("explanation", "NO_EXPLANATION"),
                     }
@@ -169,7 +171,9 @@ class TaxonomyAgent(Agent[TaxonomyAgentConfig]):
                 "cluster_table_xml": cluster_table_xml,
                 "suggestion_length": configurable.get("suggestion_length", 30),
                 "cluster_name_length": configurable.get("cluster_name_length", 10),
-                "cluster_description_length": configurable.get("cluster_description_length", 30),
+                "cluster_description_length": configurable.get(
+                    "cluster_description_length", 30
+                ),
                 "explanation_length": configurable.get("explanation_length", 20),
                 "max_num_clusters": configurable.get("max_num_clusters", 25),
             }
@@ -199,7 +203,10 @@ class TaxonomyAgent(Agent[TaxonomyAgentConfig]):
             return Command(update={"minibatches": [indices]})
 
         num_full_batches = len(indices) // batch_size
-        batches = [indices[i * batch_size : (i + 1) * batch_size] for i in range(num_full_batches)]
+        batches = [
+            indices[i * batch_size : (i + 1) * batch_size]
+            for i in range(num_full_batches)
+        ]
 
         if leftovers := len(indices) % batch_size:
             last_batch = indices[num_full_batches * batch_size :]

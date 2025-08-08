@@ -35,7 +35,9 @@ class StepBackQuery(BaseModel):
     broader_context: str = Field(description="Broader context to explore")
 
     reasoning: str = Field(description="Why this step-back query was generated")
-    expected_benefit: str = Field(description="Expected benefit from step-back approach")
+    expected_benefit: str = Field(
+        description="Expected benefit from step-back approach"
+    )
 
 
 class StepBackResult(BaseModel):
@@ -44,8 +46,12 @@ class StepBackResult(BaseModel):
     original_documents: list[str] = Field(description="Documents from original query")
     step_back_documents: list[str] = Field(description="Documents from step-back query")
 
-    conceptual_coverage: float = Field(ge=0.0, le=1.0, description="Conceptual coverage score")
-    context_enhancement: float = Field(ge=0.0, le=1.0, description="Context enhancement score")
+    conceptual_coverage: float = Field(
+        ge=0.0, le=1.0, description="Conceptual coverage score"
+    )
+    context_enhancement: float = Field(
+        ge=0.0, le=1.0, description="Context enhancement score"
+    )
 
     integration_strategy: str = Field(description="How to integrate the contexts")
     synthesis_approach: str = Field(description="Recommended synthesis approach")
@@ -149,7 +155,10 @@ class StepBackQueryGeneratorAgent(Agent):
     name: str = "Step-Back Query Generator"
 
     def __init__(
-        self, llm_config: LLMConfig | None = None, abstraction_level: str = "moderate", **kwargs
+        self,
+        llm_config: LLMConfig | None = None,
+        abstraction_level: str = "moderate",
+        **kwargs,
     ):
         """Initialize step-back query generator.
 
@@ -181,7 +190,9 @@ class StepBackQueryGeneratorAgent(Agent):
         def generate_step_back_query(state: dict[str, Any]) -> dict[str, Any]:
             """Generate step-back query for broader context."""
             query = getattr(state, "query", "")
-            context = getattr(state, "context", "") or getattr(state, "retrieved_documents", "")
+            context = getattr(state, "context", "") or getattr(
+                state, "retrieved_documents", ""
+            )
 
             # Format context
             if isinstance(context, list):
@@ -197,11 +208,15 @@ class StepBackQueryGeneratorAgent(Agent):
                 )
             else:
                 context_str = (
-                    str(context)[:500] + "..." if len(str(context)) > 500 else str(context)
+                    str(context)[:500] + "..."
+                    if len(str(context)) > 500
+                    else str(context)
                 )
 
             # Generate step-back query
-            step_back_result = generation_engine.invoke({"query": query, "context": context_str})
+            step_back_result = generation_engine.invoke(
+                {"query": query, "context": context_str}
+            )
 
             return {
                 "step_back_query_result": step_back_result,
@@ -256,7 +271,9 @@ class DualRetrievalAgent(Agent):
 
         def dual_retrieve(state: dict[str, Any]) -> dict[str, Any]:
             """Retrieve for both original and step-back queries."""
-            original_query = getattr(state, "original_query", "") or getattr(state, "query", "")
+            original_query = getattr(state, "original_query", "") or getattr(
+                state, "query", ""
+            )
             step_back_query = getattr(state, "step_back_query", "")
 
             # Retrieve for original query
@@ -267,7 +284,9 @@ class DualRetrievalAgent(Agent):
                     if hasattr(result, "retrieved_documents"):
                         original_docs = result.retrieved_documents[: self.max_docs_each]
                     elif isinstance(result, dict) and "retrieved_documents" in result:
-                        original_docs = result["retrieved_documents"][: self.max_docs_each]
+                        original_docs = result["retrieved_documents"][
+                            : self.max_docs_each
+                        ]
                 except Exception as e:
                     logger.warning(f"Original retrieval failed: {e}")
 
@@ -277,9 +296,13 @@ class DualRetrievalAgent(Agent):
                 try:
                     result = self.base_retriever.run({"query": step_back_query})
                     if hasattr(result, "retrieved_documents"):
-                        step_back_docs = result.retrieved_documents[: self.max_docs_each]
+                        step_back_docs = result.retrieved_documents[
+                            : self.max_docs_each
+                        ]
                     elif isinstance(result, dict) and "retrieved_documents" in result:
-                        step_back_docs = result["retrieved_documents"][: self.max_docs_each]
+                        step_back_docs = result["retrieved_documents"][
+                            : self.max_docs_each
+                        ]
                 except Exception as e:
                     logger.warning(f"Step-back retrieval failed: {e}")
 
@@ -298,12 +321,20 @@ class DualRetrievalAgent(Agent):
 
             # Build step-back result
             step_back_result = StepBackResult(
-                original_documents=[doc.page_content[:200] + "..." for doc in original_docs],
-                step_back_documents=[doc.page_content[:200] + "..." for doc in step_back_docs],
+                original_documents=[
+                    doc.page_content[:200] + "..." for doc in original_docs
+                ],
+                step_back_documents=[
+                    doc.page_content[:200] + "..." for doc in step_back_docs
+                ],
                 conceptual_coverage=conceptual_coverage,
                 context_enhancement=context_enhancement,
-                integration_strategy=("foundational_first" if step_back_docs else "direct"),
-                synthesis_approach=("step_back_enhanced" if step_back_docs else "standard"),
+                integration_strategy=(
+                    "foundational_first" if step_back_docs else "direct"
+                ),
+                synthesis_approach=(
+                    "step_back_enhanced" if step_back_docs else "standard"
+                ),
             )
 
             return {
@@ -358,7 +389,9 @@ class StepBackRAGAgent(SequentialAgent):
 
         # Step 1: Generate step-back query
         step_back_generator = StepBackQueryGeneratorAgent(
-            llm_config=llm_config, abstraction_level=abstraction_level, name="Step-Back Generator"
+            llm_config=llm_config,
+            abstraction_level=abstraction_level,
+            name="Step-Back Generator",
         )
 
         # Step 2: Dual retrieval (original + step-back)
@@ -371,7 +404,9 @@ class StepBackRAGAgent(SequentialAgent):
 
         # Step 3: Step-back synthesis
         synthesis_agent = SimpleAgent(
-            engine=AugLLMConfig(llm_config=llm_config, prompt_template=STEP_BACK_SYNTHESIS_PROMPT),
+            engine=AugLLMConfig(
+                llm_config=llm_config, prompt_template=STEP_BACK_SYNTHESIS_PROMPT
+            ),
             name="Step-Back Synthesizer",
         )
 
@@ -411,7 +446,9 @@ def create_step_back_rag_agent(
         kwargs.setdefault("abstraction_level", "moderate")
         kwargs.setdefault("max_docs_each", 5)
 
-    return StepBackRAGAgent.from_documents(documents=documents, llm_config=llm_config, **kwargs)
+    return StepBackRAGAgent.from_documents(
+        documents=documents, llm_config=llm_config, **kwargs
+    )
 
 
 # I/O schema for compatibility

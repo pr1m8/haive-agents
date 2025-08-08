@@ -34,7 +34,8 @@ class SimpleAgentConfig(AgentConfig):
 
     # Required engine (must be AugLLMConfig)
     engine: AugLLMConfig = Field(
-        default_factory=AugLLMConfig, description="The AugLLM engine to use for reasoning"
+        default_factory=AugLLMConfig,
+        description="The AugLLM engine to use for reasoning",
     )
 
     # Schema definitions
@@ -52,15 +53,19 @@ class SimpleAgentConfig(AgentConfig):
 
     # Mapping configuration
     input_mapping: dict[str, str] | None = Field(
-        default=None, description="Maps state fields to engine input fields (None for auto-derive)"
+        default=None,
+        description="Maps state fields to engine input fields (None for auto-derive)",
     )
 
     output_mapping: dict[str, str] | None = Field(
-        default=None, description="Maps engine output fields to state fields (None for auto-derive)"
+        default=None,
+        description="Maps engine output fields to state fields (None for auto-derive)",
     )
 
     # Node configuration
-    node_name: str = Field(default="process", description="Name for the single processing node")
+    node_name: str = Field(
+        default="process", description="Name for the single processing node"
+    )
 
     # Visualization settings
     visualize: bool = Field(default=True, description="Whether to visualize the graph")
@@ -88,7 +93,9 @@ class SimpleAgentConfig(AgentConfig):
         # Validate all keys and values are strings
         for key, value in v.items():
             if not isinstance(key, str) or not isinstance(value, str):
-                raise TypeError(f"All keys and values in {info.field_name} must be strings")
+                raise TypeError(
+                    f"All keys and values in {info.field_name} must be strings"
+                )
 
         return v
 
@@ -159,7 +166,9 @@ class SimpleAgentConfig(AgentConfig):
             SimpleAgentConfig instance
         """
         # Create base LLM config
-        llm_config = AzureLLMConfig(model=model, parameters={"temperature": temperature})
+        llm_config = AzureLLMConfig(
+            model=model, parameters={"temperature": temperature}
+        )
 
         # Create messages for prompt template
         messages = [

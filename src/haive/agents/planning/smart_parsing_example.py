@@ -8,6 +8,7 @@ import asyncio
 import logging
 from typing import Any, Dict
 
+from haive.core.engine.aug_llm import AugLLMConfig
 from pydantic import BaseModel, Field
 
 from haive.agents.base.smart_output_parsing import (
@@ -18,12 +19,10 @@ from haive.agents.base.smart_output_parsing import (
     parse_json_content,
     parse_structured_content,
 )
-from haive.agents.multi.enhanced_multi_agent_v4 import EnhancedMultiAgentV4
+from haive.agents.multi.agent import MultiAgent
 from haive.agents.planning.base.agents.executor import BaseExecutorAgent
 from haive.agents.planning.base.agents.planner import BasePlannerAgent
 from haive.agents.planning.base.models import BasePlan, ExecutionResult, PlanContent
-from haive.agents.simple.agent_v3 import SimpleAgentV3
-from haive.core.engine.aug_llm import AugLLMConfig
 
 logger = logging.getLogger(__name__)
 
@@ -73,7 +72,9 @@ class ProgressReport(BaseModel):
     completed_steps: int = Field(..., description="Number of completed steps")
     total_steps: int = Field(..., description="Total number of steps")
     current_status: str = Field(..., description="Current status description")
-    next_actions: list[str] = Field(default_factory=list, description="Next actions to take")
+    next_actions: list[str] = Field(
+        default_factory=list, description="Next actions to take"
+    )
 
 
 class DecisionPoint(BaseModel):
@@ -118,11 +119,15 @@ async def create_smart_planning_workflow():
     smart_analyzer = SmartSimpleAgent(name="smart_analyzer", engine=analyzer_config)
 
     # Add custom parsing hooks for specific models
-    smart_analyzer._output_parsing_hooks["task_analysis"] = lambda ctx: _parse_task_analysis(ctx)
-    smart_executor._output_parsing_hooks["progress_report"] = lambda ctx: _parse_progress(ctx)
+    smart_analyzer._output_parsing_hooks["task_analysis"] = (
+        lambda ctx: _parse_task_analysis(ctx)
+    )
+    smart_executor._output_parsing_hooks["progress_report"] = (
+        lambda ctx: _parse_progress(ctx)
+    )
 
     # Create the multi-agent workflow
-    workflow = EnhancedMultiAgentV4(
+    workflow = MultiAgent(
         name="smart_parsing_workflow",
         agents=[smart_analyzer, smart_planner, smart_executor],
         execution_mode="sequential",
@@ -221,7 +226,9 @@ def _enhanced_content_detection(state) -> str:
     content = getattr(last_message, "content", "").lower()
 
     # Look for specific patterns
-    if any(word in content for word in ["complexity", "estimated_time", "risk_factors"]):
+    if any(
+        word in content for word in ["complexity", "estimated_time", "risk_factors"]
+    ):
         return "task_analysis"
     elif any(word in content for word in ["completed", "progress", "steps"]):
         return "progress"
@@ -275,7 +282,9 @@ def _parse_progress_callable(state) -> Dict[str, Any]:
             total_match = re.search(r"total.*?(\d+)", content, re.IGNORECASE)
 
             progress = {
-                "completed_steps": int(completed_match.group(1)) if completed_match else 0,
+                "completed_steps": (
+                    int(completed_match.group(1)) if completed_match else 0
+                ),
                 "total_steps": int(total_match.group(1)) if total_match else 1,
                 "current_status": "In progress",
                 "next_actions": ["Continue with next step"],
@@ -328,7 +337,9 @@ async def test_smart_parsing_workflow():
 
             # Check if smart parsing was applied
             if hasattr(result, "metadata") and "parsed_output" in result.metadata:
-                logger.info(f"✅ Smart parsing applied: {result.metadata['parsing_strategy']}")
+                logger.info(
+                    f"✅ Smart parsing applied: {result.metadata['parsing_strategy']}"
+                )
                 logger.info(f"Parsed data: {result.metadata['parsed_output']}")
             else:
                 logger.info("ℹ️  No smart parsing metadata found")
@@ -342,7 +353,8 @@ async def test_smart_parsing_workflow():
 if __name__ == "__main__":
     # Configure logging
     logging.basicConfig(
-        level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+        level=logging.INFO,
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     )
 
     # Run the test

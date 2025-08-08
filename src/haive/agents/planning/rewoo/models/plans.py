@@ -5,20 +5,39 @@ ExecutionPlan that takes generic AbstractStep instances with computed fields.
 
 from datetime import datetime
 from uuid import uuid4
-from pydantic import BaseModel, ConfigDict, Field, computed_field, field_validator, model_validator
+
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    Field,
+    computed_field,
+    field_validator,
+    model_validator,
+)
+
 from .steps import AbstractStep
 
 
 class ExecutionPlan(BaseModel):
-    model_config = ConfigDict(str_strip_whitespace=True, validate_assignment=True, extra="forbid")
+    model_config = ConfigDict(
+        str_strip_whitespace=True, validate_assignment=True, extra="forbid"
+    )
     id: str = Field(
-        default_factory=lambda: f"plan_{uuid4().hex[:8]}", description="Unique plan identifier"
+        default_factory=lambda: f"plan_{uuid4().hex[:8]}",
+        description="Unique plan identifier",
     )
-    name: str = Field(..., min_length=1, max_length=200, description="Human-readable plan name")
+    name: str = Field(
+        ..., min_length=1, max_length=200, description="Human-readable plan name"
+    )
     description: str = Field(
-        ..., min_length=1, max_length=2000, description="Detailed description of the plan"
+        ...,
+        min_length=1,
+        max_length=2000,
+        description="Detailed description of the plan",
     )
-    steps: list[AbstractStep] = Field(default_factory=list, description="List of steps in the plan")
+    steps: list[AbstractStep] = Field(
+        default_factory=list, description="List of steps in the plan"
+    )
     created_at: datetime = Field(
         default_factory=datetime.now, description="When the plan was created"
     )
@@ -71,7 +90,11 @@ class ExecutionPlan(BaseModel):
     @property
     def max_parallelism(self) -> int:
         """Maximum number of steps that can run in parallel."""
-        return max((len(level) for level in self.execution_levels)) if self.execution_levels else 0
+        return (
+            max((len(level) for level in self.execution_levels))
+            if self.execution_levels
+            else 0
+        )
 
     @field_validator("steps")
     @classmethod
@@ -85,7 +108,9 @@ class ExecutionPlan(BaseModel):
         for step in v:
             for dep in step.depends_on:
                 if dep not in step_ids:
-                    raise ValueError(f"Step '{step.id}' depends on unknown step '{dep}'")
+                    raise ValueError(
+                        f"Step '{step.id}' depends on unknown step '{dep}'"
+                    )
         return v
 
     @model_validator(mode="after")

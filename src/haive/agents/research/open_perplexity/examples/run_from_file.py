@@ -46,7 +46,9 @@ def load_research_question(file_path) -> Any:
         raise ValueError(f"Error reading research question file: {e}")
 
 
-def run_research(question_file, output_dir=None, research_depth=2, max_sources=5) -> bool:
+def run_research(
+    question_file, output_dir=None, research_depth=2, max_sources=5
+) -> bool:
     """Run research based on a question from a file.
 
     Args:
@@ -82,7 +84,9 @@ def run_research(question_file, output_dir=None, research_depth=2, max_sources=5
         logger.info(f"\n{research_question}")
 
         # Create output file paths
-        state_history_path = str(output_dir / f"{question_name}_state_history_{timestamp}.json")
+        state_history_path = str(
+            output_dir / f"{question_name}_state_history_{timestamp}.json"
+        )
         report_path = str(output_dir / f"{question_name}_report_{timestamp}.md")
         vectorstore_path = str(output_dir / f"{question_name}_vectorstore")
 
@@ -135,12 +139,19 @@ def run_research(question_file, output_dir=None, research_depth=2, max_sources=5
 
 def parse_arguments() -> Any:
     """Parse command line arguments."""
-    parser = argparse.ArgumentParser(description="Run research based on a question file")
-
-    parser.add_argument("question_file", help="Path to file containing the research question")
+    parser = argparse.ArgumentParser(
+        description="Run research based on a question file"
+    )
 
     parser.add_argument(
-        "-o", "--output-dir", help="Directory for outputs (default: ./outputs)", default=None
+        "question_file", help="Path to file containing the research question"
+    )
+
+    parser.add_argument(
+        "-o",
+        "--output-dir",
+        help="Directory for outputs (default: ./outputs)",
+        default=None,
     )
 
     parser.add_argument(

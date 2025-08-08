@@ -6,7 +6,9 @@ from pydantic import BaseModel, Field, field_validator
 class Query(BaseModel):
     """Model for a query to the SQL database."""
 
-    question: str = Field(..., description="The question to search the SQL database with.")
+    question: str = Field(
+        ..., description="The question to search the SQL database with."
+    )
 
 
 class SQLQueryOutput(BaseModel):
@@ -14,7 +16,8 @@ class SQLQueryOutput(BaseModel):
 
     query: str = Field(..., description="The generated SQL query.")
     parameters: dict[str, Any] | None = Field(
-        default=None, description="Query parameters if placeholders are used (e.g., ?1, ?2)."
+        default=None,
+        description="Query parameters if placeholders are used (e.g., ?1, ?2).",
     )
 
     @field_validator("query")
@@ -31,7 +34,8 @@ class SQLValidationOutput(BaseModel):
     """Represents the validation result of a SQL query's output."""
 
     errors: list[str] = Field(
-        default_factory=list, description="List of syntax or semantic errors in the SQL statement."
+        default_factory=list,
+        description="List of syntax or semantic errors in the SQL statement.",
     )
     is_valid: bool = Field(default=False, description="Whether the SQL query is valid.")
     suggestions: str | None = Field(
@@ -42,9 +46,12 @@ class SQLValidationOutput(BaseModel):
 class SQLAnalysisOutput(BaseModel):
     """Represents the analysis of a natural language query."""
 
-    relevant_tables: list[str] = Field(description="The tables that are relevant to the query.")
+    relevant_tables: list[str] = Field(
+        description="The tables that are relevant to the query."
+    )
     needed_columns: list[str] = Field(
-        default_factory=list, description="The columns that are needed to answer the query."
+        default_factory=list,
+        description="The columns that are needed to answer the query.",
     )
     constraints: list[str] = Field(
         default_factory=list,
@@ -75,10 +82,14 @@ class GuardrailsOutput(BaseModel):
 class GradeHallucinations(BaseModel):
     """Binary score for hallucination present in generated answer."""
 
-    binary_score: str = Field(description="Answer is grounded in the facts, 'yes' or 'no'")
+    binary_score: str = Field(
+        description="Answer is grounded in the facts, 'yes' or 'no'"
+    )
 
 
 class GradeAnswer(BaseModel):
     """Binary score to assess answer addresses question."""
 
-    binary_score: str = Field(description="Answer addresses the question, 'yes' or 'no'")
+    binary_score: str = Field(
+        description="Answer addresses the question, 'yes' or 'no'"
+    )

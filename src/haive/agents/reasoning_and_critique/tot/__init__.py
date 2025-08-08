@@ -1,7 +1,7 @@
 """Tree of Thoughts (TOT) reasoning module for Haive.
 
 This module implements the Tree of Thoughts algorithm using a multi-agent
-approach with EnhancedMultiAgentV4. The implementation uses two specialized
+approach with MultiAgent. The implementation uses two specialized
 agents:
 
 1. CandidateGenerator - Generates diverse solution candidates
@@ -41,7 +41,9 @@ except ImportError:
 from haive.agents.reasoning_and_critique.tot.agents.candidate_generator import (
     CandidateGeneration as NewCandidateGeneration,
 )
-from haive.agents.reasoning_and_critique.tot.agents.candidate_generator import CandidateGenerator
+from haive.agents.reasoning_and_critique.tot.agents.candidate_generator import (
+    CandidateGenerator,
+)
 from haive.agents.reasoning_and_critique.tot.agents.solution_scorer import (
     ScoredSolution,
     SolutionScorer,
@@ -104,7 +106,7 @@ _exports = [
     "SolutionScorer",
     "SolutionScoring",
     "ScoredSolution",
-    # New EnhancedMultiAgentV4-based TOT
+    # New MultiAgent-based TOT
     "TreeOfThoughtsAgent",
     "TOTCommand",
     "TOTIteration",

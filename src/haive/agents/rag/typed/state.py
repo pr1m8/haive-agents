@@ -9,7 +9,9 @@ from haive.agents.rag.base.state import BaseRAGState
 class TypedRAGState(BaseRAGState):
     """State for Typed-RAG."""
 
-    query_category: str | None = Field(default=None, description="Classified query category")
+    query_category: str | None = Field(
+        default=None, description="Classified query category"
+    )
     query_metadata: dict[str, Any] = Field(
         default_factory=dict, description="Metadata about the query"
     )

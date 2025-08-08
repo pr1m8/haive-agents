@@ -23,7 +23,8 @@ class RAGAnswer(BaseModel):
     )
 
     reasoning: str = Field(
-        default="", description="Brief explanation of how the answer was derived from the context"
+        default="",
+        description="Brief explanation of how the answer was derived from the context",
     )
 
 

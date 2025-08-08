@@ -2,8 +2,8 @@
 
 from haive.agents.document_modifiers.base.state import DocumentModifierState
 from haive.agents.document_modifiers.base.utils import (
-    normalize_contents,
     documents_to_strings,
+    normalize_contents,
     strings_to_documents,
 )
 

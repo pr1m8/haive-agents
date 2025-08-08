@@ -12,19 +12,18 @@ This combines the enhanced agent pattern with the clean multi-agent approach:
 import logging
 from typing import Any, Dict, List, Literal, Optional, Union
 
-from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
-from langgraph.graph import END, START
-from pydantic import Field, field_validator, model_validator
-from typing_extensions import TypedDict
-
 from haive.core.engine.aug_llm.config import AugLLMConfig
 from haive.core.graph.node.agent_node import AgentNodeConfig
 from haive.core.graph.node.engine_node import EngineNodeConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.schema.state_schema import StateSchema
+from langchain_core.messages import BaseMessage
+from langgraph.graph import END, START
+from pydantic import Field, field_validator, model_validator
+from typing_extensions import TypedDict
 
 # Import base enhanced agent when available
-# from haive.agents.base.enhanced_agent import Agent
+# from haive.agents.base.agent import Agent
 from haive.agents.simple.enhanced_simple_real import EnhancedAgentBase as Agent
 
 logger = logging.getLogger(__name__)
@@ -134,7 +133,8 @@ class EnhancedMultiAgent(Agent):  # Will be Agent[AugLLMConfig] when imports fix
 
     # State sharing configuration
     shared_fields: List[str] = Field(
-        default_factory=lambda: ["messages"], description="Fields shared between all agents"
+        default_factory=lambda: ["messages"],
+        description="Fields shared between all agents",
     )
 
     state_transfer_map: Dict[tuple[str, str], Dict[str, str]] = Field(
@@ -142,7 +142,9 @@ class EnhancedMultiAgent(Agent):  # Will be Agent[AugLLMConfig] when imports fix
     )
 
     # Coordinator configuration
-    coordinator_prompt: Optional[str] = Field(default=None, description="Custom coordinator prompt")
+    coordinator_prompt: Optional[str] = Field(
+        default=None, description="Custom coordinator prompt"
+    )
 
     temperature: float = Field(default=0.3, ge=0.0, le=2.0)
 
@@ -211,7 +213,9 @@ class EnhancedMultiAgent(Agent):  # Will be Agent[AugLLMConfig] when imports fix
             [
                 f"- {name}: {type(agent).__name__}"
                 for name, agent in (
-                    self.agents.items() if isinstance(self.agents, dict) else enumerate(self.agents)
+                    self.agents.items()
+                    if isinstance(self.agents, dict)
+                    else enumerate(self.agents)
                 )
             ]
         )
@@ -234,7 +238,9 @@ Make decisions based on the current state and task requirements."""
 
     def build_graph(self) -> BaseGraph:
         """Build multi-agent execution graph."""
-        graph = BaseGraph(name=f"{self.name}_multi_graph", state_schema=self.state_schema)
+        graph = BaseGraph(
+            name=f"{self.name}_multi_graph", state_schema=self.state_schema
+        )
 
         # Add coordinator node
         coord_node = EngineNodeConfig(name="coordinator", engine=self.engine)
@@ -255,7 +261,9 @@ Make decisions based on the current state and task requirements."""
                 name=agent_name,
                 agent=agent,
                 # Agent state management
-                private_state_schema=agent.state_schema if hasattr(agent, "state_schema") else None,
+                private_state_schema=(
+                    agent.state_schema if hasattr(agent, "state_schema") else None
+                ),
                 extract_private_state=True,
                 merge_agent_output=True,
                 update_meta_state=True,
@@ -272,7 +280,9 @@ Make decisions based on the current state and task requirements."""
 
         return graph
 
-    def _build_sequential_pattern(self, graph: BaseGraph, agent_names: List[str]) -> None:
+    def _build_sequential_pattern(
+        self, graph: BaseGraph, agent_names: List[str]
+    ) -> None:
         """Build sequential execution pattern."""
         # Coordinator -> Agent1 -> Agent2 -> ... -> END
         prev_node = "coordinator"
@@ -290,14 +300,18 @@ Make decisions based on the current state and task requirements."""
             graph.add_edge("coordinator", agent_name)
 
         # Add aggregator node
-        graph.add_node("aggregator", EngineNodeConfig(name="aggregator", engine=self.engine))
+        graph.add_node(
+            "aggregator", EngineNodeConfig(name="aggregator", engine=self.engine)
+        )
 
         for agent_name in agent_names:
             graph.add_edge(agent_name, "aggregator")
 
         graph.add_edge("aggregator", END)
 
-    def _build_conditional_pattern(self, graph: BaseGraph, agent_names: List[str]) -> None:
+    def _build_conditional_pattern(
+        self, graph: BaseGraph, agent_names: List[str]
+    ) -> None:
         """Build conditional execution pattern."""
         # Coordinator decides which agent(s) to execute
 
@@ -334,8 +348,8 @@ Make decisions based on the current state and task requirements."""
 
 # Example usage
 if __name__ == "__main__":
-    from haive.agents.simple.enhanced_simple_real import SimpleAgent
     from haive.agents.react.enhanced_react_agent import ReactAgent
+    from haive.agents.simple.enhanced_simple_real import SimpleAgent
 
     # Create example agents
     planner = ReactAgent(name="planner", temperature=0.3)

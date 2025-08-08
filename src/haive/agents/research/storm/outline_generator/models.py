@@ -14,7 +14,8 @@ class Section(BaseModel):
     section_title: str = Field(..., title="Title of the section")
     description: str = Field(..., title="Content of the section")
     subsections: list[Subsection] | None = Field(
-        default=None, title="Titles and descriptions for each subsection of the Wikipedia page."
+        default=None,
+        title="Titles and descriptions for each subsection of the Wikipedia page.",
     )
 
     @property

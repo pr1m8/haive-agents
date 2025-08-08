@@ -8,7 +8,9 @@ from pydantic import BaseModel, Field, field_validator
 
 
 class InputState(BaseModel):
-    contents: list[str] = Field(default_factory=list, description="The contents of the documents")
+    contents: list[str] = Field(
+        default_factory=list, description="The contents of the documents"
+    )
 
     @field_validator("contents", mode="before")
     @classmethod
@@ -38,7 +40,9 @@ class InputState(BaseModel):
 class OutputState(BaseModel):
     """Output state for the summarizer agent."""
 
-    final_summary: str = Field(default="", description="The final summary of the documents")
+    final_summary: str = Field(
+        default="", description="The final summary of the documents"
+    )
 
 
 class SummaryState(InputState, OutputState):

@@ -31,7 +31,9 @@ def test_memory_models():
     )
 
     # Test KnowledgeTriple
-    KnowledgeTriple(subject="TechCorp", predicate="employs", object="Alice", confidence=0.95)
+    KnowledgeTriple(
+        subject="TechCorp", predicate="employs", object="Alice", confidence=0.95
+    )
 
     # Test EnhancedKnowledgeTriple
     enhanced_triple = EnhancedKnowledgeTriple(
@@ -58,7 +60,9 @@ def test_memory_models():
     state.search_memories("Bob")
 
     # Test MemoryStateWithTokens
-    token_state = MemoryStateWithTokens(messages=[], total_tokens=0, current_memories=[])
+    token_state = MemoryStateWithTokens(
+        messages=[], total_tokens=0, current_memories=[]
+    )
 
     # Add a memory entry
     token_state.current_memories.append(entry1)
@@ -92,7 +96,9 @@ def test_memory_stats():
     ]
 
     for content, mem_type, importance in memories:
-        memory = EnhancedMemoryItem(content=content, memory_type=mem_type, importance=importance)
+        memory = EnhancedMemoryItem(
+            content=content, memory_type=mem_type, importance=importance
+        )
         state.add_memory_item(memory)
 
     # Add some triples
@@ -142,7 +148,9 @@ def test_memory_search():
 
     for query, expected_count in searches:
         results = state.search_memories(query)
-        assert len(results) >= expected_count, f"Expected at least {expected_count} results"
+        assert (
+            len(results) >= expected_count
+        ), f"Expected at least {expected_count} results"
 
     return True
 

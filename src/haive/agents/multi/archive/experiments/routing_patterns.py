@@ -54,7 +54,9 @@ class RoutingMultiAgent(ListMultiAgent):
         default_factory=dict, description="Routing rules by agent name"
     )
 
-    default_route: str = Field(default=END, description="Default route when no condition matches")
+    default_route: str = Field(
+        default=END, description="Default route when no condition matches"
+    )
 
     # ========== Routing Methods ==========
 
@@ -111,11 +113,16 @@ class RoutingMultiAgent(ListMultiAgent):
             false_dest: Destination when condition is False (default: END)
         """
         return self.add_route(
-            source=source, condition=condition, routes={True: true_dest, False: false_dest}
+            source=source,
+            condition=condition,
+            routes={True: true_dest, False: false_dest},
         )
 
     def add_multi_route(
-        self, source: str | Agent, condition: Callable[[Any], str], **routes: str | Agent
+        self,
+        source: str | Agent,
+        condition: Callable[[Any], str],
+        **routes: str | Agent,
     ) -> "RoutingMultiAgent":
         """Add multi-way routing with keyword arguments.
 
@@ -247,9 +254,13 @@ class BranchingMultiAgent(RoutingMultiAgent):
     """
 
     # Track branches for merging
-    branches: dict[str, list[str]] = Field(default_factory=dict, description="Branch definitions")
+    branches: dict[str, list[str]] = Field(
+        default_factory=dict, description="Branch definitions"
+    )
 
-    merge_points: dict[str, str] = Field(default_factory=dict, description="Where branches merge")
+    merge_points: dict[str, str] = Field(
+        default_factory=dict, description="Where branches merge"
+    )
 
     def branch_on(
         self,

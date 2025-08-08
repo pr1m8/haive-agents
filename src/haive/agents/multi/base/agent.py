@@ -4,11 +4,13 @@ This module provides the base multi-agent class that other multi-agent
 implementations can inherit from or use directly.
 """
 
-# Re-export the clean MultiAgent implementation as the base
-from haive.agents.multi.clean import MultiAgent
+from typing import Any, List
+
 from haive.core.engine.agent import Agent, AgentConfig
-from typing import List, Any
 from pydantic import Field
+
+# Re-export the MultiAgent implementation as the base
+from haive.agents.multi.agent import MultiAgent
 
 
 class SequentialAgentConfig(AgentConfig):

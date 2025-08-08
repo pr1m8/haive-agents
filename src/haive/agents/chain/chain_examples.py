@@ -130,7 +130,9 @@ def example_nested_chains() -> Any:
     """Create chains that contain other chains."""
     # Create a sub-chain for processing
     processing_chain = sequential_chain(
-        lambda s: {"preprocessed": True}, lambda s: {"validated": True}, name="Processing Sub-chain"
+        lambda s: {"preprocessed": True},
+        lambda s: {"validated": True},
+        name="Processing Sub-chain",
     )
 
     # Create main chain that uses the sub-chain

@@ -67,7 +67,8 @@ CORRECT_CYPHER_PROMPT_TEMPLATE = ChatPromptTemplate.from_messages(
 )
 
 correct_cypher_aug_llm_config = AugLLMConfig(
-    prompt_template=CORRECT_CYPHER_PROMPT_TEMPLATE, structured_output_model=CypherQueryOutput
+    prompt_template=CORRECT_CYPHER_PROMPT_TEMPLATE,
+    structured_output_model=CypherQueryOutput,
 )
 """Engine for correcting Cypher queries based on validation errors.
 

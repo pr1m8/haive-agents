@@ -25,9 +25,13 @@ class BaseRAGAgent(Agent[BaseRAGConfig]):
         query = state.query
         documents = state.retrieved_documents
         if not documents:
-            return {"answer": "I couldn't find any relevant documents to answer your query."}
+            return {
+                "answer": "I couldn't find any relevant documents to answer your query."
+            }
         context = "\n\n".join([doc.page_content for doc in documents])
-        answer = self.config.engine.create_runnable().invoke({"query": query, "context": context})
+        answer = self.config.engine.create_runnable().invoke(
+            {"query": query, "context": context}
+        )
         return Command(update={"answer": answer})
 
     def setup_workflow(self) -> None:

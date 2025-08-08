@@ -27,7 +27,9 @@ class ReflectionGrade(BaseModel):
     """Structured output for reflection grading."""
 
     quality_score: int = Field(..., ge=1, le=10, description="Quality rating from 1-10")
-    reasoning_clarity: int = Field(..., ge=1, le=10, description="How clear the reasoning is")
+    reasoning_clarity: int = Field(
+        ..., ge=1, le=10, description="How clear the reasoning is"
+    )
     action_appropriateness: int = Field(
         ..., ge=1, le=10, description="How appropriate the actions taken were"
     )
@@ -35,7 +37,9 @@ class ReflectionGrade(BaseModel):
         default_factory=list, description="Specific areas for improvement"
     )
     strengths: list[str] = Field(default_factory=list, description="What was done well")
-    overall_assessment: str = Field(..., description="Overall assessment of the performance")
+    overall_assessment: str = Field(
+        ..., description="Overall assessment of the performance"
+    )
 
 
 class ReflectionResult(BaseModel):
@@ -43,7 +47,9 @@ class ReflectionResult(BaseModel):
 
     initial_response: str = Field(..., description="Original agent response")
     reflection_grade: ReflectionGrade = Field(..., description="Graded reflection")
-    improved_response: str | None = Field(None, description="Optional improved response")
+    improved_response: str | None = Field(
+        None, description="Optional improved response"
+    )
     reflection_insights: str = Field(..., description="Key insights from reflection")
 
 
@@ -88,7 +94,9 @@ class MultiAgentReflection:
 
         # Create specialized configs
         main_config = engine_config.model_copy(update={"temperature": main_temperature})
-        reflection_config = engine_config.model_copy(update={"temperature": reflection_temperature})
+        reflection_config = engine_config.model_copy(
+            update={"temperature": reflection_temperature}
+        )
 
         # Create the main processing agent
         self.main_agent = ReactAgent(
@@ -108,7 +116,9 @@ class MultiAgentReflection:
         # Optional improvement agent
         self.improvement_agent = None
         if include_improvement:
-            self.improvement_agent = SimpleAgent(name="response_improver", engine=main_config)
+            self.improvement_agent = SimpleAgent(
+                name="response_improver", engine=main_config
+            )
 
         # Create the multi-agent coordinator using EnhancedMultiAgent V3
         agents_dict = {
@@ -172,7 +182,9 @@ class MultiAgentReflection:
             logger.info(f"Reflection prompt: {reflection_prompt}")
 
         # Get structured reflection
-        reflection_result = await self.reflection_agent.arun(reflection_prompt, debug=debug)
+        reflection_result = await self.reflection_agent.arun(
+            reflection_prompt, debug=debug
+        )
 
         if debug:
             logger.info(f"Raw reflection result: {reflection_result}")
@@ -187,13 +199,19 @@ class MultiAgentReflection:
                 if messages and hasattr(messages[-1], "content"):
                     reflection_content = messages[-1].content
                     if debug:
-                        logger.info(f"Extracted content from messages: {reflection_content}")
+                        logger.info(
+                            f"Extracted content from messages: {reflection_content}"
+                        )
                     # Try to parse as structured output
                     try:
-                        reflection_grade = ReflectionGrade.model_validate_json(reflection_content)
+                        reflection_grade = ReflectionGrade.model_validate_json(
+                            reflection_content
+                        )
                     except Exception as e:
                         if debug:
-                            logger.warning(f"Failed to parse as JSON, creating manual grade: {e}")
+                            logger.warning(
+                                f"Failed to parse as JSON, creating manual grade: {e}"
+                            )
                         # Create a default grade if parsing fails
                         reflection_grade = ReflectionGrade(
                             quality_score=7,
@@ -272,7 +290,10 @@ class MultiAgentReflection:
         )
 
     def _create_reflection_prompt(
-        self, original_task: str, agent_response: str, transformed_conversation: list[BaseMessage]
+        self,
+        original_task: str,
+        agent_response: str,
+        transformed_conversation: list[BaseMessage],
     ) -> str:
         """Create the reflection prompt using transformed conversation context.
 
@@ -281,7 +302,10 @@ class MultiAgentReflection:
         """
         # Convert transformed messages to readable format
         conversation_context = "\n".join(
-            [f"{msg.__class__.__name__}: {msg.content}" for msg in transformed_conversation]
+            [
+                f"{msg.__class__.__name__}: {msg.content}"
+                for msg in transformed_conversation
+            ]
         )
 
         return f"""You are an expert AI system evaluator. Please analyze the following interaction and provide a detailed reflection.
@@ -308,11 +332,18 @@ Also identify:
 Focus on constructive analysis that can help improve future performance."""
 
     def _create_improvement_prompt(
-        self, original_task: str, original_response: str, reflection_grade: ReflectionGrade
+        self,
+        original_task: str,
+        original_response: str,
+        reflection_grade: ReflectionGrade,
     ) -> str:
         """Create prompt for improvement based on reflection."""
-        improvements_text = "\n".join([f"- {imp}" for imp in reflection_grade.improvements])
-        strengths_text = "\n".join([f"- {strength}" for strength in reflection_grade.strengths])
+        improvements_text = "\n".join(
+            [f"- {imp}" for imp in reflection_grade.improvements]
+        )
+        strengths_text = "\n".join(
+            [f"- {strength}" for strength in reflection_grade.strengths]
+        )
 
         return f"""Based on the reflection analysis, please create an improved response to the original task.
 
@@ -342,20 +373,28 @@ Please provide an improved response that addresses the identified improvements w
             insights.append(f"Quality Score: {reflection_grade.quality_score}/10")
 
         if hasattr(reflection_grade, "reasoning_clarity"):
-            insights.append(f"Reasoning Clarity: {reflection_grade.reasoning_clarity}/10")
+            insights.append(
+                f"Reasoning Clarity: {reflection_grade.reasoning_clarity}/10"
+            )
 
         if hasattr(reflection_grade, "action_appropriateness"):
-            insights.append(f"Action Appropriateness: {reflection_grade.action_appropriateness}/10")
+            insights.append(
+                f"Action Appropriateness: {reflection_grade.action_appropriateness}/10"
+            )
 
         if hasattr(reflection_grade, "improvements") and reflection_grade.improvements:
-            insights.append(f"Key Improvements: {', '.join(reflection_grade.improvements[:3])}")
+            insights.append(
+                f"Key Improvements: {', '.join(reflection_grade.improvements[:3])}"
+            )
 
         if hasattr(reflection_grade, "overall_assessment"):
             insights.append(f"Assessment: {reflection_grade.overall_assessment}")
 
         return " | ".join(insights)
 
-    def _transform_messages_for_reflection(self, messages: list[BaseMessage]) -> list[BaseMessage]:
+    def _transform_messages_for_reflection(
+        self, messages: list[BaseMessage]
+    ) -> list[BaseMessage]:
         """Simple message transformation for reflection analysis.
 
         Converts AI messages to human perspective for better reflection analysis.
@@ -409,5 +448,8 @@ def create_full_reflection_system(
         MultiAgentReflection system with improvement capability
     """
     return MultiAgentReflection(
-        name="full_reflection", engine_config=engine_config, tools=tools, include_improvement=True
+        name="full_reflection",
+        engine_config=engine_config,
+        tools=tools,
+        include_improvement=True,
     )

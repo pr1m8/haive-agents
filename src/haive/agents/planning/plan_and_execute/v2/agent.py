@@ -3,7 +3,12 @@
 from haive.core.engine.aug_llm import AugLLMConfig
 
 from haive.agents.multi.proper_base import ProperMultiAgent
-from haive.agents.planning.plan_and_execute.v2.models import Act, ExecutionResult, Plan, Response
+from haive.agents.planning.plan_and_execute.v2.models import (
+    Act,
+    ExecutionResult,
+    Plan,
+    Response,
+)
 from haive.agents.planning.plan_and_execute.v2.prompts import (
     EXECUTOR_PROMPT,
     PLANNER_PROMPT,
@@ -120,7 +125,9 @@ class PlanAndExecuteAgent(ProperMultiAgent):
 
         return state
 
-    def process_replan_result(self, state: PlanAndExecuteState, result: Act) -> PlanAndExecuteState:
+    def process_replan_result(
+        self, state: PlanAndExecuteState, result: Act
+    ) -> PlanAndExecuteState:
         """Process replanning result and update state."""
         if isinstance(result.action, Response):
             # Final response - we're done

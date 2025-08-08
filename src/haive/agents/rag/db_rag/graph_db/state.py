@@ -68,12 +68,16 @@ class OutputState(BaseModel):
         ... )
     """
 
-    answer: str = Field(default="", description="The final answer to the user's question")
+    answer: str = Field(
+        default="", description="The final answer to the user's question"
+    )
     steps: list[str] = Field(
-        default_factory=list, description="The workflow steps taken to reach the current state"
+        default_factory=list,
+        description="The workflow steps taken to reach the current state",
     )
     cypher_statement: str = Field(
-        default="", description="The generated Cypher statement used to query the database"
+        default="",
+        description="The generated Cypher statement used to query the database",
     )
 
 

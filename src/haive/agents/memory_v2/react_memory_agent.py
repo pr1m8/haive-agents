@@ -54,7 +54,9 @@ class ReactMemoryAgent:
         if memory_store_path:
             try:
                 self.vector_store = FAISS.load_local(
-                    memory_store_path, self.embeddings, allow_dangerous_deserialization=True
+                    memory_store_path,
+                    self.embeddings,
+                    allow_dangerous_deserialization=True,
                 )
             except BaseException:
                 # Create new if doesn't exist
@@ -192,7 +194,9 @@ Always strive to use memories to provide more helpful, personalized responses.""
                             filtered_docs.append(doc)
 
                 # Sort by timestamp and limit
-                filtered_docs.sort(key=lambda d: d.metadata.get("timestamp", ""), reverse=True)
+                filtered_docs.sort(
+                    key=lambda d: d.metadata.get("timestamp", ""), reverse=True
+                )
                 filtered_docs = filtered_docs[:k]
 
                 if not filtered_docs:
@@ -273,7 +277,9 @@ Always strive to use memories to provide more helpful, personalized responses.""
                     "user_id": self.user_id,
                 }
 
-                doc = Document(page_content=f"[UPDATED MEMORY] {new_content}", metadata=metadata)
+                doc = Document(
+                    page_content=f"[UPDATED MEMORY] {new_content}", metadata=metadata
+                )
 
                 self.vector_store.add_documents([doc])
 
@@ -301,7 +307,8 @@ Always strive to use memories to provide more helpful, personalized responses.""
                 }
 
                 doc = Document(
-                    page_content=f"[DELETED] Memory identified by: {memory_id}", metadata=metadata
+                    page_content=f"[DELETED] Memory identified by: {memory_id}",
+                    metadata=metadata,
                 )
 
                 self.vector_store.add_documents([doc])
@@ -326,7 +333,9 @@ Always strive to use memories to provide more helpful, personalized responses.""
 
                 # Sort by timestamp
                 sorted_docs = sorted(
-                    all_docs, key=lambda d: d.metadata.get("timestamp", ""), reverse=True
+                    all_docs,
+                    key=lambda d: d.metadata.get("timestamp", ""),
+                    reverse=True,
                 )[:k]
 
                 if not sorted_docs:
@@ -445,7 +454,8 @@ async def example_basic_usage():
 
     # First conversation
     await agent.arun(
-        "Hi, I'm Alice. I work as a data scientist at TechCorp and I love hiking.", auto_save=True
+        "Hi, I'm Alice. I work as a data scientist at TechCorp and I love hiking.",
+        auto_save=True,
     )
 
     # Later conversation - agent should remember
@@ -474,7 +484,9 @@ async def example_with_custom_tools():
 
     # Create agent with custom tool
     agent = ReactMemoryAgent.create_with_custom_tools(
-        name="enhanced_assistant", custom_tools=[calculate_days_since], user_id="bob_jones"
+        name="enhanced_assistant",
+        custom_tools=[calculate_days_since],
+        user_id="bob_jones",
     )
 
     # Use both memory and custom tools

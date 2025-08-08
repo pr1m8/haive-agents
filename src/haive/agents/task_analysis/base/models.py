@@ -56,7 +56,9 @@ class TaskDependency(BaseModel):
     source_id: str = Field(..., description="Source task ID")
     target_id: str = Field(..., description="Target task ID")
     dependency_type: DependencyType = Field(default=DependencyType.SEQUENTIAL)
-    condition: str | None = Field(default=None, description="Condition for conditional deps")
+    condition: str | None = Field(
+        default=None, description="Condition for conditional deps"
+    )
     data_flow: dict[str, str] | None = Field(
         default=None, description="Data that flows between tasks"
     )
@@ -81,8 +83,12 @@ class ActionStep(BaseModel):
     required_context: list[str] = Field(default_factory=list)
 
     # Input/Output specification
-    inputs: dict[str, str] = Field(default_factory=dict, description="Expected inputs with types")
-    outputs: dict[str, str] = Field(default_factory=dict, description="Expected outputs with types")
+    inputs: dict[str, str] = Field(
+        default_factory=dict, description="Expected inputs with types"
+    )
+    outputs: dict[str, str] = Field(
+        default_factory=dict, description="Expected outputs with types"
+    )
 
     # Validation
     success_criteria: list[str] = Field(default_factory=list)
@@ -107,7 +113,8 @@ class TaskNode(BaseModel):
 
     # CRITICAL: Union type for AutoTree to detect and handle
     subtasks: list[Union["TaskNode", ActionStep]] = Field(
-        default_factory=list, description="Child tasks or action steps - AutoTree will handle this!"
+        default_factory=list,
+        description="Child tasks or action steps - AutoTree will handle this!",
     )
 
     # Dependencies (between children)
@@ -124,7 +131,9 @@ class TaskNode(BaseModel):
     # Execution hints
     can_parallelize: bool = Field(default=True)
     can_expand: bool = Field(default=True, description="Can be further decomposed")
-    expansion_hints: str | None = Field(default=None, description="Hints for decomposition")
+    expansion_hints: str | None = Field(
+        default=None, description="Hints for decomposition"
+    )
 
     # Join information
     is_join_point: bool = Field(default=False)
@@ -163,10 +172,15 @@ class TaskNode(BaseModel):
         self.subtasks.append(subtask)
 
     def add_dependency(
-        self, source_id: str, target_id: str, dep_type: DependencyType = DependencyType.SEQUENTIAL
+        self,
+        source_id: str,
+        target_id: str,
+        dep_type: DependencyType = DependencyType.SEQUENTIAL,
     ) -> None:
         """Add a dependency between child tasks."""
-        dep = TaskDependency(source_id=source_id, target_id=target_id, dependency_type=dep_type)
+        dep = TaskDependency(
+            source_id=source_id, target_id=target_id, dependency_type=dep_type
+        )
         self.dependencies.append(dep)
 
 
@@ -205,7 +219,9 @@ class TaskPlan(BaseModel):
         all_nodes = tree.traverse_depth_first(lambda n: n)
 
         self.total_tasks = len(all_nodes)
-        self.total_estimated_duration_minutes = self.root_task.calculate_total_duration()
+        self.total_estimated_duration_minutes = (
+            self.root_task.calculate_total_duration()
+        )
         self.max_depth = self._calculate_max_depth(tree)
 
     def _calculate_max_depth(self, tree) -> int:

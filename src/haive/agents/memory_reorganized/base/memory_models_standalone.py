@@ -45,7 +45,9 @@ class KnowledgeTriple(BaseModel):
     subject: str = Field(..., description="Subject entity")
     predicate: str = Field(..., description="Relationship/predicate")
     object: str = Field(..., description="Object entity")
-    confidence: float = Field(default=1.0, ge=0.0, le=1.0, description="Confidence score")
+    confidence: float = Field(
+        default=1.0, ge=0.0, le=1.0, description="Confidence score"
+    )
     source: Optional[str] = Field(default=None, description="Source of this knowledge")
     timestamp: datetime = Field(
         default_factory=datetime.now, description="When this triple was created"
@@ -77,17 +79,27 @@ class KnowledgeTriple(BaseModel):
 class MemoryItem(BaseModel):
     """Basic memory item with core attributes."""
 
-    id: str = Field(default_factory=lambda: str(uuid4()), description="Unique memory ID")
+    id: str = Field(
+        default_factory=lambda: str(uuid4()), description="Unique memory ID"
+    )
     content: str = Field(..., description="Memory content/text")
-    memory_type: MemoryType = Field(default=MemoryType.SEMANTIC, description="Type of memory")
+    memory_type: MemoryType = Field(
+        default=MemoryType.SEMANTIC, description="Type of memory"
+    )
     importance: ImportanceLevel = Field(
         default=ImportanceLevel.MEDIUM, description="Importance level"
     )
-    timestamp: datetime = Field(default_factory=datetime.now, description="When memory was created")
-    last_accessed: datetime = Field(default_factory=datetime.now, description="Last access time")
+    timestamp: datetime = Field(
+        default_factory=datetime.now, description="When memory was created"
+    )
+    last_accessed: datetime = Field(
+        default_factory=datetime.now, description="Last access time"
+    )
     access_count: int = Field(default=0, description="Number of times accessed")
     tags: List[str] = Field(default_factory=list, description="Memory tags")
-    metadata: Dict[str, Any] = Field(default_factory=dict, description="Additional metadata")
+    metadata: Dict[str, Any] = Field(
+        default_factory=dict, description="Additional metadata"
+    )
 
     # Knowledge graph fields
     entities: List[str] = Field(default_factory=list, description="Extracted entities")
@@ -191,18 +203,30 @@ class EnhancedMemoryItem(MemoryItem):
     """Enhanced memory item with additional capabilities."""
 
     # Enhanced scoring and ranking
-    relevance_score: float = Field(default=0.0, ge=0.0, le=1.0, description="Relevance score")
-    quality_score: float = Field(default=0.0, ge=0.0, le=1.0, description="Quality score")
-    embedding: Optional[List[float]] = Field(default=None, description="Vector embedding")
+    relevance_score: float = Field(
+        default=0.0, ge=0.0, le=1.0, description="Relevance score"
+    )
+    quality_score: float = Field(
+        default=0.0, ge=0.0, le=1.0, description="Quality score"
+    )
+    embedding: Optional[List[float]] = Field(
+        default=None, description="Vector embedding"
+    )
 
     # Enhanced relationships
-    related_memories: List[str] = Field(default_factory=list, description="Related memory IDs")
+    related_memories: List[str] = Field(
+        default_factory=list, description="Related memory IDs"
+    )
     parent_memory: Optional[str] = Field(default=None, description="Parent memory ID")
-    child_memories: List[str] = Field(default_factory=list, description="Child memory IDs")
+    child_memories: List[str] = Field(
+        default_factory=list, description="Child memory IDs"
+    )
 
     # Enhanced processing
     processing_status: str = Field(default="raw", description="Processing status")
-    extracted_facts: List[str] = Field(default_factory=list, description="Extracted facts")
+    extracted_facts: List[str] = Field(
+        default_factory=list, description="Extracted facts"
+    )
     sentiment: Optional[str] = Field(default=None, description="Sentiment analysis")
     summary: Optional[str] = Field(default=None, description="Memory summary")
 
@@ -211,7 +235,9 @@ class EnhancedMemoryItem(MemoryItem):
         default_factory=list, description="Contexts where retrieved"
     )
     retrieval_count: int = Field(default=0, description="Number of retrievals")
-    last_retrieved: Optional[datetime] = Field(default=None, description="Last retrieval time")
+    last_retrieved: Optional[datetime] = Field(
+        default=None, description="Last retrieval time"
+    )
 
     def update_retrieval(self, context: str = "") -> None:
         """Update retrieval tracking."""
@@ -297,7 +323,9 @@ class EnhancedMemoryItem(MemoryItem):
             "summary": self.summary,
             "retrieval_contexts": self.retrieval_contexts,
             "retrieval_count": self.retrieval_count,
-            "last_retrieved": self.last_retrieved.isoformat() if self.last_retrieved else None,
+            "last_retrieved": (
+                self.last_retrieved.isoformat() if self.last_retrieved else None
+            ),
         }
         base_dict.update(enhanced_dict)
         return base_dict
@@ -351,11 +379,19 @@ def create_memory_item(
 
 
 def create_knowledge_triple(
-    subject: str, predicate: str, object: str, confidence: float = 1.0, source: Optional[str] = None
+    subject: str,
+    predicate: str,
+    object: str,
+    confidence: float = 1.0,
+    source: Optional[str] = None,
 ) -> KnowledgeTriple:
     """Create a knowledge triple."""
     return KnowledgeTriple(
-        subject=subject, predicate=predicate, object=object, confidence=confidence, source=source
+        subject=subject,
+        predicate=predicate,
+        object=object,
+        confidence=confidence,
+        source=source,
     )
 
 

@@ -47,11 +47,19 @@ class SearchResponse(BaseModel):
 
     query: str = Field(..., description="The original search query")
     response: str = Field(..., description="The search response content")
-    sources: list[str] = Field(default_factory=list, description="Source URLs or references")
-    confidence: float = Field(default=0.0, ge=0.0, le=1.0, description="Confidence score")
+    sources: list[str] = Field(
+        default_factory=list, description="Source URLs or references"
+    )
+    confidence: float = Field(
+        default=0.0, ge=0.0, le=1.0, description="Confidence score"
+    )
     search_type: str = Field(..., description="Type of search performed")
-    processing_time: float = Field(default=0.0, description="Time taken to process in seconds")
-    metadata: dict[str, Any] = Field(default_factory=dict, description="Additional metadata")
+    processing_time: float = Field(
+        default=0.0, description="Time taken to process in seconds"
+    )
+    metadata: dict[str, Any] = Field(
+        default_factory=dict, description="Additional metadata"
+    )
 
 
 class BaseSearchAgent(ReactAgent, ABC):
@@ -62,7 +70,11 @@ class BaseSearchAgent(ReactAgent, ABC):
     """
 
     def __init__(
-        self, name: str, engine: AugLLMConfig, search_tools: list[Tool] | None = None, **kwargs
+        self,
+        name: str,
+        engine: AugLLMConfig,
+        search_tools: list[Tool] | None = None,
+        **kwargs,
     ):
         """Initialize the search agent.
 
@@ -169,7 +181,10 @@ class BaseSearchAgent(ReactAgent, ABC):
         return memory_items
 
     async def process_search(
-        self, query: str, context: dict[str, Any] | None = None, save_to_memory: bool = True
+        self,
+        query: str,
+        context: dict[str, Any] | None = None,
+        save_to_memory: bool = True,
     ) -> SearchResponse:
         """Process a search query with memory integration.
 

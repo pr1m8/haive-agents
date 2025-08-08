@@ -56,7 +56,9 @@ def route_after_decomposition(state: dict[str, Any]) -> str:
 
     # Check if we need recursive decomposition
     needs_expansion = any(
-        subtask.can_expand for subtask in task_node.subtasks if hasattr(subtask, "can_expand")
+        subtask.can_expand
+        for subtask in task_node.subtasks
+        if hasattr(subtask, "can_expand")
     )
 
     if needs_expansion and state.get("current_depth", 0) < state.get("max_depth", 3):
@@ -168,7 +170,9 @@ def parallel_analysis_orchestrator(
                 "task_description": task_node.description,
                 "task_type": task_node.task_type.value,
                 "domain": state.get("domain", "general"),
-                "subtask_list": "\n".join([f"- {st.name}" for st in task_node.subtasks]),
+                "subtask_list": "\n".join(
+                    [f"- {st.name}" for st in task_node.subtasks]
+                ),
                 "dependencies": str(task_node.dependencies),
             },
         )
@@ -252,11 +256,15 @@ class TaskAnalysisAgent(Agent):
     """
 
     # Configuration
-    max_decomposition_depth: int = Field(default=4, description="Maximum task decomposition depth")
+    max_decomposition_depth: int = Field(
+        default=4, description="Maximum task decomposition depth"
+    )
     enable_recursive_decomposition: bool = Field(
         default=True, description="Enable recursive task expansion"
     )
-    parallel_analysis: bool = Field(default=True, description="Run analyses in parallel")
+    parallel_analysis: bool = Field(
+        default=True, description="Run analyses in parallel"
+    )
 
     # ========================================================================
     # INITIALIZE ENGINES IN __init__
@@ -321,14 +329,18 @@ class TaskAnalysisAgent(Agent):
         # Initial decomposition
         graph.add_node(
             "decompose_task",
-            EngineNodeConfig(name="decompose_task", engine=self.engines["task_decomposer"]),
+            EngineNodeConfig(
+                name="decompose_task", engine=self.engines["task_decomposer"]
+            ),
         )
         graph.add_edge(START, "decompose_task")
 
         # Validation
         graph.add_node(
             "validate_decomposition",
-            EngineNodeConfig(name="validate_decomposition", engine=self.engines["task_validator"]),
+            EngineNodeConfig(
+                name="validate_decomposition", engine=self.engines["task_validator"]
+            ),
         )
 
         # Recursive decomposition
@@ -336,7 +348,8 @@ class TaskAnalysisAgent(Agent):
             graph.add_node(
                 "recursive_decompose",
                 EngineNodeConfig(
-                    name="recursive_decompose", engine=self.engines["recursive_decomposer"]
+                    name="recursive_decompose",
+                    engine=self.engines["recursive_decomposer"],
                 ),
             )
             graph.add_node("recursive_orchestrator", recursive_expansion_orchestrator)
@@ -361,12 +374,16 @@ class TaskAnalysisAgent(Agent):
 
         graph.add_node(
             "context_analysis",
-            EngineNodeConfig(name="context_analysis", engine=self.engines["context_analyzer"]),
+            EngineNodeConfig(
+                name="context_analysis", engine=self.engines["context_analyzer"]
+            ),
         )
 
         graph.add_node(
             "tree_analysis",
-            EngineNodeConfig(name="tree_analysis", engine=self.engines["tree_analyzer"]),
+            EngineNodeConfig(
+                name="tree_analysis", engine=self.engines["tree_analyzer"]
+            ),
         )
 
         # Join node
@@ -389,7 +406,9 @@ class TaskAnalysisAgent(Agent):
 
         graph.add_node(
             "execution_planning",
-            EngineNodeConfig(name="execution_planning", engine=self.engines["execution_planner"]),
+            EngineNodeConfig(
+                name="execution_planning", engine=self.engines["execution_planner"]
+            ),
         )
 
         # ====================================================================
@@ -398,18 +417,22 @@ class TaskAnalysisAgent(Agent):
 
         graph.add_node(
             "integrate_analysis",
-            EngineNodeConfig(name="integrate_analysis", engine=self.engines["integrated_analyzer"]),
+            EngineNodeConfig(
+                name="integrate_analysis", engine=self.engines["integrated_analyzer"]
+            ),
         )
 
         graph.add_node(
             "feasibility_assessment",
             EngineNodeConfig(
-                name="feasibility_assessment", engine=self.engines["feasibility_assessor"]
+                name="feasibility_assessment",
+                engine=self.engines["feasibility_assessor"],
             ),
         )
 
         graph.add_node(
-            "optimization", EngineNodeConfig(name="optimization", engine=self.engines["optimizer"])
+            "optimization",
+            EngineNodeConfig(name="optimization", engine=self.engines["optimizer"]),
         )
 
         # ====================================================================
@@ -510,11 +533,15 @@ class TaskAnalysisAgent(Agent):
             }
         )
 
-    def get_execution_plan(self, analysis_result: dict[str, Any]) -> ExecutionPlan | None:
+    def get_execution_plan(
+        self, analysis_result: dict[str, Any]
+    ) -> ExecutionPlan | None:
         """Extract execution plan from analysis results."""
         return analysis_result.get("execution_plan")
 
-    def get_complexity_assessment(self, analysis_result: dict[str, Any]) -> ComplexityVector | None:
+    def get_complexity_assessment(
+        self, analysis_result: dict[str, Any]
+    ) -> ComplexityVector | None:
         """Extract complexity assessment from analysis results."""
         return analysis_result.get("complexity_vector")
 

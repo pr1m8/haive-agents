@@ -1,8 +1,13 @@
 from typing import Annotated, TypedDict
 
-from haive.agents.wiki_writer.interview.models import Editor
-from haive.agents.wiki_writer.interview.utils import add_messages, update_editor, update_references
 from langchain_core.messages import AnyMessage
+
+from haive.agents.wiki_writer.interview.models import Editor
+from haive.agents.wiki_writer.interview.utils import (
+    add_messages,
+    update_editor,
+    update_references,
+)
 
 
 class InterviewState(TypedDict):

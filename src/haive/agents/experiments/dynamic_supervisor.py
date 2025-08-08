@@ -33,7 +33,8 @@ class SupervisorState(MessagesState):
 
     # Agent registry information
     agent_registry: dict[str, dict[str, Any]] = Field(
-        default_factory=dict, description="Registry of available agents with their metadata"
+        default_factory=dict,
+        description="Registry of available agents with their metadata",
     )
 
     # Current execution state
@@ -41,7 +42,9 @@ class SupervisorState(MessagesState):
         default=None, description="Name of the currently selected agent"
     )
 
-    current_task: str | None = Field(default=None, description="Current task being executed")
+    current_task: str | None = Field(
+        default=None, description="Current task being executed"
+    )
 
     # Execution tracking
     execution_history: list[dict[str, Any]] = Field(
@@ -53,9 +56,13 @@ class SupervisorState(MessagesState):
     )
 
     # Task status
-    task_complete: bool = Field(default=False, description="Whether the overall task is complete")
+    task_complete: bool = Field(
+        default=False, description="Whether the overall task is complete"
+    )
 
-    max_iterations: int = Field(default=10, description="Maximum number of agent iterations")
+    max_iterations: int = Field(
+        default=10, description="Maximum number of agent iterations"
+    )
 
     current_iteration: int = Field(default=0, description="Current iteration count")
 
@@ -198,7 +205,9 @@ def create_dynamic_handoff_tool(supervisor_instance, agent_name: str):
                 state["current_task"] = task
 
             # Create input for the agent
-            agent_input = {"messages": [*state.get("messages", []), HumanMessage(content=task)]}
+            agent_input = {
+                "messages": [*state.get("messages", []), HumanMessage(content=task)]
+            }
 
             # Execute the agent
             result = agent.invoke(agent_input)
@@ -519,7 +528,9 @@ def test_dynamic_tools() -> Any:
     """Test dynamic tool creation and handoff functionality."""
     # Create supervisor
     registry = create_test_registry()
-    supervisor = DynamicSupervisorAgent(name="Dynamic Test Supervisor", agent_registry=registry)
+    supervisor = DynamicSupervisorAgent(
+        name="Dynamic Test Supervisor", agent_registry=registry
+    )
 
     # Check tools were created
     for _tool in supervisor.tools:
@@ -561,7 +572,9 @@ def test_supervisor_workflow() -> Any:
     }
 
     # Test handoff functionality
-    research_handoff = next(t for t in supervisor.tools if t.name == "handoff_to_research_agent")
+    research_handoff = next(
+        t for t in supervisor.tools if t.name == "handoff_to_research_agent"
+    )
 
     try:
         # This would normally be called by the graph, but we'll test directly

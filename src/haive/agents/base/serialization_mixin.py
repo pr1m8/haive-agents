@@ -57,10 +57,17 @@ class SerializationMixin:
                 state.pop(schema_key)
 
         # Handle structured_output_model (which is a Type object)
-        if "structured_output_model" in state and state["structured_output_model"] is not None:
+        if (
+            "structured_output_model" in state
+            and state["structured_output_model"] is not None
+        ):
             model = state["structured_output_model"]
-            state["_structured_output_model_name"] = getattr(model, "__name__", str(model))
-            state["_structured_output_model_module"] = getattr(model, "__module__", None)
+            state["_structured_output_model_name"] = getattr(
+                model, "__name__", str(model)
+            )
+            state["_structured_output_model_module"] = getattr(
+                model, "__module__", None
+            )
             state.pop("structured_output_model")
 
         return state

@@ -8,6 +8,7 @@ decomposition strategies.
 from datetime import timedelta
 from enum import Enum
 from typing import Any
+
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 
@@ -84,14 +85,22 @@ class TaskBranch(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid", validate_assignment=True, use_enum_values=True, str_strip_whitespace=True
+        extra="forbid",
+        validate_assignment=True,
+        use_enum_values=True,
+        str_strip_whitespace=True,
     )
     branch_id: str = Field(
         ...,
         description="Unique identifier for this branch",
         min_length=1,
         max_length=100,
-        examples=["find_winner", "calculate_sum", "research_mechanism", "validate_results"],
+        examples=[
+            "find_winner",
+            "calculate_sum",
+            "research_mechanism",
+            "validate_results",
+        ],
     )
     name: str = Field(
         ...,
@@ -309,7 +318,10 @@ class TaskDecomposition(BaseModel):
         ],
     )
     branches: list[TaskBranch] = Field(
-        ..., description="List of individual execution branches", min_length=1, max_length=50
+        ...,
+        description="List of individual execution branches",
+        min_length=1,
+        max_length=50,
     )
     execution_pattern: str = Field(
         ...,
@@ -337,7 +349,10 @@ class TaskDecomposition(BaseModel):
         description="Groups of branch IDs that can run in parallel",
         examples=[
             [["find_clancy_birthday", "find_sun_age", "find_mile_feet"]],
-            [["mechanism_research", "drug_screening"], ["toxicity_testing", "efficacy_testing"]],
+            [
+                ["mechanism_research", "drug_screening"],
+                ["toxicity_testing", "efficacy_testing"],
+            ],
             [["data_source_1", "data_source_2", "data_source_3"]],
         ],
     )
@@ -351,7 +366,10 @@ class TaskDecomposition(BaseModel):
         ],
     )
     total_estimated_effort: int = Field(
-        ..., description="Sum of all branch effort estimates", ge=1, examples=[5, 25, 150, 500]
+        ...,
+        description="Sum of all branch effort estimates",
+        ge=1,
+        examples=[5, 25, 150, 500],
     )
     estimated_duration_sequential: timedelta = Field(
         ...,
@@ -387,21 +405,29 @@ class TaskDecomposition(BaseModel):
         branch_ids = {branch.branch_id for branch in self.branches}
         for branch_id in self.critical_path:
             if branch_id not in branch_ids:
-                raise ValueError(f"Critical path branch '{branch_id}' not found in branches")
+                raise ValueError(
+                    f"Critical path branch '{branch_id}' not found in branches"
+                )
         for parallel_group in self.parallelization_opportunities:
             for branch_id in parallel_group:
                 if branch_id not in branch_ids:
-                    raise ValueError(f"Parallelizable branch '{branch_id}' not found in branches")
+                    raise ValueError(
+                        f"Parallelizable branch '{branch_id}' not found in branches"
+                    )
         for branch_id in self.bottlenecks:
             if branch_id not in branch_ids:
-                raise ValueError(f"Bottleneck branch '{branch_id}' not found in branches")
+                raise ValueError(
+                    f"Bottleneck branch '{branch_id}' not found in branches"
+                )
         calculated_effort = sum((branch.estimated_effort for branch in self.branches))
         if abs(calculated_effort - self.total_estimated_effort) > 1:
             raise ValueError(
                 f"Total effort {self.total_estimated_effort} doesn't match sum of branches {calculated_effort}"
             )
         if self.estimated_duration_optimal > self.estimated_duration_sequential:
-            raise ValueError("Optimal duration cannot be longer than sequential duration")
+            raise ValueError(
+                "Optimal duration cannot be longer than sequential duration"
+            )
         return self
 
     def get_dependency_graph(self) -> dict[str, list[str]]:
@@ -426,7 +452,11 @@ class TaskDecomposition(BaseModel):
         Returns:
             List of branch IDs that can start immediately
         """
-        return [branch.branch_id for branch in self.branches if not branch.has_dependencies()]
+        return [
+            branch.branch_id
+            for branch in self.branches
+            if not branch.has_dependencies()
+        ]
 
     def find_terminal_branches(self) -> list[str]:
         """Find branches that don't enable anything else.
@@ -434,7 +464,9 @@ class TaskDecomposition(BaseModel):
         Returns:
             List of branch IDs that are endpoints
         """
-        return [branch.branch_id for branch in self.branches if not branch.is_enabling()]
+        return [
+            branch.branch_id for branch in self.branches if not branch.is_enabling()
+        ]
 
     def calculate_parallelization_speedup(self) -> float:
         """Calculate potential speedup from parallelization.
@@ -457,15 +489,22 @@ class TaskDecomposition(BaseModel):
         return {
             "total_branches": len(self.branches),
             "total_effort": self.total_estimated_effort,
-            "average_effort_per_branch": self.total_estimated_effort / len(self.branches),
+            "average_effort_per_branch": self.total_estimated_effort
+            / len(self.branches),
             "critical_path_length": len(self.critical_path),
             "parallelizable_groups": len(self.parallelization_opportunities),
             "bottleneck_count": len(self.bottlenecks),
-            "max_branch_effort": max((branch.estimated_effort for branch in self.branches)),
-            "dependency_density": sum((len(branch.prerequisites) for branch in self.branches))
+            "max_branch_effort": max(
+                (branch.estimated_effort for branch in self.branches)
+            ),
+            "dependency_density": sum(
+                (len(branch.prerequisites) for branch in self.branches)
+            )
             / len(self.branches),
             "parallelization_speedup": self.calculate_parallelization_speedup(),
-            "high_risk_branches": sum((1 for branch in self.branches if branch.is_high_risk())),
+            "high_risk_branches": sum(
+                (1 for branch in self.branches if branch.is_high_risk())
+            ),
             "low_success_probability": sum(
                 (1 for branch in self.branches if not branch.is_likely_to_succeed())
             ),
@@ -498,9 +537,13 @@ class TaskDecomposition(BaseModel):
                 f"Consider alternatives for {metrics['low_success_probability']} low-probability branches"
             )
         if metrics["total_branches"] > 20:
-            recommendations.append("Consider hierarchical decomposition for large branch count")
+            recommendations.append(
+                "Consider hierarchical decomposition for large branch count"
+            )
         if metrics["dependency_density"] > 3.0:
-            recommendations.append("Complex dependencies detected - careful sequencing required")
+            recommendations.append(
+                "Complex dependencies detected - careful sequencing required"
+            )
         return recommendations
 
     @classmethod

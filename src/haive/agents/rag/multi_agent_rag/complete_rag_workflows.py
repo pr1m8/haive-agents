@@ -112,11 +112,15 @@ def hallucination_detection(input_data: dict) -> dict:
         "i think",
     ]
 
-    has_indicators = any(indicator in response_lower for indicator in hallucination_indicators)
+    has_indicators = any(
+        indicator in response_lower for indicator in hallucination_indicators
+    )
 
     # Check if response mentions facts not in documents (basic check)
     key_terms = response_lower.split()
-    doc_coverage = sum(1 for term in key_terms if any(term in doc for doc in doc_contents))
+    doc_coverage = sum(
+        1 for term in key_terms if any(term in doc for doc in doc_contents)
+    )
     coverage_ratio = doc_coverage / len(key_terms) if key_terms else 0
 
     has_hallucination = has_indicators or coverage_ratio < 0.3
@@ -155,7 +159,11 @@ def self_rag_retrieval_decision(input_data: dict) -> dict:
 
     needs_retrieval = any(term in query.lower() for term in knowledge_requiring_terms)
 
-    token = ReflectionToken.RETRIEVAL_YES if needs_retrieval else ReflectionToken.NO_RETRIEVAL
+    token = (
+        ReflectionToken.RETRIEVAL_YES
+        if needs_retrieval
+        else ReflectionToken.NO_RETRIEVAL
+    )
 
     return {
         "retrieval_token": token,
@@ -396,7 +404,9 @@ class SelfRAGAgent(ConditionalAgent):
         relevance_agent.build_graph = lambda: self._build_relevance_graph()
 
         # Create generation agent
-        generation_agent = SimpleAgent(name="Self-RAG Generation Agent", engine=AugLLMConfig())
+        generation_agent = SimpleAgent(
+            name="Self-RAG Generation Agent", engine=AugLLMConfig()
+        )
 
         # Create hallucination detection agent
         hallucination_agent = Agent()
@@ -428,7 +438,9 @@ class SelfRAGAgent(ConditionalAgent):
         graph = BaseGraph(name="SelfRAGDecision")
 
         decision_node = CallableNodeConfig(
-            name="retrieval_decision", callable_func=self_rag_retrieval_decision, pass_state=True
+            name="retrieval_decision",
+            callable_func=self_rag_retrieval_decision,
+            pass_state=True,
         )
         graph.add_node("retrieval_decision", decision_node)
 
@@ -440,7 +452,9 @@ class SelfRAGAgent(ConditionalAgent):
     def _build_relevance_graph(self) -> BaseGraph:
         graph = BaseGraph(name="SelfRAGRelevance")
 
-        relevance_node = create_document_grader(simple_document_grader, "check_relevance")
+        relevance_node = create_document_grader(
+            simple_document_grader, "check_relevance"
+        )
         graph.add_node("check_relevance", relevance_node)
 
         graph.add_edge(START, "check_relevance")
@@ -452,7 +466,9 @@ class SelfRAGAgent(ConditionalAgent):
         graph = BaseGraph(name="HallucinationDetection")
 
         hallucination_node = CallableNodeConfig(
-            name="detect_hallucination", callable_func=hallucination_detection, pass_state=True
+            name="detect_hallucination",
+            callable_func=hallucination_detection,
+            pass_state=True,
         )
         graph.add_node("detect_hallucination", hallucination_node)
 
@@ -549,7 +565,9 @@ class AdaptiveRAGAgent(ConditionalAgent):
         graph = BaseGraph(name="QueryComplexityAnalyzer")
 
         analyzer_node = CallableNodeConfig(
-            name="analyze_complexity", callable_func=query_complexity_analysis, pass_state=True
+            name="analyze_complexity",
+            callable_func=query_complexity_analysis,
+            pass_state=True,
         )
         graph.add_node("analyze_complexity", analyzer_node)
 
@@ -568,7 +586,9 @@ class AdaptiveRAGAgent(ConditionalAgent):
 
             # Generate multiple queries
             query_gen_node = CallableNodeConfig(
-                name="generate_queries", callable_func=generate_multi_queries, pass_state=True
+                name="generate_queries",
+                callable_func=generate_multi_queries,
+                pass_state=True,
             )
             graph.add_node("generate_queries", query_gen_node)
 
@@ -653,7 +673,9 @@ class HYDERAGAgent(SequentialAgent):
         graph = BaseGraph(name="HYDEHypothesis")
 
         hypothesis_node = CallableNodeConfig(
-            name="generate_hypothesis", callable_func=hyde_hypothesis_generation, pass_state=True
+            name="generate_hypothesis",
+            callable_func=hyde_hypothesis_generation,
+            pass_state=True,
         )
         graph.add_node("generate_hypothesis", hypothesis_node)
 

@@ -126,7 +126,8 @@ class IterativeGraphTransformer(Agent[IterativeGraphTransformerConfig]):
     """
 
     def __init__(
-        self, config: IterativeGraphTransformerConfig = IterativeGraphTransformerConfig()
+        self,
+        config: IterativeGraphTransformerConfig = IterativeGraphTransformerConfig(),
     ) -> None:
         """Initialize the iterative graph transformer.
 
@@ -139,7 +140,9 @@ class IterativeGraphTransformer(Agent[IterativeGraphTransformerConfig]):
         """
         self.llm_graph_transformer = GraphTransformer()
 
-        logger.info("Initialized IterativeGraphTransformer", extra={"agent_name": config.name})
+        logger.info(
+            "Initialized IterativeGraphTransformer", extra={"agent_name": config.name}
+        )
 
         super().__init__(config)
 
@@ -174,7 +177,9 @@ class IterativeGraphTransformer(Agent[IterativeGraphTransformerConfig]):
         logger.info(
             "Generating initial knowledge graph",
             extra={
-                "document_length": (len(doc.page_content) if hasattr(doc, "page_content") else 0)
+                "document_length": (
+                    len(doc.page_content) if hasattr(doc, "page_content") else 0
+                )
             },
         )
 
@@ -191,9 +196,13 @@ class IterativeGraphTransformer(Agent[IterativeGraphTransformerConfig]):
         logger.info(
             "Initial graph generated",
             extra={
-                "node_count": (len(graph_doc.nodes) if hasattr(graph_doc, "nodes") else 0),
+                "node_count": (
+                    len(graph_doc.nodes) if hasattr(graph_doc, "nodes") else 0
+                ),
                 "relationship_count": (
-                    len(graph_doc.relationships) if hasattr(graph_doc, "relationships") else 0
+                    len(graph_doc.relationships)
+                    if hasattr(graph_doc, "relationships")
+                    else 0
                 ),
             },
         )
@@ -278,7 +287,8 @@ class IterativeGraphTransformer(Agent[IterativeGraphTransformerConfig]):
 
             if not graph_docs:
                 logger.warning(
-                    "No graph generated during refinement", extra={"document_index": state.index}
+                    "No graph generated during refinement",
+                    extra={"document_index": state.index},
                 )
                 # Keep existing graph and move to next document
                 return Command(update={"index": state.index + 1})
@@ -288,7 +298,9 @@ class IterativeGraphTransformer(Agent[IterativeGraphTransformerConfig]):
                 "Graph refined successfully",
                 extra={
                     "new_node_count": (
-                        len(refined_graph.nodes) if hasattr(refined_graph, "nodes") else 0
+                        len(refined_graph.nodes)
+                        if hasattr(refined_graph, "nodes")
+                        else 0
                     ),
                     "new_relationship_count": (
                         len(refined_graph.relationships)
@@ -298,7 +310,9 @@ class IterativeGraphTransformer(Agent[IterativeGraphTransformerConfig]):
                 },
             )
 
-            return Command(update={"graph_doc": refined_graph, "index": state.index + 1})
+            return Command(
+                update={"graph_doc": refined_graph, "index": state.index + 1}
+            )
 
         except Exception as e:
             logger.error(
@@ -340,7 +354,9 @@ class IterativeGraphTransformer(Agent[IterativeGraphTransformerConfig]):
         self.graph.add_conditional_edges(
             "generate_initial_summary", self.state_schema.should_refine
         )
-        self.graph.add_conditional_edges("refine_summary", self.state_schema.should_refine)
+        self.graph.add_conditional_edges(
+            "refine_summary", self.state_schema.should_refine
+        )
 
 
 def build_agent() -> IterativeGraphTransformer:

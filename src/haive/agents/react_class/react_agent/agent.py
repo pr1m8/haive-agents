@@ -15,7 +15,9 @@ from langgraph.prebuilt import ToolNode
 from langgraph.types import Command
 from pydantic import BaseModel, Field, field_validator
 
-from haive.agents.react_class.react_agent.aug_llms import default_react_llm_runnable_config
+from haive.agents.react_class.react_agent.aug_llms import (
+    default_react_llm_runnable_config,
+)
 from haive.agents.react_class.react_agent.state import ReactAgentState
 
 
@@ -66,9 +68,15 @@ class ReactAgentConfig(AgentConfig):
         default=default_react_should_continue_output_dict,
         description="Dictionary defining routing behavior.",
     )
-    node_name: str = Field(default="agent_node", description="The name of the agent node.")
-    should_setup_workflow: bool = Field(default=True, description="Whether to set up the workflow.")
-    should_compile: bool = Field(default=True, description="Whether to compile the graph.")
+    node_name: str = Field(
+        default="agent_node", description="The name of the agent node."
+    )
+    should_setup_workflow: bool = Field(
+        default=True, description="Whether to set up the workflow."
+    )
+    should_compile: bool = Field(
+        default=True, description="Whether to compile the graph."
+    )
     should_visualize_graph: bool = Field(
         default=False, description="Whether to visualize the graph."
     )
@@ -111,7 +119,9 @@ class ReactAgentConfig(AgentConfig):
     def ensure_serializable(cls, v) -> Any:
         """Ensure structured output schema is serializable."""
         if v is not None and not isinstance(v, type) and not issubclass(v, BaseModel):
-            raise TypeError("structured_output_model must be a subclass of Pydantic BaseModel.")
+            raise TypeError(
+                "structured_output_model must be a subclass of Pydantic BaseModel."
+            )
         return v
 
     def build_agent(self) -> "ReactAgent":
@@ -205,7 +215,9 @@ class ReactAgent(Agent[ReactAgentConfig]):
         if not self.app:
             self.compile_graph()
         inputs = {"messages": [("user", input_text)]}
-        for output in self.app.stream(inputs, stream_mode="values", config=self.runnable_config):
+        for output in self.app.stream(
+            inputs, stream_mode="values", config=self.runnable_config
+        ):
             output["messages"][-1]
 
     def chat(self) -> None:

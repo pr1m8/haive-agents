@@ -16,14 +16,19 @@ from langchain_core.prompts import ChatPromptTemplate
 from haive.agents.multi.base import ConditionalAgent
 from haive.agents.rag.base.agent import BaseRAGAgent
 from haive.agents.rag.common.answer_generators.prompts import RAG_ANSWER_STANDARD
-from haive.agents.rag.common.document_graders.binary_grader.prompt import RAG_DOCUMENT_GRADE_BINARY
+from haive.agents.rag.common.document_graders.binary_grader.prompt import (
+    RAG_DOCUMENT_GRADE_BINARY,
+)
 from haive.agents.rag.common.document_graders.models import DocumentBinaryResponse
 from haive.agents.simple.agent import SimpleAgent
 
 # Web search prompt for when documents aren't relevant
 WEB_SEARCH_PROMPT = ChatPromptTemplate.from_messages(
     [
-        ("system", "You are a web search query generator. Create effective search queries."),
+        (
+            "system",
+            "You are a web search query generator. Create effective search queries.",
+        ),
         (
             "human",
             """The user's question could not be answered with the available documents.
@@ -81,7 +86,9 @@ class CorrectiveRAGAgentV2(ConditionalAgent):
             CorrectiveRAGAgentV2 instance
         """
         # Create agents
-        retrieval_agent = BaseRAGAgent.from_documents(documents=documents, name="CRAG Retriever")
+        retrieval_agent = BaseRAGAgent.from_documents(
+            documents=documents, name="CRAG Retriever"
+        )
 
         grader_agent = SimpleAgent(
             engine=AugLLMConfig(
@@ -94,18 +101,24 @@ class CorrectiveRAGAgentV2(ConditionalAgent):
 
         # Web search agent (placeholder for now)
         web_search_agent = SimpleAgent(
-            engine=AugLLMConfig(llm_config=llm_config, prompt_template=WEB_SEARCH_PROMPT),
+            engine=AugLLMConfig(
+                llm_config=llm_config, prompt_template=WEB_SEARCH_PROMPT
+            ),
             name="Web Search Query Generator",
         )
 
         # Document refiner agent
         refiner_agent = SimpleAgent(
-            engine=AugLLMConfig(llm_config=llm_config, prompt_template=REFINE_DOCS_PROMPT),
+            engine=AugLLMConfig(
+                llm_config=llm_config, prompt_template=REFINE_DOCS_PROMPT
+            ),
             name="Document Refiner",
         )
 
         answer_agent = SimpleAgent(
-            engine=AugLLMConfig(llm_config=llm_config, prompt_template=RAG_ANSWER_STANDARD),
+            engine=AugLLMConfig(
+                llm_config=llm_config, prompt_template=RAG_ANSWER_STANDARD
+            ),
             name="Answer Generator",
         )
 
@@ -117,7 +130,9 @@ class CorrectiveRAGAgentV2(ConditionalAgent):
                 decisions = state["document_decisions"]
 
                 # Count passing documents
-                passing_docs = sum(1 for decision in decisions if decision.decision == "pass")
+                passing_docs = sum(
+                    1 for decision in decisions if decision.decision == "pass"
+                )
                 total_docs = len(decisions)
 
                 if total_docs == 0:

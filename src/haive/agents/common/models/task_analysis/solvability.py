@@ -7,7 +7,9 @@ and what would be required to make unsolvable tasks solvable.
 from datetime import timedelta
 from enum import Enum
 from typing import Any
+
 from pydantic import BaseModel, ConfigDict, Field, model_validator
+
 from haive.agents.common.models.task_analysis.base import SolvabilityStatus
 
 
@@ -94,7 +96,10 @@ class SolvabilityAssessment(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid", validate_assignment=True, use_enum_values=True, str_strip_whitespace=True
+        extra="forbid",
+        validate_assignment=True,
+        use_enum_values=True,
+        str_strip_whitespace=True,
     )
     solvability_status: SolvabilityStatus = Field(
         ...,
@@ -120,7 +125,10 @@ class SolvabilityAssessment(BaseModel):
         examples=[
             [],
             [SolvabilityBarrier.KNOWLEDGE_GAP],
-            [SolvabilityBarrier.TECHNOLOGY_LIMITATION, SolvabilityBarrier.RESOURCE_CONSTRAINT],
+            [
+                SolvabilityBarrier.TECHNOLOGY_LIMITATION,
+                SolvabilityBarrier.RESOURCE_CONSTRAINT,
+            ],
             [SolvabilityBarrier.THEORETICAL_IMPOSSIBILITY],
         ],
     )
@@ -130,7 +138,10 @@ class SolvabilityAssessment(BaseModel):
         max_length=15,
         examples=[
             [SolvabilityBarrier.REGULATORY_BARRIER],
-            [SolvabilityBarrier.COORDINATION_COMPLEXITY, SolvabilityBarrier.TIME_CONSTRAINT],
+            [
+                SolvabilityBarrier.COORDINATION_COMPLEXITY,
+                SolvabilityBarrier.TIME_CONSTRAINT,
+            ],
             [SolvabilityBarrier.EXPERT_UNAVAILABILITY, SolvabilityBarrier.SAFETY_RISK],
         ],
     )
@@ -141,7 +152,11 @@ class SolvabilityAssessment(BaseModel):
         examples=[
             ["web_search", "public_databases", "existing_research"],
             ["computational_power", "machine_learning", "big_data"],
-            ["international_collaboration", "funding_availability", "regulatory_support"],
+            [
+                "international_collaboration",
+                "funding_availability",
+                "regulatory_support",
+            ],
         ],
     )
     breakthrough_requirements: list[str] = Field(
@@ -188,12 +203,21 @@ class SolvabilityAssessment(BaseModel):
         Raises:
             ValueError: If assessment has inconsistencies
         """
-        if self.solvability_status == SolvabilityStatus.READY and (not self.is_currently_solvable):
+        if self.solvability_status == SolvabilityStatus.READY and (
+            not self.is_currently_solvable
+        ):
             raise ValueError("Status 'ready' requires is_currently_solvable=True")
-        if self.solvability_status == SolvabilityStatus.IMPOSSIBLE and self.is_currently_solvable:
-            raise ValueError("Status 'impossible' cannot have is_currently_solvable=True")
+        if (
+            self.solvability_status == SolvabilityStatus.IMPOSSIBLE
+            and self.is_currently_solvable
+        ):
+            raise ValueError(
+                "Status 'impossible' cannot have is_currently_solvable=True"
+            )
         if self.is_currently_solvable and self.primary_barriers:
-            raise ValueError("Currently solvable tasks should not have primary barriers")
+            raise ValueError(
+                "Currently solvable tasks should not have primary barriers"
+            )
         if self.solvability_status == SolvabilityStatus.IMPOSSIBLE:
             theoretical_impossibility_present = (
                 SolvabilityBarrier.THEORETICAL_IMPOSSIBILITY in self.primary_barriers
@@ -229,7 +253,9 @@ class SolvabilityAssessment(BaseModel):
             SolvabilityStatus.UNDEFINED: 0.5,
         }
         base_score = status_scores[self.solvability_status]
-        barrier_penalty = len(self.primary_barriers) * 0.1 + len(self.secondary_barriers) * 0.05
+        barrier_penalty = (
+            len(self.primary_barriers) * 0.1 + len(self.secondary_barriers) * 0.05
+        )
         barrier_penalty = min(0.4, barrier_penalty)
         enabling_bonus = len(self.enabling_factors) * 0.02
         enabling_bonus = min(0.2, enabling_bonus)
@@ -291,23 +317,38 @@ class SolvabilityAssessment(BaseModel):
         total_time = timedelta(0)
         for requirement in self.breakthrough_requirements:
             req_lower = requirement.lower()
-            if any((word in req_lower for word in ["algorithm", "software", "computing"])):
+            if any(
+                (word in req_lower for word in ["algorithm", "software", "computing"])
+            ):
                 estimate = breakthrough_estimates["algorithmic"]
                 category = "algorithmic"
-            elif any((word in req_lower for word in ["technology", "engineering", "tool"])):
+            elif any(
+                (word in req_lower for word in ["technology", "engineering", "tool"])
+            ):
                 estimate = breakthrough_estimates["technological"]
                 category = "technological"
-            elif any((word in req_lower for word in ["understanding", "mechanism", "biology"])):
+            elif any(
+                (
+                    word in req_lower
+                    for word in ["understanding", "mechanism", "biology"]
+                )
+            ):
                 estimate = breakthrough_estimates["scientific"]
                 category = "scientific"
-            elif any((word in req_lower for word in ["fundamental", "theory", "unified"])):
+            elif any(
+                (word in req_lower for word in ["fundamental", "theory", "unified"])
+            ):
                 estimate = breakthrough_estimates["fundamental"]
                 category = "fundamental"
             else:
                 estimate = breakthrough_estimates["paradigm_shift"]
                 category = "paradigm_shift"
             breakthrough_analysis.append(
-                {"requirement": requirement, "category": category, "estimated_time": estimate}
+                {
+                    "requirement": requirement,
+                    "category": category,
+                    "estimated_time": estimate,
+                }
             )
             total_time = max(total_time, estimate)
         return {

@@ -55,8 +55,6 @@ from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
 from pydantic import BaseModel, Field
 
 from haive.agents.base.hooks import HookEvent
-from haive.agents.simple.agent import SimpleAgent
-from haive.agents.structured_output.agent import StructuredOutputAgent
 
 if TYPE_CHECKING:
     from haive.agents.base.agent import Agent
@@ -72,7 +70,9 @@ TPostAgent = TypeVar("TPostAgent", bound="Agent")
 class MessageTransformer:
     """Simple message transformer for reflection patterns."""
 
-    def __init__(self, transformation_type: str = "reflection", preserve_first: bool = True):
+    def __init__(
+        self, transformation_type: str = "reflection", preserve_first: bool = True
+    ):
         """Initialize transformer.
 
         Args:
@@ -146,8 +146,12 @@ class PrePostAgentMixin:
     post_agent: Agent | None = Field(default=None, description="Post-processing agent")
 
     # Message transformation config
-    use_pre_transform: bool = Field(default=False, description="Transform messages before main")
-    use_post_transform: bool = Field(default=False, description="Transform messages before post")
+    use_pre_transform: bool = Field(
+        default=False, description="Transform messages before main"
+    )
+    use_post_transform: bool = Field(
+        default=False, description="Transform messages before post"
+    )
     pre_transform_type: str = Field(
         default="ai_to_human", description="Type of pre-processing transformation"
     )
@@ -156,11 +160,17 @@ class PrePostAgentMixin:
     )
 
     # Execution config
-    skip_pre_if_empty: bool = Field(default=True, description="Skip pre-agent if no input")
-    skip_post_if_empty: bool = Field(default=False, description="Skip post-agent if no output")
+    skip_pre_if_empty: bool = Field(
+        default=True, description="Skip pre-agent if no input"
+    )
+    skip_post_if_empty: bool = Field(
+        default=False, description="Skip post-agent if no output"
+    )
 
     # Processing config
-    combine_results: bool = Field(default=True, description="Combine pre/main/post results")
+    combine_results: bool = Field(
+        default=True, description="Combine pre/main/post results"
+    )
     preserve_original: bool = Field(
         default=True, description="Preserve original messages in result"
     )
@@ -204,7 +214,9 @@ class PrePostAgentMixin:
         # Execute pre-processing hooks
         if hasattr(self, "execute_hooks"):
             self.execute_hooks(
-                HookEvent.PRE_PROCESS, input_data=input_data, metadata={"stage": "pre_processing"}
+                HookEvent.PRE_PROCESS,
+                input_data=input_data,
+                metadata={"stage": "pre_processing"},
             )
 
         # Stage 1: Pre-processing (optional)
@@ -267,11 +279,15 @@ class PrePostAgentMixin:
                         )
 
         # Stage 2: Main processing (this agent)
-        logger.debug(f"Running main agent processing: {getattr(self, 'name', 'unknown')}")
+        logger.debug(
+            f"Running main agent processing: {getattr(self, 'name', 'unknown')}"
+        )
 
         # Use the agent's own arun method
         main_result = (
-            await super().arun(current_input) if hasattr(super(), "arun") else current_input
+            await super().arun(current_input)
+            if hasattr(super(), "arun")
+            else current_input
         )
 
         # Stage 3: Post-processing (optional)
@@ -364,7 +380,9 @@ class PrePostAgentMixin:
             # Add transformation metadata
             if self.use_pre_transform or self.use_post_transform:
                 combined_result["transformations_applied"] = {
-                    "pre_transform": (self.pre_transform_type if self.use_pre_transform else None),
+                    "pre_transform": (
+                        self.pre_transform_type if self.use_pre_transform else None
+                    ),
                     "post_transform": (
                         self.post_transform_type if self.use_post_transform else None
                     ),
@@ -397,14 +415,19 @@ class PrePostAgentMixin:
         if self.pre_agent or self.post_agent:
             return await self.run_with_pre_post_processing(input_data)
         # Standard execution
-        return await super().arun(input_data) if hasattr(super(), "arun") else input_data
+        return (
+            await super().arun(input_data) if hasattr(super(), "arun") else input_data
+        )
 
 
 # Factory functions for common patterns
 
 
 def create_reflection_agent(
-    main_agent: Agent, reflection_agent: Agent | None = None, name: str | None = None, **kwargs
+    main_agent: Agent,
+    reflection_agent: Agent | None = None,
+    name: str | None = None,
+    **kwargs,
 ) -> Agent:
     """Create an agent with reflection post-processing.
 
@@ -419,6 +442,7 @@ def create_reflection_agent(
     """
     if not reflection_agent:
         # Import SimpleAgent locally to avoid circular import
+        from haive.agents.simple.agent import SimpleAgent
 
         reflection_agent = SimpleAgent(
             name=f"{main_agent.name}_reflector",
@@ -461,6 +485,7 @@ def create_graded_reflection_agent(
     """
     if not grading_agent:
         # Import SimpleAgent locally to avoid circular import
+        from haive.agents.simple.agent import SimpleAgent
 
         grading_agent = SimpleAgent(
             name=f"{main_agent.name}_grader",
@@ -472,6 +497,7 @@ def create_graded_reflection_agent(
 
     if not reflection_agent:
         # Import SimpleAgent locally to avoid circular import
+        from haive.agents.simple.agent import SimpleAgent
 
         reflection_agent = SimpleAgent(
             name=f"{main_agent.name}_reflector",
@@ -510,6 +536,8 @@ def create_structured_output_agent(
         Agent with structured output capabilities
     """
     # Create structured output agent
+    from haive.agents.structured_output.agent import StructuredOutputAgent
+
     structured_agent = StructuredOutputAgent(
         name=f"{main_agent.name}_structurer",
         engine=AugLLMConfig(
@@ -521,7 +549,9 @@ def create_structured_output_agent(
     # Add post-processing to main agent
     if hasattr(main_agent, "__dict__"):
         main_agent.post_agent = structured_agent
-        main_agent.use_post_transform = False  # No message transform for structured output
+        main_agent.use_post_transform = (
+            False  # No message transform for structured output
+        )
 
         if hasattr(main_agent, "setup_transformers"):
             main_agent.setup_transformers()

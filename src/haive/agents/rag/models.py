@@ -177,7 +177,9 @@ class MemoryEntry(BaseModel):
     content: str = Field(description="Memory content")
     memory_type: MemoryType = Field(description="Type of memory")
     timestamp: str = Field(description="When this memory was created")
-    relevance_score: float = Field(ge=0.0, le=1.0, description="Relevance to current query")
+    relevance_score: float = Field(
+        ge=0.0, le=1.0, description="Relevance to current query"
+    )
     context_tags: list[str] = Field(default_factory=list, description="Context tags")
 
 
@@ -273,7 +275,9 @@ class MergedResult(BaseModel):
     """
 
     primary_answer: str = Field(description="Primary answer")
-    supporting_evidence: list[str] = Field(description="Supporting evidence from branches")
+    supporting_evidence: list[str] = Field(
+        description="Supporting evidence from branches"
+    )
     confidence_score: float = Field(ge=0.0, le=1.0, description="Overall confidence")
     sources_used: list[str] = Field(description="Sources used")
 

@@ -1,6 +1,6 @@
 # src/haive/agents/tot/state.py
 
-from typing import Annotated, Any, Union, Optional
+from typing import Annotated, Any, Optional, Union
 
 from langchain_core.messages import BaseMessage
 from langgraph.graph import add_messages
@@ -51,7 +51,9 @@ class TOTState(TOTInput, TOTOutput):
     )
 
     # Use Pydantic v2 configuration
-    model_config = ConfigDict(validate_assignment=True, extra="allow", arbitrary_types_allowed=True)
+    model_config = ConfigDict(
+        validate_assignment=True, extra="allow", arbitrary_types_allowed=True
+    )
 
     @field_validator("candidates", "scored_candidates", mode="before")
     @classmethod

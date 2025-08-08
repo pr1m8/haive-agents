@@ -25,7 +25,8 @@ async def test_simple_memory_agent_with_deepseek():
     # Step 2: Create AugLLMConfig with DeepSeek
     try:
         aug_config = AugLLMConfig(
-            llm_config=deepseek_config, system_message="You are a helpful memory assistant."
+            llm_config=deepseek_config,
+            system_message="You are a helpful memory assistant.",
         )
     except Exception:
         return

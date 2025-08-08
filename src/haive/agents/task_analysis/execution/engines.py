@@ -3,7 +3,11 @@
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import AzureLLMConfig
 
-from haive.agents.task_analysis.execution.models import ExecutionPlan, JoinPoint, ResourceAllocation
+from haive.agents.task_analysis.execution.models import (
+    ExecutionPlan,
+    JoinPoint,
+    ResourceAllocation,
+)
 from haive.agents.task_analysis.execution.prompts import (
     EXECUTION_PLANNING_PROMPT,
     JOIN_POINT_STRATEGY_PROMPT,

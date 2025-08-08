@@ -58,8 +58,8 @@ import os
 
 from haive.core.engine.agent.agent import Agent, register_agent
 from haive.core.graph.branches import Branch
-from langchain_community.vectorstores import Chroma
 from langchain_community.embeddings import OpenAIEmbeddings
+from langchain_community.vectorstores import Chroma
 from langchain_core.documents import Document
 from langchain_core.example_selectors import SemanticSimilarityExampleSelector
 from langchain_neo4j.chains.graph_qa.cypher_utils import CypherQueryCorrector, Schema
@@ -217,7 +217,10 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
             domain_examples = []
 
             # Try to get examples for the configured domain
-            if hasattr(config, "domain_examples") and config.domain_name in config.domain_examples:
+            if (
+                hasattr(config, "domain_examples")
+                and config.domain_name in config.domain_examples
+            ):
                 domain_examples = config.domain_examples[config.domain_name]
 
             # Try to load examples from a file if specified
@@ -236,7 +239,9 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
 
             # Create documents for embedding
             documents = [
-                Document(page_content=ex["query"], metadata={"question": ex["question"]})
+                Document(
+                    page_content=ex["query"], metadata={"question": ex["question"]}
+                )
                 for ex in domain_examples
             ]
 
@@ -260,7 +265,9 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
                 logger.warning(f"Failed to initialize semantic example selector: {e}")
                 # Simple fallback - just use all examples
                 self.example_selector = type(
-                    "SimpleSelector", (), {"select_examples": lambda self, query: domain_examples}
+                    "SimpleSelector",
+                    (),
+                    {"select_examples": lambda self, query: domain_examples},
                 )()
 
         except Exception as e:
@@ -461,7 +468,9 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
                 raise ValueError("Missing 'text2cypher' engine in configuration")
 
             # Get examples for few-shot learning
-            examples = self.example_selector.select_examples({"question": state.question})
+            examples = self.example_selector.select_examples(
+                {"question": state.question}
+            )
 
             fewshot_examples = "\n".join(
                 [
@@ -685,7 +694,9 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
         """
         try:
             if "generate_final_answer" not in self.engines:
-                raise ValueError("Missing 'generate_final_answer' engine in configuration")
+                raise ValueError(
+                    "Missing 'generate_final_answer' engine in configuration"
+                )
 
             if state.database_records == self.no_results:
                 answer = f"I couldn't find any information about your question: {state.question}"
@@ -856,7 +867,9 @@ def correct_query(query: str, errors: list = None) -> str:
 
 def domain_router(query: str, domain_categories: list = None) -> str:
     """Route queries based on domain relevance."""
-    return "generate_query" if check_domain_relevance(query, domain_categories) else "end"
+    return (
+        "generate_query" if check_domain_relevance(query, domain_categories) else "end"
+    )
 
 
 def execute_query(query: str, db_connection=None) -> dict:

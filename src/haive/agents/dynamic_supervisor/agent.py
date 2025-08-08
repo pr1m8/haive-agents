@@ -217,7 +217,9 @@ class DynamicSupervisorAgent(ReactAgent):
             # Add messages to state
             state.messages.extend(input_data)
             input_data = state
-        elif isinstance(input_data, dict) and not isinstance(input_data, SupervisorStateWithTools):
+        elif isinstance(input_data, dict) and not isinstance(
+            input_data, SupervisorStateWithTools
+        ):
             # Merge dict into state
             for key, value in input_data.items():
                 if hasattr(state, key):

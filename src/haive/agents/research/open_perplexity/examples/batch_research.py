@@ -39,7 +39,9 @@ RESEARCH_TOPICS = [
 ]
 
 
-def conduct_research(agent: ResearchAgent, topic: dict[str, str], output_dir: str) -> dict:
+def conduct_research(
+    agent: ResearchAgent, topic: dict[str, str], output_dir: str
+) -> dict:
     """Conduct research on a specific topic and save the report.
 
     Args:
@@ -134,7 +136,9 @@ def main() -> None:
             f.write(f"**Sources**: {result['num_sources']}\n\n")
             f.write(f"**Sections**: {result['num_sections']}\n\n")
             f.write(f"**Processing Time**: {result['elapsed_time']:.2f} seconds\n\n")
-            f.write(f"**Report**: [View Report]({os.path.basename(result['report_path'])})\n\n")
+            f.write(
+                f"**Report**: [View Report]({os.path.basename(result['report_path'])})\n\n"
+            )
             f.write("---\n\n")
 
     logger.info(f"Batch summary saved to {summary_path}")

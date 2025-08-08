@@ -26,7 +26,9 @@ class ToTState(MessagesState):
     """Base Tree of Thoughts state."""
 
     # Problem is derived from messages
-    problem_type: str | None = Field(default=None, description="Type/category of problem")
+    problem_type: str | None = Field(
+        default=None, description="Type/category of problem"
+    )
     problem_context: dict[str, Any] = Field(
         default_factory=dict, description="Additional problem context"
     )
@@ -41,22 +43,30 @@ class ToTState(MessagesState):
     selected_candidates: list[ScoredCandidate] = Field(
         default_factory=list, description="Best candidates selected for next iteration"
     )
-    all_candidates_history: Annotated[list[Candidate | ScoredCandidate], operator.add] = Field(
-        default_factory=list, description="All candidates ever generated"
-    )
+    all_candidates_history: Annotated[
+        list[Candidate | ScoredCandidate], operator.add
+    ] = Field(default_factory=list, description="All candidates ever generated")
 
     # Search parameters
     depth: Annotated[int, operator.add] = Field(default=0, description="Current depth")
     max_depth: int = Field(default=10, description="Maximum search depth")
-    beam_size: int = Field(default=3, description="Number of candidates to keep after pruning")
+    beam_size: int = Field(
+        default=3, description="Number of candidates to keep after pruning"
+    )
     expansion_factor: int = Field(
         default=5, description="Number of candidates to generate per expansion"
     )
-    threshold: float = Field(default=0.9, description="Score threshold for early termination")
+    threshold: float = Field(
+        default=0.9, description="Score threshold for early termination"
+    )
 
     # Control flow
-    should_terminate: bool = Field(default=False, description="Whether to terminate search")
-    termination_reason: str | None = Field(default=None, description="Why search was terminated")
+    should_terminate: bool = Field(
+        default=False, description="Whether to terminate search"
+    )
+    termination_reason: str | None = Field(
+        default=None, description="Why search was terminated"
+    )
     best_solution: ScoredCandidate | None = Field(
         default=None, description="Best solution found so far"
     )
@@ -90,7 +100,9 @@ class ToTState(MessagesState):
         if "candidates" in data and isinstance(data["candidates"], list):
             converted = []
             for item in data["candidates"]:
-                if isinstance(item, dict) and not isinstance(item, Candidate | ScoredCandidate):
+                if isinstance(item, dict) and not isinstance(
+                    item, Candidate | ScoredCandidate
+                ):
                     # Check if it has score to determine type
                     if "score" in item and item["score"] is not None:
                         converted.append(ScoredCandidate(**item))
@@ -112,7 +124,9 @@ class ToTState(MessagesState):
             if field in data and isinstance(data[field], list):
                 converted = []
                 for item in data[field]:
-                    if isinstance(item, dict) and not isinstance(item, Candidate | ScoredCandidate):
+                    if isinstance(item, dict) and not isinstance(
+                        item, Candidate | ScoredCandidate
+                    ):
                         if "score" in item and item["score"] is not None:
                             converted.append(ScoredCandidate(**item))
                         else:
@@ -190,7 +204,9 @@ class ToTState(MessagesState):
         if not self.scored_candidates:
             return "No candidates have been scored yet."
 
-        sorted_scored = sorted(self.scored_candidates, key=lambda c: c.score, reverse=True)
+        sorted_scored = sorted(
+            self.scored_candidates, key=lambda c: c.score, reverse=True
+        )
 
         summary = [f"Scored candidates ({len(sorted_scored)} total):", ""]
 
@@ -235,7 +251,9 @@ class ToTState(MessagesState):
         ]
 
         if self.best_solution:
-            progress_parts.append(f"  - Best solution score: {self.best_solution.score:.3f}")
+            progress_parts.append(
+                f"  - Best solution score: {self.best_solution.score:.3f}"
+            )
 
         return "\n".join(progress_parts)
 
@@ -248,7 +266,9 @@ class ToTState(MessagesState):
         return 0.0
 
     # Helper methods
-    def get_candidate_by_id(self, candidate_id: str) -> Candidate | ScoredCandidate | None:
+    def get_candidate_by_id(
+        self, candidate_id: str
+    ) -> Candidate | ScoredCandidate | None:
         """Find a candidate by ID in any list."""
         # Check all lists
         for c in self.candidates:

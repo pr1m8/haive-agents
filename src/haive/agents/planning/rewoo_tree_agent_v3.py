@@ -98,7 +98,7 @@ from haive.core.schema.prebuilt.multi_agent_state import MultiAgentState
 from langchain_core.tools import BaseTool
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
-from haive.agents.multi.clean import MultiAgent
+from haive.agents.multi.agent import MultiAgent
 from haive.agents.react.agent import ReactAgent
 from haive.agents.simple.agent import SimpleAgent
 
@@ -117,7 +117,9 @@ class TaskType(str, Enum):
 class ToolAlias(BaseModel):
     """Tool alias configuration for forced tool choice."""
 
-    model_config = ConfigDict(str_strip_whitespace=True, validate_assignment=True, extra="forbid")
+    model_config = ConfigDict(
+        str_strip_whitespace=True, validate_assignment=True, extra="forbid"
+    )
 
     alias: str = Field(..., min_length=1, max_length=50)
     actual_tool: str = Field(..., min_length=1, max_length=50)
@@ -135,7 +137,9 @@ class ToolAlias(BaseModel):
 class ReWOOPlan(BaseModel):
     """Structured plan output."""
 
-    model_config = ConfigDict(str_strip_whitespace=True, validate_assignment=True, extra="forbid")
+    model_config = ConfigDict(
+        str_strip_whitespace=True, validate_assignment=True, extra="forbid"
+    )
 
     plan_id: str = Field(..., min_length=1, max_length=100)
     name: str = Field(..., min_length=1, max_length=200)
@@ -286,7 +290,9 @@ class ReWOOTreeAgent(MultiAgent):
         )
 
         # Set up branching from coordinator to executors
-        executor_names = [f"{self.name}_executor_{i}" for i in range(min(self.max_parallelism, 4))]
+        executor_names = [
+            f"{self.name}_executor_{i}" for i in range(min(self.max_parallelism, 4))
+        ]
         self.add_branch(
             source_agent=f"{self.name}_coordinator",
             condition="tasks_assigned",
@@ -308,10 +314,15 @@ class ReWOOTreeAgent(MultiAgent):
             target_agents=[f"{self.name}_coordinator", "__end__"],
         )
 
-    def add_tool_alias(self, alias: str, actual_tool: str, force_choice: bool = True, **params):
+    def add_tool_alias(
+        self, alias: str, actual_tool: str, force_choice: bool = True, **params
+    ):
         """Add a tool alias for forced tool choice."""
         tool_alias = ToolAlias(
-            alias=alias, actual_tool=actual_tool, force_choice=force_choice, parameters=params
+            alias=alias,
+            actual_tool=actual_tool,
+            force_choice=force_choice,
+            parameters=params,
         )
         self.tool_aliases[alias] = tool_alias
 
@@ -338,7 +349,9 @@ class ReWOOTreeAgent(MultiAgent):
 class ParallelReWOOAgent(ReWOOTreeAgent):
     """Enhanced ReWOO agent with maximum parallelization."""
 
-    def __init__(self, name: str = "parallel_rewoo", max_parallelism: int = 8, **kwargs):
+    def __init__(
+        self, name: str = "parallel_rewoo", max_parallelism: int = 8, **kwargs
+    ):
         super().__init__(name=name, max_parallelism=max_parallelism, **kwargs)
 
         # Configure for maximum parallelization
@@ -346,14 +359,18 @@ class ParallelReWOOAgent(ReWOOTreeAgent):
 
 
 def create_rewoo_agent_with_tools(
-    tools: list[BaseTool], tool_aliases: dict[str, str] | None = None, max_parallelism: int = 4
+    tools: list[BaseTool],
+    tool_aliases: dict[str, str] | None = None,
+    max_parallelism: int = 4,
 ) -> ReWOOTreeAgent:
     """Factory function to create ReWOO agent with tools."""
     # Convert tool aliases to ToolAlias objects
     alias_objects = {}
     if tool_aliases:
         for alias, tool_name in tool_aliases.items():
-            alias_objects[alias] = ToolAlias(alias=alias, actual_tool=tool_name, force_choice=True)
+            alias_objects[alias] = ToolAlias(
+                alias=alias, actual_tool=tool_name, force_choice=True
+            )
 
     return ReWOOTreeAgent(
         name="rewoo_agent",

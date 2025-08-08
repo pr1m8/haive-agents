@@ -32,7 +32,8 @@ class ParallelKGTransformerConfig(AgentConfig):
     name: str = "ParallelKGTransformer"
     contents: list[Document]
     state_schema: KnowledgeGraphState = Field(
-        default=KnowledgeGraphState, description="The state of the knowledge graph transformer."
+        default=KnowledgeGraphState,
+        description="The state of the knowledge graph transformer.",
     )
     engines: dict[str, AugLLMConfig] = Field(
         default_factory=create_parallel_kg_transformer_configs,
@@ -55,7 +56,9 @@ class ParallelKGTransformer(Agent[ParallelKGTransformerConfig]):
         self.llm_graph_transformer = GraphTransformer()
         # Prepare extractors from engines
         self.node_extractor = config.engines["node_extractor"].create_runnable()
-        self.relationship_extractor = config.engines["relationship_extractor"].create_runnable()
+        self.relationship_extractor = config.engines[
+            "relationship_extractor"
+        ].create_runnable()
         self.graph_merger = config.engines["graph_merger"].create_runnable()
 
         super().__init__(config)
@@ -81,7 +84,9 @@ class ParallelKGTransformer(Agent[ParallelKGTransformerConfig]):
         self.graph.add_edge("collect_graph_documents", "map_nodes")
 
         self.graph.add_conditional_edges(
-            "map_nodes", lambda state: "collect_nodes", {"collect_nodes": "collect_nodes"}
+            "map_nodes",
+            lambda state: "collect_nodes",
+            {"collect_nodes": "collect_nodes"},
         )
 
         self.graph.add_edge("collect_nodes", "map_relationships")
@@ -101,7 +106,9 @@ class ParallelKGTransformer(Agent[ParallelKGTransformerConfig]):
             for i, doc in enumerate(state.contents)
         ]
 
-    async def collect_graph_documents(self, state: KnowledgeGraphState | dict[str, Any], **kwargs):
+    async def collect_graph_documents(
+        self, state: KnowledgeGraphState | dict[str, Any], **kwargs
+    ):
         content = state["content"]
         # At this point, `content` is a Document object
         if isinstance(content, Document | dict):
@@ -109,7 +116,9 @@ class ParallelKGTransformer(Agent[ParallelKGTransformerConfig]):
         elif isinstance(content, BaseModel):
             context = str(content)
         else:
-            logger.error(f"Invalid content type for graph document extraction: {type(content)}")
+            logger.error(
+                f"Invalid content type for graph document extraction: {type(content)}"
+            )
             return {}
 
         if not context:
@@ -131,7 +140,8 @@ class ParallelKGTransformer(Agent[ParallelKGTransformerConfig]):
         return {
             "sends": [
                 Send(
-                    "collect_nodes", {"content": state.contents[state.index], "index": state.index}
+                    "collect_nodes",
+                    {"content": state.contents[state.index], "index": state.index},
                 )
             ],
             "index": state.index,
@@ -151,7 +161,9 @@ class ParallelKGTransformer(Agent[ParallelKGTransformerConfig]):
             elif isinstance(content, BaseModel):
                 context = str(content)
             else:
-                logger.warning(f"Invalid content type for node extraction: {type(content)}")
+                logger.warning(
+                    f"Invalid content type for node extraction: {type(content)}"
+                )
                 return {"index": 1}
 
             nodes = await self.node_extractor.ainvoke({"context": context})
@@ -190,7 +202,10 @@ class ParallelKGTransformer(Agent[ParallelKGTransformerConfig]):
         # Process nodes
         if state.nodes:
             sends.append(
-                Send("collect_relationships", {"nodes": state.nodes, "context_type": "nodes"})
+                Send(
+                    "collect_relationships",
+                    {"nodes": state.nodes, "context_type": "nodes"},
+                )
             )
 
         return {"sends": sends, "index": state.index}
@@ -240,7 +255,9 @@ class ParallelKGTransformer(Agent[ParallelKGTransformerConfig]):
 
             return {
                 "relationships": (
-                    relationships if isinstance(relationships, list) else [relationships]
+                    relationships
+                    if isinstance(relationships, list)
+                    else [relationships]
                 ),
                 "index": 1,
             }
@@ -286,7 +303,10 @@ class ParallelKGTransformer(Agent[ParallelKGTransformerConfig]):
                 + "\n".join([f"- {node.id} (Type: {node.type})" for node in kg.nodes])
                 + "\n\nRelationships:\n"
                 + "\n".join(
-                    [f"- {rel.source} --({rel.type})--> {rel.target}" for rel in kg.relationships]
+                    [
+                        f"- {rel.source} --({rel.type})--> {rel.target}"
+                        for rel in kg.relationships
+                    ]
                 )
             )
 

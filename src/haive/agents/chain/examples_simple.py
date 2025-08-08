@@ -63,7 +63,9 @@ def example_mixed() -> Any:
 def example_routing() -> Any:
     """Custom edges for complex flows."""
     nodes = [
-        lambda s: {"type": "A" if len(s.get("input", "")) > 10 else "B"},  # 0: classifier
+        lambda s: {
+            "type": "A" if len(s.get("input", "")) > 10 else "B"
+        },  # 0: classifier
         lambda s: {"result": "Process A"},  # 1: process_a
         lambda s: {"result": "Process B"},  # 2: process_b
         lambda s: {"final": s.get("result", "")},  # 3: finalizer

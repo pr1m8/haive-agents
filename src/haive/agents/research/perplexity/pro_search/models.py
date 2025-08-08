@@ -6,6 +6,7 @@ parallel search execution, and synthesis.
 
 from datetime import datetime
 from typing import Any, Literal
+
 from pydantic import BaseModel, Field, computed_field, field_validator, model_validator
 
 
@@ -13,7 +14,8 @@ class SearchContext(BaseModel):
     """Context information for search query understanding."""
 
     current_date: datetime = Field(
-        default_factory=datetime.now, description="Current date and time for temporal context"
+        default_factory=datetime.now,
+        description="Current date and time for temporal context",
     )
     user_location: str | None = Field(
         default=None, description="User's location for geo-specific searches"
@@ -99,11 +101,16 @@ class QueryReasoning(BaseModel):
     understanding: str = Field(
         description="Natural language understanding of what the user is asking"
     )
-    search_strategy: str = Field(description="Strategy for searching this query effectively")
-    potential_challenges: list[str] = Field(
-        default_factory=list, description="Potential challenges in finding accurate information"
+    search_strategy: str = Field(
+        description="Strategy for searching this query effectively"
     )
-    expansion_rationale: str = Field(description="Reasoning for how to expand or refine the query")
+    potential_challenges: list[str] = Field(
+        default_factory=list,
+        description="Potential challenges in finding accurate information",
+    )
+    expansion_rationale: str = Field(
+        description="Reasoning for how to expand or refine the query"
+    )
     intent_analysis: QueryIntent = Field(description="Detailed intent analysis")
 
     @model_validator(mode="after")
@@ -119,17 +126,24 @@ class QueryReasoning(BaseModel):
 class SearchQueryConfig(BaseModel):
     """Configuration for individual search queries."""
 
-    query_text: str = Field(min_length=1, max_length=200, description="The search query text")
+    query_text: str = Field(
+        min_length=1, max_length=200, description="The search query text"
+    )
     query_type: Literal["primary", "supporting", "verification", "expansion"] = Field(
         default="primary", description="Type/purpose of this query"
     )
     target_source_types: list[
         Literal["web", "academic", "news", "wiki", "social", "video", "image"]
-    ] = Field(default_factory=lambda: ["web"], description="Preferred source types for this query")
+    ] = Field(
+        default_factory=lambda: ["web"],
+        description="Preferred source types for this query",
+    )
     expected_result_type: Literal[
         "facts", "list", "explanation", "comparison", "tutorial", "mixed"
     ] = Field(default="mixed", description="Expected type of results")
-    priority: int = Field(default=1, ge=1, le=5, description="Priority level (1=highest, 5=lowest)")
+    priority: int = Field(
+        default=1, ge=1, le=5, description="Priority level (1=highest, 5=lowest)"
+    )
 
     @field_validator("query_text")
     @classmethod
@@ -183,11 +197,15 @@ class SearchResult(BaseModel):
     title: str = Field(description="Title of the result")
     snippet: str = Field(description="Snippet/summary of the result")
     relevance_score: float = Field(ge=0.0, le=1.0, description="Relevance score")
-    source_type: Literal["web", "academic", "news", "wiki", "social", "video", "image"] = Field(
-        default="web"
+    source_type: Literal[
+        "web", "academic", "news", "wiki", "social", "video", "image"
+    ] = Field(default="web")
+    publish_date: datetime | None = Field(
+        default=None, description="Publication date if available"
     )
-    publish_date: datetime | None = Field(default=None, description="Publication date if available")
-    metadata: dict[str, Any] = Field(default_factory=dict, description="Additional metadata")
+    metadata: dict[str, Any] = Field(
+        default_factory=dict, description="Additional metadata"
+    )
 
     @computed_field
     @property
@@ -208,8 +226,12 @@ class SearchQueryResult(BaseModel):
     """Results for a single search query."""
 
     query: SearchQueryConfig = Field(description="The query that was executed")
-    results: list[SearchResult] = Field(default_factory=list, description="Search results")
-    execution_time_ms: int = Field(ge=0, description="Query execution time in milliseconds")
+    results: list[SearchResult] = Field(
+        default_factory=list, description="Search results"
+    )
+    execution_time_ms: int = Field(
+        ge=0, description="Query execution time in milliseconds"
+    )
     error: str | None = Field(default=None, description="Error message if query failed")
 
     @computed_field
@@ -311,15 +333,21 @@ class PerplexitySearchState(BaseModel):
     """Complete state for Perplexity-style search workflow."""
 
     user_query: str = Field(description="Original user query")
-    context: SearchContext = Field(default_factory=SearchContext, description="Search context")
+    context: SearchContext = Field(
+        default_factory=SearchContext, description="Search context"
+    )
     reasoning: QueryReasoning | None = Field(
         default=None, description="Query reasoning and understanding"
     )
-    query_batch: QueryBatch | None = Field(default=None, description="Generated search queries")
+    query_batch: QueryBatch | None = Field(
+        default=None, description="Generated search queries"
+    )
     search_results: list[SearchQueryResult] = Field(
         default_factory=list, description="Raw search results"
     )
-    synthesis: SearchSynthesis | None = Field(default=None, description="Final synthesis")
+    synthesis: SearchSynthesis | None = Field(
+        default=None, description="Final synthesis"
+    )
     iteration_count: int = Field(default=0, description="Number of search iterations")
     max_iterations: int = Field(default=2, description="Maximum search iterations")
 

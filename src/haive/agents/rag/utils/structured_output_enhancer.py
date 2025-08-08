@@ -10,11 +10,19 @@ from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import AzureLLMConfig, LLMConfig
-from haive.core.utils.pydantic_utils.base_model_to_prompt import PromptGenerator, PromptStyle
+from haive.core.utils.pydantic_utils.base_model_to_prompt import (
+    PromptGenerator,
+    PromptStyle,
+)
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel
 
-from haive.agents.rag.models import FusionResult, HyDEResult, MemoryAnalysis, SpeculativeResult
+from haive.agents.rag.models import (
+    FusionResult,
+    HyDEResult,
+    MemoryAnalysis,
+    SpeculativeResult,
+)
 from haive.agents.simple.agent import SimpleAgent
 
 
@@ -144,7 +152,11 @@ Please provide your structured analysis.""",
         )
 
     def enhance_agent_sequence(
-        self, agents: list[Any], llm_config: LLMConfig, context_prompt: str | None = None, **kwargs
+        self,
+        agents: list[Any],
+        llm_config: LLMConfig,
+        context_prompt: str | None = None,
+        **kwargs,
     ) -> list[Any]:
         """Enhance a sequence of agents by appending structured output processing.
 
@@ -173,12 +185,16 @@ Please provide your structured analysis.""",
 # Convenience functions for common RAG patterns
 def create_hyde_enhancer() -> StructuredOutputEnhancer:
     """Create an enhancer for HyDE structured output."""
-    return StructuredOutputEnhancer(output_model=HyDEResult, prompt_style=PromptStyle.DESCRIPTIVE)
+    return StructuredOutputEnhancer(
+        output_model=HyDEResult, prompt_style=PromptStyle.DESCRIPTIVE
+    )
 
 
 def create_fusion_enhancer() -> StructuredOutputEnhancer:
     """Create an enhancer for Fusion RAG structured output."""
-    return StructuredOutputEnhancer(output_model=FusionResult, prompt_style=PromptStyle.STRUCTURED)
+    return StructuredOutputEnhancer(
+        output_model=FusionResult, prompt_style=PromptStyle.STRUCTURED
+    )
 
 
 def create_speculative_enhancer() -> StructuredOutputEnhancer:

@@ -23,7 +23,7 @@ from pydantic import BaseModel, Field
 
 from haive.agents.base.agent import Agent
 from haive.agents.react.agent import ReactAgent
-from haive.agents.simple.agent_v3 import SimpleAgentV3
+from haive.agents.simple.agent import SimpleAgent
 
 
 # Structured output models
@@ -68,8 +68,12 @@ class ReactToStructuredAgent(Agent):
     structure_agent: SimpleAgentV3 = Field(None, description="Structuring agent")
 
     # Configuration
-    reasoning_temperature: float = Field(default=0.5, description="Temperature for reasoning")
-    structuring_temperature: float = Field(default=0.3, description="Temperature for structuring")
+    reasoning_temperature: float = Field(
+        default=0.5, description="Temperature for reasoning"
+    )
+    structuring_temperature: float = Field(
+        default=0.3, description="Temperature for structuring"
+    )
     output_model: type[BaseModel] = Field(
         default=StructuredSolution, description="Output structure"
     )
@@ -90,7 +94,7 @@ class ReactToStructuredAgent(Agent):
 
         # Create SimpleAgentV3 for structured output
         if not self.structure_agent:
-            self.structure_agent = SimpleAgentV3(
+            self.structure_agent = SimpleAgent(
                 name=f"{self.name}_structurer",
                 engine=AugLLMConfig(
                     temperature=self.structuring_temperature,
@@ -186,7 +190,7 @@ class MultiStageReasoningAgent(Agent):
                     ),
                 )
             else:  # simple
-                agent = SimpleAgentV3(
+                agent = SimpleAgent(
                     name=stage["name"],
                     engine=AugLLMConfig(
                         temperature=0.3,
@@ -249,7 +253,9 @@ class ToolEnhancedStructuredAgent(ReactToStructuredAgent):
         @tool
         def research_topic(topic: str) -> str:
             """Research a specific topic."""
-            return f"Research on {topic}: Found 5 relevant studies and 3 expert opinions."
+            return (
+                f"Research on {topic}: Found 5 relevant studies and 3 expert opinions."
+            )
 
         @tool
         def calculate_metrics(expression: str) -> str:
@@ -275,7 +281,9 @@ class ReflectiveStructuredAgent(Agent):
     structured output before final delivery.
     """
 
-    include_reflection: bool = Field(default=True, description="Include reflection stage")
+    include_reflection: bool = Field(
+        default=True, description="Include reflection stage"
+    )
     output_model: type[BaseModel] = Field(default=StructuredSolution)
 
     def setup_agent(self) -> None:
@@ -290,7 +298,7 @@ class ReflectiveStructuredAgent(Agent):
         )
 
         # Structuring agent
-        self.structurer = SimpleAgentV3(
+        self.structurer = SimpleAgent(
             name=f"{self.name}_structurer",
             engine=AugLLMConfig(
                 temperature=0.3,
@@ -301,7 +309,7 @@ class ReflectiveStructuredAgent(Agent):
 
         # Reflection agent
         if self.include_reflection:
-            self.reflector = SimpleAgentV3(
+            self.reflector = SimpleAgent(
                 name=f"{self.name}_reflector",
                 engine=AugLLMConfig(
                     temperature=0.4,
@@ -320,10 +328,14 @@ class ReflectiveStructuredAgent(Agent):
 
         # Add nodes
         graph.add_node("reasoner", create_agent_node_v3("reasoner", self.reasoner))
-        graph.add_node("structurer", create_agent_node_v3("structurer", self.structurer))
+        graph.add_node(
+            "structurer", create_agent_node_v3("structurer", self.structurer)
+        )
 
         if self.include_reflection:
-            graph.add_node("reflector", create_agent_node_v3("reflector", self.reflector))
+            graph.add_node(
+                "reflector", create_agent_node_v3("reflector", self.reflector)
+            )
 
         # Connect nodes
         graph.add_edge(START, "reasoner")
@@ -352,17 +364,23 @@ def create_react_structured_agent(
 
 
 def create_multi_stage_reasoning_agent(
-    name: str = "multi_stage", stages: list[dict[str, Any]] | None = None, debug: bool = True
+    name: str = "multi_stage",
+    stages: list[dict[str, Any]] | None = None,
+    debug: bool = True,
 ) -> MultiStageReasoningAgent:
     """Create a multi-stage reasoning agent."""
     return MultiStageReasoningAgent(name=name, stages=stages or [], debug=debug)
 
 
 def create_tool_enhanced_agent(
-    name: str = "tool_enhanced", output_model: type[BaseModel] = AnalysisResult, debug: bool = True
+    name: str = "tool_enhanced",
+    output_model: type[BaseModel] = AnalysisResult,
+    debug: bool = True,
 ) -> ToolEnhancedStructuredAgent:
     """Create a tool-enhanced structured agent."""
-    return ToolEnhancedStructuredAgent(name=name, output_model=output_model, debug=debug)
+    return ToolEnhancedStructuredAgent(
+        name=name, output_model=output_model, debug=debug
+    )
 
 
 def create_reflective_structured_agent(
@@ -373,14 +391,19 @@ def create_reflective_structured_agent(
 ) -> ReflectiveStructuredAgent:
     """Create a reflective structured agent."""
     return ReflectiveStructuredAgent(
-        name=name, include_reflection=include_reflection, output_model=output_model, debug=debug
+        name=name,
+        include_reflection=include_reflection,
+        output_model=output_model,
+        debug=debug,
     )
 
 
 # Example usage
 async def example_basic_react_structured():
     """Example of basic React → Structured flow."""
-    agent = create_react_structured_agent(name="problem_solver", output_model=StructuredSolution)
+    agent = create_react_structured_agent(
+        name="problem_solver", output_model=StructuredSolution
+    )
 
     result = await agent.arun("How can we improve customer retention?")
     return result
@@ -408,7 +431,9 @@ async def example_multi_stage():
         },
     ]
 
-    agent = create_multi_stage_reasoning_agent(name="comprehensive_solver", stages=stages)
+    agent = create_multi_stage_reasoning_agent(
+        name="comprehensive_solver", stages=stages
+    )
 
     result = await agent.arun("Design a scalable microservices architecture")
     return result
@@ -416,7 +441,9 @@ async def example_multi_stage():
 
 async def example_reflective():
     """Example of reflective structured output."""
-    agent = create_reflective_structured_agent(name="thoughtful_solver", include_reflection=True)
+    agent = create_reflective_structured_agent(
+        name="thoughtful_solver", include_reflection=True
+    )
 
     result = await agent.arun("Create a disaster recovery plan for our systems")
     return result

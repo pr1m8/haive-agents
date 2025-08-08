@@ -45,13 +45,21 @@ class ReflectionCritique(BaseModel):
     strengths: list[str] = Field(description="Strong points in the answer")
 
     # Improvement suggestions
-    improvement_suggestions: list[str] = Field(description="Specific improvements needed")
-    requires_more_retrieval: bool = Field(description="Whether more retrieval is needed")
+    improvement_suggestions: list[str] = Field(
+        description="Specific improvements needed"
+    )
+    requires_more_retrieval: bool = Field(
+        description="Whether more retrieval is needed"
+    )
     requires_rephrasing: bool = Field(description="Whether rephrasing is needed")
 
     # Priority
-    improvement_priority: float = Field(ge=0.0, le=1.0, description="Priority of improvements")
-    estimated_improvement: float = Field(ge=0.0, le=1.0, description="Potential improvement")
+    improvement_priority: float = Field(
+        ge=0.0, le=1.0, description="Priority of improvements"
+    )
+    estimated_improvement: float = Field(
+        ge=0.0, le=1.0, description="Potential improvement"
+    )
 
 
 class ReflectionPlan(BaseModel):
@@ -74,7 +82,9 @@ class ReflectionPlan(BaseModel):
     improvement_strategy: str = Field(description="Strategy for improvement")
     termination_reason: str = Field(description="Reason if stopping iterations")
 
-    confidence_in_plan: float = Field(ge=0.0, le=1.0, description="Confidence in improvement plan")
+    confidence_in_plan: float = Field(
+        ge=0.0, le=1.0, description="Confidence in improvement plan"
+    )
 
 
 class ImprovedAnswer(BaseModel):
@@ -115,11 +125,15 @@ class SelfReflectiveResult(BaseModel):
 
     # Retrieval statistics
     initial_retrievals: int = Field(description="Initial retrieval count")
-    additional_retrievals: int = Field(description="Additional retrievals during reflection")
+    additional_retrievals: int = Field(
+        description="Additional retrievals during reflection"
+    )
     unique_sources_used: int = Field(description="Unique sources referenced")
 
     # Process insights
-    most_effective_improvements: list[str] = Field(description="Most effective improvements")
+    most_effective_improvements: list[str] = Field(
+        description="Most effective improvements"
+    )
     persistent_challenges: list[str] = Field(description="Challenges that remained")
     termination_reason: str = Field(description="Why reflection loop ended")
 
@@ -453,7 +467,9 @@ class SelfReflectiveRAGAgent(Agent):
                     "answer": current_answer,
                     "iteration": iteration + 1,
                     "previous_critiques": str(
-                        reflection_history[-1].critiques if reflection_history else "None"
+                        reflection_history[-1].critiques
+                        if reflection_history
+                        else "None"
                     ),
                 }
             )

@@ -30,11 +30,10 @@ class UltraLazyAgent:
         if self._real_agent is None:
             # Import and create real agent only now
 
-            module = importlib.import_module("haive.agents.simple.agent_v3")
-            SimpleAgentV3 = module.SimpleAgentV3
+            importlib.import_module("haive.agents.simple.agent_v3")
 
             # Create real instance
-            self._real_agent = SimpleAgentV3(name=self._name, **self._kwargs)
+            self._real_agent = SimpleAgent(name=self._name, **self._kwargs)
             self._initialized = True
 
         return self._real_agent
@@ -42,7 +41,9 @@ class UltraLazyAgent:
     def __getattr__(self, name: str):
         """Proxy everything to real agent."""
         if name.startswith("_"):
-            raise AttributeError(f"'{self.__class__.__name__}' object has no attribute '{name}'")
+            raise AttributeError(
+                f"'{self.__class__.__name__}' object has no attribute '{name}'"
+            )
         return getattr(self._load_real_agent(), name)
 
     def __setattr__(self, name: str, value: Any):

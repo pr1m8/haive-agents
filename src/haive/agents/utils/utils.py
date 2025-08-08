@@ -1,13 +1,13 @@
 import asyncio
 import base64
 
-from langchain_core.runnables import chain
-
 # Some javascript we will run on each step
 # to take a screenshot of the page, select the
 # elements to annotate, and add bounding boxes
 import os
 from pathlib import Path
+
+from langchain_core.runnables import chain
 
 # Find the mark.js file relative to this module
 current_dir = Path(__file__).parent
@@ -54,5 +54,7 @@ def parse(text: str) -> dict:
         action, action_input = split_output
     action = action.strip()
     if action_input is not None:
-        action_input = [inp.strip().strip("[]") for inp in action_input.strip().split(";")]
+        action_input = [
+            inp.strip().strip("[]") for inp in action_input.strip().split(";")
+        ]
     return {"action": action, "args": action_input}

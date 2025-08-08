@@ -207,7 +207,9 @@ Process each query with thoroughness and attention to user context."""
                 refinement_reason += ", emphasized academic sources"
 
         return SearchRefinement(
-            original_query=query, refined_query=refined_query, refinement_reason=refinement_reason
+            original_query=query,
+            refined_query=refined_query,
+            refinement_reason=refinement_reason,
         )
 
     def extract_contextual_insights(
@@ -261,7 +263,9 @@ Process each query with thoroughness and attention to user context."""
 
         return insights
 
-    def generate_reasoning_steps(self, query: str, context: dict[str, Any]) -> list[str]:
+    def generate_reasoning_steps(
+        self, query: str, context: dict[str, Any]
+    ) -> list[str]:
         """Generate reasoning steps for the search process.
 
         Args:
@@ -309,19 +313,25 @@ Process each query with thoroughness and attention to user context."""
             follow_ups.append("Would you like specific tools or resources to help?")
 
         if "best practices" in query.lower():
-            follow_ups.append("Are there particular constraints or requirements in your situation?")
+            follow_ups.append(
+                "Are there particular constraints or requirements in your situation?"
+            )
             follow_ups.append(
                 "Would you like examples of how others have implemented these practices?"
             )
 
         if "comparison" in query.lower() or "vs" in query.lower():
-            follow_ups.append("Which specific criteria are most important for your decision?")
+            follow_ups.append(
+                "Which specific criteria are most important for your decision?"
+            )
             follow_ups.append("Would you like detailed pros and cons for each option?")
 
         # Context-based follow-ups
         if context.get("domain"):
             domain = context["domain"]
-            follow_ups.append(f"Are there {domain}-specific considerations I should address?")
+            follow_ups.append(
+                f"Are there {domain}-specific considerations I should address?"
+            )
 
         # Generic useful follow-ups
         follow_ups.append("What would you like to explore next about this topic?")
@@ -391,7 +401,9 @@ Process each query with thoroughness and attention to user context."""
         # Generate follow-up questions
         follow_ups = []
         if generate_follow_ups:
-            follow_ups = self.generate_follow_up_questions(query, base_response.response, context)
+            follow_ups = self.generate_follow_up_questions(
+                query, base_response.response, context
+            )
 
         # Calculate processing time
         processing_time = time.time() - start_time
@@ -418,7 +430,10 @@ Process each query with thoroughness and attention to user context."""
         return response
 
     async def process_search(
-        self, query: str, context: dict[str, Any] | None = None, save_to_memory: bool = True
+        self,
+        query: str,
+        context: dict[str, Any] | None = None,
+        save_to_memory: bool = True,
     ) -> ProSearchResponse:
         """Process a search query with default pro search settings.
 
@@ -442,13 +457,17 @@ Process each query with thoroughness and attention to user context."""
 
 
 # Standalone function exports for backward compatibility
-def extract_contextual_insights(content: str, context: dict[str, Any]) -> list[ContextualInsight]:
+def extract_contextual_insights(
+    content: str, context: dict[str, Any]
+) -> list[ContextualInsight]:
     """Extract contextual insights from search content."""
     agent = ProSearchAgent()
     return agent.extract_contextual_insights(content, context)
 
 
-def generate_follow_up_questions(query: str, insights: list[ContextualInsight]) -> list[str]:
+def generate_follow_up_questions(
+    query: str, insights: list[ContextualInsight]
+) -> list[str]:
     """Generate follow-up questions based on insights."""
     agent = ProSearchAgent()
     return agent.generate_follow_up_questions(query, insights)

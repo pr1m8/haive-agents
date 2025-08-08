@@ -379,7 +379,10 @@ class DynamicSupervisor(ReactAgent):
 
     @classmethod
     def create_with_agents(
-        cls, agents: list[tuple[str, Agent, str]], name: str = "dynamic_supervisor", **kwargs
+        cls,
+        agents: list[tuple[str, Agent, str]],
+        name: str = "dynamic_supervisor",
+        **kwargs,
     ) -> "DynamicSupervisor":
         """Create dynamic supervisor with initial agents.
 

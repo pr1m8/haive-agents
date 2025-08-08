@@ -59,7 +59,10 @@ def create_agent_management_tools(supervisor_instance) -> Any:
 
             # Add agent to registry
             supervisor_instance.add_agent_to_registry(
-                name=name, description=description, agent_class=agent_class, config=config
+                name=name,
+                description=description,
+                agent_class=agent_class,
+                config=config,
             )
 
             # Store capabilities if provided
@@ -116,11 +119,16 @@ def create_agent_management_tools(supervisor_instance) -> Any:
             # Update agent info
             if hasattr(supervisor_instance.agent_registry, "_agents"):
                 if description:
-                    supervisor_instance.agent_registry._agents[name]["description"] = description
-                if system_message and "config" in supervisor_instance.agent_registry._agents[name]:
-                    supervisor_instance.agent_registry._agents[name]["config"]["system_message"] = (
-                        system_message
-                    )
+                    supervisor_instance.agent_registry._agents[name][
+                        "description"
+                    ] = description
+                if (
+                    system_message
+                    and "config" in supervisor_instance.agent_registry._agents[name]
+                ):
+                    supervisor_instance.agent_registry._agents[name]["config"][
+                        "system_message"
+                    ] = system_message
 
             return f"Successfully modified agent '{name}'"
 
@@ -142,7 +150,10 @@ def create_agent_management_tools(supervisor_instance) -> Any:
         suggestions = []
 
         # Analyze task keywords
-        if any(word in task_lower for word in ["code", "program", "debug", "script", "function"]):
+        if any(
+            word in task_lower
+            for word in ["code", "program", "debug", "script", "function"]
+        ):
             suggestions.append(
                 {
                     "name": "coding_agent",
@@ -152,7 +163,10 @@ def create_agent_management_tools(supervisor_instance) -> Any:
                 }
             )
 
-        if any(word in task_lower for word in ["write", "draft", "compose", "edit", "content"]):
+        if any(
+            word in task_lower
+            for word in ["write", "draft", "compose", "edit", "content"]
+        ):
             suggestions.append(
                 {
                     "name": "writing_agent",
@@ -162,7 +176,9 @@ def create_agent_management_tools(supervisor_instance) -> Any:
                 }
             )
 
-        if any(word in task_lower for word in ["data", "analyze", "statistics", "visualiz"]):
+        if any(
+            word in task_lower for word in ["data", "analyze", "statistics", "visualiz"]
+        ):
             suggestions.append(
                 {
                     "name": "data_agent",

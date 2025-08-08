@@ -40,7 +40,9 @@ class ReactAgentState(BaseModel):
     )
 
     # Human request content
-    human_request: str | None = Field(default=None, description="Request for human assistance")
+    human_request: str | None = Field(
+        default=None, description="Request for human assistance"
+    )
 
 
 # Alias for backwards compatibility

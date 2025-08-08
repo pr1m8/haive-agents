@@ -10,7 +10,7 @@ Usage:
     from haive.agents.simple.lazy_simple_agent import LazySimpleAgent as SimpleAgentV3
 
     # Heavy loading happens only when actually used
-    agent = SimpleAgentV3(name="test")  # Still fast - creates proxy
+    agent = SimpleAgent(name="test")  # Still fast - creates proxy
     result = await agent.arun("Hello")  # Heavy loading happens here
 """
 
@@ -67,7 +67,9 @@ class LazyAugLLMConfig:
             logger.debug("Lazy loading AugLLMConfig for first use")
 
             # Import heavy dependencies only now
-            AugLLMConfig = cached_import("haive.core.engine.aug_llm.config", "AugLLMConfig")
+            AugLLMConfig = cached_import(
+                "haive.core.engine.aug_llm.config", "AugLLMConfig"
+            )
 
             # Create real instance with stored kwargs
             self._real_instance = AugLLMConfig(**self._init_kwargs)
@@ -79,7 +81,9 @@ class LazyAugLLMConfig:
         """Proxy all attribute access to real instance."""
         if name.startswith("_"):
             # Don't proxy private attributes
-            raise AttributeError(f"'{self.__class__.__name__}' object has no attribute '{name}'")
+            raise AttributeError(
+                f"'{self.__class__.__name__}' object has no attribute '{name}'"
+            )
 
         self._ensure_initialized()
         return getattr(self._real_instance, name)
@@ -141,7 +145,9 @@ class LazyAgent:
     def __getattr__(self, name: str):
         """Proxy all method calls to real instance."""
         if name.startswith("_"):
-            raise AttributeError(f"'{self.__class__.__name__}' object has no attribute '{name}'")
+            raise AttributeError(
+                f"'{self.__class__.__name__}' object has no attribute '{name}'"
+            )
 
         self._ensure_initialized()
         return getattr(self._real_instance, name)
@@ -205,10 +211,10 @@ class LazySimpleAgent:
                 )
 
             # Now import the real SimpleAgentV3
-            SimpleAgentV3 = cached_import("haive.agents.simple.agent_v3", "SimpleAgentV3")
+            cached_import("haive.agents.simple.agent_v3", "SimpleAgentV3")
 
             # Create real instance
-            self._real_instance = SimpleAgentV3(**self._init_kwargs)
+            self._real_instance = SimpleAgent(**self._init_kwargs)
             self._is_initialized = True
 
             init_time = (datetime.now() - init_start).total_seconds()
@@ -234,7 +240,9 @@ class LazySimpleAgent:
     def __getattr__(self, name: str):
         """Lazy proxy all attribute access to real instance."""
         if name.startswith("_"):
-            raise AttributeError(f"'{self.__class__.__name__}' object has no attribute '{name}'")
+            raise AttributeError(
+                f"'{self.__class__.__name__}' object has no attribute '{name}'"
+            )
 
         self._ensure_initialized()
         return getattr(self._real_instance, name)
@@ -272,7 +280,9 @@ class LazySimpleAgent:
     def as_structured_tool(cls, *args, **kwargs):
         """Create structured tool - triggers full initialization."""
         if cls._debug if hasattr(cls, "_debug") else True:
-            logger.debug("as_structured_tool called - triggering full SimpleAgentV3 import")
+            logger.debug(
+                "as_structured_tool called - triggering full SimpleAgentV3 import"
+            )
 
         SimpleAgentV3 = cached_import("haive.agents.simple.agent_v3", "SimpleAgentV3")
         return SimpleAgentV3.as_structured_tool(*args, **kwargs)

@@ -16,7 +16,7 @@ from pydantic import Field, field_validator, model_validator
 from haive.agents.simple.enhanced_simple_real import EnhancedAgentBase as Agent
 
 # Import base enhanced agent when available
-# from haive.agents.base.enhanced_agent import Agent
+# from haive.agents.base.agent import Agent
 # For now, using minimal base
 
 logger = logging.getLogger(__name__)
@@ -83,7 +83,9 @@ class SupervisorAgent(Agent):  # Will be Agent[AugLLMConfig] when imports fixed
         default="best", description="Strategy for choosing workers"
     )
 
-    supervisor_prompt: str | None = Field(default=None, description="Custom supervisor prompt")
+    supervisor_prompt: str | None = Field(
+        default=None, description="Custom supervisor prompt"
+    )
 
     allow_direct_response: bool = Field(
         default=True, description="Whether supervisor can respond without delegating"
@@ -172,7 +174,10 @@ class SupervisorAgent(Agent):  # Will be Agent[AugLLMConfig] when imports fixed
     def _get_default_supervisor_prompt(self) -> str:
         """Get default supervisor prompt."""
         worker_descriptions = "\n".join(
-            [f"- {name}: {type(agent).__name__}" for name, agent in self.workers.items()]
+            [
+                f"- {name}: {type(agent).__name__}"
+                for name, agent in self.workers.items()
+            ]
         )
 
         return f"""You are a supervisor agent coordinating a team of workers.
@@ -210,7 +215,11 @@ For each request, think about:
             # Create node for each worker
             worker_node = EngineNodeConfig(
                 name=f"worker_{worker_name}",
-                engine=(worker_agent.engine if hasattr(worker_agent, "engine") else worker_agent),
+                engine=(
+                    worker_agent.engine
+                    if hasattr(worker_agent, "engine")
+                    else worker_agent
+                ),
             )
             graph.add_node(f"worker_{worker_name}", worker_node)
 
@@ -227,7 +236,8 @@ For each request, think about:
             delegations = sum(
                 1
                 for m in messages
-                if isinstance(m, AIMessage) and "delegating to" in str(m.content).lower()
+                if isinstance(m, AIMessage)
+                and "delegating to" in str(m.content).lower()
             )
             if delegations >= self.max_delegation_rounds:
                 return "end"

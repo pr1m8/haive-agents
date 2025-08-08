@@ -2,8 +2,7 @@
 
 import uuid
 from typing import Any
-from .models import JoinerOutput
-from .state import CompilerState
+
 from haive.core.engine.agent.config import AgentConfig
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import AzureLLMConfig
@@ -13,6 +12,9 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnableConfig
 from langchain_core.tools import BaseTool, StructuredTool
 from pydantic import BaseModel, Field, model_validator
+
+from .models import JoinerOutput
+from .state import CompilerState
 
 planner_prompt = ChatPromptTemplate.from_messages(
     [
@@ -47,19 +49,25 @@ joiner_prompt = ChatPromptTemplate.from_messages(
 )
 default_planner_config = AugLLMConfig(
     name="llm_compiler_planner",
-    llm_config=AzureLLMConfig(model="gpt-4o", parameters={"temperature": 0.7, "max_tokens": 4096}),
+    llm_config=AzureLLMConfig(
+        model="gpt-4o", parameters={"temperature": 0.7, "max_tokens": 4096}
+    ),
     prompt_template=planner_prompt,
     tools=None,
 )
 default_replanner_config = AugLLMConfig(
     name="llm_compiler_replanner",
-    llm_config=AzureLLMConfig(model="gpt-4o", parameters={"temperature": 0.7, "max_tokens": 4096}),
+    llm_config=AzureLLMConfig(
+        model="gpt-4o", parameters={"temperature": 0.7, "max_tokens": 4096}
+    ),
     prompt_template=replanner_prompt,
     tools=None,
 )
 default_joiner_config = AugLLMConfig(
     name="llm_compiler_joiner",
-    llm_config=AzureLLMConfig(model="gpt-4o", parameters={"temperature": 0.7, "max_tokens": 2048}),
+    llm_config=AzureLLMConfig(
+        model="gpt-4o", parameters={"temperature": 0.7, "max_tokens": 2048}
+    ),
     prompt_template=joiner_prompt,
     structured_output_model=JoinerOutput,
     structured_output_params={"method": "function_calling"},
@@ -77,7 +85,8 @@ class LLMCompilerAgentConfig(AgentConfig):
         default=default_planner_config, description="Configuration for the planner LLM"
     )
     replanner_config: AugLLMConfig = Field(
-        default=default_replanner_config, description="Configuration for the replanner LLM"
+        default=default_replanner_config,
+        description="Configuration for the replanner LLM",
     )
     joiner_config: AugLLMConfig = Field(
         default=default_joiner_config, description="Configuration for the joiner LLM"

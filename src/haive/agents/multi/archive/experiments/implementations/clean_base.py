@@ -5,6 +5,7 @@ from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.schema.prebuilt.multi_agent_state import MultiAgentState
 from langgraph.graph import END, START
 from pydantic import Field, model_validator
+
 from haive.agents.base.agent import Agent
 
 
@@ -18,10 +19,12 @@ class CleanMultiAgent(Agent):
     """
 
     agents: list[Agent] | dict[str, Agent] = Field(
-        default_factory=list, description="Agents to coordinate - similar to engines field"
+        default_factory=list,
+        description="Agents to coordinate - similar to engines field",
     )
     execution_mode: str = Field(
-        default="sequential", description="How to execute agents: sequential, parallel, conditional"
+        default="sequential",
+        description="How to execute agents: sequential, parallel, conditional",
     )
 
     @model_validator(mode="after")

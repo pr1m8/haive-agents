@@ -2,7 +2,7 @@
 
 import asyncio
 
-from haive.agents.multi.clean import MultiAgent
+from haive.agents.multi.agent import MultiAgent
 from haive.agents.reasoning_and_critique.self_discover.adapter import AdapterAgent
 from haive.agents.reasoning_and_critique.self_discover.executor import ExecutorAgent
 from haive.agents.reasoning_and_critique.self_discover.selector import SelectorAgent

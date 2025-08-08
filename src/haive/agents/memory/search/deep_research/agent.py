@@ -302,7 +302,9 @@ Process each research query with systematic thoroughness and analytical rigor.""
         if pub_date:
             try:
                 pub_datetime = (
-                    datetime.fromisoformat(pub_date) if isinstance(pub_date, str) else pub_date
+                    datetime.fromisoformat(pub_date)
+                    if isinstance(pub_date, str)
+                    else pub_date
                 )
                 days_old = (datetime.now() - pub_datetime).days
                 if days_old < 365:  # Less than a year old
@@ -312,7 +314,9 @@ Process each research query with systematic thoroughness and analytical rigor.""
 
         return min(1.0, credibility_score)
 
-    def organize_findings_by_theme(self, findings: list[dict[str, Any]]) -> list[ResearchSection]:
+    def organize_findings_by_theme(
+        self, findings: list[dict[str, Any]]
+    ) -> list[ResearchSection]:
         """Organize research findings into thematic sections.
 
         Args:
@@ -356,7 +360,9 @@ Process each research query with systematic thoroughness and analytical rigor.""
 
                 for finding in theme_findings:
                     content += f"- {finding.get('content', '')}\n"
-                    key_points.append(finding.get("summary", finding.get("content", "")[:100]))
+                    key_points.append(
+                        finding.get("summary", finding.get("content", "")[:100])
+                    )
                     if finding.get("sources"):
                         sources.extend(finding["sources"])
 
@@ -425,7 +431,9 @@ Process each research query with systematic thoroughness and analytical rigor.""
         all_findings = []
 
         # Stage 1: Background research
-        background_queries = [q for q in sub_queries if "background" in q or "overview" in q]
+        background_queries = [
+            q for q in sub_queries if "background" in q or "overview" in q
+        ]
         for bg_query in background_queries[:3]:  # Limit background queries
             research_result = await self.execute_research_query(bg_query, "background")
             research_queries.append(research_result)
@@ -443,7 +451,9 @@ Process each research query with systematic thoroughness and analytical rigor.""
                 )
 
         # Stage 2: Specific deep-dive queries
-        specific_queries = [q for q in sub_queries if "research studies" in q or "evidence" in q]
+        specific_queries = [
+            q for q in sub_queries if "research studies" in q or "evidence" in q
+        ]
         for spec_query in specific_queries[:5]:  # Limit specific queries
             research_result = await self.execute_research_query(spec_query, "specific")
             research_queries.append(research_result)
@@ -462,7 +472,9 @@ Process each research query with systematic thoroughness and analytical rigor.""
         if include_fact_checking:
             validation_queries = [f"fact check {query}", f"verify {query}"]
             for val_query in validation_queries:
-                research_result = await self.execute_research_query(val_query, "validation")
+                research_result = await self.execute_research_query(
+                    val_query, "validation"
+                )
                 research_queries.append(research_result)
 
                 if research_result.success:
@@ -536,7 +548,10 @@ Process each research query with systematic thoroughness and analytical rigor.""
         return response
 
     async def process_search(
-        self, query: str, context: dict[str, Any] | None = None, save_to_memory: bool = True
+        self,
+        query: str,
+        context: dict[str, Any] | None = None,
+        save_to_memory: bool = True,
     ) -> DeepResearchResponse:
         """Process a search query with default deep research settings.
 
@@ -561,7 +576,9 @@ Process each research query with systematic thoroughness and analytical rigor.""
 
 
 # Standalone function exports for backward compatibility
-def decompose_research_query(query: str, focus_areas: list[str] | None = None) -> list[str]:
+def decompose_research_query(
+    query: str, focus_areas: list[str] | None = None
+) -> list[str]:
     """Decompose a complex research query into specific sub-queries."""
     agent = DeepResearchAgent()
     return agent.decompose_research_query(query, focus_areas)
