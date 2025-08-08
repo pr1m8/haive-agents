@@ -58,8 +58,6 @@ from haive.agents.base.hooks import HookEvent
 
 if TYPE_CHECKING:
     from haive.agents.base.agent import Agent
-    from haive.agents.simple.agent import SimpleAgent
-    from haive.agents.structured_output.agent import StructuredOutputAgent
 
 logger = logging.getLogger(__name__)
 

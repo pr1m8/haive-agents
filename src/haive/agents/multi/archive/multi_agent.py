@@ -99,7 +99,8 @@ class MultiAgent(Agent):
     )
 
     execution_mode: str = Field(
-        default="sequence", description="Execution mode: sequence, parallel, or conditional"
+        default="sequence",
+        description="Execution mode: sequence, parallel, or conditional",
     )
 
     # Coordinator LLM for routing decisions (optional)
@@ -151,7 +152,9 @@ class MultiAgent(Agent):
 
         # Start with first agent
         first_agent = agent_names[0]
-        first_node = AgentNodeV3Config(name=f"{first_agent}_node", agent=self.agents[first_agent])
+        first_node = AgentNodeV3Config(
+            name=f"{first_agent}_node", agent=self.agents[first_agent]
+        )
         graph.add_node(f"{first_agent}_node", first_node)
         graph.add_edge(START, f"{first_agent}_node")
 
@@ -160,7 +163,9 @@ class MultiAgent(Agent):
             prev_agent = agent_names[i - 1]
             curr_agent = agent_names[i]
 
-            curr_node = AgentNodeV3Config(name=f"{curr_agent}_node", agent=self.agents[curr_agent])
+            curr_node = AgentNodeV3Config(
+                name=f"{curr_agent}_node", agent=self.agents[curr_agent]
+            )
             graph.add_node(f"{curr_agent}_node", curr_node)
             graph.add_edge(f"{prev_agent}_node", f"{curr_agent}_node")
 
@@ -188,7 +193,9 @@ class MultiAgent(Agent):
 
         # Add coordinator node
 
-        coordinator_node = EngineNodeConfig(name="coordinator", engine=self.coordinator_config)
+        coordinator_node = EngineNodeConfig(
+            name="coordinator", engine=self.coordinator_config
+        )
         graph.add_node("coordinator", coordinator_node)
         graph.add_edge(START, "coordinator")
 

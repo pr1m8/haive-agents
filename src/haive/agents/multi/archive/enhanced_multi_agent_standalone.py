@@ -18,7 +18,7 @@ import asyncio
 import logging
 import time
 from abc import ABC, abstractmethod
-from typing import Any, Generic, Literal, TypeVar, List, Dict
+from typing import Any, Dict, Generic, List, Literal, TypeVar
 
 from pydantic import BaseModel, Field, field_validator
 
@@ -67,7 +67,9 @@ class SimpleAgent(Agent):
         elif "executor" in self.name.lower():
             result = f"EXECUTED: {input_data} -> Implementation completed successfully"
         elif "reviewer" in self.name.lower():
-            result = f"REVIEW: {input_data} -> Quality check passed, ready for deployment"
+            result = (
+                f"REVIEW: {input_data} -> Quality check passed, ready for deployment"
+            )
         elif "technical" in self.name.lower():
             result = f"TECHNICAL: {input_data} -> Technical analysis complete with recommendations"
         elif "business" in self.name.lower():
@@ -189,7 +191,11 @@ class MultiAgent(Agent, Generic[AgentsT]):
         current_input = input_data
         results = []
 
-        agents = list(self.agents) if isinstance(self.agents, list) else list(self.agents.values())
+        agents = (
+            list(self.agents)
+            if isinstance(self.agents, list)
+            else list(self.agents.values())
+        )
 
         for _i, agent in enumerate(agents):
             if debug:
@@ -214,7 +220,11 @@ class MultiAgent(Agent, Generic[AgentsT]):
         if debug:
             pass
 
-        agents = list(self.agents) if isinstance(self.agents, list) else list(self.agents.values())
+        agents = (
+            list(self.agents)
+            if isinstance(self.agents, list)
+            else list(self.agents.values())
+        )
 
         # Create tasks for parallel execution
         tasks = [agent.arun(input_data, debug=False) for agent in agents]
@@ -261,12 +271,30 @@ class MultiAgent(Agent, Generic[AgentsT]):
             return "agent_0"  # Default for list
 
         # Simple keyword-based routing
-        if any(keyword in content for keyword in ["technical", "code", "system", "api", "debug"]):
-            return "technical" if "technical" in self.agents else next(iter(self.agents.keys()))
-        if any(keyword in content for keyword in ["business", "profit", "market", "revenue"]):
-            return "business" if "business" in self.agents else next(iter(self.agents.keys()))
+        if any(
+            keyword in content
+            for keyword in ["technical", "code", "system", "api", "debug"]
+        ):
+            return (
+                "technical"
+                if "technical" in self.agents
+                else next(iter(self.agents.keys()))
+            )
+        if any(
+            keyword in content
+            for keyword in ["business", "profit", "market", "revenue"]
+        ):
+            return (
+                "business"
+                if "business" in self.agents
+                else next(iter(self.agents.keys()))
+            )
         if any(keyword in content for keyword in ["validate", "check", "verify"]):
-            return "validator" if "validator" in self.agents else next(iter(self.agents.keys()))
+            return (
+                "validator"
+                if "validator" in self.agents
+                else next(iter(self.agents.keys()))
+            )
         return "general" if "general" in self.agents else next(iter(self.agents.keys()))
 
     async def _execute_conditional(self, input_data: str, debug: bool = False) -> str:
@@ -285,7 +313,9 @@ class MultiAgent(Agent, Generic[AgentsT]):
         else:
             # Use first agent
             agents_list = (
-                list(self.agents) if isinstance(self.agents, list) else list(self.agents.values())
+                list(self.agents)
+                if isinstance(self.agents, list)
+                else list(self.agents.values())
             )
             current_agent = agents_list[0]
             current_agent_name = current_agent.name
@@ -327,7 +357,9 @@ class MultiAgent(Agent, Generic[AgentsT]):
             else:
                 break
 
-        final_result = f"Conditional execution path: {' → '.join(execution_path)}. Final: {result}"
+        final_result = (
+            f"Conditional execution path: {' → '.join(execution_path)}. Final: {result}"
+        )
 
         if debug:
             pass
@@ -377,7 +409,9 @@ class AdaptiveBranchingMultiAgent(BranchingMultiAgent):
                 "task_count": 0,
             }
 
-    def update_performance(self, agent_name: str, success: bool, duration: float) -> None:
+    def update_performance(
+        self, agent_name: str, success: bool, duration: float
+    ) -> None:
         """Update agent performance metrics."""
         if agent_name not in self.agent_performance:
             return
@@ -463,21 +497,33 @@ async def demo_enhanced_multi_agent():
 
     # 2. Parallel Pattern
 
-    tech_expert = SimpleAgent(name="technical_expert", engine=MinimalEngine(temperature=0.1))
-    biz_expert = SimpleAgent(name="business_expert", engine=MinimalEngine(temperature=0.7))
+    tech_expert = SimpleAgent(
+        name="technical_expert", engine=MinimalEngine(temperature=0.1)
+    )
+    biz_expert = SimpleAgent(
+        name="business_expert", engine=MinimalEngine(temperature=0.7)
+    )
     user_expert = SimpleAgent(name="user_expert", engine=MinimalEngine(temperature=0.5))
 
     parallel: MultiAgent[list[SimpleAgent]] = MultiAgent(
-        name="expert_panel", agents=[tech_expert, biz_expert, user_expert], mode="parallel"
+        name="expert_panel",
+        agents=[tech_expert, biz_expert, user_expert],
+        mode="parallel",
     )
 
     await parallel.arun("Evaluate the new AI feature proposal", debug=True)
 
     # 3. Branching Pattern
 
-    tech_agent = SimpleAgent(name="technical_specialist", engine=MinimalEngine(temperature=0.1))
-    biz_agent = SimpleAgent(name="business_analyst", engine=MinimalEngine(temperature=0.5))
-    general_agent = SimpleAgent(name="general_assistant", engine=MinimalEngine(temperature=0.7))
+    tech_agent = SimpleAgent(
+        name="technical_specialist", engine=MinimalEngine(temperature=0.1)
+    )
+    biz_agent = SimpleAgent(
+        name="business_analyst", engine=MinimalEngine(temperature=0.5)
+    )
+    general_agent = SimpleAgent(
+        name="general_assistant", engine=MinimalEngine(temperature=0.7)
+    )
 
     branching: BranchingMultiAgent = BranchingMultiAgent(
         name="smart_router",
@@ -500,9 +546,15 @@ async def demo_enhanced_multi_agent():
 
     # 4. Adaptive Pattern
 
-    fast_agent = SimpleAgent(name="fast_responder", engine=MinimalEngine(temperature=0.1))
-    accurate_agent = SimpleAgent(name="accurate_analyzer", engine=MinimalEngine(temperature=0.9))
-    balanced_agent = SimpleAgent(name="balanced_processor", engine=MinimalEngine(temperature=0.5))
+    fast_agent = SimpleAgent(
+        name="fast_responder", engine=MinimalEngine(temperature=0.1)
+    )
+    accurate_agent = SimpleAgent(
+        name="accurate_analyzer", engine=MinimalEngine(temperature=0.9)
+    )
+    balanced_agent = SimpleAgent(
+        name="balanced_processor", engine=MinimalEngine(temperature=0.5)
+    )
 
     adaptive: AdaptiveBranchingMultiAgent = AdaptiveBranchingMultiAgent(
         name="adaptive_system",
@@ -533,7 +585,9 @@ async def demo_enhanced_multi_agent():
 
     validator = SimpleAgent(name="validator", engine=MinimalEngine(temperature=0.1))
     processor = SimpleAgent(name="processor", engine=MinimalEngine(temperature=0.5))
-    error_handler = SimpleAgent(name="error_handler", engine=MinimalEngine(temperature=0.7))
+    error_handler = SimpleAgent(
+        name="error_handler", engine=MinimalEngine(temperature=0.7)
+    )
 
     conditional: MultiAgent[dict[str, SimpleAgent]] = MultiAgent(
         name="workflow_engine",

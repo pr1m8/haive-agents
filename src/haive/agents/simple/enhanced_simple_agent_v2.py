@@ -11,7 +11,7 @@ import os
 import sys
 from typing import Any, Literal
 
-from base.enhanced_agent import Agent as EnhancedAgent
+from base.enhanced_agent import Agent as Agent
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.node.engine_node import EngineNodeConfig
 from haive.core.graph.node.tool_node_config_v2 import ToolNodeConfig
@@ -23,7 +23,9 @@ from pydantic import Field, model_validator
 # Import enhanced Agent directly - bypassing base/__init__.py
 
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+sys.path.insert(
+    0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+)
 
 # Now import the enhanced Agent directly
 
@@ -33,7 +35,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspa
 logger = logging.getLogger(__name__)
 
 
-class SimpleAgentV2(EnhancedAgent[AugLLMConfig]):
+class SimpleAgentV2(Agent[AugLLMConfig]):
     """SimpleAgent V2 using the enhanced Agent pattern.
 
     This demonstrates SimpleAgent as Agent[AugLLMConfig] - the cleanest
@@ -104,7 +106,9 @@ class SimpleAgentV2(EnhancedAgent[AugLLMConfig]):
                     return "tools"
                 return "end"
 
-            graph.add_conditional_edges("agent", check_tools, {"tools": "tools", "end": END})
+            graph.add_conditional_edges(
+                "agent", check_tools, {"tools": "tools", "end": END}
+            )
             graph.add_edge("tools", END)
         else:
             graph.add_edge("agent", END)

@@ -59,7 +59,9 @@ class DynamicSupervisor(SupervisorAgent):
     """
 
     # Dynamic supervisor specific fields
-    max_workers: int = Field(default=10, ge=1, le=50, description="Maximum number of workers")
+    max_workers: int = Field(
+        default=10, ge=1, le=50, description="Maximum number of workers"
+    )
 
     min_workers: int = Field(
         default=1, ge=0, le=10, description="Minimum number of workers to maintain"
@@ -75,7 +77,9 @@ class DynamicSupervisor(SupervisorAgent):
         default=60.0, gt=0, description="Timeout for worker tasks in seconds"
     )
 
-    recycling_enabled: bool = Field(default=True, description="Enable recycling of idle workers")
+    recycling_enabled: bool = Field(
+        default=True, description="Enable recycling of idle workers"
+    )
 
     worker_templates: dict[str, type] = Field(
         default_factory=dict, description="Templates for creating new workers"
@@ -85,7 +89,9 @@ class DynamicSupervisor(SupervisorAgent):
         default_factory=dict, description="Map of task_id to worker_name"
     )
 
-    idle_workers: set[str] = Field(default_factory=set, description="Set of idle worker names")
+    idle_workers: set[str] = Field(
+        default_factory=set, description="Set of idle worker names"
+    )
 
     @field_validator("min_workers")
     @classmethod
@@ -93,7 +99,9 @@ class DynamicSupervisor(SupervisorAgent):
         """Ensure min_workers <= max_workers."""
         max_workers = info.data.get("max_workers", 10)
         if v > max_workers:
-            raise ValueError(f"min_workers ({v}) cannot exceed max_workers ({max_workers})")
+            raise ValueError(
+                f"min_workers ({v}) cannot exceed max_workers ({max_workers})"
+            )
         return v
 
     def can_add_worker(self) -> bool:
@@ -106,7 +114,9 @@ class DynamicSupervisor(SupervisorAgent):
             return False
 
         # Scale up if all workers are busy
-        return len(self.idle_workers) == 0 and len(self.active_tasks) >= len(self.workers)
+        return len(self.idle_workers) == 0 and len(self.active_tasks) >= len(
+            self.workers
+        )
 
     def should_scale_down(self) -> bool:
         """Determine if should scale down workers."""
@@ -212,7 +222,9 @@ class DynamicSupervisor(SupervisorAgent):
         logger.debug(f"Assigned task '{task_id}' to worker '{assigned}'")
         return assigned
 
-    def complete_task(self, task_id: str, success: bool = True, duration: float = 0.0) -> None:
+    def complete_task(
+        self, task_id: str, success: bool = True, duration: float = 0.0
+    ) -> None:
         """Mark a task as completed.
 
         Args:

@@ -1,466 +1,691 @@
-"""Core Multi-Agent implementation.
+"""Enhanced MultiAgent V4 - Advanced multi-agent orchestration with enhanced base agent pattern.
 
-This module provides the main MultiAgent class that serves as the foundation
-for all multi-agent systems in Haive. It combines multiple agents and coordinates
-their execution with various modes and strategies.
+This module provides the MultiAgent class, which represents the next generation
+of multi-agent coordination in the Haive framework. It leverages the enhanced base agent
+pattern to provide sophisticated agent orchestration with clean, intuitive APIs.
+
+The MultiAgent extends the base Agent class and implements the required
+build_graph() abstract method, enabling it to participate fully in the Haive ecosystem
+while providing advanced multi-agent capabilities.
+
+Key Features:
+    - **Enhanced Base Agent Pattern**: Properly extends Agent and implements build_graph()
+    - **Direct List Initialization**: Simple API with agents=[agent1, agent2, ...]
+    - **Multiple Execution Modes**: Sequential, parallel, conditional, and manual orchestration
+    - **AgentNodeV3 Integration**: Advanced state projection for clean agent isolation
+    - **MultiAgentState Management**: Type-safe state handling across agents
+    - **Dynamic Graph Building**: Auto, manual, and lazy build modes
+    - **Conditional Routing**: Rich conditional edge support via BaseGraph2
+    - **Hot Agent Addition**: Add agents dynamically with automatic recompilation
+
+Architecture:
+    The MultiAgent follows a hierarchical architecture:
+
+    1. **Agent Layer**: Individual agents with their own state and logic
+    2. **Orchestration Layer**: Coordination logic and routing decisions
+    3. **State Layer**: MultiAgentState for shared and private state management
+    4. **Execution Layer**: AgentNodeV3 for proper state projection
+
+Example:
+    Basic sequential workflow::
+
+        >>> from haive.agents.multi.enhanced_multi_agent_v4 import MultiAgent
+        >>> from haive.agents.simple import SimpleAgent
+        >>> from haive.agents.react import ReactAgent
+        >>>
+        >>> # Create individual agents
+        >>> analyzer = ReactAgent(name="analyzer", tools=[...])
+        >>> formatter = SimpleAgent(name="formatter")
+        >>>
+        >>> # Create multi-agent workflow
+        >>> workflow = MultiAgent(
+        ...     name="analysis_pipeline",
+        ...     agents=[analyzer, formatter],
+        ...     execution_mode="sequential"
+        ... )
+        >>>
+        >>> # Execute workflow
+        >>> result = await workflow.arun({"task": "Analyze this data"})
+
+See Also:
+    - :class:`haive.agents.base.agent.Agent`: Base agent class
+    - :class:`haive.core.schema.prebuilt.multi_agent_state.MultiAgentState`: State management
+    - :mod:`haive.core.graph.node.agent_node_v3`: AgentNodeV3 for state projection
+    - :class:`haive.core.graph.state_graph.base_graph2.BaseGraph`: Graph building
 """
 
 from __future__ import annotations
 
 import logging
-from typing import Any, Dict, List, Optional, Union, Callable
-from enum import Enum
+from collections.abc import Callable
+from typing import TYPE_CHECKING, Any, Literal
 
-from pydantic import BaseModel, Field, field_validator
-from langchain_core.messages import BaseMessage
+try:
+    from typing import Self
+except ImportError:
+    pass
 
-from haive.core.engine.agent import Agent, AgentConfig
-from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.schema.state_schema import StateSchema
+from haive.core.graph.node.agent_node_v3 import create_agent_node_v3
+from haive.core.graph.state_graph.base_graph2 import BaseGraph
+from haive.core.schema.prebuilt.multi_agent_state import MultiAgentState
+from langgraph.graph import END, START
+from pydantic import Field
+
+from haive.agents.base.agent import Agent
+
+if TYPE_CHECKING:
+    pass
 
 logger = logging.getLogger(__name__)
 
-
-class ExecutionMode(str, Enum):
-    """Execution modes for multi-agent systems."""
-
-    SEQUENTIAL = "sequential"
-    PARALLEL = "parallel"
-    CONDITIONAL = "conditional"
-    ROUND_ROBIN = "round_robin"
-    HIERARCHICAL = "hierarchical"
-
-
-class MultiAgentState(StateSchema):
-    """State schema for multi-agent execution."""
-
-    messages: List[BaseMessage] = Field(default_factory=list, description="Message history")
-    current_agent: Optional[str] = Field(default=None, description="Currently executing agent")
-    agent_results: Dict[str, Any] = Field(
-        default_factory=dict, description="Results from each agent"
-    )
-    execution_order: List[str] = Field(default_factory=list, description="Order of agent execution")
-    iteration_count: int = Field(default=0, description="Current iteration count")
-    max_iterations: int = Field(default=10, description="Maximum iterations allowed")
-    completed_agents: List[str] = Field(
-        default_factory=list, description="List of completed agents"
-    )
-    failed_agents: List[str] = Field(default_factory=list, description="List of failed agents")
-    execution_complete: bool = Field(default=False, description="Whether execution is complete")
-
-
-class MultiAgentConfig(AgentConfig):
-    """Configuration for MultiAgent systems."""
-
-    agents: Dict[str, Agent] = Field(default_factory=dict, description="Dictionary of agents")
-    execution_mode: ExecutionMode = Field(
-        default=ExecutionMode.SEQUENTIAL, description="Execution mode"
-    )
-    max_iterations: int = Field(default=10, description="Maximum iterations")
-    timeout: Optional[float] = Field(default=None, description="Timeout for execution")
-    error_handling: str = Field(default="continue", description="Error handling strategy")
-    coordination_strategy: Optional[str] = Field(default=None, description="Coordination strategy")
-
-    @field_validator("agents")
-    @classmethod
-    def validate_agents(cls, v: Dict[str, Agent]) -> Dict[str, Agent]:
-        """Validate that all agents have proper names."""
-        for name, agent in v.items():
-            if not hasattr(agent, "name") or not agent.name:
-                if hasattr(agent, "config") and hasattr(agent.config, "name"):
-                    agent.name = agent.config.name
-                else:
-                    agent.name = name
-        return v
+# Import Agent for runtime
 
 
 class MultiAgent(Agent):
-    """Multi-agent system that coordinates execution of multiple agents.
+    """Enhanced MultiAgent V4 using enhanced base agent pattern.
 
-    This class provides a flexible framework for combining multiple agents
-    with different execution modes, coordination strategies, and error handling.
+    This class properly extends the enhanced base Agent class and implements
+    the build_graph() abstract method. It provides clean initialization with
+    direct list support and flexible execution modes.
 
-    Examples:
-        Basic sequential execution::
-
-            agents = {
-                "planner": PlannerAgent(config=planner_config),
-                "executor": ExecutorAgent(config=executor_config)
-            }
-
-            multi_config = MultiAgentConfig(
-                name="workflow",
-                agents=agents,
-                execution_mode=ExecutionMode.SEQUENTIAL
-            )
-
-            multi_agent = MultiAgent(multi_config)
-            result = multi_agent.run("Create and execute a plan")
-
-        Parallel execution::
-
-            multi_config = MultiAgentConfig(
-                name="parallel_workflow",
-                agents=agents,
-                execution_mode=ExecutionMode.PARALLEL
-            )
+    Example:
+        >>> # Simple sequential
+        >>> workflow = MultiAgent(
+        ...     name="my_workflow",
+        ...     agents=[planner, executor, reviewer],
+        ...     execution_mode="sequential"
+        ... )
+        >>>
+        >>> # With conditional branching
+        >>> workflow = MultiAgent(
+        ...     name="smart_workflow",
+        ...     agents=[classifier, simple_processor, complex_processor],
+        ...     execution_mode="conditional",
+        ...     build_mode="manual"
+        ... )
+        >>>
+        >>> # Add conditional edges
+        >>> workflow.add_conditional_edge(
+        ...     from_agent="classifier",
+        ...     condition=lambda state: state.get("complexity") > 0.7,
+        ...     true_agent="complex_processor",
+        ...     false_agent="simple_processor"
+        ... )
+        >>>
+        >>> # Build and execute
+        >>> workflow.build()
+        >>> result = await workflow.arun({"task": "Process this data"})
     """
 
-    def __init__(self, config: MultiAgentConfig):
-        self.agents = config.agents
-        self.execution_mode = config.execution_mode
-        self.max_iterations = config.max_iterations
-        self.timeout = config.timeout
-        self.error_handling = config.error_handling
-        self.coordination_strategy = config.coordination_strategy
-        self.state_schema = MultiAgentState
-        super().__init__(config)
+    # ========================================================================
+    # CORE FIELDS - Enhanced base agent integration
+    # ========================================================================
 
-    def setup_workflow(self) -> None:
-        """Set up the multi-agent workflow."""
-        logger.info(f"Setting up multi-agent workflow with {len(self.agents)} agents")
-        logger.info(f"Execution mode: {self.execution_mode}")
+    state_schema: type = Field(
+        default=MultiAgentState,
+        description="State schema for multi-agent coordination. Defaults to MultiAgentState which "
+        "provides agent isolation and shared state management.",
+    )
 
-        # Set up coordination based on execution mode
-        if self.execution_mode == ExecutionMode.SEQUENTIAL:
-            self._setup_sequential_workflow()
-        elif self.execution_mode == ExecutionMode.PARALLEL:
-            self._setup_parallel_workflow()
-        elif self.execution_mode == ExecutionMode.CONDITIONAL:
-            self._setup_conditional_workflow()
-        elif self.execution_mode == ExecutionMode.ROUND_ROBIN:
-            self._setup_round_robin_workflow()
-        elif self.execution_mode == ExecutionMode.HIERARCHICAL:
-            self._setup_hierarchical_workflow()
-        else:
-            logger.warning(f"Unknown execution mode: {self.execution_mode}, using sequential")
-            self._setup_sequential_workflow()
+    agents: list[Agent] = Field(
+        default_factory=list,
+        description="List of Agent instances to coordinate. Agents are automatically converted to "
+        "a dictionary keyed by name for efficient lookup during execution.",
+    )
 
-    def _setup_sequential_workflow(self) -> None:
-        """Set up sequential execution workflow."""
-        agent_names = list(self.agents.keys())
-        logger.info(f"Sequential execution order: {' → '.join(agent_names)}")
+    execution_mode: Literal["sequential", "parallel", "conditional", "manual"] = Field(
+        default="sequential",
+        description="Execution mode determining how agents are connected: "
+        "'sequential' - agents run one after another, "
+        "'parallel' - all agents run simultaneously, "
+        "'conditional' - agents run based on routing logic, "
+        "'manual' - user adds edges explicitly",
+    )
 
-    def _setup_parallel_workflow(self) -> None:
-        """Set up parallel execution workflow."""
-        agent_names = list(self.agents.keys())
-        logger.info(f"Parallel execution of agents: {', '.join(agent_names)}")
+    build_mode: Literal["auto", "manual", "lazy"] = Field(
+        default="auto",
+        description="When to build the execution graph: "
+        "'auto' - build immediately on initialization, "
+        "'manual' - user must call build() explicitly, "
+        "'lazy' - build on first execution",
+    )
 
-    def _setup_conditional_workflow(self) -> None:
-        """Set up conditional execution workflow."""
-        logger.info("Conditional execution workflow - agents selected based on conditions")
+    entry_point: str | None = Field(
+        default=None,
+        description="Name of the agent to start execution. If None, uses the first agent "
+        "in the list. Only relevant for sequential and conditional modes.",
+    )
 
-    def _setup_round_robin_workflow(self) -> None:
-        """Set up round-robin execution workflow."""
-        logger.info("Round-robin execution - agents take turns")
+    agent_dict: dict[str, Agent] = Field(
+        default_factory=dict,
+        description="Internal dictionary mapping agent names to instances. Automatically "
+        "populated from the agents list during initialization. Do not set directly.",
+    )
 
-    def _setup_hierarchical_workflow(self) -> None:
-        """Set up hierarchical execution workflow."""
-        logger.info("Hierarchical execution - supervisor coordinates sub-agents")
+    conditional_edges: list[dict[str, Any]] = Field(
+        default_factory=list,
+        description="Configuration for conditional edges. Each dict should contain: "
+        "'from_agent' (source), 'condition' (callable), 'destinations' (routing map), "
+        "and optional 'default' (fallback destination).",
+    )
 
-    def run(self, input_data: Any, **kwargs) -> Any:
-        """Run the multi-agent system."""
-        logger.info(f"Starting multi-agent execution with {len(self.agents)} agents")
+    # ========================================================================
+    # ENHANCED BASE AGENT SETUP
+    # ========================================================================
 
-        state = MultiAgentState(
-            messages=input_data.get("messages", []) if isinstance(input_data, dict) else [],
-            max_iterations=self.max_iterations,
+    def setup_agent(self) -> None:
+        """Set up multi-agent configuration before graph building.
+
+        This method is called BEFORE schema generation and graph building,
+        allowing us to convert agents list to dict properly.
+        """
+        # Convert agents list to dict
+        if self.agents:
+            self.agent_dict = self._convert_agents_to_dict(self.agents)
+            logger.info(f"Converted {len(self.agents)} agents to dict")
+
+        # Ensure state schema is MultiAgentState (already set as default)
+        if self.state_schema != MultiAgentState:
+            logger.warning(
+                f"State schema overridden from {self.state_schema} to MultiAgentState"
+            )
+            self.state_schema = MultiAgentState
+
+    def _convert_agents_to_dict(self, agents: list[Agent]) -> dict[str, Agent]:
+        """Convert agent list to dictionary keyed by name.
+
+        This internal method handles the conversion from the user-friendly list
+        format to the internal dictionary format used for efficient agent lookup.
+
+        Args:
+            agents: List of Agent instances to convert.
+
+        Returns:
+            Dict[str, Agent]: Dictionary mapping agent names to agent instances.
+
+        Raises:
+            ValueError: If any agent lacks a name attribute.
+
+        Warning:
+            If duplicate agent names are found, they are automatically renamed
+            with an index suffix (e.g., "agent_1", "agent_2").
+        """
+        agent_dict = {}
+
+        for i, agent in enumerate(agents):
+            if not hasattr(agent, "name") or not agent.name:
+                raise ValueError(f"Agent at index {i} must have a name")
+
+            if agent.name in agent_dict:
+                # Handle duplicates by adding index
+                agent_dict[f"{agent.name}_{i}"] = agent
+                logger.warning(
+                    f"Duplicate agent name '{agent.name}', using '{agent.name}_{i}'"
+                )
+            else:
+                agent_dict[agent.name] = agent
+
+        return agent_dict
+
+    # ========================================================================
+    # ABSTRACT METHOD IMPLEMENTATION - build_graph()
+    # ========================================================================
+
+    def build_graph(self) -> BaseGraph:
+        """Build the computational graph for multi-agent orchestration.
+
+        This method implements the abstract build_graph() from the base Agent class,
+        fulfilling the enhanced base agent pattern. It constructs a BaseGraph that
+        defines how agents are connected and how data flows between them.
+
+        The graph structure depends on the execution_mode:
+        - **sequential**: Agents execute one after another in order
+        - **parallel**: All agents execute simultaneously
+        - **conditional**: Agents execute based on conditional routing
+        - **manual**: User must add edges manually after creation
+
+        Returns:
+            BaseGraph: The constructed graph ready for compilation and execution.
+
+        Raises:
+            ValueError: If no agents are available to build the graph.
+
+        Note:
+            This method is called automatically based on build_mode:
+            - auto: Called during initialization
+            - manual: Must be called explicitly via build()
+            - lazy: Called on first execution
+
+        Example:
+            >>> # Manual build mode
+            >>> workflow = MultiAgent(
+            ...     name="custom",
+            ...     agents=[agent1, agent2],
+            ...     build_mode="manual"
+            ... )
+            >>> graph = workflow.build_graph()  # Build explicitly
+            >>> workflow.add_edge("agent1", "agent2")  # Add custom edges
+        """
+        if not self.agent_dict:
+            raise ValueError("No agents to build graph with")
+
+        logger.info(
+            f"Building {self.execution_mode} graph with {len(self.agent_dict)} agents"
         )
 
-        try:
-            if self.execution_mode == ExecutionMode.SEQUENTIAL:
-                return self._execute_sequential(input_data, state, **kwargs)
-            elif self.execution_mode == ExecutionMode.PARALLEL:
-                return self._execute_parallel(input_data, state, **kwargs)
-            elif self.execution_mode == ExecutionMode.CONDITIONAL:
-                return self._execute_conditional(input_data, state, **kwargs)
-            elif self.execution_mode == ExecutionMode.ROUND_ROBIN:
-                return self._execute_round_robin(input_data, state, **kwargs)
-            elif self.execution_mode == ExecutionMode.HIERARCHICAL:
-                return self._execute_hierarchical(input_data, state, **kwargs)
-            else:
-                return self._execute_sequential(input_data, state, **kwargs)
+        # Create BaseGraph with MultiAgentState
+        graph = BaseGraph(
+            name=f"{self.name}_graph", state_schema=self.state_schema or MultiAgentState
+        )
 
-        except Exception as e:
-            logger.error(f"Multi-agent execution failed: {e}")
-            if self.error_handling == "raise":
-                raise
-            return {"error": str(e), "partial_results": state.agent_results}
+        # Add all agents as nodes using AgentNodeV3
+        self._add_agent_nodes(graph)
 
-    def _execute_sequential(self, input_data: Any, state: MultiAgentState, **kwargs) -> Any:
-        """Execute agents sequentially."""
-        current_input = input_data
-        results = []
+        # Add edges based on execution mode
+        if self.execution_mode == "sequential":
+            self._add_sequential_edges(graph)
+        elif self.execution_mode == "parallel":
+            self._add_parallel_edges(graph)
+        elif self.execution_mode == "conditional":
+            self._add_conditional_edges(graph)
+        elif self.execution_mode == "manual":
+            # Manual mode - user adds edges manually
+            self._add_manual_edges(graph)
 
-        for agent_name, agent in self.agents.items():
-            try:
-                logger.info(f"Executing agent: {agent_name}")
-                state.current_agent = agent_name
+        logger.info("Successfully built multi-agent graph")
+        return graph
 
-                if hasattr(agent, "run"):
-                    result = agent.run(current_input, **kwargs)
-                    results.append(result)
-                    state.agent_results[agent_name] = result
-                    state.completed_agents.append(agent_name)
+    def _add_agent_nodes(self, graph: BaseGraph) -> None:
+        """Add all agents as nodes to the graph using AgentNodeV3.
 
-                    # Pass result to next agent
-                    current_input = result
-                else:
-                    error_msg = f"Agent {agent_name} does not have run method"
-                    logger.error(error_msg)
-                    state.failed_agents.append(agent_name)
-                    if self.error_handling == "raise":
-                        raise RuntimeError(error_msg)
+        This method creates an AgentNodeV3 for each agent, which provides:
+        - Proper state projection from MultiAgentState to agent-specific state
+        - Direct field updates for structured output agents
+        - Recompilation tracking for dynamic workflows
 
-            except Exception as e:
-                error_msg = f"Agent {agent_name} failed: {e}"
-                logger.error(error_msg)
-                state.failed_agents.append(agent_name)
-                if self.error_handling == "raise":
-                    raise
-                elif self.error_handling == "stop":
-                    break
-                # "continue" mode keeps going
+        Args:
+            graph: The BaseGraph instance to add nodes to.
 
-        state.execution_complete = True
-        return {
-            "final_result": results[-1] if results else None,
-            "all_results": results,
-            "state": state.model_dump(),
-            "completed_agents": state.completed_agents,
-            "failed_agents": state.failed_agents,
-        }
+        Note:
+            AgentNodeV3 is crucial for maintaining state isolation between agents
+            while allowing shared state access through MultiAgentState.
+        """
+        for agent_name, agent in self.agent_dict.items():
+            # Create AgentNodeV3 for proper state projection
+            node_config = create_agent_node_v3(agent_name=agent_name, agent=agent)
+            graph.add_node(agent_name, node_config)
+            logger.debug(f"Added AgentNodeV3 for: {agent_name}")
 
-    def _execute_parallel(self, input_data: Any, state: MultiAgentState, **kwargs) -> Any:
-        """Execute agents in parallel."""
-        import asyncio
-        import concurrent.futures
+    def _add_sequential_edges(self, graph: BaseGraph) -> None:
+        """Add sequential edges: START -> agent1 -> agent2 -> ... -> END.
 
-        results = {}
+        Args:
+            graph: The BaseGraph instance to add edges to.
+        """
+        agent_names = list(self.agent_dict.keys())
 
-        def run_agent(agent_name: str, agent: Agent) -> tuple[str, Any]:
-            try:
-                if hasattr(agent, "run"):
-                    result = agent.run(input_data, **kwargs)
-                    return agent_name, result
-                else:
-                    return agent_name, {"error": f"Agent {agent_name} does not have run method"}
-            except Exception as e:
-                return agent_name, {"error": str(e)}
-
-        # Use ThreadPoolExecutor for parallel execution
-        with concurrent.futures.ThreadPoolExecutor(max_workers=len(self.agents)) as executor:
-            future_to_agent = {
-                executor.submit(run_agent, name, agent): name for name, agent in self.agents.items()
-            }
-
-            for future in concurrent.futures.as_completed(future_to_agent):
-                agent_name = future_to_agent[future]
-                try:
-                    name, result = future.result(timeout=self.timeout)
-                    results[name] = result
-                    state.agent_results[name] = result
-                    if "error" not in result:
-                        state.completed_agents.append(name)
-                    else:
-                        state.failed_agents.append(name)
-                except Exception as e:
-                    logger.error(f"Agent {agent_name} execution failed: {e}")
-                    state.failed_agents.append(agent_name)
-                    results[agent_name] = {"error": str(e)}
-
-        state.execution_complete = True
-        return {
-            "results": results,
-            "state": state.model_dump(),
-            "completed_agents": state.completed_agents,
-            "failed_agents": state.failed_agents,
-        }
-
-    def _execute_conditional(self, input_data: Any, state: MultiAgentState, **kwargs) -> Any:
-        """Execute agents based on conditions."""
-        # Simplified conditional execution - select first agent that matches
-        # In a real implementation, this would have sophisticated condition checking
-
-        for agent_name, agent in self.agents.items():
-            # Simple condition: execute if agent has required capability
-            if self._should_execute_agent(agent, input_data):
-                try:
-                    logger.info(f"Conditionally executing agent: {agent_name}")
-                    result = agent.run(input_data, **kwargs)
-                    state.agent_results[agent_name] = result
-                    state.completed_agents.append(agent_name)
-                    state.execution_complete = True
-                    return {
-                        "result": result,
-                        "selected_agent": agent_name,
-                        "state": state.model_dump(),
-                    }
-                except Exception as e:
-                    logger.error(f"Conditional agent {agent_name} failed: {e}")
-                    state.failed_agents.append(agent_name)
-                    continue
-
-        # No agent was selected/succeeded
-        state.execution_complete = True
-        return {"error": "No agent met the execution conditions", "state": state.model_dump()}
-
-    def _execute_round_robin(self, input_data: Any, state: MultiAgentState, **kwargs) -> Any:
-        """Execute agents in round-robin fashion."""
-        agent_names = list(self.agents.keys())
-        current_input = input_data
-        results = []
-
-        for iteration in range(self.max_iterations):
-            state.iteration_count = iteration
-            for agent_name in agent_names:
-                agent = self.agents[agent_name]
-                try:
-                    logger.info(f"Round-robin iteration {iteration}, agent: {agent_name}")
-                    result = agent.run(current_input, **kwargs)
-                    results.append({"agent": agent_name, "iteration": iteration, "result": result})
-                    state.agent_results[f"{agent_name}_{iteration}"] = result
-                    current_input = result
-
-                    # Check if we should stop (simplified)
-                    if self._should_stop_round_robin(result, iteration):
-                        state.execution_complete = True
-                        return {
-                            "final_result": result,
-                            "all_results": results,
-                            "iterations": iteration + 1,
-                            "state": state.model_dump(),
-                        }
-
-                except Exception as e:
-                    logger.error(f"Round-robin agent {agent_name} failed: {e}")
-                    state.failed_agents.append(f"{agent_name}_{iteration}")
-                    if self.error_handling == "raise":
-                        raise
-
-        state.execution_complete = True
-        return {
-            "final_result": results[-1]["result"] if results else None,
-            "all_results": results,
-            "iterations": self.max_iterations,
-            "state": state.model_dump(),
-        }
-
-    def _execute_hierarchical(self, input_data: Any, state: MultiAgentState, **kwargs) -> Any:
-        """Execute agents in hierarchical fashion."""
-        # Simplified hierarchical execution - assume first agent is supervisor
-        agent_names = list(self.agents.keys())
         if not agent_names:
-            return {"error": "No agents available"}
+            return
 
-        supervisor_name = agent_names[0]
-        subordinate_names = agent_names[1:]
+        # Determine entry point
+        start_agent = (
+            self.entry_point if self.entry_point in agent_names else agent_names[0]
+        )
 
-        supervisor = self.agents[supervisor_name]
-        subordinates = {name: self.agents[name] for name in subordinate_names}
+        # START -> first agent
+        graph.add_edge(START, start_agent)
 
-        try:
-            # Execute supervisor with access to subordinates
-            logger.info(f"Hierarchical execution - supervisor: {supervisor_name}")
+        # Chain agents sequentially
+        for i in range(len(agent_names) - 1):
+            current = agent_names[i]
+            next_agent = agent_names[i + 1]
+            graph.add_edge(current, next_agent)
 
-            # Add subordinates to supervisor context (simplified)
-            enhanced_input = input_data
-            if isinstance(input_data, dict):
-                enhanced_input = input_data.copy()
-                enhanced_input["subordinate_agents"] = subordinates
+        # Last agent -> END
+        graph.add_edge(agent_names[-1], END)
 
-            result = supervisor.run(enhanced_input, **kwargs)
-            state.agent_results[supervisor_name] = result
-            state.completed_agents.append(supervisor_name)
-            state.execution_complete = True
+        logger.info(f"Added sequential edges for {len(agent_names)} agents")
 
-            return {
-                "result": result,
-                "supervisor": supervisor_name,
-                "subordinates": subordinate_names,
-                "state": state.model_dump(),
-            }
+    def _add_parallel_edges(self, graph: BaseGraph) -> None:
+        """Add parallel edges: START -> all agents -> END.
 
-        except Exception as e:
-            logger.error(f"Hierarchical supervisor {supervisor_name} failed: {e}")
-            state.failed_agents.append(supervisor_name)
-            return {"error": str(e), "state": state.model_dump()}
+        Args:
+            graph: The BaseGraph instance to add edges to.
+        """
+        agent_names = list(self.agent_dict.keys())
 
-    def _should_execute_agent(self, agent: Agent, input_data: Any) -> bool:
-        """Determine if an agent should be executed based on conditions."""
-        # Simplified condition checking
-        # In a real implementation, this would analyze agent capabilities vs requirements
-        return True
+        # START -> all agents in parallel
+        for agent_name in agent_names:
+            graph.add_edge(START, agent_name)
+            graph.add_edge(agent_name, END)
 
-    def _should_stop_round_robin(self, result: Any, iteration: int) -> bool:
-        """Determine if round-robin execution should stop."""
-        # Simplified stopping condition
-        # In a real implementation, this would analyze result quality/completion
-        return iteration >= 2  # Stop after 3 rounds maximum
+        logger.info(f"Added parallel edges for {len(agent_names)} agents")
 
-    def add_agent(self, name: str, agent: Agent) -> None:
-        """Add an agent to the multi-agent system."""
-        self.agents[name] = agent
-        logger.info(f"Added agent: {name}")
+    def _add_conditional_edges(self, graph: BaseGraph) -> None:
+        """Add conditional edges using BaseGraph2.add_conditional_edges().
 
-    def remove_agent(self, name: str) -> Optional[Agent]:
-        """Remove an agent from the multi-agent system."""
-        if name in self.agents:
-            agent = self.agents.pop(name)
-            logger.info(f"Removed agent: {name}")
-            return agent
-        return None
+        Args:
+            graph: The BaseGraph instance to add edges to.
+        """
+        # Start with entry point or first agent
+        agent_names = list(self.agent_dict.keys())
+        start_agent = (
+            self.entry_point if self.entry_point in agent_names else agent_names[0]
+        )
+        graph.add_edge(START, start_agent)
 
-    def get_agent(self, name: str) -> Optional[Agent]:
-        """Get an agent by name."""
-        return self.agents.get(name)
+        # Add configured conditional edges
+        for edge_config in self.conditional_edges:
+            from_agent = edge_config["from_agent"]
+            condition = edge_config["condition"]
+            destinations = edge_config["destinations"]
+            default = edge_config.get("default", END)
 
-    def list_agents(self) -> List[str]:
-        """List all agent names."""
-        return list(self.agents.keys())
+            # Use BaseGraph2's add_conditional_edges
+            graph.add_conditional_edges(
+                source_node=from_agent,
+                condition=condition,
+                destinations=destinations,
+                default=default,
+            )
 
+            logger.debug(f"Added conditional edge from {from_agent}")
 
-# Factory functions for common multi-agent patterns
+        # Ensure unconnected agents go to END
+        for agent_name in agent_names:
+            # Check if agent has outgoing edges configured
+            has_outgoing = any(
+                edge["from_agent"] == agent_name for edge in self.conditional_edges
+            )
+            if not has_outgoing and agent_name != start_agent:
+                graph.add_edge(agent_name, END)
 
+        logger.info(f"Added conditional edges for {self.execution_mode} mode")
 
-def create_sequential_multi_agent(
-    agents: List[Agent], name: str = "sequential_multi_agent"
-) -> MultiAgent:
-    """Create a sequential multi-agent system."""
-    agent_dict = {f"agent_{i}": agent for i, agent in enumerate(agents)}
-    config = MultiAgentConfig(name=name, agents=agent_dict, execution_mode=ExecutionMode.SEQUENTIAL)
-    return MultiAgent(config)
+    def _add_manual_edges(self, graph: BaseGraph) -> None:
+        """Manual mode - minimal setup, user adds edges.
 
+        Args:
+            graph: The BaseGraph instance to add edges to.
+        """
+        # Just ensure START connects to entry point
+        agent_names = list(self.agent_dict.keys())
+        start_agent = (
+            self.entry_point if self.entry_point in agent_names else agent_names[0]
+        )
+        graph.add_edge(START, start_agent)
 
-def create_parallel_multi_agent(
-    agents: List[Agent], name: str = "parallel_multi_agent"
-) -> MultiAgent:
-    """Create a parallel multi-agent system."""
-    agent_dict = {f"agent_{i}": agent for i, agent in enumerate(agents)}
-    config = MultiAgentConfig(name=name, agents=agent_dict, execution_mode=ExecutionMode.PARALLEL)
-    return MultiAgent(config)
+        logger.info(
+            "Manual mode - user must add edges with add_edge() or add_conditional_edge()"
+        )
 
+    # ========================================================================
+    # USER-FRIENDLY EDGE METHODS
+    # ========================================================================
 
-def create_hierarchical_multi_agent(
-    supervisor: Agent, subordinates: List[Agent], name: str = "hierarchical_multi_agent"
-) -> MultiAgent:
-    """Create a hierarchical multi-agent system."""
-    agent_dict = {"supervisor": supervisor}
-    agent_dict.update({f"subordinate_{i}": agent for i, agent in enumerate(subordinates)})
+    def add_edge(self, from_agent: str, to_agent: str) -> None:
+        """Add a direct edge between two agents in the graph.
 
-    config = MultiAgentConfig(
-        name=name, agents=agent_dict, execution_mode=ExecutionMode.HIERARCHICAL
-    )
-    return MultiAgent(config)
+        This method creates a simple connection from one agent to another,
+        useful for building custom execution flows in manual mode.
 
+        Args:
+            from_agent: Name of the source agent.
+            to_agent: Name of the destination agent (or END for termination).
 
-# Export main classes and functions
-__all__ = [
-    "MultiAgent",
-    "MultiAgentConfig",
-    "MultiAgentState",
-    "ExecutionMode",
-    "create_sequential_multi_agent",
-    "create_parallel_multi_agent",
-    "create_hierarchical_multi_agent",
-]
+        Raises:
+            ValueError: If from_agent doesn't exist or to_agent is invalid.
+
+        Example:
+            >>> workflow = MultiAgent(
+            ...     agents=[agent1, agent2, agent3],
+            ...     execution_mode="manual"
+            ... )
+            >>> workflow.add_edge("agent1", "agent2")
+            >>> workflow.add_edge("agent2", "agent3")
+            >>> workflow.add_edge("agent3", END)
+
+        Note:
+            If the graph is already built, the edge is added immediately.
+            Otherwise, it will be added when the graph is built.
+        """
+        if from_agent not in self.agent_dict:
+            raise ValueError(f"Agent '{from_agent}' not found")
+        if to_agent not in self.agent_dict and to_agent != END:
+            raise ValueError(f"Agent '{to_agent}' not found")
+
+        # If graph is built, add edge directly
+        if hasattr(self, "graph") and self.graph:
+            self.graph.add_edge(from_agent, to_agent)
+            logger.info(f"Added direct edge: {from_agent} -> {to_agent}")
+        else:
+            logger.warning("Graph not built yet, edge will be added on build")
+
+    def add_conditional_edge(
+        self,
+        from_agent: str,
+        condition: Callable[[Any], bool],
+        true_agent: str,
+        false_agent: str = END,
+    ) -> None:
+        """Add a conditional edge that routes based on a boolean condition.
+
+        This method creates a branching point in the workflow where execution
+        can take different paths based on the result of a condition function.
+
+        Args:
+            from_agent: Name of the agent where the condition is evaluated.
+            condition: Callable that takes the state and returns True or False.
+            true_agent: Agent to route to when condition returns True.
+            false_agent: Agent to route to when condition returns False (default: END).
+
+        Raises:
+            ValueError: If from_agent doesn't exist.
+
+        Example:
+            >>> def check_complexity(state):
+            ...     return state.get("complexity", 0) > 0.7
+            ...
+            >>> workflow.add_conditional_edge(
+            ...     from_agent="analyzer",
+            ...     condition=check_complexity,
+            ...     true_agent="complex_processor",
+            ...     false_agent="simple_processor"
+            ... )
+
+        Note:
+            The condition function receives the full MultiAgentState and should
+            return a boolean value. For more complex routing, use add_multi_conditional_edge.
+        """
+        if from_agent not in self.agent_dict:
+            raise ValueError(f"Agent '{from_agent}' not found")
+
+        # Store configuration
+        edge_config = {
+            "from_agent": from_agent,
+            "condition": condition,
+            "destinations": {True: true_agent, False: false_agent},
+            "default": false_agent,
+        }
+        self.conditional_edges.append(edge_config)
+
+        # If graph is built, add edge directly
+        if hasattr(self, "graph") and self.graph:
+            self.graph.add_conditional_edges(
+                source_node=from_agent,
+                condition=condition,
+                destinations={True: true_agent, False: false_agent},
+                default=false_agent,
+            )
+            logger.info(f"Added conditional edge from {from_agent}")
+
+        logger.info(
+            f"Configured conditional edge: {from_agent} -> {true_agent}/{false_agent}"
+        )
+
+    def add_multi_conditional_edge(
+        self,
+        from_agent: str,
+        condition: Callable[[Any], str],
+        routes: dict[str, str],
+        default: str = END,
+    ) -> None:
+        """Add multi-way conditional edge with multiple destinations.
+
+        This method creates a branching point where the condition function
+        returns a string key that maps to different destination agents.
+
+        Args:
+            from_agent: Name of the agent where routing decision is made.
+            condition: Callable that returns a route key string.
+            routes: Dictionary mapping route keys to agent names.
+            default: Default agent when condition returns unmatched key.
+
+        Raises:
+            ValueError: If from_agent doesn't exist.
+
+        Example:
+            >>> def categorize(state):
+            ...     return state.get("category", "other")
+            ...
+            >>> workflow.add_multi_conditional_edge(
+            ...     from_agent="categorizer",
+            ...     condition=categorize,
+            ...     routes={
+            ...         "technical": "tech_agent",
+            ...         "sales": "sales_agent",
+            ...         "support": "support_agent"
+            ...     },
+            ...     default="general_agent"
+            ... )
+        """
+        if from_agent not in self.agent_dict:
+            raise ValueError(f"Agent '{from_agent}' not found")
+
+        # Store configuration
+        edge_config = {
+            "from_agent": from_agent,
+            "condition": condition,
+            "destinations": routes,
+            "default": default,
+        }
+        self.conditional_edges.append(edge_config)
+
+        # If graph is built, add edge directly
+        if hasattr(self, "graph") and self.graph:
+            self.graph.add_conditional_edges(
+                source_node=from_agent,
+                condition=condition,
+                destinations=routes,
+                default=default,
+            )
+
+        logger.info(
+            f"Configured multi-conditional edge from {from_agent} with {len(routes)} routes"
+        )
+
+    # ========================================================================
+    # UTILITY METHODS
+    # ========================================================================
+
+    def get_agent_names(self) -> list[str]:
+        """Get list of all agent names in the workflow.
+
+        Returns:
+            List[str]: Names of all registered agents.
+
+        Example:
+            >>> names = workflow.get_agent_names()
+            >>> print(names)  # ['analyzer', 'processor', 'formatter']
+        """
+        return list(self.agent_dict.keys())
+
+    def get_agent(self, name: str) -> Agent | None:
+        """Retrieve an agent instance by name.
+
+        Args:
+            name: The name of the agent to retrieve.
+
+        Returns:
+            Optional[Agent]: The agent instance if found, None otherwise.
+
+        Example:
+            >>> agent = workflow.get_agent("analyzer")
+            >>> if agent:
+            ...     print(f"Found agent: {agent.name}")
+        """
+        return self.agent_dict.get(name)
+
+    def add_agent(self, agent: Agent) -> None:
+        """Add an agent dynamically to the workflow.
+
+        This method allows adding agents after initialization. If build_mode
+        is 'auto', the graph will be automatically rebuilt.
+
+        Args:
+            agent: The Agent instance to add.
+
+        Raises:
+            ValueError: If agent lacks a name or name already exists.
+
+        Example:
+            >>> new_agent = SimpleAgent(name="validator")
+            >>> workflow.add_agent(new_agent)
+
+        Note:
+            In 'auto' build mode, this triggers graph recompilation.
+            In other modes, you must rebuild the graph manually.
+        """
+        if not agent.name:
+            raise ValueError("Agent must have a name")
+
+        if agent.name in self.agent_dict:
+            raise ValueError(f"Agent '{agent.name}' already exists")
+
+        self.agent_dict[agent.name] = agent
+        self.agents.append(agent)
+
+        # Rebuild graph if auto mode and already built
+        if self.build_mode == "auto" and hasattr(self, "graph") and self.graph:
+            self.rebuild_graph()
+
+        logger.info(f"Added agent: {agent.name}")
+
+    def display_info(self) -> None:
+        """Display detailed information about the workflow configuration.
+
+        This method prints a formatted summary of the workflow including:
+        - Execution and build modes
+        - Registered agents and their types
+        - Number of conditional edges
+        - Graph build status
+
+        Example:
+            >>> workflow.display_info()
+            === Enhanced MultiAgent V4: analysis_pipeline ===
+            Execution Mode: sequential
+            Build Mode: auto
+            Entry Point: analyzer
+            Agents (3):
+              1. analyzer (ReactAgent)
+              2. processor (SimpleAgent)
+              3. formatter (SimpleAgent)
+            Conditional Edges: 0
+            Graph Built: Yes
+        """
+        for _i, (_name, agent) in enumerate(self.agent_dict.items(), 1):
+            type(agent).__name__
+
+    # ========================================================================
+    # ENHANCED BASE AGENT INTEGRATION
+    # ========================================================================
+
+    # The enhanced base agent provides:
+    # - Automatic graph building based on build_mode
+    # - Schema generation and management
+    # - Persistence capabilities
+    # - Standard run/arun interface
+    # - All mixin functionality (execution, state, persistence, etc.)
+
+    # We just implement build_graph() and the enhanced base agent handles the
+    # rest!

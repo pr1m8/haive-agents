@@ -11,6 +11,7 @@ This combines the enhanced agent pattern with the clean multi-agent approach:
 
 import logging
 from typing import Any, Literal
+
 from haive.core.engine.aug_llm.config import AugLLMConfig
 from haive.core.graph.node.agent_node_v3 import AgentNodeV3Config
 from haive.core.graph.node.engine_node import EngineNodeConfig
@@ -20,6 +21,7 @@ from langchain_core.messages import BaseMessage
 from langgraph.graph import END, START
 from pydantic import Field, field_validator, model_validator
 from typing_extensions import TypedDict
+
 from haive.agents.react.enhanced_react_agent import ReactAgent
 from haive.agents.simple.enhanced_simple_real import EnhancedAgentBase as Agent
 from haive.agents.simple.enhanced_simple_real import SimpleAgent
@@ -115,17 +117,22 @@ class EnhancedMultiAgent(Agent):
         default=None, description="Custom state schema if strategy is 'custom'"
     )
     shared_fields: list[str] = Field(
-        default_factory=lambda: ["messages"], description="Fields shared between all agents"
+        default_factory=lambda: ["messages"],
+        description="Fields shared between all agents",
     )
     state_transfer_map: dict[tuple[str, str], dict[str, str]] = Field(
         default_factory=dict, description="State transfer rules between agents"
     )
-    coordinator_prompt: str | None = Field(default=None, description="Custom coordinator prompt")
+    coordinator_prompt: str | None = Field(
+        default=None, description="Custom coordinator prompt"
+    )
     temperature: float = Field(default=0.3, ge=0.0, le=2.0)
 
     @field_validator("agents")
     @classmethod
-    def validate_agents(cls, v: list[Agent] | dict[str, Agent]) -> list[Agent] | dict[str, Agent]:
+    def validate_agents(
+        cls, v: list[Agent] | dict[str, Agent]
+    ) -> list[Agent] | dict[str, Agent]:
         """Validate and normalize agents."""
         if isinstance(v, list):
             if not v:
@@ -181,7 +188,9 @@ class EnhancedMultiAgent(Agent):
             [
                 f"- {name}: {type(agent).__name__}"
                 for name, agent in (
-                    self.agents.items() if isinstance(self.agents, dict) else enumerate(self.agents)
+                    self.agents.items()
+                    if isinstance(self.agents, dict)
+                    else enumerate(self.agents)
                 )
             ]
         )
@@ -189,7 +198,9 @@ class EnhancedMultiAgent(Agent):
 
     def build_graph(self) -> BaseGraph:
         """Build multi-agent execution graph."""
-        graph = BaseGraph(name=f"{self.name}_multi_graph", state_schema=self.state_schema)
+        graph = BaseGraph(
+            name=f"{self.name}_multi_graph", state_schema=self.state_schema
+        )
         coord_node = EngineNodeConfig(name="coordinator", engine=self.engine)
         graph.add_node("coordinator", coord_node)
         graph.add_edge(START, "coordinator")
@@ -202,8 +213,12 @@ class EnhancedMultiAgent(Agent):
             agent_node = AgentNodeV3Config(
                 name=agent_name,
                 agent=agent,
-                input_schema=agent.input_schema if hasattr(agent, "input_schema") else None,
-                output_schema=agent.output_schema if hasattr(agent, "output_schema") else None,
+                input_schema=(
+                    agent.input_schema if hasattr(agent, "input_schema") else None
+                ),
+                output_schema=(
+                    agent.output_schema if hasattr(agent, "output_schema") else None
+                ),
                 state_fields=self.shared_fields,
                 private_state_key=f"{agent_name}_state",
             )
@@ -216,7 +231,9 @@ class EnhancedMultiAgent(Agent):
             self._build_conditional_pattern(graph, list(agents_dict.keys()))
         return graph
 
-    def _build_sequential_pattern(self, graph: BaseGraph, agent_names: list[str]) -> None:
+    def _build_sequential_pattern(
+        self, graph: BaseGraph, agent_names: list[str]
+    ) -> None:
         """Build sequential execution pattern."""
         prev_node = "coordinator"
         for agent_name in agent_names:
@@ -228,12 +245,16 @@ class EnhancedMultiAgent(Agent):
         """Build parallel execution pattern."""
         for agent_name in agent_names:
             graph.add_edge("coordinator", agent_name)
-        graph.add_node("aggregator", EngineNodeConfig(name="aggregator", engine=self.engine))
+        graph.add_node(
+            "aggregator", EngineNodeConfig(name="aggregator", engine=self.engine)
+        )
         for agent_name in agent_names:
             graph.add_edge(agent_name, "aggregator")
         graph.add_edge("aggregator", END)
 
-    def _build_conditional_pattern(self, graph: BaseGraph, agent_names: list[str]) -> None:
+    def _build_conditional_pattern(
+        self, graph: BaseGraph, agent_names: list[str]
+    ) -> None:
         """Build conditional execution pattern."""
 
         def route_to_agent(state: dict[str, Any]) -> str:

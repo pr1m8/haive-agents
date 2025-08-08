@@ -31,7 +31,9 @@ class EchoAgent(SimpleAgent):
     def __init__(self, name: str, response_prefix: str = ""):
         super().__init__(name=name)
         self.response_prefix = response_prefix
-        self.description = f"Test agent that echoes messages with prefix: {response_prefix}"
+        self.description = (
+            f"Test agent that echoes messages with prefix: {response_prefix}"
+        )
 
     async def ainvoke(self, state: Any, config=None) -> Any:
         """Echo the last message with a prefix."""
@@ -94,7 +96,9 @@ async def test_supervisor_basic():
         if final_messages:
             last_message = final_messages[-1]
             if hasattr(last_message, "content"):
-                console.print(f"[green]📤 Supervisor Response:[/green] {last_message.content}")
+                console.print(
+                    f"[green]📤 Supervisor Response:[/green] {last_message.content}"
+                )
 
         console.print("[green]✅ Basic test completed![/green]")
 
@@ -121,7 +125,9 @@ async def test_agent_registration():
         )
         initial_state = {"messages": [HumanMessage(content=registration_message)]}
 
-        console.print(f"\n[yellow]📝 Registration Request:[/yellow] {registration_message}")
+        console.print(
+            f"\n[yellow]📝 Registration Request:[/yellow] {registration_message}"
+        )
 
         # Run supervisor
         result = await supervisor.ainvoke(initial_state)
@@ -173,9 +179,7 @@ async def test_routing_flow():
         supervisor.add_worker_agent(calc_agent)
 
         # Test routing request
-        routing_message = (
-            "I need to analyze this text: 'Hello world, this is a test message for analysis.'"
-        )
+        routing_message = "I need to analyze this text: 'Hello world, this is a test message for analysis.'"
         initial_state = {"messages": [HumanMessage(content=routing_message)]}
 
         console.print(f"\n[yellow]📝 Routing Request:[/yellow] {routing_message}")
@@ -189,7 +193,9 @@ async def test_routing_flow():
         for i, msg in enumerate(final_messages, 1):
             if hasattr(msg, "content"):
                 role = msg.__class__.__name__.replace("Message", "")
-                content = msg.content[:150] + "..." if len(msg.content) > 150 else msg.content
+                content = (
+                    msg.content[:150] + "..." if len(msg.content) > 150 else msg.content
+                )
                 console.print(f"  {i}. [{role}] {content}")
 
         console.print("[green]✅ Routing test completed![/green]")

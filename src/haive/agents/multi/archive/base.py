@@ -11,6 +11,7 @@ from abc import abstractmethod
 from collections.abc import Callable, Sequence
 from enum import Enum
 from typing import Any, Literal
+
 from haive.core.graph.node.agent_node import AgentNodeConfig, CoordinatorNodeConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.schema.agent_schema_composer import AgentSchemaComposer, BuildMode
@@ -18,6 +19,7 @@ from langgraph.graph import END, START
 from pydantic import BaseModel, Field, PrivateAttr, model_validator
 from rich.console import Console
 from rich.tree import Tree
+
 from haive.agents.base.agent import Agent
 
 logger = logging.getLogger(__name__)
@@ -44,7 +46,9 @@ class MultiAgent(Agent):
     - Meta state for agent coordination
     """
 
-    name: str = Field(default="Multi Agent", description="Name of the multi-agent system")
+    name: str = Field(
+        default="Multi Agent", description="Name of the multi-agent system"
+    )
     agents: Sequence[Agent] = Field(
         default_factory=list, description="List of agents in this multi-agent system"
     )
@@ -58,9 +62,12 @@ class MultiAgent(Agent):
         default="smart", description="How to handle field separation in composed schema"
     )
     branches: dict[str, dict[str, Any]] = Field(
-        default_factory=dict, description="Branch configurations keyed by source node name"
+        default_factory=dict,
+        description="Branch configurations keyed by source node name",
     )
-    _agent_private_states: dict[str, type[BaseModel]] = PrivateAttr(default_factory=dict)
+    _agent_private_states: dict[str, type[BaseModel]] = PrivateAttr(
+        default_factory=dict
+    )
     _agent_node_mapping: dict[str, str] = PrivateAttr(default_factory=dict)
 
     @model_validator(mode="before")
@@ -142,7 +149,9 @@ class MultiAgent(Agent):
         self.branches[source_name] = {
             "condition": condition,
             "destinations": normalized_dests,
-            "default": self._get_node_name(default) if default and default != END else default,
+            "default": (
+                self._get_node_name(default) if default and default != END else default
+            ),
         }
 
     def _get_node_name(self, agent: str | Agent) -> str:
@@ -163,7 +172,12 @@ class MultiAgent(Agent):
         if agent_id not in self._agent_node_mapping:
             node_name = base_name
             counter = 1
-            while any((node_name == existing for existing in self._agent_node_mapping.values())):
+            while any(
+                (
+                    node_name == existing
+                    for existing in self._agent_node_mapping.values()
+                )
+            ):
                 node_name = f"{base_name}_{counter}"
                 counter += 1
             self._agent_node_mapping[agent_id] = node_name
@@ -208,7 +222,8 @@ class MultiAgent(Agent):
                     branch_config["condition"],
                     branch_config["destinations"],
                     default=branch_config.get(
-                        "default", END if i == len(node_names) - 1 else node_names[i + 1]
+                        "default",
+                        END if i == len(node_names) - 1 else node_names[i + 1],
                     ),
                 )
             elif i == len(node_names) - 1:
@@ -265,12 +280,17 @@ class MultiAgent(Agent):
         Returns:
             The modified graph
         """
-        raise NotImplementedError("Subclasses must implement build_custom_graph for CUSTOM mode")
+        raise NotImplementedError(
+            "Subclasses must implement build_custom_graph for CUSTOM mode"
+        )
 
     def get_agent_by_name(self, name: str) -> Agent | None:
         """Get an agent by name or id."""
         for agent in self.agents:
-            if getattr(agent, "name", None) == name or getattr(agent, "id", None) == name:
+            if (
+                getattr(agent, "name", None) == name
+                or getattr(agent, "id", None) == name
+            ):
                 return agent
         return None
 
@@ -296,11 +316,17 @@ class MultiAgent(Agent):
                 branches_branch.add(branch_info)
         schema_branch = tree.add("[cyan]Schema Info[/cyan]")
         if self.state_schema:
-            schema_branch.add(f"State: {getattr(self.state_schema, '__name__', 'Unknown')}")
+            schema_branch.add(
+                f"State: {getattr(self.state_schema, '__name__', 'Unknown')}"
+            )
         if self.input_schema:
-            schema_branch.add(f"Input: {getattr(self.input_schema, '__name__', 'Unknown')}")
+            schema_branch.add(
+                f"Input: {getattr(self.input_schema, '__name__', 'Unknown')}"
+            )
         if self.output_schema:
-            schema_branch.add(f"Output: {getattr(self.output_schema, '__name__', 'Unknown')}")
+            schema_branch.add(
+                f"Output: {getattr(self.output_schema, '__name__', 'Unknown')}"
+            )
         console.print(tree)
 
 

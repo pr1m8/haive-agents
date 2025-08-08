@@ -5,6 +5,7 @@ ReactAgent = Agent[AugLLMConfig] + reasoning loop with tools.
 
 import logging
 from typing import Any, Literal
+
 from haive.core.graph.node.engine_node import EngineNodeConfig
 from haive.core.graph.node.tool_node_config_v2 import ToolNodeConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
@@ -12,6 +13,7 @@ from langchain_core.messages import AIMessage
 from langchain_core.tools import BaseTool
 from langgraph.graph import END
 from pydantic import Field, model_validator
+
 from haive.agents.simple.enhanced_simple_real import EnhancedAgentBase as Agent
 
 logger = logging.getLogger(__name__)
@@ -68,7 +70,9 @@ class ReactAgent(Agent):
     max_iterations: int = Field(
         default=10, description="Maximum number of reasoning iterations", ge=1, le=50
     )
-    react_prompt: str | None = Field(default=None, description="Custom prompt for ReAct pattern")
+    react_prompt: str | None = Field(
+        default=None, description="Custom prompt for ReAct pattern"
+    )
     execution_mode: Literal["react", "tool-calling", "hybrid"] = Field(
         default="react", description="How to execute the reasoning loop"
     )
@@ -94,7 +98,9 @@ class ReactAgent(Agent):
         3. Observation node - processes tool results
         4. Decision routing - continue or finish
         """
-        graph = BaseGraph(name=f"{self.name}_react_graph", state_schema=self.state_schema)
+        graph = BaseGraph(
+            name=f"{self.name}_react_graph", state_schema=self.state_schema
+        )
         reasoning_config = EngineNodeConfig(
             engines={"reasoner": self.engine}, system_message=self._get_react_prompt()
         )
@@ -117,9 +123,16 @@ class ReactAgent(Agent):
             last_message = messages[-1]
             if isinstance(last_message, AIMessage):
                 content = last_message.content.lower()
-                if any((word in content for word in ["final answer", "complete", "finished"])):
+                if any(
+                    (
+                        word in content
+                        for word in ["final answer", "complete", "finished"]
+                    )
+                ):
                     return END
-                if self.tools and any((word in content for word in ["use", "call", "need"])):
+                if self.tools and any(
+                    (word in content for word in ["use", "call", "need"])
+                ):
                     return "act"
                 if len(self.reasoning_history) >= self.max_iterations:
                     return END

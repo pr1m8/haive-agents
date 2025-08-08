@@ -9,17 +9,15 @@ Usage:
     from haive.agents.simple.agent_v3_minimal import SimpleAgentV3Minimal as SimpleAgentV3
 
     # Full functionality available when actually used
-    agent = SimpleAgentV3(name="test")
+    agent = SimpleAgent(name="test")
     result = await agent.arun("Hello")
 """
 
 from typing import TYPE_CHECKING
 
-from haive.agents.simple.agent_v3 import SimpleAgentV3
-
 if TYPE_CHECKING:
     # Import types only for static analysis
-    from haive.agents.simple.agent_v3 import SimpleAgentV3 as _SimpleAgentV3
+    from haive.agents.simple.agent import SimpleAgent as _SimpleAgentV3
 
 
 else:

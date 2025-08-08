@@ -23,7 +23,9 @@ from typing import Any, Generic, TypeVar, get_origin
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.node.agent_node_v3 import AgentNodeV3Config
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
-from haive.core.schema.prebuilt.enhanced_multi_agent_state import EnhancedMultiAgentState
+from haive.core.schema.prebuilt.enhanced_multi_agent_state import (
+    EnhancedMultiAgentState,
+)
 from haive.core.schema.prebuilt.multi_agent_state import MultiAgentState
 from pydantic import Field, field_validator, model_validator
 from rich.console import Console

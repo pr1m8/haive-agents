@@ -28,7 +28,9 @@ class SelfDiscoverState(MultiAgentState):
     reasoning_modules: list[str] = Field(
         default_factory=list, description="List of available reasoning modules"
     )
-    task_description: str = Field(default="", description="Description of the task to solve")
+    task_description: str = Field(
+        default="", description="Description of the task to solve"
+    )
 
     # Structured outputs from each agent
     selected_modules: SelectedModules | None = Field(
@@ -40,7 +42,9 @@ class SelfDiscoverState(MultiAgentState):
     reasoning_structure: ReasoningStructure | None = Field(
         default=None, description="Output from structure_agent"
     )
-    final_answer: FinalAnswer | None = Field(default=None, description="Output from reason_agent")
+    final_answer: FinalAnswer | None = Field(
+        default=None, description="Output from reason_agent"
+    )
 
     def get_select_inputs(self) -> dict[str, Any]:
         """Get inputs for select_agent."""
@@ -89,7 +93,9 @@ class SelfDiscoverState(MultiAgentState):
 
         # Format reasoning structure for the prompt
 
-        reasoning_structure_str = json.dumps(self.reasoning_structure.reasoning_structure, indent=2)
+        reasoning_structure_str = json.dumps(
+            self.reasoning_structure.reasoning_structure, indent=2
+        )
 
         return {
             "reasoning_structure": reasoning_structure_str,
@@ -106,6 +112,8 @@ class SelfDiscoverState(MultiAgentState):
                 self.adapted_modules = AdaptedModules(**output["adapted_modules"])
         elif agent_name == "create_structure":
             if "reasoning_structure" in output:
-                self.reasoning_structure = ReasoningStructure(**output["reasoning_structure"])
+                self.reasoning_structure = ReasoningStructure(
+                    **output["reasoning_structure"]
+                )
         elif agent_name == "final_reasoning" and "final_answer" in output:
             self.final_answer = FinalAnswer(**output["final_answer"])

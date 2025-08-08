@@ -34,7 +34,6 @@ from haive.agents.base.mixins.persistence_mixin import PersistenceMixin
 from haive.agents.base.mixins.state_mixin import StateMixin
 from haive.agents.base.pre_post_agent_mixin import PrePostAgentMixin
 from haive.agents.base.serialization_mixin import SerializationMixin
-from haive.agents.base.workflow import Workflow
 
 logger = logging.getLogger(__name__)
 try:
@@ -429,7 +428,6 @@ class Agent(
         from haive.core.engine.aug_llm import AugLLMConfig
 
         from haive.agents.multi.agent import MultiAgent
-        from haive.agents.structured.agent import StructuredOutputAgent
 
         # Create a copy of self without structured output
         base_agent = self.model_copy()

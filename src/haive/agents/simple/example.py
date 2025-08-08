@@ -50,7 +50,9 @@ logger = logging.getLogger("SimpleAgentDebug")
 def debug_print(title, obj, expand=False) -> None:
     """Print debugging information in a rich panel."""
     if isinstance(obj, dict):
-        console.print(Panel(Pretty(obj, expand_all=expand), title=title, border_style="cyan"))
+        console.print(
+            Panel(Pretty(obj, expand_all=expand), title=title, border_style="cyan")
+        )
     else:
         console.print(Panel(str(obj), title=title, border_style="cyan"))
 
@@ -112,7 +114,9 @@ def example_with_custom_state_schema() -> Any:
         state.answer = result
 
         # Debug what's in the state
-        console.print(f"[bold green]State after process:[/bold green] answer={state.answer}")
+        console.print(
+            f"[bold green]State after process:[/bold green] answer={state.answer}"
+        )
 
         return state
 

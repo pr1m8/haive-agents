@@ -4,7 +4,6 @@ This module provides utilities to handle LangGraph's AddableValuesDict
 return type and extract structured output cleanly.
 """
 
-import re
 from typing import Any, Dict, Generic, Optional, Type, TypeVar, Union
 
 from langgraph.pregel.io import AddableValuesDict

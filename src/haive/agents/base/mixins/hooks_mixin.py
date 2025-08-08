@@ -107,7 +107,11 @@ class HooksMixin(Generic[TState]):
         )
 
     def run_hooks(
-        self, point: HookPoint, *args, context: HookContext[TState] | None = None, **kwargs
+        self,
+        point: HookPoint,
+        *args,
+        context: HookContext[TState] | None = None,
+        **kwargs,
     ) -> Any:
         """Run hooks for a specific point with enhanced context.
 
@@ -160,7 +164,9 @@ class HooksMixin(Generic[TState]):
                     self._hook_results[f"{point.value}:{hook_name}"] = hook_result
 
             except Exception as e:
-                logger.exception(f"Hook '{hook_entry['name']}' error at {point.value}: {e}")
+                logger.exception(
+                    f"Hook '{hook_entry['name']}' error at {point.value}: {e}"
+                )
                 if logger.isEnabledFor(logging.DEBUG):
                     logger.exception("Full hook error:")
 
@@ -175,7 +181,9 @@ class HooksMixin(Generic[TState]):
         """Clear all stored hook results."""
         self._hook_results.clear()
 
-    def unregister_hook(self, point: HookPoint, hook: Callable | str | None = None) -> None:
+    def unregister_hook(
+        self, point: HookPoint, hook: Callable | str | None = None
+    ) -> None:
         """Unregister one or all hooks at a point."""
         if point not in self._hooks:
             return

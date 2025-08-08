@@ -63,7 +63,9 @@ class MockEngine:
 class MockAgent:
     """Mock agent for testing."""
 
-    def __init__(self, name: str, agent_type: Any = "MockAgent", tools: list[str] | None = None):
+    def __init__(
+        self, name: str, agent_type: Any = "MockAgent", tools: list[str] | None = None
+    ):
         self.name = name
         self.agent_type = agent_type
         self.tools = tools or []
@@ -82,9 +84,7 @@ class MockAgent:
                 self.messages = messages
 
         # Simulate agent response
-        response_content = (
-            f"Response from {self.name}: I processed your request using my {len(self.tools)} tools."
-        )
+        response_content = f"Response from {self.name}: I processed your request using my {len(self.tools)} tools."
 
         # Mock message type
         class MockMessage:
@@ -105,9 +105,13 @@ class SimpleDynamicSupervisorTest:
         self.execution_history = []
         self.routing_decisions = []
 
-        console.print("[bold blue]🚀 Simple Dynamic Supervisor Test Initialized[/bold blue]")
+        console.print(
+            "[bold blue]🚀 Simple Dynamic Supervisor Test Initialized[/bold blue]"
+        )
 
-    async def register_agent(self, agent, capability_description, execution_config=None):
+    async def register_agent(
+        self, agent, capability_description, execution_config=None
+    ):
         """Register an agent in the test supervisor."""
         agent_name = agent.name
 
@@ -302,7 +306,8 @@ async def run_simple_test():
     )
 
     await supervisor.register_agent(
-        research_agent, "Handles research tasks, web searches, and information gathering"
+        research_agent,
+        "Handles research tasks, web searches, and information gathering",
     )
 
     # Add math agent
@@ -313,7 +318,8 @@ async def run_simple_test():
     )
 
     await supervisor.register_agent(
-        math_agent, "Mathematical calculations, equation solving, and data visualization"
+        math_agent,
+        "Mathematical calculations, equation solving, and data visualization",
     )
 
     # Add writing agent
@@ -414,11 +420,15 @@ async def simulate_agent_building_flow():
     ]
 
     for i, building_request in enumerate(agent_building_requests, 1):
-        console.print(f"\n[yellow]Building Request {i}:[/yellow] {building_request['request']}")
+        console.print(
+            f"\n[yellow]Building Request {i}:[/yellow] {building_request['request']}"
+        )
 
         # Simulate agent building process
         spec = building_request["agent_spec"]
-        console.print("[dim]Analyzing request and generating agent specification...[/dim]")
+        console.print(
+            "[dim]Analyzing request and generating agent specification...[/dim]"
+        )
         console.print(f"[dim]Agent Name: {spec['name']}[/dim]")
         console.print(f"[dim]Agent Type: {spec['type']}[/dim]")
         console.print(f"[dim]Tools Needed: {spec['tools']}[/dim]")
@@ -426,7 +436,9 @@ async def simulate_agent_building_flow():
         # Create the agent
         console.print(f"[green]🏗️  Building {spec['name']}...[/green]")
 
-        new_agent = MockAgent(name=spec["name"], agent_type=spec["type"], tools=spec["tools"])
+        new_agent = MockAgent(
+            name=spec["name"], agent_type=spec["type"], tools=spec["tools"]
+        )
 
         # Register the built agent
         await supervisor.register_agent(new_agent, spec["capability"])

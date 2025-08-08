@@ -162,15 +162,21 @@ class MultiAgentBase(Agent):
     agents: AgentList = Field(
         default_factory=AgentList, description="List of agents to orchestrate"
     )
-    branches: list[tuple] | None = Field(default=None, description="Conditional routing branches")
+    branches: list[tuple] | None = Field(
+        default=None, description="Conditional routing branches"
+    )
     state_schema_override: type[StateSchema] | None = Field(
         default=None, description="Optional state schema override"
     )
     schema_build_mode: BuildMode = Field(
         default=BuildMode.SEQUENCE, description="Schema composition build mode"
     )
-    schema_separation: str = Field(default="smart", description="Schema field separation strategy")
-    include_meta: bool = Field(default=True, description="Include meta state for coordination")
+    schema_separation: str = Field(
+        default="smart", description="Schema field separation strategy"
+    )
+    include_meta: bool = Field(
+        default=True, description="Include meta state for coordination"
+    )
     entry_points: list[str | Agent] | None = Field(
         default=None, description="Entry points for the multi-agent system"
     )
@@ -241,7 +247,9 @@ class MultiAgentBase(Agent):
 
         # Auto-detect finish points if not specified (for sequential flow)
         if not self.finish_points and not self.branches and len(self.agents) > 0:
-            self.finish_points = [self.agents[-1]]  # Default to last agent for sequential
+            self.finish_points = [
+                self.agents[-1]
+            ]  # Default to last agent for sequential
 
         # Process branches if provided
         if self.branches:
@@ -251,7 +259,9 @@ class MultiAgentBase(Agent):
                     self.add_conditional_edges(source_agent, condition, destinations)
                 elif len(branch) == 4:
                     source_agent, condition, destinations, default = branch
-                    self.add_conditional_edges(source_agent, condition, destinations, default)
+                    self.add_conditional_edges(
+                        source_agent, condition, destinations, default
+                    )
 
     def add_conditional_edges(
         self,
@@ -419,7 +429,9 @@ class MultiAgentBase(Agent):
             return engine_dict
 
         except Exception as e:
-            logger.warning(f"Failed to serialize engine {getattr(engine, 'name', 'unknown')}: {e}")
+            logger.warning(
+                f"Failed to serialize engine {getattr(engine, 'name', 'unknown')}: {e}"
+            )
             # Return minimal engine info
             return {
                 "id": getattr(engine, "id", str(id(engine))),
@@ -548,7 +560,9 @@ class MultiAgentBase(Agent):
             # Track which agents have explicit outgoing edges
             agents_with_edges = set()
             for edge_config in self.conditional_edges:
-                agents_with_edges.add(self._get_agent_node_name(edge_config["source_agent"]))
+                agents_with_edges.add(
+                    self._get_agent_node_name(edge_config["source_agent"])
+                )
 
             # Add sequential edges for agents without explicit routing
             for i in range(len(self.agents) - 1):

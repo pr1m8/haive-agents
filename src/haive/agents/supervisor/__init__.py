@@ -1,298 +1,75 @@
-"""Module exports."""
+"""Supervisor Module - Dynamic agent discovery and management.
 
-import invoke
+This module provides the DynamicSupervisor (also exported as SupervisorAgent for compatibility),
+which can discover, create, and manage agents at runtime based on task requirements.
 
-from haive.agents.supervisor.agent import (  # build_graph,; create_with_agents,; ensure_supervisor_engine,; register_agent,; route_to_agent,; setup_agent,; unregister_agent,
-    SupervisorAgent,
-    SupervisorState,
+Main Components:
+    - SupervisorAgent/DynamicSupervisor: Main supervisor class
+    - AgentSpec: Specifications for creating agents
+    - AgentCapability: Agent capability metadata
+    - SupervisorState: State management
+    - Discovery tools and utilities
+"""
+
+# Main supervisor implementation
+from haive.agents.supervisor.agent import DynamicSupervisor
+from haive.agents.supervisor.agent import (
+    DynamicSupervisor as SupervisorAgent,  # Compatibility alias
 )
-from haive.agents.supervisor.agent_v2 import (  # add_agent_impl,; add_worker_agent,; build_graph,; create_generic_agent_execution_node,; get_dynamic_routing_model,; get_worker_agents,; print_supervisor_status,; remove_worker_agent,; setup_agent,; should_continue,
-    SupervisorAgent,
-    SupervisorState,
+from haive.agents.supervisor.agent import create_dynamic_supervisor
+from haive.agents.supervisor.agent import (
+    create_dynamic_supervisor as create_supervisor,  # Compatibility alias
 )
-from haive.agents.supervisor.choice_model_supervisor import (  # agents,; build_graph,; get_available_agents,; get_choice_model_status,; setup_agent,
-    AgentCreationTool,
-    AgentSelectionTool,
-    ChoiceModelSupervisor,
-)
-from haive.agents.supervisor.clean_dynamic_supervisor import (  # add_agent,; build_graph,; create_with_agents,; list_agents,; register_agent,; remove_agent,; route_to_agent,; setup_agent,; unregister_agent,
-    DynamicSupervisor,
-    DynamicSupervisorState,
-)
-from haive.agents.supervisor.compatibility_bridge import (  # build_graph,; get_dynamic_status,; setup_agent,; setup_dynamic_supervisor,
-    DynamicMultiAgentSupervisor,
-    ReactMultiAgentSupervisor,
-    create_compatible_supervisor,
-    migrate_from_multi_agent,
-)
-from haive.agents.supervisor.dynamic_activation_supervisor import DynamicActivationSupervisor
-from haive.agents.supervisor.dynamic_agent_discovery_supervisor import (
+
+# Models and state
+from haive.agents.supervisor.models import (
     AgentCapability,
     AgentDiscoveryMode,
-    DynamicAgentDiscoverySupervisor,
+    AgentSpec,
+    DiscoveryConfig,
 )
-from haive.agents.supervisor.dynamic_agent_tools import (
-    AddAgentInput,
-    AddAgentTool,
-    AgentDescriptor,
-    AgentRegistryManager,
-    AgentSelectorTool,
-    ChangeAgentInput,
-    ChangeAgentTool,
-    ListAgentsInput,
-    ListAgentsTool,
-    RemoveAgentInput,
-    RemoveAgentTool,
-    create_agent_management_tools,
-    register_agent_constructor,
+from haive.agents.supervisor.state import (
+    ActiveAgent,
 )
-from haive.agents.supervisor.dynamic_executor_node import (
-    DynamicExecutorNode,
-    create_dynamic_executor_node,
+from haive.agents.supervisor.state import DynamicSupervisorState
+from haive.agents.supervisor.state import (
+    DynamicSupervisorState as SupervisorState,  # Compatibility alias
 )
-from haive.agents.supervisor.dynamic_multi_agent import (  # build_graph,; get_agent_capabilities,; get_agent_performance,; get_execution_history,; register_agent_dynamically,; setup_agent,; unregister_agent_dynamically,
-    DynamicMultiAgent,
-    create_dynamic_multi_agent,
+from haive.agents.supervisor.state import (
+    SupervisorMetrics,
+    create_initial_state,
 )
-from haive.agents.supervisor.dynamic_state import (
-    AgentExecutionConfig,
-    AgentExecutionResult,
-    DynamicSupervisorState,
-    SupervisorDecision,
-)
-from haive.agents.supervisor.dynamic_supervisor import DynamicSupervisorAgent, PerformanceMonitor
-from haive.agents.supervisor.dynamic_supervisor_fixed import DynamicSupervisorFixed
 
-# Note: Commented out to avoid chain of broken imports - can be fixed later
-# from haive.agents.supervisor.dynamic_tool_discovery_supervisor import (
-#     DynamicToolDiscoverySupervisor,
-#     ToolDiscoveryMode)
-from haive.agents.supervisor.example_delegation import (
-    create_mock_math_agent,
-    create_mock_research_agent,
-    create_mock_writing_agent,
-    create_supervisor_agent,
-    main,
-)
-from haive.agents.supervisor.integrated_supervisor import IntegratedDynamicSupervisor
-from haive.agents.supervisor.internal_dynamic_supervisor import InternalDynamicSupervisor
-from haive.agents.supervisor.multi_agent_dynamic_state import (
-    AgentRegistryState,
-    MultiAgentCoordinationState,
-    MultiAgentDynamicSupervisorState,
-)
-from haive.agents.supervisor.proper_dynamic_supervisor import ProperDynamicSupervisor
-from haive.agents.supervisor.rebuild_dynamic_supervisor import RebuildDynamicSupervisor
-from haive.agents.supervisor.registry import AgentRegistry
-from haive.agents.supervisor.registry_supervisor import (
-    AgentRegistry,
-    AgentRetrievalTool,
-    AgentSelectionTool,
-    RegistrySupervisor,
-)
-from haive.agents.supervisor.routing import (
-    BaseRoutingStrategy,
-    DynamicRoutingEngine,
-    LLMRoutingStrategy,
-    RoutingContext,
-    RoutingDecision,
-    RuleBasedRoutingStrategy,
-    TaskClassifier,
-)
-from haive.agents.supervisor.simple_supervisor import AgentInfo, SimpleSupervisor, build_graph
-from haive.agents.supervisor.simple_test import EchoAgent, main
-from haive.agents.supervisor.simple_test_runner import (
-    MockAgent,
-    MockEngine,
-    SimpleDynamicSupervisorTest,
+# Tools and utilities
+from haive.agents.supervisor.tools import (
+    AgentManagementTools,
+    create_agent_from_spec,
+    create_handoff_tool,
+    discover_agents,
+    find_matching_agent_specs,
 )
 
 __all__ = [
-    "AddAgentInput",
-    "AddAgentTool",
-    "AgentCapability",
-    "AgentCreationTool",
-    "AgentDescriptor",
-    "AgentDiscoveryMode",
-    "AgentExecutionConfig",
-    "AgentExecutionResult",
-    "AgentInfo",
-    "AgentRegistry",
-    "AgentRegistryManager",
-    "AgentRegistryState",
-    "AgentRetrievalTool",
-    "AgentSelectionTool",
-    "AgentSelectorTool",
-    "BaseRoutingStrategy",
-    "ChangeAgentInput",
-    "ChangeAgentTool",
-    "ChoiceModelSupervisor",
-    "DynamicActivationSupervisor",
-    "DynamicAgentDiscoverySupervisor",
-    "DynamicExecutorNode",
-    "DynamicMultiAgent",
-    "DynamicMultiAgentSupervisor",
-    "DynamicRoutingEngine",
+    # Main classes (with compatibility names)
     "DynamicSupervisor",
-    "DynamicSupervisorAgent",
-    "DynamicSupervisorFixed",
-    "DynamicSupervisorState",
-    "DynamicToolDiscoverySupervisor",
-    "EchoAgent",
-    "IntegratedDynamicSupervisor",
-    "InternalDynamicSupervisor",
-    "LLMRoutingStrategy",
-    "ListAgentsInput",
-    "ListAgentsTool",
-    "MockAgent",
-    "MockEngine",
-    "MockMessage",
-    # "MockResponse",
-    # "MockResult",
-    # "MockTool",
-    "MultiAgentCoordinationState",
-    "MultiAgentDynamicSupervisorState",
-    "PerformanceMonitor",
-    "ProperDynamicSupervisor",
-    "ReactMultiAgentSupervisor",
-    "RebuildDynamicSupervisor",
-    "RegistrySupervisor",
-    "RemoveAgentInput",
-    "RemoveAgentTool",
-    "RoutingContext",
-    "RoutingDecision",
-    "RuleBasedRoutingStrategy",
-    "SimpleDynamicSupervisorTest",
-    "SimpleSupervisor",
     "SupervisorAgent",
-    "SupervisorDecision",
+    "create_dynamic_supervisor",
+    "create_supervisor",
+    # Models
+    "AgentSpec",
+    "AgentCapability",
+    "AgentDiscoveryMode",
+    "DiscoveryConfig",
+    # State
+    "DynamicSupervisorState",
     "SupervisorState",
-    "TaskClassifier",
-    "TestAgent",
-    "ToolDiscoveryMode",
-    "activate_component",
-    "active_agent_count",
-    "active_coordination_sessions",
-    "adapt_response_for_agent",
-    "add_agent",
-    "add_agent_change_request",
-    "add_agent_config",
-    "add_agent_handoff",
-    "add_agent_impl",
-    "add_agent_to_registry",
-    "add_execution_result",
-    "add_routing_decision",
-    "add_to_execution_queue",
-    "add_worker_agent",
-    "agents",
-    "analyze_task_requirements",
-    "build_graph",
-    "check_component_status",
-    "classify_task",
-    "cleanup_old_coordination_data",
-    "cleanup_old_history",
-    "clear_all",
-    "complete_agent_execution",
-    "create_agent_from_descriptor",
-    "create_agent_management_tools",
-    "create_compatible_supervisor",
-    "create_dynamic_executor_node",
-    "create_dynamic_multi_agent",
-    "create_generic_agent_execution_node",
-    "create_mock_math_agent",
-    "create_mock_research_agent",
-    "create_mock_writing_agent",
-    "create_supervisor_agent",
-    "create_with_agent_specs",
-    "create_with_agents",
-    "create_with_agents_and_tools",
-    "create_with_components",
-    "create_with_discovery",
-    "discover_and_add_agents",
-    "discover_and_load_tools",
-    "discover_components",
-    "end_coordination_session",
-    "end_decision",
-    "ensure_supervisor_engine",
-    "estimate_complexity",
-    "get_active_agents",
-    "get_active_component_names",
-    "get_agent",
-    "get_agent_capabilities",
-    "get_agent_capability",
-    "get_agent_choice_model",
-    "get_agent_config",
-    "get_agent_count",
-    "get_agent_for_tool",
-    "get_agent_info",
-    "get_agent_performance",
-    "get_available_agents",
-    "get_available_templates",
-    "get_average_decision_time",
-    "get_choice_model_status",
-    "get_coordination_status",
-    "get_creation_history",
-    "get_dynamic_routing_model",
-    "get_dynamic_status",
-    "get_execution_history",
-    "get_high_priority_agents",
-    "get_performance_summary",
-    "get_recent_decisions",
-    "get_registered_agents",
-    "get_registry_agents",
-    "get_registry_stats",
-    "get_routing_options",
-    "get_tools_for_agent",
-    "get_worker_agents",
-    "increment_retry_count",
-    "invoke",
-    "is_agent_registered",
-    "last_execution_time",
-    "list_agents",
-    "main",
-    "mark_rebuilt",
-    "migrate_from_multi_agent",
-    "most_used_agent",
-    "needs_rebuild",
-    "populate_registry",
-    "print_integrated_dashboard",
-    "print_registry_state",
-    "print_routing_stats",
-    "print_status",
-    "print_supervisor_dashboard",
-    "print_supervisor_status",
-    "process_pending_agent_changes",
-    "register",
-    "register_agent",
-    "register_agent_constructor",
-    "register_agent_dynamically",
-    "remove_agent",
-    "remove_agent_config",
-    "remove_agent_from_registry",
-    "remove_worker_agent",
-    "request_agent_addition",
-    "request_agent_removal",
-    "reset_retry_count",
-    "route_to_agent",
-    "route_tool_to_agent",
-    "routing_condition",
-    "search_agents_by_capability",
-    "setup_agent",
-    "setup_dynamic_supervisor",
-    "setup_supervisor",
-    "should_continue",
-    "should_retry_agent",
-    "start_agent_execution",
-    "start_coordination_session",
-    "start_decision",
-    "success_rate",
-    "sync_with_choice_model",
-    "total_available_tools",
-    "total_registered_agents",
-    "unregister",
-    "unregister_agent",
-    "unregister_agent_dynamically",
-    "update_agent_stats",
-    "validate_discovery_mode",
-    "validate_routing_choice",
+    "ActiveAgent",
+    "SupervisorMetrics",
+    "create_initial_state",
+    # Tools and utilities
+    "create_agent_from_spec",
+    "find_matching_agent_specs",
+    "discover_agents",
+    "create_handoff_tool",
+    "AgentManagementTools",
 ]

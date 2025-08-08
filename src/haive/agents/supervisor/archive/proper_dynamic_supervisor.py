@@ -110,7 +110,9 @@ class ProperDynamicSupervisor(ReactAgent):
 
         # Supervisor conditionally routes
         graph.add_conditional_edges(
-            "supervisor", self._route_supervisor, {"executor": "executor", "END": "__end__"}
+            "supervisor",
+            self._route_supervisor,
+            {"executor": "executor", "END": "__end__"},
         )
 
         # Executor always returns to supervisor
@@ -264,7 +266,9 @@ if __name__ == "__main__":
 
         async def ainvoke(self, state: dict[str, Any], config=None) -> dict[str, Any]:
             messages = state.get("messages", [])
-            response = AIMessage(content=f"{self.response_prefix}: Processed your request")
+            response = AIMessage(
+                content=f"{self.response_prefix}: Processed your request"
+            )
             return {"messages": [*messages, response]}
 
     async def test_proper_dynamic_supervisor():
@@ -274,7 +278,8 @@ if __name__ == "__main__":
 
         # Register some agents
         supervisor.register_agent(
-            MockAgent("research_agent", "🔍 Research"), "Research and information gathering"
+            MockAgent("research_agent", "🔍 Research"),
+            "Research and information gathering",
         )
 
         supervisor.register_agent(
@@ -282,12 +287,18 @@ if __name__ == "__main__":
         )
 
         # Test execution
-        await supervisor.ainvoke({"messages": [HumanMessage(content="Research AI trends")]})
+        await supervisor.ainvoke(
+            {"messages": [HumanMessage(content="Research AI trends")]}
+        )
 
         # Add more agents dynamically (no graph rebuild!)
-        supervisor.register_agent(MockAgent("math_agent", "🧮 Math"), "Mathematical calculations")
+        supervisor.register_agent(
+            MockAgent("math_agent", "🧮 Math"), "Mathematical calculations"
+        )
 
         # Test with new agent
-        await supervisor.ainvoke({"messages": [HumanMessage(content="Calculate 15 + 27")]})
+        await supervisor.ainvoke(
+            {"messages": [HumanMessage(content="Calculate 15 + 27")]}
+        )
 
     asyncio.run(test_proper_dynamic_supervisor())

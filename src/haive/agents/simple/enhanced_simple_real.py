@@ -135,7 +135,9 @@ class SimpleAgent(EnhancedAgentBase):
                         return "tools"
                 return "end"
 
-            graph.add_conditional_edges("agent", check_tools, {"tools": "tools", "end": END})
+            graph.add_conditional_edges(
+                "agent", check_tools, {"tools": "tools", "end": END}
+            )
             graph.add_edge("tools", END)
         else:
             graph.add_edge("agent", END)

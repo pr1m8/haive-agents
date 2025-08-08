@@ -11,13 +11,16 @@ Start small, test incrementally, build up features.
 """
 
 from __future__ import annotations
+
 import logging
 from typing import Any, Literal
+
 from haive.core.graph.node.agent_node_v3 import create_agent_node_v3
 from haive.core.schema.prebuilt.multi_agent_state import MultiAgentState
 from langgraph.graph import END, START, StateGraph
 from langgraph.graph.graph import CompiledGraph
 from pydantic import Field, model_validator
+
 from haive.agents.base.agent import Agent
 
 logger = logging.getLogger(__name__)
@@ -59,7 +62,8 @@ class MultiAgentV4(Agent):
         default="auto", description="When to build the execution graph"
     )
     agent_dict: dict[str, Agent] = Field(
-        default_factory=dict, description="Internal agent dictionary (converted from list)"
+        default_factory=dict,
+        description="Internal agent dictionary (converted from list)",
     )
     execution_graph: CompiledGraph | None = Field(
         default=None, description="Compiled LangGraph for execution"
@@ -137,10 +141,14 @@ class MultiAgentV4(Agent):
         """Execute the multi-agent workflow."""
         if not self.execution_graph:
             if self.build_mode == "manual":
-                raise RuntimeError("Graph not built. Call build() first or use auto build mode.")
+                raise RuntimeError(
+                    "Graph not built. Call build() first or use auto build mode."
+                )
             self._build_execution_graph()
         initial_state = self._create_initial_state(input_data)
-        logger.info(f"Executing {self.execution_mode} workflow with {len(self.agent_dict)} agents")
+        logger.info(
+            f"Executing {self.execution_mode} workflow with {len(self.agent_dict)} agents"
+        )
         logger.debug(f"Initial state keys: {list(initial_state.__dict__.keys())}")
         try:
             final_state = await self.execution_graph.ainvoke(initial_state)
@@ -153,7 +161,9 @@ class MultiAgentV4(Agent):
     def _create_initial_state(self, input_data: Any) -> MultiAgentState:
         """Create initial MultiAgentState from input."""
         agents_for_state = self.agent_dict
-        state_data = input_data.copy() if isinstance(input_data, dict) else {"input": input_data}
+        state_data = (
+            input_data.copy() if isinstance(input_data, dict) else {"input": input_data}
+        )
         state_data["agents"] = agents_for_state
         initial_state = self.state_schema(**state_data)
         logger.debug(f"Created initial state with {initial_state.agent_count} agents")
@@ -161,7 +171,10 @@ class MultiAgentV4(Agent):
 
     def _extract_result(self, final_state: MultiAgentState) -> Any:
         """Extract final result from state."""
-        if hasattr(final_state, "final_result") and final_state.final_result is not None:
+        if (
+            hasattr(final_state, "final_result")
+            and final_state.final_result is not None
+        ):
             return final_state.final_result
         if final_state.agent_outputs:
             return final_state.agent_outputs

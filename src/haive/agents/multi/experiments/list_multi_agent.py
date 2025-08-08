@@ -89,7 +89,9 @@ class ListMultiAgent(Agent, RecompileMixin, Sequence[Agent]):
             self.agents.remove(agent)
 
         self._update_index()
-        self.mark_for_recompile(f"Removed agent: {agent if isinstance(agent, str) else agent.name}")
+        self.mark_for_recompile(
+            f"Removed agent: {agent if isinstance(agent, str) else agent.name}"
+        )
         return self
 
     def pop(self, index: int = -1) -> Agent:

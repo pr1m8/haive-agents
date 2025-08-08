@@ -7,17 +7,17 @@ to handle specific output parsing in a smart, flexible manner.
 import logging
 from typing import Any, Callable, Generic, Optional, TypeVar, Union
 
-from langchain_core.messages import BaseMessage
-from langchain_core.output_parsers.base import BaseOutputParser
-from pydantic import BaseModel, Field
-
-from haive.agents.base.hooks import HookEvent, HookContext
 from haive.core.graph.node.callable_node import CallableNodeConfig
 from haive.core.graph.node.engine_node_generic import GenericEngineNodeConfig
 from haive.core.graph.node.output_parsing_v2 import (
     PydanticParserNodeConfig,
     create_pydantic_parser_node,
 )
+from langchain_core.messages import BaseMessage
+from langchain_core.output_parsers.base import BaseOutputParser
+from pydantic import BaseModel, Field
+
+from haive.agents.base.hooks import HookContext, HookEvent
 
 logger = logging.getLogger(__name__)
 

@@ -3,13 +3,10 @@
 Achieves sub-3 second import times through comprehensive lazy loading.
 """
 
-# Lazy import mapping for SimpleAgent variants
-
 import importlib
 
 _SIMPLE_AGENT_IMPORTS = {
-    "SimpleAgent": ("haive.agents.simple.agent_v2", "SimpleAgentV2"),
-    "SimpleAgentV3": ("haive.agents.simple.agent_v3", "SimpleAgentV3"),
+    "SimpleAgent": ("haive.agents.simple.agent", "SimpleAgent"),
 }
 
 
@@ -19,7 +16,6 @@ def __getattr__(name: str):
         module_path, class_name = _SIMPLE_AGENT_IMPORTS[name]
 
         # Import module and get class only when accessed
-
         module = importlib.import_module(module_path)
         agent_class = getattr(module, class_name)
 
@@ -30,4 +26,4 @@ def __getattr__(name: str):
     raise AttributeError(f"module '{__name__}' has no attribute '{name}'")
 
 
-__all__ = ["SimpleAgent", "SimpleAgentV3"]
+__all__ = ["SimpleAgent"]

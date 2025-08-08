@@ -150,10 +150,13 @@ class MultiAgent(Agent):
 
     # Core agent management - follows same pattern as engines
     agents: dict[str, Agent] = Field(
-        default_factory=dict, description="Dictionary of agents this multi-agent coordinates"
+        default_factory=dict,
+        description="Dictionary of agents this multi-agent coordinates",
     )
 
-    agent: Agent | None = Field(default=None, description="Main/default agent for this multi-agent")
+    agent: Agent | None = Field(
+        default=None, description="Main/default agent for this multi-agent"
+    )
 
     # Execution mode
     execution_mode: str = Field(
@@ -169,7 +172,8 @@ class MultiAgent(Agent):
 
     # Branch configuration
     branches: dict[str, dict[str, Any]] = Field(
-        default_factory=dict, description="Branch configurations for conditional routing"
+        default_factory=dict,
+        description="Branch configurations for conditional routing",
     )
 
     # Entry point for execution
@@ -288,7 +292,9 @@ class MultiAgent(Agent):
 
                     return condition_wrapper
 
-                graph.add_conditional_edges(source, make_condition_fn(condition_fn, routes))
+                graph.add_conditional_edges(
+                    source, make_condition_fn(condition_fn, routes)
+                )
                 processed_sources.add(source)
                 has_entry_edges = True
 
@@ -373,7 +379,11 @@ class MultiAgent(Agent):
 
     @classmethod
     def create(
-        cls, agents: list[Agent], name: str = "multi_agent", execution_mode: str = "infer", **kwargs
+        cls,
+        agents: list[Agent],
+        name: str = "multi_agent",
+        execution_mode: str = "infer",
+        **kwargs,
     ) -> MultiAgent:
         """Create a multi-agent from a list of agents.
 
@@ -474,7 +484,9 @@ class MultiAgent(Agent):
             "type": "conditional",
         }
 
-    def add_parallel_group(self, agent_names: list[str], next_agent: str | None = None) -> None:
+    def add_parallel_group(
+        self, agent_names: list[str], next_agent: str | None = None
+    ) -> None:
         """Add a group of agents that run in parallel.
 
         This method configures a set of agents to execute in parallel, with
@@ -570,7 +582,9 @@ class MultiAgent(Agent):
 
         self.agents = ordered_agents
 
-    def add_conditional_edges(self, source: str, path: Callable[[dict[str, Any]], str]) -> None:
+    def add_conditional_edges(
+        self, source: str, path: Callable[[dict[str, Any]], str]
+    ) -> None:
         """Add conditional edges for backward compatibility with examples.
 
         This method provides compatibility with existing examples that use
