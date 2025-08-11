@@ -43,6 +43,7 @@ from haive.core.graph.node.engine_node_generic import GenericEngineNodeConfig
 from haive.core.graph.node.parser_node_config_v2 import ParserNodeConfigV2
 from haive.core.graph.node.tool_node_config_v2 import ToolNodeConfig
 from haive.core.graph.node.validation_node_config_v2 import ValidationNodeConfigV2
+from haive.core.graph.node.validation_router_v2 import validation_router_v2
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.schema.prebuilt.llm_state import LLMState
 from haive.core.schema.prebuilt.messages_state import MessagesState
@@ -812,6 +813,18 @@ class SimpleAgent(
             graph.add_edge("agent_node", "validation")
             if self.debug:
                 logger.debug("Added direct edge: agent_node -> validation")
+
+            # Add conditional edges FROM validation using validation_router_v2
+            routing_map = {}
+            if needs_tools:
+                routing_map["tool_node"] = "tool_node"
+            if needs_parsing:
+                routing_map["parse_output"] = "parse_output"
+            routing_map["agent_node"] = "agent_node"  # For errors
+
+            graph.add_conditional_edges("validation", validation_router_v2, routing_map)
+            if self.debug:
+                logger.debug(f"Added conditional edges from validation: {routing_map}")
         else:
             graph.add_conditional_edges(
                 "agent_node",
