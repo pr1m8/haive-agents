@@ -11,3 +11,7 @@ class TaskPlan(Plan[Task]):
     """
 
     pass
+
+
+# Force model rebuild to resolve forward references
+TaskPlan.model_rebuild()
