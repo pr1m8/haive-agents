@@ -230,6 +230,29 @@ class Agent(
 
         Override this method in subclasses for custom setup logic.
         """
+        # SYNC structured_output_model from engine to agent
+        if not getattr(self, "structured_output_model", None):
+            # Priority 1: Check main engine
+            if self.engine and hasattr(self.engine, "structured_output_model"):
+                self.structured_output_model = self.engine.structured_output_model
+                if getattr(self, "debug", False):
+                    logger.debug(
+                        f"Synced structured_output_model from engine: {self.structured_output_model}"
+                    )
+
+            # Priority 2: Check engines dict
+            elif hasattr(self, "engines") and self.engines:
+                for name, engine in self.engines.items():
+                    if (
+                        hasattr(engine, "structured_output_model")
+                        and engine.structured_output_model
+                    ):
+                        self.structured_output_model = engine.structured_output_model
+                        if getattr(self, "debug", False):
+                            logger.debug(
+                                f"Synced structured_output_model from engines[{name}]: {self.structured_output_model}"
+                            )
+                        break
 
     def _auto_derive_io_schemas(self) -> None:
         """Automatically derive input and output schemas with intelligent defaults.
