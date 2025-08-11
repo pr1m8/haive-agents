@@ -201,11 +201,12 @@ async def inspect_tool_binding():
     
     # Check tool conversion
     print("\n3. Tool Conversion Check:")
-    if engine.tools:
+    tools = getattr(engine, 'tools', None)
+    if tools:
         from haive.core.tool import ToolEngine
         tool_engine = ToolEngine()
         
-        for tool in engine.tools:
+        for tool in tools:
             print(f"\n   Original tool: {tool}")
             try:
                 converted = tool_engine.convert_to_langchain_tool(tool)
