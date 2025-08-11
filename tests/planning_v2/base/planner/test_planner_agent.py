@@ -11,17 +11,18 @@ from haive.core.engine.aug_llm import AugLLMConfig
 @pytest.mark.asyncio
 async def test_planner_basic():
     """Test basic planner functionality without context."""
-    # Create engine with structured output
+    # Create engine with structured output AND prompt template
     engine = AugLLMConfig(
         temperature=0.3,
-        structured_output_model=Plan[Task]
+        structured_output_model=Plan[Task],
+        prompt_template=planner_prompt  # Pass prompt to engine, not agent
     )
     
     # Create planner using SimpleAgent directly
     planner = SimpleAgent(
         name="test_planner",
-        engine=engine,
-        prompt_template=planner_prompt
+        engine=engine
+        # Remove prompt_template from here
     )
     
     # Run planner
