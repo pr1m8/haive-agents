@@ -12,9 +12,10 @@ from haive.core.engine.aug_llm import AugLLMConfig
 async def test_planner_basic():
     """Test basic planner functionality without context."""
     # Create engine with structured output AND prompt template
+    # Use concrete TaskPlan instead of generic Plan[Task]
     engine = AugLLMConfig(
         temperature=0.3,
-        structured_output_model=Plan[Task],
+        structured_output_model=TaskPlan,  # Use concrete class
         prompt_template=planner_prompt  # Pass prompt to engine, not agent
     )
     
@@ -30,8 +31,15 @@ async def test_planner_basic():
         "objective": "Build a simple REST API for a todo list"
     })
     
+    # Debug output
+    print(f"\nResult type: {type(result)}")
+    print(f"Result objective: {getattr(result, 'objective', 'NO OBJECTIVE')}")
+    print(f"Result status: {getattr(result, 'status', 'NO STATUS')}")
+    print(f"Result steps: {getattr(result, 'steps', 'NO STEPS')}")
+    print(f"Result as dict: {result.model_dump() if hasattr(result, 'model_dump') else 'NO MODEL_DUMP'}")
+    
     # Assertions
-    assert isinstance(result, Plan)
+    assert isinstance(result, (Plan, TaskPlan))  # Accept either since TaskPlan inherits from Plan
     assert result.objective == "Build a simple REST API for a todo list"
     assert result.status == Status.PENDING
     assert len(result.steps) > 0
@@ -39,13 +47,13 @@ async def test_planner_basic():
     # Check steps
     for step in result.steps:
         assert isinstance(step, Task)
-        assert step.description
+        assert step.objective  # Task uses 'objective' not 'description'
         assert step.status == Status.PENDING
     
     # Print output for visual verification
     print(f"\nGenerated {len(result.steps)} steps:")
     for i, step in enumerate(result.steps, 1):
-        print(f"{i}. {step.description}")
+        print(f"{i}. {step.objective}")
 
 
 @pytest.mark.asyncio
@@ -60,13 +68,13 @@ async def test_planner_with_context():
     
     engine = AugLLMConfig(
         temperature=0.3,
-        structured_output_model=Plan[Task]
+        structured_output_model=Plan[Task],
+        prompt_template=create_planner_prompt(context)  # Pass prompt to engine
     )
     
     planner = SimpleAgent(
         name="contextual_planner",
-        engine=engine,
-        prompt_template=create_planner_prompt(context)
+        engine=engine
     )
     
     result = await planner.arun({
@@ -99,13 +107,13 @@ async def test_planner_complex_objective():
     """Test planner with a more complex objective."""
     engine = AugLLMConfig(
         temperature=0.3,
-        structured_output_model=Plan[Task]
+        structured_output_model=Plan[Task],
+        prompt_template=planner_prompt  # Pass prompt to engine
     )
     
     planner = SimpleAgent(
         name="complex_planner",
-        engine=engine,
-        prompt_template=planner_prompt
+        engine=engine
     )
     
     result = await planner.arun({
@@ -128,20 +136,20 @@ async def test_planner_complex_objective():
 @pytest.mark.asyncio
 async def test_planner_partial_context():
     """Test using partial directly for context."""
-    engine = AugLLMConfig(
-        temperature=0.3,
-        structured_output_model=Plan[Task]
-    )
-    
     # Use partial to add context
     context_prompt = planner_prompt.partial(
         context_section="\nContext: This is for a startup MVP, prioritize speed over perfection.\n"
     )
     
+    engine = AugLLMConfig(
+        temperature=0.3,
+        structured_output_model=Plan[Task],
+        prompt_template=context_prompt  # Pass prompt to engine
+    )
+    
     planner = SimpleAgent(
         name="mvp_planner",
-        engine=engine,
-        prompt_template=context_prompt
+        engine=engine
     )
     
     result = await planner.arun({
@@ -161,13 +169,13 @@ async def test_planner_computed_properties():
     """Test the computed properties of the Plan model."""
     engine = AugLLMConfig(
         temperature=0.3,
-        structured_output_model=Plan[Task]
+        structured_output_model=Plan[Task],
+        prompt_template=planner_prompt  # Pass prompt to engine
     )
     
     planner = SimpleAgent(
         name="test_planner",
-        engine=engine,
-        prompt_template=planner_prompt
+        engine=engine
     )
     
     result = await planner.arun({
