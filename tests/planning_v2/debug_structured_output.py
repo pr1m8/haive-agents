@@ -34,23 +34,24 @@ async def debug_structured_output():
         temperature=0.3,
         structured_output_model=Plan[Task],
         prompt_template=planner_prompt,
-        force_tool_use=True,  # Force tool use
-        debug=True  # Enable debug logging
+        force_tool_use=True  # Force tool use
     )
     
     # Debug engine configuration
     print("\n2. Engine Configuration:")
-    print(f"   - Model: {engine.model}")
-    print(f"   - Temperature: {engine.temperature}")
-    print(f"   - Force Tool Use: {engine.force_tool_use}")
-    print(f"   - Structured Output Model: {engine.structured_output_model}")
-    print(f"   - Tools: {engine.tools}")
-    print(f"   - Tool Routes: {engine.tool_routes}")
+    print(f"   - Type: {type(engine)}")
+    print(f"   - Temperature: {getattr(engine, 'temperature', 'NOT SET')}")
+    print(f"   - Force Tool Use: {getattr(engine, 'force_tool_use', 'NOT SET')}")
+    print(f"   - Structured Output Model: {getattr(engine, 'structured_output_model', 'NOT SET')}")
+    print(f"   - Tools: {getattr(engine, 'tools', 'NOT SET')}")
+    print(f"   - Tool Routes: {getattr(engine, 'tool_routes', 'NOT SET')}")
+    print(f"   - Tool Names: {getattr(engine, 'tool_names', 'NOT SET')}")
     
     # Check tool configuration
     print("\n3. Tool Analysis:")
-    if engine.tools:
-        for i, tool in enumerate(engine.tools):
+    tools = getattr(engine, 'tools', None)
+    if tools:
+        for i, tool in enumerate(tools):
             print(f"\n   Tool {i+1}:")
             print(f"   - Type: {type(tool)}")
             print(f"   - Name: {getattr(tool, 'name', 'NO NAME')}")
@@ -73,8 +74,7 @@ async def debug_structured_output():
     print("\n4. Creating SimpleAgent...")
     agent = SimpleAgent(
         name="debug_planner",
-        engine=engine,
-        debug=True
+        engine=engine
     )
     
     # Check agent configuration
@@ -195,9 +195,9 @@ async def inspect_tool_binding():
     
     # Check the raw config
     print("\n2. Raw Engine State:")
-    print(f"   - Tools list: {engine.tools}")
-    print(f"   - Tool names: {engine.tool_names}")
-    print(f"   - Force tool use: {engine.force_tool_use}")
+    print(f"   - Tools list: {getattr(engine, 'tools', 'NOT SET')}")
+    print(f"   - Tool names: {getattr(engine, 'tool_names', 'NOT SET')}")
+    print(f"   - Force tool use: {getattr(engine, 'force_tool_use', 'NOT SET')}")
     
     # Check tool conversion
     print("\n3. Tool Conversion Check:")
