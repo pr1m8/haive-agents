@@ -691,6 +691,12 @@ class SimpleAgent(
         # Create graph with enhanced features
         graph = BaseGraph(name=f"{self.name}_graph")
 
+        # Set the state schema on the graph so compilation will work
+        if self.state_schema:
+            graph.set_state_schema(self.state_schema)
+            if self.debug:
+                logger.debug(f"Set dynamic graph state_schema to: {self.state_schema}")
+
         # Get engine name for node references
         engine_name = getattr(self.engine, "name", "main")
 
@@ -785,6 +791,11 @@ class SimpleAgent(
         )
         graph.add_node("parse_output", parser_node_config)
 
+        # Add edge from parse_output to END
+        graph.add_edge("parse_output", END)
+        if self.debug:
+            logger.debug("Added edge: parse_output -> END")
+
     def _add_validation_nodes(
         self, graph: BaseGraph, engine_name: str, needs_tools: bool, needs_parsing: bool
     ) -> None:
@@ -821,6 +832,7 @@ class SimpleAgent(
             if needs_parsing:
                 routing_map["parse_output"] = "parse_output"
             routing_map["agent_node"] = "agent_node"  # For errors
+            routing_map[END] = END  # For completion (AI message without tool calls)
 
             graph.add_conditional_edges("validation", validation_router_v2, routing_map)
             if self.debug:
@@ -1418,6 +1430,12 @@ class SimpleAgent(
         # Create base graph
         graph = BaseGraph(name=f"{self.name}_graph")
 
+        # Set the state schema on the graph so compilation will work
+        if self.state_schema:
+            graph.set_state_schema(self.state_schema)
+            if self.debug:
+                logger.debug(f"Set graph state_schema to: {self.state_schema}")
+
         if not self.engine:
             raise ValueError("No engine configured for SimpleAgent")
 
@@ -1503,8 +1521,10 @@ class SimpleAgent(
         tool_config = ToolNodeConfig(name="tool_node", engine_name=engine_name)
         graph.add_node("tool_node", tool_config)
 
+        # Add edge from tool_node to END (SimpleAgent doesn't loop)
+        graph.add_edge("tool_node", END)
         if self.debug:
-            logger.debug("Tool node added successfully")
+            logger.debug("Added edge: tool_node -> END")
 
     # ========================================================================
     # ABSTRACT METHOD IMPLEMENTATIONS - Required by InvokableEngine

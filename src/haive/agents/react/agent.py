@@ -93,15 +93,8 @@ from langchain_core.tools import BaseTool, tool
 from langgraph.graph import END
 from pydantic import BaseModel, Field, field_validator
 
+from haive.agents.base.agent import Agent
 from haive.agents.simple.agent import SimpleAgent
-
-# Import SimpleAgent as base class
-
-# Import Agent for model_rebuild
-
-
-# Hooks system integration
-
 
 logger = logging.getLogger(__name__)
 
@@ -290,11 +283,16 @@ class ReactAgent(SimpleAgent):
 
     # ReactAgent-specific configuration fields
     max_iterations: int = Field(
-        default=10, ge=1, le=50, description="Maximum reasoning iterations before stopping (1-50)"
+        default=10,
+        ge=1,
+        le=50,
+        description="Maximum reasoning iterations before stopping (1-50)",
     )
 
     iteration_count: int = Field(
-        default=0, ge=0, description="Current iteration number (read-only, managed internally)"
+        default=0,
+        ge=0,
+        description="Current iteration number (read-only, managed internally)",
     )
 
     reasoning_trace: list[str] = Field(
@@ -308,7 +306,8 @@ class ReactAgent(SimpleAgent):
     )
 
     require_final_answer: bool = Field(
-        default=True, description="Require a final non-tool response summarizing the solution"
+        default=True,
+        description="Require a final non-tool response summarizing the solution",
     )
 
     # Internal state tracking (Pydantic fields cannot start with underscore)
@@ -485,7 +484,9 @@ class ReactAgent(SimpleAgent):
         self._modify_graph_for_react_loops(graph)
 
         if self.debug:
-            logger.debug(f"ReAct graph build complete with nodes: {list(graph.nodes.keys())}")
+            logger.debug(
+                f"ReAct graph build complete with nodes: {list(graph.nodes.keys())}"
+            )
 
         return graph
 
@@ -515,19 +516,35 @@ class ReactAgent(SimpleAgent):
             if self.debug:
                 logger.debug("Added tool_node → agent_node loop")
 
-        # Change parse_output to loop back to agent_node instead of END
+        # For structured output models, parse_output should go to END (not loop)
+        # For other parsers, parse_output can loop back for more reasoning
         if self._has_structured_output() and "parse_output" in graph.nodes:
-            try:
-                graph.remove_edge("parse_output", END)
-                if self.debug:
-                    logger.debug("Removed parse_output → END edge")
-            except Exception as e:
-                if self.debug:
-                    logger.debug(f"No parse_output → END edge to remove: {e}")
+            # Check if we're using structured_output_model (should END)
+            has_structured_model = (
+                self.engine
+                and hasattr(self.engine, "structured_output_model")
+                and self.engine.structured_output_model
+            )
 
-            graph.add_edge("parse_output", "agent_node")
-            if self.debug:
-                logger.debug("Added parse_output → agent_node loop")
+            if has_structured_model:
+                # Structured output models should END, not loop
+                if self.debug:
+                    logger.debug(
+                        "Structured output model detected - parse_output → END (no loop)"
+                    )
+            else:
+                # Other parsers can loop back for more reasoning
+                try:
+                    graph.remove_edge("parse_output", END)
+                    if self.debug:
+                        logger.debug("Removed parse_output → END edge")
+                except Exception as e:
+                    if self.debug:
+                        logger.debug(f"No parse_output → END edge to remove: {e}")
+
+                graph.add_edge("parse_output", "agent_node")
+                if self.debug:
+                    logger.debug("Added parse_output → agent_node loop")
 
     def _has_tools(self) -> bool:
         """Check if agent has tools configured for ReAct pattern execution.
@@ -706,8 +723,12 @@ class ReactAgent(SimpleAgent):
                 logger.info(
                     f"[{self.name}] ReAct execution completed in {self.iteration_count} iterations"
                 )
-                logger.info(f"[{self.name}] Reasoning steps: {len(self.reasoning_trace)}")
-                logger.info(f"[{self.name}] Tools used: {len(self.tool_results_history)}")
+                logger.info(
+                    f"[{self.name}] Reasoning steps: {len(self.reasoning_trace)}"
+                )
+                logger.info(
+                    f"[{self.name}] Tools used: {len(self.tool_results_history)}"
+                )
 
             return result
 
@@ -759,7 +780,9 @@ class ReactAgent(SimpleAgent):
         self.max_iterations = max_iterations
 
         if self.debug:
-            logger.debug(f"[{self.name}] Max iterations changed: {old_value} → {max_iterations}")
+            logger.debug(
+                f"[{self.name}] Max iterations changed: {old_value} → {max_iterations}"
+            )
 
 
 # ============================================================================
@@ -925,9 +948,12 @@ if __name__ == "__main__":
 
     # Create example ReactAgent
     agent = create_react_agent(
-        name="example_react_agent", tools=[example_calculator], max_iterations=5, debug=True
+        name="example_react_agent",
+        tools=[example_calculator],
+        max_iterations=5,
+        debug=True,
     )
 
 
 # Rebuild Pydantic model to resolve forward references
-# ReactAgent.model_rebuild()  # COMMENTED OUT - causing undefined Agent error
+ReactAgent.model_rebuild()
