@@ -241,7 +241,9 @@ def quick_run(example_name: str):
         if result.returncode == 0:
             console.print(f"[green]✅ {name} completed successfully![/green]")
         else:
-            console.print(f"[red]❌ {name} failed with exit code {result.returncode}[/red]")
+            console.print(
+                f"[red]❌ {name} failed with exit code {result.returncode}[/red]"
+            )
 
     except Exception as e:
         console.print(f"[red]❌ Error running {name}: {e}[/red]")

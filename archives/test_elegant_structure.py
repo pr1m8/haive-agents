@@ -29,7 +29,9 @@ from haive.agents.simple.agent import SimpleAgent
 async def main():
     # Create engines with tools
     planner_engine = create_planner_aug_llm_config(model_name="gpt-4o-mini")
-    executor_engine = create_executor_aug_llm_config(model_name="gpt-4o-mini", tools=[tavily_qna])
+    executor_engine = create_executor_aug_llm_config(
+        model_name="gpt-4o-mini", tools=[tavily_qna]
+    )
     replanner_engine = create_replan_aug_llm_config(model_name="gpt-4o-mini")
 
     # Create agents - all SimpleAgent for simplicity

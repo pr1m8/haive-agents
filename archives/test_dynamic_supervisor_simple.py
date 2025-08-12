@@ -31,7 +31,9 @@ def test_direct_tool_execution():
     # Create supervisor (mock engine for testing)
     supervisor = DynamicSupervisorAgent(
         name="test_supervisor",
-        engine=AugLLMConfig(name="mock_engine", llm_config=AzureLLMConfig(model="gpt-4"), tools=[]),
+        engine=AugLLMConfig(
+            name="mock_engine", llm_config=AzureLLMConfig(model="gpt-4"), tools=[]
+        ),
     )
 
     # Create state and add mock agents
