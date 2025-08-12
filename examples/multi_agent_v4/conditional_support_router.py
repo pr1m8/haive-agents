@@ -1,4 +1,4 @@
-"""Conditional Support Router Example
+"""Conditional Support Router Example.
 
 This example demonstrates conditional routing where queries are classified
 and routed to specialized agents based on their category. Each specialist
@@ -8,11 +8,10 @@ Date: August 7, 2025
 """
 
 import asyncio
-from typing import Dict, List, Literal
+from typing import Literal
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import HumanMessage
-from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.tools import tool
 from pydantic import BaseModel, Field
 
@@ -30,7 +29,7 @@ class QueryClassification(BaseModel):
     )
     subcategory: str = Field(description="Specific subcategory")
     urgency: float = Field(ge=0.0, le=1.0, description="Urgency level 0-1")
-    key_terms: List[str] = Field(description="Key terms identified")
+    key_terms: list[str] = Field(description="Key terms identified")
     reasoning: str = Field(description="Classification reasoning")
 
 
@@ -39,8 +38,8 @@ class TechnicalSolution(BaseModel):
 
     issue_identified: str = Field(description="Technical issue identified")
     root_cause: str = Field(description="Root cause analysis")
-    solution_steps: List[str] = Field(description="Step-by-step solution")
-    additional_resources: List[str] = Field(description="Helpful resources")
+    solution_steps: list[str] = Field(description="Step-by-step solution")
+    additional_resources: list[str] = Field(description="Helpful resources")
     estimated_time: str = Field(description="Estimated resolution time")
 
 
@@ -51,17 +50,17 @@ class BillingResolution(BaseModel):
     billing_issue: str = Field(description="Identified billing issue")
     resolution: str = Field(description="Proposed resolution")
     amount_affected: float = Field(ge=0, description="Amount affected if any")
-    next_steps: List[str] = Field(description="Customer next steps")
+    next_steps: list[str] = Field(description="Customer next steps")
 
 
 class ProductInfo(BaseModel):
     """Product information response."""
 
     product_name: str = Field(description="Product being discussed")
-    features_mentioned: List[str] = Field(description="Features relevant to query")
+    features_mentioned: list[str] = Field(description="Features relevant to query")
     pricing_info: str = Field(description="Pricing information if applicable")
-    recommendations: List[str] = Field(description="Product recommendations")
-    comparison: Dict[str, str] = Field(description="Comparison with alternatives")
+    recommendations: list[str] = Field(description="Product recommendations")
+    comparison: dict[str, str] = Field(description="Comparison with alternatives")
 
 
 # Technical support tools
@@ -129,7 +128,6 @@ def compare_plans(plan1: str, plan2: str) -> str:
 
 async def main():
     """Run the conditional support router."""
-
     print("Creating support specialists...")
 
     # Create classifier
@@ -289,7 +287,7 @@ async def main():
         # Display classification
         if hasattr(router.state, "query_classifier"):
             classification = router.state.query_classifier
-            print(f"\n📋 Classification:")
+            print("\n📋 Classification:")
             print(f"   Category: {classification.category}")
             print(f"   Subcategory: {classification.subcategory}")
             print(f"   Urgency: {classification.urgency:.0%}")
@@ -298,37 +296,37 @@ async def main():
         # Display specialized response
         if hasattr(router.state, "technical_formatter"):
             solution = router.state.technical_formatter
-            print(f"\n🔧 Technical Solution:")
+            print("\n🔧 Technical Solution:")
             print(f"   Issue: {solution.issue_identified}")
             print(f"   Root cause: {solution.root_cause}")
-            print(f"   Steps to resolve:")
+            print("   Steps to resolve:")
             for j, step in enumerate(solution.solution_steps, 1):
                 print(f"     {j}. {step}")
             print(f"   Time estimate: {solution.estimated_time}")
 
         elif hasattr(router.state, "billing_formatter"):
             resolution = router.state.billing_formatter
-            print(f"\n💳 Billing Resolution:")
+            print("\n💳 Billing Resolution:")
             print(f"   Issue: {resolution.billing_issue}")
             print(f"   Resolution: {resolution.resolution}")
             if resolution.amount_affected > 0:
                 print(f"   Amount: ${resolution.amount_affected:.2f}")
-            print(f"   Next steps:")
+            print("   Next steps:")
             for step in resolution.next_steps:
                 print(f"     • {step}")
 
         elif hasattr(router.state, "product_formatter"):
             info = router.state.product_formatter
-            print(f"\n📦 Product Information:")
+            print("\n📦 Product Information:")
             print(f"   Product: {info.product_name}")
             print(f"   Relevant features: {', '.join(info.features_mentioned)}")
             print(f"   Pricing: {info.pricing_info}")
-            print(f"   Recommendations:")
+            print("   Recommendations:")
             for rec in info.recommendations:
                 print(f"     • {rec}")
 
         elif "general_support" in router.state.agent_outputs:
-            print(f"\n💬 General Support Response:")
+            print("\n💬 General Support Response:")
             print(f"   {router.state.agent_outputs['general_support']}")
 
         print()

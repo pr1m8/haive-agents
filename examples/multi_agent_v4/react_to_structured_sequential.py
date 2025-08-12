@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""ReactAgent → StructuredOutputAgent Sequential Pattern
+"""ReactAgent → StructuredOutputAgent Sequential Pattern.
 
 This demonstrates the CORRECT way to use ReactAgentV4 with structured output:
 1. ReactAgentV4 does reasoning and tool usage (NO structured output)
@@ -12,7 +12,6 @@ Date: August 7, 2025
 """
 
 import asyncio
-from typing import List
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import HumanMessage
@@ -29,12 +28,12 @@ class ResearchAnalysis(BaseModel):
     """Structured research analysis output."""
 
     topic: str = Field(description="Research topic")
-    key_findings: List[str] = Field(description="Main findings from research")
-    evidence: List[str] = Field(description="Supporting evidence")
+    key_findings: list[str] = Field(description="Main findings from research")
+    evidence: list[str] = Field(description="Supporting evidence")
     confidence_score: float = Field(
         ge=0.0, le=1.0, description="Confidence in analysis"
     )
-    recommendations: List[str] = Field(description="Action recommendations")
+    recommendations: list[str] = Field(description="Action recommendations")
     summary: str = Field(description="Brief summary of analysis")
 
 
@@ -70,7 +69,6 @@ def fact_check(statement: str) -> str:
 
 async def main():
     """Demonstrate ReactAgent → StructuredOutputAgent sequential workflow."""
-
     print("🔬 ReactAgent → StructuredOutputAgent Sequential Pattern")
     print("=" * 60)
 
@@ -107,7 +105,7 @@ async def main():
     # 4. Execute the workflow
     research_query = "Analyze the current state of AI adoption in enterprise environments, focusing on trends, challenges, and future opportunities."
 
-    print(f"\n📋 Research Query:")
+    print("\n📋 Research Query:")
     print(f"{research_query}")
     print("\n" + "=" * 60)
     print("🚀 EXECUTING SEQUENTIAL WORKFLOW")
@@ -132,7 +130,7 @@ async def main():
         print("\n📊 STRUCTURED OUTPUT:")
         if hasattr(result, "formatter"):
             analysis = result.formatter
-            print(f"✅ Successfully structured into ResearchAnalysis!")
+            print("✅ Successfully structured into ResearchAnalysis!")
             print(f"Topic: {analysis.topic}")
             print(f"Key Findings ({len(analysis.key_findings)}):")
             for i, finding in enumerate(analysis.key_findings, 1):
@@ -167,10 +165,10 @@ async def main():
 
         traceback.print_exc()
 
-        print(f"\n💡 If this still fails, the issue might be:")
-        print(f"1. ValidationNodeConfigV2 routing logic")
-        print(f"2. EnhancedMultiAgentV4 state transfer")
-        print(f"3. Tool route configuration")
+        print("\n💡 If this still fails, the issue might be:")
+        print("1. ValidationNodeConfigV2 routing logic")
+        print("2. EnhancedMultiAgentV4 state transfer")
+        print("3. Tool route configuration")
 
 
 if __name__ == "__main__":

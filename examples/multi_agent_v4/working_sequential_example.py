@@ -1,4 +1,4 @@
-"""Working Sequential Multi-Agent Example
+"""Working Sequential Multi-Agent Example.
 
 This shows the correct pattern for sequential multi-agent workflows
 with proper structured output handling.
@@ -7,21 +7,21 @@ Date: August 7, 2025
 """
 
 import asyncio
-from pydantic import BaseModel, Field
-from typing import List
+
+from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import HumanMessage
 from langchain_core.prompts import ChatPromptTemplate
+from pydantic import BaseModel, Field
 
 from haive.agents.multi.enhanced_multi_agent_v4 import EnhancedMultiAgentV4
 from haive.agents.simple.agent_v3 import SimpleAgentV3
-from haive.core.engine.aug_llm import AugLLMConfig
 
 
 # Define structured outputs
 class AnalysisResult(BaseModel):
     """Analysis output."""
 
-    findings: List[str] = Field(description="Key findings")
+    findings: list[str] = Field(description="Key findings")
     confidence: float = Field(ge=0.0, le=1.0)
     summary: str = Field(description="Brief summary")
 
@@ -31,12 +31,11 @@ class FinalReport(BaseModel):
 
     title: str = Field(description="Report title")
     executive_summary: str = Field(description="Executive summary")
-    recommendations: List[str] = Field(description="Recommendations")
+    recommendations: list[str] = Field(description="Recommendations")
 
 
 async def main():
     """Run working sequential workflow."""
-
     print("Creating agents...")
 
     # First agent - analyzer WITHOUT structured output initially
@@ -111,7 +110,7 @@ async def main():
     print("\n🏗️ Structured Output Fields:")
     if hasattr(result, "report_writer"):
         report = result.report_writer
-        print(f"  ✅ report_writer field found!")
+        print("  ✅ report_writer field found!")
         print(f"     Type: {type(report).__name__}")
         print(f"     Title: {report.title}")
         print(f"     Summary: {report.executive_summary[:100]}...")

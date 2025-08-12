@@ -9,11 +9,9 @@ This script consolidates:
 
 import os
 import shutil
-import subprocess
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import List, Tuple
 
 # Get the package root
 PACKAGE_ROOT = Path(__file__).parent.parent
@@ -45,7 +43,7 @@ These files were archived during supervisor consolidation on {datetime.now().str
     return archive_dir
 
 
-def consolidate_supervisor(dry_run: bool = True) -> List[Tuple[str, str]]:
+def consolidate_supervisor(dry_run: bool = True) -> list[tuple[str, str]]:
     """Consolidate Supervisor agents."""
     print("\n🔄 Consolidating Supervisor Agents...")
     supervisor_dir = SRC_DIR / "supervisor"
@@ -66,19 +64,19 @@ def consolidate_supervisor(dry_run: bool = True) -> List[Tuple[str, str]]:
             # Backup current agent.py
             if agent_primary.exists():
                 shutil.copy2(agent_primary, archive_dir / "agent_original.py")
-                print(f"  Archived: agent.py → archive/agent_original.py")
+                print("  Archived: agent.py → archive/agent_original.py")
 
             # Move v2 to be the primary
             shutil.copy2(agent_v2, agent_primary)
-            print(f"  Copied: agent_v2.py → agent.py")
+            print("  Copied: agent_v2.py → agent.py")
 
             # Archive the v2 file
             shutil.move(str(agent_v2), str(archive_dir / "agent_v2.py"))
-            print(f"  Archived: agent_v2.py")
+            print("  Archived: agent_v2.py")
         else:
-            print(f"    Archive current agent.py")
-            print(f"    Copy agent_v2.py → agent.py")
-            print(f"    Archive agent_v2.py")
+            print("    Archive current agent.py")
+            print("    Copy agent_v2.py → agent.py")
+            print("    Archive agent_v2.py")
 
         changes.append(("SupervisorAgentV2", "SupervisorAgent"))
 
@@ -154,9 +152,9 @@ def consolidate_supervisor(dry_run: bool = True) -> List[Tuple[str, str]]:
 
             content = "\n".join(new_lines)
             init_file.write_text(content)
-            print(f"  Updated: __init__.py")
+            print("  Updated: __init__.py")
         else:
-            print(f"    Update: __init__.py")
+            print("    Update: __init__.py")
 
     return changes
 

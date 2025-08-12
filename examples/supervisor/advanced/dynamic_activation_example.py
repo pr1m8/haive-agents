@@ -10,12 +10,14 @@ This test demonstrates:
 
 import asyncio
 from typing import Any
+
 from haive.core.engine import AugLLMConfig
 from haive.core.llm import LLMConfig
 from haive.core.schema import StateSchema
 from haive.tools.tools.search_tools import tavily_search_tool
 from langchain_core.tools import tool
 from pydantic import Field, model_validator
+
 from haive.agents.react.agent import ReactAgent
 from haive.agents.simple.agent import SimpleAgent
 
@@ -77,7 +79,11 @@ class EnhancedAgentRegistry:
 
     def register(self, name: str, agent: Any, description: str, active: bool = True):
         """Register an agent with active/inactive state."""
-        self.agents[name] = {"agent": agent, "description": description, "active": active}
+        self.agents[name] = {
+            "agent": agent,
+            "description": description,
+            "active": active,
+        }
         if active:
             self.active_agents.add(name)
 
@@ -91,11 +97,19 @@ class EnhancedAgentRegistry:
 
     def get_active_agents(self) -> dict[str, Any]:
         """Get only active agents."""
-        return {name: info for name, info in self.agents.items() if name in self.active_agents}
+        return {
+            name: info
+            for name, info in self.agents.items()
+            if name in self.active_agents
+        }
 
     def get_inactive_agents(self) -> dict[str, Any]:
         """Get inactive agents."""
-        return {name: info for name, info in self.agents.items() if name not in self.active_agents}
+        return {
+            name: info
+            for name, info in self.agents.items()
+            if name not in self.active_agents
+        }
 
     def is_agent_available(self, name: str) -> bool:
         """Check if agent exists (active or inactive)."""
@@ -151,11 +165,20 @@ class DynamicActivationSupervisor(ReactAgent):
         def check_required_capabilities(task_description: str) -> dict[str, Any]:
             """Analyze task and identify required capabilities."""
             capabilities = []
-            if "research" in task_description.lower() or "find" in task_description.lower():
+            if (
+                "research" in task_description.lower()
+                or "find" in task_description.lower()
+            ):
                 capabilities.append("research")
-            if "calculate" in task_description.lower() or "math" in task_description.lower():
+            if (
+                "calculate" in task_description.lower()
+                or "math" in task_description.lower()
+            ):
                 capabilities.append("math")
-            if "write" in task_description.lower() or "essay" in task_description.lower():
+            if (
+                "write" in task_description.lower()
+                or "essay" in task_description.lower()
+            ):
                 capabilities.append("essay_writing")
             return {"required_capabilities": capabilities, "task": task_description}
 
@@ -228,10 +251,15 @@ async def test_dynamic_activation():
         system_message="You are a dynamic supervisor that manages specialized agents.\n\nYour workflow:\n1. Analyze the task to identify required capabilities\n2. Check which agents are currently active\n3. If a required capability is missing, activate the appropriate agent\n4. Route tasks to the appropriate specialized agents\n5. Coordinate their responses to complete the overall task\n\nImportant: Always check required capabilities before attempting to route tasks.",
     ).create()
     supervisor = DynamicActivationSupervisor(
-        name="dynamic_supervisor", engine=supervisor_engine, state_schema=SupervisorState
+        name="dynamic_supervisor",
+        engine=supervisor_engine,
+        state_schema=SupervisorState,
     )
     supervisor.agent_registry.register(
-        "research_agent", research_agent, "Research specialist with web search", active=True
+        "research_agent",
+        research_agent,
+        "Research specialist with web search",
+        active=True,
     )
     supervisor.agent_registry.register(
         "math_agent", math_agent, "Math specialist with calculation tools", active=True
@@ -243,7 +271,9 @@ async def test_dynamic_activation():
         active=False,
     )
     supervisor._update_available_tools()
-    await supervisor.arun("Calculate the compound interest on $10,000 at 5% for 10 years")
+    await supervisor.arun(
+        "Calculate the compound interest on $10,000 at 5% for 10 years"
+    )
     await supervisor.arun(
         "Research the benefits of renewable energy and write a short essay about it"
     )

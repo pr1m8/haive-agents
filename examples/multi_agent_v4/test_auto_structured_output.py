@@ -8,7 +8,6 @@ Date: August 7, 2025
 """
 
 import asyncio
-from typing import List
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import HumanMessage
@@ -23,7 +22,7 @@ class AnalysisResult(BaseModel):
     """Analysis result with structured fields."""
 
     topic: str = Field(description="Topic being analyzed")
-    findings: List[str] = Field(description="Key findings")
+    findings: list[str] = Field(description="Key findings")
     confidence: float = Field(ge=0.0, le=1.0, description="Confidence score")
     recommendation: str = Field(description="Main recommendation")
 
@@ -48,7 +47,6 @@ def analyzer(text: str) -> str:
 
 async def main():
     """Test automatic structured output wrapping."""
-
     print("🧪 Testing Automatic Structured Output Wrapping")
     print("=" * 60)
 
@@ -105,7 +103,7 @@ async def main():
 
         # Check the graph structure
         if hasattr(agent, "graph") and agent.graph:
-            print(f"\n📊 Graph Structure:")
+            print("\n📊 Graph Structure:")
             print(
                 f"   Nodes: {list(agent.graph.nodes.keys()) if hasattr(agent.graph, 'nodes') else 'N/A'}"
             )
@@ -117,7 +115,7 @@ async def main():
 
         traceback.print_exc()
 
-        print(f"\n💡 Debug Info:")
+        print("\n💡 Debug Info:")
         print(f"   Agent class: {agent.__class__.__name__}")
         print(
             f"   Has _needs_structured_output_wrapper: {hasattr(agent, '_needs_structured_output_wrapper')}"

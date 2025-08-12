@@ -55,7 +55,6 @@ License:
 import asyncio
 import logging
 from datetime import datetime
-from typing import List, Union
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import DeepSeekLLMConfig
@@ -103,10 +102,16 @@ class TaskAnalysis(BaseModel):
             )
     """
 
-    task_type: str = Field(description="Type of task (calculation, research, analysis, etc.)")
+    task_type: str = Field(
+        description="Type of task (calculation, research, analysis, etc.)"
+    )
     complexity: int = Field(ge=1, le=10, description="Task complexity on scale of 1-10")
-    steps_required: List[str] = Field(description="List of steps needed to complete the task")
-    estimated_time: int = Field(ge=1, description="Estimated completion time in minutes")
+    steps_required: list[str] = Field(
+        description="List of steps needed to complete the task"
+    )
+    estimated_time: int = Field(
+        ge=1, description="Estimated completion time in minutes"
+    )
     confidence: float = Field(
         ge=0.0, le=1.0, description="AI confidence in this analysis (0.0-1.0)"
     )
@@ -136,8 +141,8 @@ class CalculationResult(BaseModel):
     """
 
     expression: str = Field(description="Original mathematical expression")
-    result: Union[int, float] = Field(description="Calculated result")
-    steps: List[str] = Field(description="Step-by-step calculation process")
+    result: int | float = Field(description="Calculated result")
+    steps: list[str] = Field(description="Step-by-step calculation process")
     is_exact: bool = Field(description="Whether result is exact or approximated")
 
 
@@ -184,7 +189,7 @@ def calculator(expression: str) -> str:
     except ZeroDivisionError:
         return f"Error: Division by zero in expression '{expression}'"
     except Exception as e:
-        return f"Error calculating '{expression}': {str(e)}"
+        return f"Error calculating '{expression}': {e!s}"
 
 
 @tool
@@ -256,7 +261,9 @@ def example_basic_agent() -> None:
     # Create simple agent with default settings
     agent = SimpleAgentV3(
         name="basic_assistant",
-        engine=AugLLMConfig(temperature=0.7, max_tokens=150, llm_config=DeepSeekLLMConfig()),
+        engine=AugLLMConfig(
+            temperature=0.7, max_tokens=150, llm_config=DeepSeekLLMConfig()
+        ),
         debug=True,
         verbose=True,
     )
@@ -537,7 +544,9 @@ def example_recompilation_system() -> None:
     logger.info(f"Updated tools: {', '.join(updated_tools)}")
 
     # Test new capabilities
-    print("\n📨 Post-recompilation test: 'Count words in: Hello world from recompiled agent'")
+    print(
+        "\n📨 Post-recompilation test: 'Count words in: Hello world from recompiled agent'"
+    )
     result2 = agent.run(
         "Count the words in this text: 'Hello world from recompiled agent'", debug=True
     )
@@ -553,7 +562,9 @@ def example_recompilation_system() -> None:
     if hasattr(agent, "needs_recompile"):
         print("\n📊 Recompilation Status:")
         print(f"   Needs recompile: {getattr(agent, 'needs_recompile', 'N/A')}")
-        print(f"   Last recompile reason: {getattr(agent, 'last_recompile_reason', 'N/A')}")
+        print(
+            f"   Last recompile reason: {getattr(agent, 'last_recompile_reason', 'N/A')}"
+        )
 
     print("\n✅ Recompilation system example complete!")
 

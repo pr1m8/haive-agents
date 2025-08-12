@@ -63,7 +63,7 @@ def update_imports_in_project(project_path: str, dry_run: bool = True):
 
         try:
             # Read file content
-            with open(file_path, "r") as f:
+            with open(file_path) as f:
                 content = f.read()
 
             original_content = content

@@ -8,8 +8,6 @@ Date: August 7, 2025
 """
 
 import asyncio
-import pdb
-from typing import List
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import HumanMessage
@@ -24,7 +22,7 @@ class AnalysisResult(BaseModel):
     """Analysis result with structured fields."""
 
     topic: str = Field(description="Topic being analyzed")
-    findings: List[str] = Field(description="Key findings")
+    findings: list[str] = Field(description="Key findings")
     confidence: float = Field(ge=0.0, le=1.0, description="Confidence score")
     recommendation: str = Field(description="Main recommendation")
 
@@ -49,7 +47,6 @@ def analyzer(text: str) -> str:
 
 async def debug_structured_output():
     """Debug structured output execution flow."""
-
     print("🔍 DEBUGGING STRUCTURED OUTPUT FLOW")
     print("=" * 60)
 
@@ -67,7 +64,7 @@ async def debug_structured_output():
         debug=True,  # Enable debug mode
     )
 
-    print(f"\n📋 Agent Configuration:")
+    print("\n📋 Agent Configuration:")
     print(f"  - Name: {agent.name}")
     print(f"  - Type: {type(agent).__name__}")
     print(f"  - Has structured_output_model: {agent.structured_output_model}")
@@ -77,7 +74,7 @@ async def debug_structured_output():
 
     # Check graph structure
     if hasattr(agent, "graph") and agent.graph:
-        print(f"\n📊 Graph Info:")
+        print("\n📊 Graph Info:")
         print(f"  - Graph type: {type(agent.graph).__name__}")
         print(
             f"  - Graph nodes: {list(agent.graph.nodes.keys()) if hasattr(agent.graph, 'nodes') else 'N/A'}"
@@ -117,7 +114,7 @@ async def debug_structured_output():
         print("=" * 60)
 
         # Detailed result inspection
-        print(f"\n🔎 Result Analysis:")
+        print("\n🔎 Result Analysis:")
         print(f"  - Type: {type(result).__name__}")
         print(f"  - Is dict: {isinstance(result, dict)}")
         print(f"  - Is BaseModel: {isinstance(result, BaseModel)}")
@@ -129,7 +126,7 @@ async def debug_structured_output():
             # Check for structured output fields
             if "analysis_result" in result:
                 analysis = result["analysis_result"]
-                print(f"\n  'analysis_result' field:")
+                print("\n  'analysis_result' field:")
                 print(f"    - Type: {type(analysis).__name__}")
                 print(
                     f"    - Is AnalysisResult: {isinstance(analysis, AnalysisResult)}"
@@ -141,7 +138,7 @@ async def debug_structured_output():
                     print(f"    - Findings: {len(analysis.findings)} items")
 
         # Check execution path
-        print(f"\n🛤️  Execution Path Analysis:")
+        print("\n🛤️  Execution Path Analysis:")
 
         # Look at the agent's internal state
         if hasattr(agent, "_compiled_graph") and agent._compiled_graph:
@@ -154,7 +151,7 @@ async def debug_structured_output():
                 print("  - Graph has underlying graph (multi-agent)")
 
         # Trace the source
-        print(f"\n📍 Tracing Result Source:")
+        print("\n📍 Tracing Result Source:")
         print(
             f"  - Result module: {result.__class__.__module__ if hasattr(result, '__class__') else 'N/A'}"
         )
@@ -186,7 +183,6 @@ async def debug_structured_output():
 
 async def trace_execution_path():
     """Trace the exact execution path for structured output."""
-
     print("\n" + "=" * 60)
     print("🔬 TRACING EXECUTION PATH")
     print("=" * 60)
@@ -209,13 +205,13 @@ async def trace_execution_path():
 
         # Check nodes
         if hasattr(graph, "nodes"):
-            print(f"\n  Nodes in graph:")
+            print("\n  Nodes in graph:")
             for node_name in graph.nodes:
                 print(f"    - {node_name}")
 
         # Check if it's wrapped
         if hasattr(graph, "_agents"):
-            print(f"\n  Multi-agent detected:")
+            print("\n  Multi-agent detected:")
             print(
                 f"    - Number of agents: {len(graph._agents) if hasattr(graph, '_agents') else 'N/A'}"
             )
@@ -223,14 +219,14 @@ async def trace_execution_path():
     # Simple execution
     result = await agent.arun({"messages": [HumanMessage(content="Quick analysis")]})
 
-    print(f"\n📦 Result Structure:")
+    print("\n📦 Result Structure:")
     print(f"  - Type: {type(result)}")
     print(
         f"  - Keys: {list(result.keys()) if isinstance(result, dict) else 'Not a dict'}"
     )
 
     # Check where AddableValuesDict comes from
-    print(f"\n🔍 AddableValuesDict Source:")
+    print("\n🔍 AddableValuesDict Source:")
     print("  - This is LangGraph's standard return type")
     print("  - It allows graph nodes to add values to the state")
     print("  - The structured output is embedded within it")

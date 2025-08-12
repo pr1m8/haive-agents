@@ -9,7 +9,7 @@ Date: August 7, 2025
 import asyncio
 import os
 import time
-from typing import Any, List, Optional
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import HumanMessage
@@ -17,7 +17,6 @@ from langchain_core.tools import tool
 from pydantic import BaseModel, Field
 
 from haive.agents.base.structured_output_handler import StructuredOutputHandler
-from haive.agents.react.agent_v4 import ReactAgentV4
 from haive.agents.simple.agent_v3 import SimpleAgentV3
 
 
@@ -26,7 +25,7 @@ class AnalysisResult(BaseModel):
     """Analysis result with structured fields."""
 
     topic: str = Field(description="Topic being analyzed")
-    findings: List[str] = Field(description="Key findings (2-3 items)")
+    findings: list[str] = Field(description="Key findings (2-3 items)")
     confidence: float = Field(ge=0.0, le=1.0, description="Confidence score")
     recommendation: str = Field(description="Main recommendation")
 
@@ -75,7 +74,7 @@ async def approach_1_direct_access():
     print(f"🔑 Result keys: {list(result.keys())}")
 
     if analysis:
-        print(f"\n✅ Successfully extracted AnalysisResult:")
+        print("\n✅ Successfully extracted AnalysisResult:")
         print(f"   Topic: {analysis.topic}")
         print(f"   Confidence: {analysis.confidence:.2f}")
         print(f"   Findings: {analysis.findings}")
@@ -128,7 +127,7 @@ async def approach_2_handler_class():
     print(f"🔍 Handler searched fields: {handler.expected_fields}")
 
     if analysis:
-        print(f"\n✅ Successfully extracted AnalysisResult:")
+        print("\n✅ Successfully extracted AnalysisResult:")
         print(f"   Topic: {analysis.topic}")
         print(f"   Confidence: {analysis.confidence:.2f}")
         print(f"   Findings: {analysis.findings}")
@@ -152,7 +151,7 @@ async def approach_2_handler_class():
 class StructuredAgent(SimpleAgentV3):
     """Agent with built-in structured output method."""
 
-    async def get_analysis(self, input_data: dict) -> Optional[AnalysisResult]:
+    async def get_analysis(self, input_data: dict) -> AnalysisResult | None:
         """Run agent and return structured output directly."""
         result = await self.arun(input_data)
         return result.get("analysis_result")
@@ -184,7 +183,7 @@ async def approach_3_custom_agent():
     print(f"🎯 Direct return type: {type(analysis).__name__ if analysis else 'None'}")
 
     if analysis:
-        print(f"\n✅ Successfully got AnalysisResult directly:")
+        print("\n✅ Successfully got AnalysisResult directly:")
         print(f"   Topic: {analysis.topic}")
         print(f"   Confidence: {analysis.confidence:.2f}")
         print(f"   Findings: {analysis.findings}")
@@ -246,7 +245,7 @@ async def approach_4_post_processing():
     print(f"📦 Is AnalysisResult: {isinstance(analysis, AnalysisResult)}")
 
     if isinstance(analysis, AnalysisResult):
-        print(f"\n✅ Got AnalysisResult directly (no extraction needed!):")
+        print("\n✅ Got AnalysisResult directly (no extraction needed!):")
         print(f"   Topic: {analysis.topic}")
         print(f"   Confidence: {analysis.confidence:.2f}")
         print(f"   Findings: {analysis.findings}")
@@ -288,9 +287,9 @@ async def approach_5_wrapper_function():
     execution_time = time.time() - start_time
 
     print(f"✅ Execution time: {execution_time:.2f}s")
-    print(f"🎯 Clean API: analysis = await analyze_with_structure(query)")
+    print("🎯 Clean API: analysis = await analyze_with_structure(query)")
 
-    print(f"\n✅ Got result with one line:")
+    print("\n✅ Got result with one line:")
     print(f"   Topic: {analysis.topic}")
     print(f"   Confidence: {analysis.confidence:.2f}")
     print(f"   Findings: {analysis.findings}")

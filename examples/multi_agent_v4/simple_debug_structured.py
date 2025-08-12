@@ -7,7 +7,6 @@ import os
 # Disable verbose logging
 os.environ["HAIVE_LOG_LEVEL"] = "ERROR"
 
-from typing import List
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import HumanMessage
@@ -21,14 +20,13 @@ class AnalysisResult(BaseModel):
     """Analysis result with structured fields."""
 
     topic: str = Field(description="Topic being analyzed")
-    findings: List[str] = Field(description="Key findings")
+    findings: list[str] = Field(description="Key findings")
     confidence: float = Field(ge=0.0, le=1.0, description="Confidence score")
     recommendation: str = Field(description="Main recommendation")
 
 
 async def main():
     """Debug why result is AddableValuesDict."""
-
     print("🔍 Simple Debug - Structured Output Return Type")
     print("=" * 60)
 
@@ -62,7 +60,7 @@ async def main():
     )
 
     # Analyze result
-    print(f"\n📦 Result Analysis:")
+    print("\n📦 Result Analysis:")
     print(f"  Type: {type(result).__name__}")
     print(f"  Module: {type(result).__module__}")
 
@@ -75,7 +73,7 @@ async def main():
         # Check for analysis_result field
         if "analysis_result" in result:
             analysis = result["analysis_result"]
-            print(f"\n  Found 'analysis_result':")
+            print("\n  Found 'analysis_result':")
             print(f"    Type: {type(analysis).__name__}")
             print(f"    Is AnalysisResult: {isinstance(analysis, AnalysisResult)}")
 
@@ -84,13 +82,13 @@ async def main():
                 print(f"    Confidence: {analysis.confidence}")
 
     # The key finding
-    print(f"\n💡 Key Finding:")
+    print("\n💡 Key Finding:")
     print(f"  AddableValuesDict is from: {type(result).__module__}")
-    print(f"  This is LangGraph's standard return type")
-    print(f"  It allows nodes to 'add' values to the state")
+    print("  This is LangGraph's standard return type")
+    print("  It allows nodes to 'add' values to the state")
 
     # Let's trace where this happens
-    print(f"\n🔍 Tracing the source:")
+    print("\n🔍 Tracing the source:")
 
     # Check the execution method
     if hasattr(agent, "_app"):
@@ -98,10 +96,10 @@ async def main():
         print(f"  From module: {type(agent._app).__module__}")
 
     # The return happens in ExecutionMixin
-    print(f"\n📍 The return happens in:")
-    print(f"  1. ExecutionMixin.arun() calls compiled_graph.ainvoke()")
-    print(f"  2. LangGraph returns AddableValuesDict")
-    print(f"  3. This is the final state after all nodes execute")
+    print("\n📍 The return happens in:")
+    print("  1. ExecutionMixin.arun() calls compiled_graph.ainvoke()")
+    print("  2. LangGraph returns AddableValuesDict")
+    print("  3. This is the final state after all nodes execute")
 
     return result
 

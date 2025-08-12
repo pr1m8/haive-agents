@@ -1,4 +1,4 @@
-"""Run the SimpleAgentV3 structured output test with debug
+"""Run the SimpleAgentV3 structured output test with debug.
 
 This runs the exact test from the test suite to see how it works.
 
@@ -6,11 +6,12 @@ Date: August 7, 2025
 """
 
 import asyncio
+
+from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field
 
 from haive.agents.simple.agent_v3 import SimpleAgentV3
-from haive.core.engine.aug_llm import AugLLMConfig
 
 
 # Simplified Pydantic model
@@ -89,7 +90,7 @@ async def main():
                 print(f"Structured output type: {type(structured_output).__name__}")
                 if hasattr(structured_output, "model_dump"):
                     data = structured_output.model_dump()
-                    print(f"\nStructured data:")
+                    print("\nStructured data:")
                     print(f"  - Original query: {data.get('original_query')}")
                     print(f"  - Query type: {data.get('query_type')}")
                     print(f"  - Best refined: {data.get('best_refined_query')}")

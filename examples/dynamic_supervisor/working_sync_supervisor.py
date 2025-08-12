@@ -1,4 +1,4 @@
-"""Working Static Supervisor with Tool Sync - Fixed for Current APIs
+"""Working Static Supervisor with Tool Sync - Fixed for Current APIs.
 
 This supervisor has:
 1. Active agents registry in supervisor state
@@ -14,16 +14,15 @@ import logging
 import operator
 import pickle
 from collections.abc import Sequence
-from typing import Annotated, Any, Dict, List, Literal, TypedDict
+from typing import Annotated, Any, Literal, TypedDict
 
 # Import current working APIs
 from haive.core.engine.aug_llm import AugLLMConfig
-from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, ToolMessage
+from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
 from langchain_core.tools import BaseTool, tool
 from langgraph.graph import END, StateGraph
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, Field
 
-from haive.agents.react.agent import ReactAgent
 from haive.agents.simple.agent_v3 import SimpleAgentV3
 
 logger = logging.getLogger(__name__)
@@ -58,7 +57,7 @@ def create_handoff_tool(agent_name: str, description: str) -> BaseTool:
 
     @tool
     def handoff_to_agent(task: str) -> str:
-        f"""Hand off task to {agent_name}: {description}"""
+        f"""Hand off task to {agent_name}: {description}."""
         return f"HANDOFF_TO_{agent_name.upper()}: {task}"
 
     # Set proper name and description
@@ -83,9 +82,9 @@ class SupervisorSyncState(TypedDict):
     """State for the supervisor with automatic tool sync."""
 
     messages: Annotated[Sequence[BaseMessage], operator.add]
-    registered_agents: Dict[str, AgentEntry]
-    handoff_tools: Dict[str, BaseTool]
-    active_agents: List[str]
+    registered_agents: dict[str, AgentEntry]
+    handoff_tools: dict[str, BaseTool]
+    active_agents: list[str]
     current_agent: str
     last_handoff_result: str
 
@@ -137,7 +136,7 @@ def create_plan(task: str) -> str:
     return f"Plan for {task}:\n1. Analyze requirements\n2. Break down into steps\n3. Execute\n4. Verify"
 
 
-def create_test_agents() -> Dict[str, AgentEntry]:
+def create_test_agents() -> dict[str, AgentEntry]:
     """Create test agents for the supervisor."""
     agents = {}
 
@@ -184,9 +183,8 @@ def create_test_agents() -> Dict[str, AgentEntry]:
     return agents
 
 
-async def supervisor_reasoning_node(state: SupervisorSyncState) -> Dict[str, Any]:
+async def supervisor_reasoning_node(state: SupervisorSyncState) -> dict[str, Any]:
     """Supervisor that uses registered agents and synced tools."""
-
     # Sync tools first
     state = sync_tools_with_agents(state)
 
@@ -259,7 +257,7 @@ async def supervisor_reasoning_node(state: SupervisorSyncState) -> Dict[str, Any
     }
 
 
-async def agent_execution_node(state: SupervisorSyncState) -> Dict[str, Any]:
+async def agent_execution_node(state: SupervisorSyncState) -> dict[str, Any]:
     """Execute the selected agent from registry."""
     agent_name = state.get("next_agent")
     task = state.get("agent_task")
@@ -456,18 +454,18 @@ async def test_sync_supervisor():
     final_registered = result4.get("registered_agents", {})
     final_tools = result4.get("handoff_tools", {})
 
-    print(f"🎯 Registry Summary:")
+    print("🎯 Registry Summary:")
     print(f"  - Total registered agents: {len(final_registered)}")
     print(f"  - Total handoff tools: {len(final_tools)}")
     print(
         f"  - Tool sync working: {'✅' if len(final_registered) == len(final_tools) else '❌'}"
     )
 
-    print(f"\n📋 Registered Agents:")
+    print("\n📋 Registered Agents:")
     for name, agent_entry in final_registered.items():
         print(f"  - {name}: {agent_entry.description}")
 
-    print(f"\n🔧 Handoff Tools:")
+    print("\n🔧 Handoff Tools:")
     for tool_name in final_tools.keys():
         print(f"  - {tool_name}")
 

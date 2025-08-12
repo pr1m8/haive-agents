@@ -19,7 +19,6 @@ class SimpleOutput(BaseModel):
 
 async def debug_execution():
     """Debug multi-agent execution."""
-
     print("Creating agents with structured output...")
 
     # Create agents with structured output

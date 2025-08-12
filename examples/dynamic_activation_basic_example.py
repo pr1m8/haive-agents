@@ -148,7 +148,9 @@ async def example_1_basic_dynamic_react_agent():
 
     # Execute agent with a task
     try:
-        result = await agent.arun("Calculate 15 + 25 and then process the text 'hello world'")
+        result = await agent.arun(
+            "Calculate 15 + 25 and then process the text 'hello world'"
+        )
         logger.info(f"Agent result: {result}")
     except Exception as e:
         logger.exception(f"Agent execution error: {e}")
@@ -235,7 +237,9 @@ async def example_2_dynamic_activation_supervisor():
     supervisor.state.activate_component("math_processor")
     supervisor.state.activate_component("text_analyzer")
 
-    logger.info(f"Activated components: {list(supervisor.state.active_components.keys())}")
+    logger.info(
+        f"Activated components: {list(supervisor.state.active_components.keys())}"
+    )
 
     # Execute supervisor
     try:
@@ -355,7 +359,9 @@ async def example_3_discovery_based_activation():
             )
             logger.info(f"Discovered {len(math_tools)} math tools")
 
-            text_tools = await agent.discover_and_load_tools("text processing and summarization")
+            text_tools = await agent.discover_and_load_tools(
+                "text processing and summarization"
+            )
             logger.info(f"Discovered {len(text_tools)} text tools")
 
             # Check discovery queries
@@ -366,7 +372,9 @@ async def example_3_discovery_based_activation():
 
         # Execute agent with discovered tools
         try:
-            result = await agent.arun("I need help with statistical analysis of text data")
+            result = await agent.arun(
+                "I need help with statistical analysis of text data"
+            )
             logger.info(f"Discovery agent result: {result}")
         except Exception as e:
             logger.exception(f"Discovery agent execution error: {e}")
@@ -475,7 +483,9 @@ async def example_4_registry_management():
     for item_id in state.registry.list_components():
         meta_state = state.activate_component(item_id)
         if meta_state:
-            logger.info(f"Activated {item_id} with MetaStateSchema: {meta_state.execution_status}")
+            logger.info(
+                f"Activated {item_id} with MetaStateSchema: {meta_state.execution_status}"
+            )
 
     # Get activation statistics
     activation_stats = state.get_activation_stats()
@@ -528,7 +538,9 @@ async def example_5_performance_testing():
         large_registry.register(item)
 
     registration_time = time.time() - start_time
-    logger.info(f"Registered {num_components} components in {registration_time:.3f} seconds")
+    logger.info(
+        f"Registered {num_components} components in {registration_time:.3f} seconds"
+    )
 
     # Test activation performance
     start_time = time.time()
@@ -541,7 +553,9 @@ async def example_5_performance_testing():
             activated_count += 1
 
     activation_time = time.time() - start_time
-    logger.info(f"Activated {activated_count} components in {activation_time:.3f} seconds")
+    logger.info(
+        f"Activated {activated_count} components in {activation_time:.3f} seconds"
+    )
 
     # Test stats performance
     start_time = time.time()
@@ -560,7 +574,9 @@ async def example_5_performance_testing():
             deactivated_count += 1
 
     deactivation_time = time.time() - start_time
-    logger.info(f"Deactivated {deactivated_count} components in {deactivation_time:.3f} seconds")
+    logger.info(
+        f"Deactivated {deactivated_count} components in {deactivation_time:.3f} seconds"
+    )
 
     # Final stats
     final_stats = large_registry.get_stats()
@@ -594,8 +610,12 @@ async def main():
         # Summary
         logger.info("=== Summary ===")
         logger.info(f"Basic agent active tools: {len(agent.get_active_tool_names())}")
-        logger.info(f"Supervisor active components: {len(supervisor.state.active_components)}")
-        logger.info(f"Discovery agent queries: {len(discovery_agent.state.discovery_queries)}")
+        logger.info(
+            f"Supervisor active components: {len(supervisor.state.active_components)}"
+        )
+        logger.info(
+            f"Discovery agent queries: {len(discovery_agent.state.discovery_queries)}"
+        )
         logger.info(f"State registry components: {len(state.registry.items)}")
         logger.info(f"Performance registry components: {len(perf_registry.items)}")
 

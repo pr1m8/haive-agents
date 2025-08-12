@@ -1,12 +1,18 @@
 """Component 4: Dynamic Supervisor using ReactAgent with state-based tools."""
 
 from typing import Any
+
 from haive.core.engine import AugLLMConfig
 from haive.core.graph import BaseGraph
 from haive.core.models.llm.base import AzureLLMConfig
 from pydantic import Field, model_validator
-from haive.agents.experiments.supervisor.component_2_tools import SupervisorStateWithTools
-from haive.agents.experiments.supervisor.component_3_agent_execution import AgentExecutionNode
+
+from haive.agents.experiments.supervisor.component_2_tools import (
+    SupervisorStateWithTools,
+)
+from haive.agents.experiments.supervisor.component_3_agent_execution import (
+    AgentExecutionNode,
+)
 from haive.agents.react.agent import ReactAgent
 
 
@@ -61,7 +67,9 @@ class DynamicSupervisor(ReactAgent):
         if hasattr(state, "get_all_tools"):
             dynamic_tools = state.get_all_tools()
             self.engine.tools = dynamic_tools
-            self.engine.tool_routes = {tool.name: "langchain_tool" for tool in dynamic_tools}
+            self.engine.tool_routes = {
+                tool.name: "langchain_tool" for tool in dynamic_tools
+            }
         else:
             pass
 
@@ -86,7 +94,9 @@ class DynamicSupervisor(ReactAgent):
         graph.set_entry_point("supervisor")
         return graph.compile()
 
-    async def _supervisor_reasoning_node(self, state: SupervisorStateWithTools) -> dict[str, Any]:
+    async def _supervisor_reasoning_node(
+        self, state: SupervisorStateWithTools
+    ) -> dict[str, Any]:
         """Supervisor reasoning node that uses dynamic tools for decision making.
 
         This node:
@@ -104,7 +114,9 @@ class DynamicSupervisor(ReactAgent):
         """Sync tools from a specific state instance."""
         dynamic_tools = state.get_all_tools()
         self.engine.tools = dynamic_tools
-        self.engine.tool_routes = {tool.name: "langchain_tool" for tool in dynamic_tools}
+        self.engine.tool_routes = {
+            tool.name: "langchain_tool" for tool in dynamic_tools
+        }
 
     def _route_supervisor_decision(self, state: SupervisorStateWithTools) -> str:
         """Route based on supervisor's decision in state."""

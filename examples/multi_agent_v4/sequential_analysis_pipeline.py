@@ -1,4 +1,4 @@
-"""Sequential Analysis Pipeline Example
+"""Sequential Analysis Pipeline Example.
 
 This example demonstrates a ReactAgent → SimpleAgent sequential workflow
 where a ReactAgent performs analysis with tools, then a SimpleAgent
@@ -8,16 +8,16 @@ Date: August 7, 2025
 """
 
 import asyncio
-from pydantic import BaseModel, Field
-from typing import List, Dict
-from langchain_core.tools import tool
+
+from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import HumanMessage
 from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.tools import tool
+from pydantic import BaseModel, Field
 
 from haive.agents.multi.enhanced_multi_agent_v4 import EnhancedMultiAgentV4
 from haive.agents.react.agent_v4 import ReactAgentV4
 from haive.agents.simple.agent_v3 import SimpleAgentV3
-from haive.core.engine.aug_llm import AugLLMConfig
 
 
 # Define structured output for the formatter
@@ -26,9 +26,9 @@ class AnalysisReport(BaseModel):
 
     title: str = Field(description="Report title")
     summary: str = Field(description="Executive summary of findings")
-    key_metrics: Dict[str, float] = Field(description="Key numerical findings")
-    insights: List[str] = Field(description="Key insights discovered")
-    recommendations: List[str] = Field(description="Actionable recommendations")
+    key_metrics: dict[str, float] = Field(description="Key numerical findings")
+    insights: list[str] = Field(description="Key insights discovered")
+    recommendations: list[str] = Field(description="Actionable recommendations")
     confidence_level: float = Field(ge=0.0, le=1.0, description="Overall confidence")
 
 
@@ -65,7 +65,7 @@ def analyze_trend(values: str) -> str:
 
         return f"Trend: {trend}, Average: {avg:.2f}, Range: {min(nums)}-{max(nums)}"
     except Exception as e:
-        return f"Error analyzing trend: {str(e)}"
+        return f"Error analyzing trend: {e!s}"
 
 
 @tool
@@ -86,12 +86,11 @@ def statistical_summary(values: str) -> str:
 
         return f"Count: {len(nums)}, Mean: {mean:.2f}, Median: {median:.2f}, Min: {min(nums)}, Max: {max(nums)}"
     except Exception as e:
-        return f"Error in statistical summary: {str(e)}"
+        return f"Error in statistical summary: {e!s}"
 
 
 async def main():
     """Run the sequential analysis pipeline."""
-
     # Configure engines
     analyzer_config = AugLLMConfig(
         temperature=0.3,
@@ -192,13 +191,13 @@ async def main():
         print("\n[Formatted Report]")
         print(f"Title: {report.title}")
         print(f"Summary: {report.summary}")
-        print(f"\nKey Metrics:")
+        print("\nKey Metrics:")
         for metric, value in report.key_metrics.items():
             print(f"  - {metric}: {value}")
-        print(f"\nInsights:")
+        print("\nInsights:")
         for insight in report.insights:
             print(f"  • {insight}")
-        print(f"\nRecommendations:")
+        print("\nRecommendations:")
         for rec in report.recommendations:
             print(f"  → {rec}")
         print(f"\nConfidence Level: {report.confidence_level:.0%}")

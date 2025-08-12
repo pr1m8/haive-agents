@@ -10,14 +10,11 @@ This example demonstrates:
 
 import asyncio
 import logging
-from typing import List
 
-from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.tools import tool
 
 from haive.agents.dynamic_supervisor_v2 import (
     AgentSpec,
-    DynamicSupervisor,
     create_dynamic_supervisor,
 )
 
@@ -34,7 +31,7 @@ def calculator(expression: str) -> str:
         result = eval(expression)
         return f"The result of {expression} is {result}"
     except Exception as e:
-        return f"Error calculating {expression}: {str(e)}"
+        return f"Error calculating {expression}: {e!s}"
 
 
 @tool
@@ -71,7 +68,7 @@ def analyze_data(data: str) -> str:
 """
 
 
-def create_agent_specs() -> List[AgentSpec]:
+def create_agent_specs() -> list[AgentSpec]:
     """Create agent specifications for the supervisor."""
     return [
         AgentSpec(
@@ -175,7 +172,7 @@ async def main():
             result = await supervisor.arun(task)
             print(f"Result: {result}\n")
         except Exception as e:
-            print(f"Error: {str(e)}\n")
+            print(f"Error: {e!s}\n")
 
     # Display metrics
     print("\n" + "=" * 60)

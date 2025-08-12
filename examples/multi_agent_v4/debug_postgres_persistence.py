@@ -34,7 +34,6 @@ class TestModel(BaseModel):
 
 async def test_postgres_persistence():
     """Test that agent actually persists to PostgreSQL."""
-
     print("🔍 POSTGRESQL PERSISTENCE TEST")
     print("=" * 60)
 
@@ -102,9 +101,8 @@ async def test_postgres_persistence():
         if hasattr(result2, "messages") and len(result2.messages) > 2:
             print("✅ Agent appears to have persistent state (multiple messages)")
             return True
-        else:
-            print("⚠️ Agent state unclear - check manually")
-            return True
+        print("⚠️ Agent state unclear - check manually")
+        return True
 
     except Exception as e:
         print(f"❌ Agent test failed: {e}")
@@ -116,7 +114,6 @@ async def test_postgres_persistence():
 
 async def check_postgres_direct():
     """Test direct PostgreSQL connection."""
-
     print("\n🔍 DIRECT POSTGRESQL CONNECTION TEST")
     print("=" * 50)
 

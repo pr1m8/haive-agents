@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Safe Agent Base Consolidation Script for haive-agents.
+"""Safe Agent Base Consolidation Script for haive-agents.
 
 This script consolidates multiple agent base classes into ONE base agent:
 - EnhancedAgent → Agent (becomes THE base agent)
@@ -11,8 +10,7 @@ Safety features:
 - Dry run mode by default
 - Compilation validation
 - Comprehensive import testing
-- Archival of old files (not deletion)
-"""
+- Archival of old files (not deletion)"""
 
 import os
 import py_compile
@@ -21,7 +19,6 @@ import subprocess
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Tuple
 
 
 class AgentBaseConsolidator:
@@ -122,7 +119,9 @@ These files were archived during the agent base consolidation on {datetime.now()
             if self.dry_run:
                 self.log(f"Would test import: {import_stmt}")
             else:
-                result = subprocess.run(cmd, capture_output=True, text=True)
+                result = subprocess.run(
+                    cmd, check=False, capture_output=True, text=True
+                )
                 if result.returncode != 0:
                     self.errors.append(f"Import failed: {import_stmt}\n{result.stderr}")
                     return False
@@ -253,11 +252,11 @@ __all__ = ["SimpleAgent"]
         # Archive the old agent.py
         if old_agent.exists():
             shutil.move(str(old_agent), str(archive_dir / "agent_original.py"))
-            self.log(f"✅ Archived old agent.py")
+            self.log("✅ Archived old agent.py")
 
         # Move enhanced_agent.py to agent.py
         shutil.move(str(enhanced_agent), str(old_agent))
-        self.log(f"✅ Moved enhanced_agent.py → agent.py")
+        self.log("✅ Moved enhanced_agent.py → agent.py")
 
         return self.compile_check(old_agent)
 
@@ -287,11 +286,11 @@ __all__ = ["SimpleAgent"]
         # Archive old versions
         if agent_v2.exists():
             shutil.move(str(agent_v2), str(archive_dir / "agent_v2.py"))
-            self.log(f"✅ Archived agent_v2.py")
+            self.log("✅ Archived agent_v2.py")
 
         if old_agent.exists():
             shutil.move(str(old_agent), str(archive_dir / "agent_original.py"))
-            self.log(f"✅ Archived old agent.py")
+            self.log("✅ Archived old agent.py")
 
         # Read agent_v3 content and update class name
         content = agent_v3.read_text()
@@ -305,7 +304,7 @@ __all__ = ["SimpleAgent"]
 
         # Remove the old v3 file
         agent_v3.unlink()
-        self.log(f"✅ Moved agent_v3.py → agent.py and updated class name")
+        self.log("✅ Moved agent_v3.py → agent.py and updated class name")
 
         return self.compile_check(old_agent)
 

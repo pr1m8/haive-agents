@@ -5,7 +5,6 @@ Date: August 7, 2025
 """
 
 import asyncio
-import logging
 import os
 
 from haive.core.engine.aug_llm import AugLLMConfig
@@ -26,7 +25,6 @@ class TestModel(BaseModel):
 
 async def debug_simple():
     """Simple debug to see the exact error."""
-
     print("🔍 SIMPLE VALIDATION DEBUG")
     print("=" * 50)
 
@@ -59,11 +57,11 @@ async def debug_simple():
 
         # Look for validation-specific error
         if "Unknown Pydantic model" in str(e):
-            print(f"\n🎯 VALIDATION ERROR CONFIRMED!")
+            print("\n🎯 VALIDATION ERROR CONFIRMED!")
             print(
-                f"This means ValidationNodeConfigV2._find_model_class_from_engine() failed"
+                "This means ValidationNodeConfigV2._find_model_class_from_engine() failed"
             )
-            print(f"Even though the engine should be findable in state.engines")
+            print("Even though the engine should be findable in state.engines")
 
         # Show the stack trace to see where it fails
         import traceback
@@ -79,12 +77,12 @@ if __name__ == "__main__":
     success = asyncio.run(debug_simple())
 
     if not success:
-        print(f"\n💡 ANALYSIS:")
-        print(f"The ValidationNodeConfigV2 is supposed to:")
-        print(f"1. Get engine_name from its config")
-        print(f"2. Find engine in state.engines[engine_name]")
-        print(f"3. Check engine.structured_output_model.__name__ == tool_name")
-        print(f"4. Return the model class")
+        print("\n💡 ANALYSIS:")
+        print("The ValidationNodeConfigV2 is supposed to:")
+        print("1. Get engine_name from its config")
+        print("2. Find engine in state.engines[engine_name]")
+        print("3. Check engine.structured_output_model.__name__ == tool_name")
+        print("4. Return the model class")
         print(
-            f"\nBut this is failing - need to add debug logging to ValidationNodeConfigV2!"
+            "\nBut this is failing - need to add debug logging to ValidationNodeConfigV2!"
         )

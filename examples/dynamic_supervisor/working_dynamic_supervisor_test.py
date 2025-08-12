@@ -1,4 +1,4 @@
-"""Working Dynamic Supervisor Test - Fixed for Current APIs
+"""Working Dynamic Supervisor Test - Fixed for Current APIs.
 
 This is a fixed version of the dynamic supervisor that works with current haive-agents APIs.
 """
@@ -71,7 +71,6 @@ def create_plan(task: str) -> str:
 # Fixed function to create test agents
 async def create_test_agents() -> dict[str, AgentInfo]:
     """Create test agents for supervisor testing using current APIs."""
-
     # Math agent with calculation tools
     math_engine = AugLLMConfig(
         temperature=0.1,

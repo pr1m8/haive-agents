@@ -12,14 +12,11 @@ This example demonstrates:
 import asyncio
 import logging
 from datetime import datetime
-from typing import List
 
-from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.tools import tool
 from pydantic import BaseModel, Field
 
 from haive.agents.dynamic_supervisor_v2 import (
-    AgentCapability,
     AgentDiscoveryMode,
     AgentSpec,
     DiscoveryConfig,
@@ -40,36 +37,36 @@ class ResearchResult(BaseModel):
 
     topic: str = Field(description="Research topic")
     summary: str = Field(description="Executive summary")
-    key_findings: List[str] = Field(description="Key findings list")
+    key_findings: list[str] = Field(description="Key findings list")
     confidence: float = Field(ge=0.0, le=1.0, description="Confidence score")
-    sources: List[str] = Field(default_factory=list, description="Information sources")
+    sources: list[str] = Field(default_factory=list, description="Information sources")
 
 
 class ProjectPlan(BaseModel):
     """Structured output for project planning."""
 
     project_name: str = Field(description="Project name")
-    objectives: List[str] = Field(description="Project objectives")
-    phases: List[str] = Field(description="Project phases")
+    objectives: list[str] = Field(description="Project objectives")
+    phases: list[str] = Field(description="Project phases")
     timeline: str = Field(description="Estimated timeline")
-    risks: List[str] = Field(description="Identified risks")
-    success_criteria: List[str] = Field(description="Success criteria")
+    risks: list[str] = Field(description="Identified risks")
+    success_criteria: list[str] = Field(description="Success criteria")
 
 
 class CodeReview(BaseModel):
     """Structured output for code reviews."""
 
     overall_quality: str = Field(description="Overall code quality assessment")
-    strengths: List[str] = Field(description="Code strengths")
-    issues: List[str] = Field(description="Identified issues")
-    suggestions: List[str] = Field(description="Improvement suggestions")
-    security_concerns: List[str] = Field(default_factory=list)
+    strengths: list[str] = Field(description="Code strengths")
+    issues: list[str] = Field(description="Identified issues")
+    suggestions: list[str] = Field(description="Improvement suggestions")
+    security_concerns: list[str] = Field(default_factory=list)
     score: int = Field(ge=1, le=10, description="Quality score")
 
 
 # Define advanced tools
 @tool
-def advanced_search(query: str, sources: List[str] = None) -> str:
+def advanced_search(query: str, sources: list[str] = None) -> str:
     """Advanced search with source filtering."""
     sources = sources or ["web", "academic", "news"]
     return f"""Search results for '{query}' from {', '.join(sources)}:
@@ -108,20 +105,19 @@ def project_tracker(action: str, project_name: str, data: str = "") -> str:
 
     if action == "create":
         return f"Project '{project_name}' created at {timestamp}"
-    elif action == "update":
+    if action == "update":
         return f"Project '{project_name}' updated: {data}"
-    elif action == "status":
+    if action == "status":
         return f"""Project '{project_name}' Status:
 - Phase: Implementation
 - Progress: 65%
 - Next milestone: Beta release
 - Days remaining: 15
 """
-    else:
-        return f"Unknown action: {action}"
+    return f"Unknown action: {action}"
 
 
-def create_advanced_specs() -> List[AgentSpec]:
+def create_advanced_specs() -> list[AgentSpec]:
     """Create advanced agent specifications."""
     return [
         AgentSpec(

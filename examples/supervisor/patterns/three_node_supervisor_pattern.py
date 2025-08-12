@@ -53,9 +53,7 @@ class ExecuteAgentNode:
             return {"state": state}
 
         if agent_name not in state.available_agents:
-            state.agent_response = (
-                f"Agent '{agent_name}' not found. Available: {list(state.available_agents.keys())}"
-            )
+            state.agent_response = f"Agent '{agent_name}' not found. Available: {list(state.available_agents.keys())}"
             state.agent_to_execute = None
             state.execution_payload = None
             return {"state": state}
@@ -183,7 +181,7 @@ class AddAgentNode:
 
 
 class ThreeNodeSupervisor(ReactAgent):
-    """Clean supervisor with exactly 3 destinations:
+    """Clean supervisor with exactly 3 destinations:.
     supervisor -> execute_agent | add_agent | END.
     """
 
@@ -335,7 +333,9 @@ Important: After using a tool, set the appropriate state fields:
 
         return {"state": state}
 
-    def _route_supervisor(self, state: SupervisorState) -> Literal["execute", "add", "end"]:
+    def _route_supervisor(
+        self, state: SupervisorState
+    ) -> Literal["execute", "add", "end"]:
         """Route to one of the 3 destinations."""
         if state.agent_to_execute:
             return "execute"

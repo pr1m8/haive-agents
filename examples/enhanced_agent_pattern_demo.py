@@ -89,10 +89,14 @@ class Agent(Workflow, Generic[EngineT]):
     async def execute(self, input_data: Any) -> Any:
         """Execute using the engine."""
         # Log the execution
-        self.history.append({"input": input_data, "engine_type": type(self.engine).__name__})
+        self.history.append(
+            {"input": input_data, "engine_type": type(self.engine).__name__}
+        )
 
         # In real implementation, this would use the engine
-        result = f"{self.name} processed '{input_data}' using {type(self.engine).__name__}"
+        result = (
+            f"{self.name} processed '{input_data}' using {type(self.engine).__name__}"
+        )
 
         self.history[-1]["output"] = result
         return result
@@ -195,7 +199,10 @@ class MultiAgent(Agent[AugLLMConfig]):
 
     def list_agents(self) -> list[AgentRef]:
         """List all coordinated agents with their types."""
-        return [AgentRef(name=name, agent_type=repr(agent)) for name, agent in self.agents.items()]
+        return [
+            AgentRef(name=name, agent_type=repr(agent))
+            for name, agent in self.agents.items()
+        ]
 
 
 # ========================================================================
@@ -210,7 +217,9 @@ async def main():
     result = await simple.execute("Hello world")
 
     # 2. RAGAgent = Agent[RetrieverEngine]
-    rag = RAGAgent(name="researcher", engine=RetrieverEngine(index_name="knowledge_base"))
+    rag = RAGAgent(
+        name="researcher", engine=RetrieverEngine(index_name="knowledge_base")
+    )
     await rag.retrieve("Python programming")
     result = await rag.execute("Find information about Python")
 
@@ -219,7 +228,9 @@ async def main():
     await reasoner.reason("How to solve world hunger")
 
     # 4. MultiModalAgent = Agent[MultiModalEngine]
-    MultiModalAgent(name="vision", engine=MultiModalEngine(modalities=["text", "image", "audio"]))
+    MultiModalAgent(
+        name="vision", engine=MultiModalEngine(modalities=["text", "image", "audio"])
+    )
 
     # 5. MultiAgent coordinating others
     coordinator = MultiAgent(

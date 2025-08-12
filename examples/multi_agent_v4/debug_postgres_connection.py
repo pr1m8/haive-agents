@@ -39,7 +39,6 @@ class TestModel(BaseModel):
 
 async def test_postgres_connection():
     """Test PostgreSQL connection and store creation."""
-
     print("🔍 POSTGRESQL CONNECTION DEBUG")
     print("=" * 60)
 
@@ -83,7 +82,7 @@ async def test_postgres_connection():
         result = await agent.arun(
             {"messages": [HumanMessage(content="Test PostgreSQL")]}
         )
-        print(f"✅ Agent executed successfully")
+        print("✅ Agent executed successfully")
         print(f"Result type: {type(result)}")
 
         return True
@@ -98,7 +97,6 @@ async def test_postgres_connection():
 
 async def test_without_disabling_postgres():
     """Test with PostgreSQL enabled."""
-
     # Make sure PostgreSQL is NOT disabled
     if "HAIVE_DISABLE_POSTGRES" in os.environ:
         del os.environ["HAIVE_DISABLE_POSTGRES"]

@@ -255,7 +255,8 @@ class SelfDiscoverWorkflow:
             # Look for structured reasoning indicators
             reasoning_indicators = {
                 "structured_output": "structured" in content or "pydantic" in content,
-                "step_by_step": "step" in content and ("1." in content or "first" in content),
+                "step_by_step": "step" in content
+                and ("1." in content or "first" in content),
                 "module_usage": "module" in content
                 and ("reasoning" in content or "strategy" in content),
                 "final_answer": "answer" in content

@@ -2,11 +2,13 @@
 
 import contextlib
 from typing import Any
+
 from haive.core.common.models.dynamic_choice_model import DynamicChoiceModel
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import HumanMessage
 from langchain_core.tools import tool
 from pydantic import Field, model_validator
+
 from haive.agents.experiments.supervisor.test_registry_setup import AgentRegistry
 from haive.agents.experiments.supervisor.test_route_tools import (
     create_list_agents_tool,
@@ -19,10 +21,13 @@ class EnhancedSupervisorWithChoice(ReactAgent):
     """Enhanced supervisor that uses DynamicChoiceModel for structured agent selection."""
 
     agent_registry: AgentRegistry = Field(
-        default_factory=AgentRegistry, description="Registry containing available agents"
+        default_factory=AgentRegistry,
+        description="Registry containing available agents",
     )
     agent_choice_model: DynamicChoiceModel = Field(
-        default_factory=lambda: DynamicChoiceModel(model_name="AgentChoice", include_end=True),
+        default_factory=lambda: DynamicChoiceModel(
+            model_name="AgentChoice", include_end=True
+        ),
         description="Dynamic choice model for agent selection",
     )
 
@@ -71,15 +76,14 @@ class EnhancedSupervisorWithChoice(ReactAgent):
                 task_lower = task_description.lower()
                 chosen_agent = "END"
                 if any(
-                    (
-                        word in task_lower
-                        for word in ["math", "calculate", "add", "multiply", "number"]
-                    )
+                    word in task_lower
+                    for word in ["math", "calculate", "add", "multiply", "number"]
                 ):
                     if "math_agent" in available_options:
                         chosen_agent = "math_agent"
                 elif any(
-                    (word in task_lower for word in ["plan", "schedule", "organize", "steps"])
+                    word in task_lower
+                    for word in ["plan", "schedule", "organize", "steps"]
                 ):
                     if "planning_agent" in available_options:
                         chosen_agent = "planning_agent"
@@ -92,7 +96,9 @@ class EnhancedSupervisorWithChoice(ReactAgent):
                     return f"Chosen agent: {validated_choice.choice}"
                 except Exception:
                     fallback_choice = ChoiceModel(choice="END")
-                    return f"Chosen agent: {fallback_choice.choice} (validation fallback)"
+                    return (
+                        f"Chosen agent: {fallback_choice.choice} (validation fallback)"
+                    )
             except Exception as e:
                 return f"Error choosing agent: {e!s}"
 
@@ -111,13 +117,21 @@ class EnhancedSupervisorWithChoice(ReactAgent):
 
 def test_enhanced_supervisor():
     """Test the enhanced supervisor with choice model."""
-    from haive.agents.experiments.supervisor.test_registry_setup import create_test_agents
+    from haive.agents.experiments.supervisor.test_registry_setup import (
+        create_test_agents,
+    )
 
     registry = AgentRegistry()
     agents = create_test_agents()
-    registry.register("math_agent", agents["math_agent"], "Performs mathematical calculations")
-    registry.register("planning_agent", agents["planning_agent"], "Creates structured plans")
-    supervisor = EnhancedSupervisorWithChoice(name="enhanced_supervisor", agent_registry=registry)
+    registry.register(
+        "math_agent", agents["math_agent"], "Performs mathematical calculations"
+    )
+    registry.register(
+        "planning_agent", agents["planning_agent"], "Creates structured plans"
+    )
+    supervisor = EnhancedSupervisorWithChoice(
+        name="enhanced_supervisor", agent_registry=registry
+    )
     supervisor.agent_choice_model.test_model("math_agent")
     with contextlib.suppress(Exception):
         supervisor.invoke({"messages": [HumanMessage("I need to calculate 15 * 7")]})

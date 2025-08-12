@@ -10,10 +10,12 @@ No fancy features - just the core dynamic tooling pattern.
 """
 
 from typing import Any
+
 from haive.core.common.models.dynamic_choice_model import DynamicChoiceModel
 from haive.core.schema import StateSchema
 from langchain_core.tools import tool
 from pydantic import Field, model_validator
+
 from haive.agents.react.agent import ReactAgent
 
 
@@ -66,7 +68,9 @@ class DynamicSupervisorV2(ReactAgent):
     @model_validator(mode="after")
     def setup_dynamic_supervisor(self):
         """Set up supervisor with dynamic tool creation."""
-        self.agent_choice_model = DynamicChoiceModel(model_name="AgentChoice", include_end=True)
+        self.agent_choice_model = DynamicChoiceModel(
+            model_name="AgentChoice", include_end=True
+        )
         self._rebuild_tools()
         return self
 
@@ -88,7 +92,9 @@ class DynamicSupervisorV2(ReactAgent):
         for _tool in tools:
             pass
         if hasattr(self, "engine") and self.engine:
-            self.engine.tools = [t for t in self.engine.tools if not self._is_dynamic_tool(t)]
+            self.engine.tools = [
+                t for t in self.engine.tools if not self._is_dynamic_tool(t)
+            ]
             self.engine.tools.extend(tools)
 
     def _is_dynamic_tool(self, tool) -> bool:
@@ -100,7 +106,7 @@ class DynamicSupervisorV2(ReactAgent):
             "forward_to_",
             "execution_status",
         ]
-        return any((tool.name.startswith(prefix) for prefix in dynamic_prefixes))
+        return any(tool.name.startswith(prefix) for prefix in dynamic_prefixes)
 
     def _create_list_agents_tool(self):
         """Create tool to list available agents."""
@@ -140,15 +146,14 @@ class DynamicSupervisorV2(ReactAgent):
                 task_lower = task_description.lower()
                 chosen_agent = "END"
                 if any(
-                    (
-                        word in task_lower
-                        for word in ["math", "calculate", "add", "multiply", "number"]
-                    )
+                    word in task_lower
+                    for word in ["math", "calculate", "add", "multiply", "number"]
                 ):
                     if "math_agent" in available_options:
                         chosen_agent = "math_agent"
                 elif any(
-                    (word in task_lower for word in ["plan", "schedule", "organize", "steps"])
+                    word in task_lower
+                    for word in ["plan", "schedule", "organize", "steps"]
                 ):
                     if "planning_agent" in available_options:
                         chosen_agent = "planning_agent"
@@ -179,7 +184,9 @@ class DynamicSupervisorV2(ReactAgent):
                 agent = self.agent_registry.get(agent_name)
                 if not agent:
                     return f"Error: Agent '{agent_name}' not found in registry"
-                result = agent.invoke({"messages": [{"role": "user", "content": task_description}]})
+                result = agent.invoke(
+                    {"messages": [{"role": "user", "content": task_description}]}
+                )
                 if isinstance(result, dict) and "messages" in result:
                     response = result["messages"][-1].get("content", str(result))
                 else:
@@ -230,7 +237,9 @@ class DynamicSupervisorV2(ReactAgent):
                 full_message = f"{message}"
                 if context:
                     full_message = f"Context: {context}\n\nMessage: {message}"
-                result = agent.invoke({"messages": [{"role": "user", "content": full_message}]})
+                result = agent.invoke(
+                    {"messages": [{"role": "user", "content": full_message}]}
+                )
                 if isinstance(result, dict) and "messages" in result:
                     response = result["messages"][-1].get("content", str(result))
                 else:

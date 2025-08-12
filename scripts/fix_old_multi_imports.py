@@ -39,7 +39,7 @@ def fix_imports(dry_run: bool = True):
 
     for file_path in python_files:
         try:
-            with open(file_path, "r") as f:
+            with open(file_path) as f:
                 content = f.read()
 
             original_content = content

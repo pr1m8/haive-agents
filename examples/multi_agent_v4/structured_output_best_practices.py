@@ -9,7 +9,6 @@ Date: August 7, 2025
 
 import asyncio
 import os
-from typing import List, Optional
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import HumanMessage
@@ -30,7 +29,7 @@ class AnalysisResult(BaseModel):
     """Analysis result with structured fields."""
 
     topic: str = Field(description="Topic being analyzed")
-    findings: List[str] = Field(description="Key findings")
+    findings: list[str] = Field(description="Key findings")
     confidence: float = Field(ge=0.0, le=1.0, description="Confidence score")
     recommendation: str = Field(description="Main recommendation")
 
@@ -40,7 +39,7 @@ class DecisionOutput(BaseModel):
 
     decision: str = Field(description="The decision made")
     reasoning: str = Field(description="Reasoning behind the decision")
-    alternatives: List[str] = Field(description="Alternative options considered")
+    alternatives: list[str] = Field(description="Alternative options considered")
     risk_level: str = Field(description="Risk level: low/medium/high")
 
 
@@ -49,7 +48,7 @@ class ProcessingResult(BaseModel):
 
     processed_count: int = Field(description="Number of items processed")
     success_rate: float = Field(description="Success rate as percentage")
-    errors: List[str] = Field(default_factory=list, description="List of errors")
+    errors: list[str] = Field(default_factory=list, description="List of errors")
     summary: str = Field(description="Processing summary")
 
 
@@ -95,7 +94,7 @@ async def pattern_1_handler_class():
     analysis = handler.extract(result)
 
     if analysis:
-        print(f"\n✅ Extracted successfully:")
+        print("\n✅ Extracted successfully:")
         print(f"   Topic: {analysis.topic}")
         print(f"   Confidence: {analysis.confidence:.2f}")
         print(f"   Findings: {len(analysis.findings)} items")
@@ -139,7 +138,7 @@ async def pattern_2_convenience_functions():
     # Method 2: Required extraction (will raise if not found)
     try:
         decision = require_structured_output(result, DecisionOutput)
-        print(f"\n✅ Required extraction succeeded")
+        print("\n✅ Required extraction succeeded")
         print(f"   Alternatives considered: {len(decision.alternatives)}")
     except ValueError as e:
         print(f"❌ Extraction failed: {e}")
@@ -180,7 +179,7 @@ async def pattern_3_custom_agent():
         {"messages": [HumanMessage(content="Process batch of 1000 customer records")]}
     )
 
-    print(f"✅ Direct structured output:")
+    print("✅ Direct structured output:")
     print(f"   Type: {type(processing).__name__}")
     print(f"   Processed: {processing.processed_count} items")
     print(f"   Success Rate: {processing.success_rate:.1f}%")
@@ -246,7 +245,7 @@ async def pattern_5_error_handling():
         print(f"❌ Extraction failed: {e}")
 
         # Debug information
-        print(f"\nDebug info:")
+        print("\nDebug info:")
         print(f"  Result type: {type(result).__name__}")
         print(
             f"  Result keys: {list(result.keys()) if hasattr(result, 'keys') else 'N/A'}"

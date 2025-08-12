@@ -38,7 +38,9 @@ class CreativeResult(BaseModel):
 
     creative_output: str = Field(description="Creative work produced")
     inspiration_sources: list[str] = Field(description="Sources of inspiration used")
-    creativity_score: float = Field(ge=0.0, le=1.0, description="Self-assessed creativity")
+    creativity_score: float = Field(
+        ge=0.0, le=1.0, description="Self-assessed creativity"
+    )
     additional_ideas: list[str] = Field(description="Additional creative ideas")
 
 
@@ -47,7 +49,9 @@ class AnalyticalResult(BaseModel):
 
     analysis: str = Field(description="Detailed analysis")
     key_findings: list[str] = Field(description="Main findings from analysis")
-    confidence_level: float = Field(ge=0.0, le=1.0, description="Confidence in analysis")
+    confidence_level: float = Field(
+        ge=0.0, le=1.0, description="Confidence in analysis"
+    )
     recommendations: list[str] = Field(description="Actionable recommendations")
     data_sources: list[str] = Field(description="Sources used in analysis")
 
@@ -67,7 +71,9 @@ class FinalSummary(BaseModel):
 
     task_summary: str = Field(description="Summary of what was accomplished")
     processing_path: str = Field(description="Which processing path was taken")
-    quality_score: float = Field(ge=0.0, le=1.0, description="Overall quality assessment")
+    quality_score: float = Field(
+        ge=0.0, le=1.0, description="Overall quality assessment"
+    )
     key_outputs: list[str] = Field(description="Main outputs produced")
     next_steps: list[str] | None = Field(description="Suggested next steps")
 

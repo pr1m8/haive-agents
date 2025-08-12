@@ -8,11 +8,12 @@ Date: August 7, 2025
 
 import asyncio
 import os
+
+from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import HumanMessage
 from pydantic import BaseModel, Field
 
 from haive.agents.simple.agent_v3 import SimpleAgentV3
-from haive.core.engine.aug_llm import AugLLMConfig
 
 
 # Simple model for testing
@@ -25,7 +26,6 @@ class SimpleResult(BaseModel):
 
 async def test_postgres_persistence():
     """Test agent with postgres persistence enabled."""
-
     # Make sure postgres is enabled (remove disable flag if set)
     if "HAIVE_DISABLE_POSTGRES" in os.environ:
         del os.environ["HAIVE_DISABLE_POSTGRES"]

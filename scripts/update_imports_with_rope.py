@@ -14,14 +14,8 @@ Transformations:
 import os
 import sys
 from pathlib import Path
-from typing import List, Tuple
 
-from rope.base import ast
-from rope.base.libutils import path_to_resource
 from rope.base.project import Project
-from rope.refactor.importutils import ImportOrganizer
-from rope.refactor.move import create_move
-from rope.refactor.rename import Rename
 
 
 def update_imports_in_project(project_path: str, dry_run: bool = True):
@@ -76,7 +70,7 @@ def update_imports_in_project(project_path: str, dry_run: bool = True):
 
             try:
                 # Read file content
-                with open(file_path, "r") as f:
+                with open(file_path) as f:
                     content = f.read()
 
                 original_content = content

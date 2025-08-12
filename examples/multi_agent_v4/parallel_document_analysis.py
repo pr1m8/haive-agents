@@ -1,4 +1,4 @@
-"""Parallel Document Analysis Example
+"""Parallel Document Analysis Example.
 
 This example demonstrates parallel execution where multiple specialized
 agents analyze different aspects of a document simultaneously, each
@@ -8,11 +8,9 @@ Date: August 7, 2025
 """
 
 import asyncio
-from typing import Dict, List
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import HumanMessage
-from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.tools import tool
 from pydantic import BaseModel, Field
 
@@ -31,28 +29,28 @@ class SentimentAnalysis(BaseModel):
     sentiment_score: float = Field(
         ge=-1.0, le=1.0, description="Sentiment score from -1 to 1"
     )
-    emotional_tones: List[str] = Field(description="Detected emotional tones")
-    key_phrases: Dict[str, str] = Field(description="Key phrases and their sentiment")
+    emotional_tones: list[str] = Field(description="Detected emotional tones")
+    key_phrases: dict[str, str] = Field(description="Key phrases and their sentiment")
 
 
 class EntityExtraction(BaseModel):
     """Named entity extraction results."""
 
-    people: List[str] = Field(description="People mentioned")
-    organizations: List[str] = Field(description="Organizations mentioned")
-    locations: List[str] = Field(description="Locations mentioned")
-    dates: List[str] = Field(description="Dates or time references")
-    products: List[str] = Field(description="Products or services mentioned")
+    people: list[str] = Field(description="People mentioned")
+    organizations: list[str] = Field(description="Organizations mentioned")
+    locations: list[str] = Field(description="Locations mentioned")
+    dates: list[str] = Field(description="Dates or time references")
+    products: list[str] = Field(description="Products or services mentioned")
 
 
 class TopicAnalysis(BaseModel):
     """Topic analysis results."""
 
-    main_topics: List[str] = Field(description="Main topics discussed")
-    topic_distribution: Dict[str, float] = Field(
+    main_topics: list[str] = Field(description="Main topics discussed")
+    topic_distribution: dict[str, float] = Field(
         description="Topic prevalence percentages"
     )
-    keywords: List[str] = Field(description="Key terms and keywords")
+    keywords: list[str] = Field(description="Key terms and keywords")
     summary: str = Field(description="Brief topical summary")
 
 
@@ -71,11 +69,10 @@ def sentiment_scorer(text: str) -> str:
     if pos_count > neg_count:
         score = min(pos_count * 0.2, 1.0)
         return f"Positive sentiment (score: +{score:.2f})"
-    elif neg_count > pos_count:
+    if neg_count > pos_count:
         score = min(neg_count * 0.2, 1.0)
         return f"Negative sentiment (score: -{score:.2f})"
-    else:
-        return "Neutral sentiment (score: 0.00)"
+    return "Neutral sentiment (score: 0.00)"
 
 
 # Tools for entity extractor
@@ -100,13 +97,12 @@ def find_patterns(text: str, pattern_type: str) -> str:
             text,
         )
         return f"Date patterns found: {', '.join(dates) if dates else 'None'}"
-    elif pattern_type == "email":
+    if pattern_type == "email":
         emails = re.findall(
             r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b", text
         )
         return f"Email patterns found: {', '.join(emails) if emails else 'None'}"
-    else:
-        return f"Unknown pattern type: {pattern_type}"
+    return f"Unknown pattern type: {pattern_type}"
 
 
 # Tools for topic analyzer
@@ -161,7 +157,6 @@ def text_statistics(text: str) -> str:
 
 async def main():
     """Run parallel document analysis."""
-
     # Sample document
     document = """
     TechCorp Announces Record Q4 2024 Results

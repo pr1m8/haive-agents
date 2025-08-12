@@ -179,7 +179,9 @@ async def demo_basic_reflection():
     """Demo basic reflection workflow."""
     reflection_system = ReflectionMultiAgentSystem()
 
-    question = "What are the key challenges and opportunities for renewable energy adoption?"
+    question = (
+        "What are the key challenges and opportunities for renewable energy adoption?"
+    )
 
     result = await reflection_system.run_reflection_process(question)
     reflection_system.analyze_workflow_result(result)
@@ -219,7 +221,9 @@ async def demo_comparison_with_single_agent():
 
     # Single agent response
 
-    single_agent = SimpleAgentV3(name="single_responder", engine=AugLLMConfig(temperature=0.7))
+    single_agent = SimpleAgentV3(
+        name="single_responder", engine=AugLLMConfig(temperature=0.7)
+    )
 
     single_result = await single_agent.arun(question)
 

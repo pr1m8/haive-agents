@@ -8,7 +8,6 @@ Date: August 7, 2025
 
 import asyncio
 import os
-from typing import List
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import HumanMessage
@@ -26,13 +25,13 @@ class AnalysisResult(BaseModel):
     """Analysis result with structured fields."""
 
     topic: str = Field(description="Topic being analyzed")
-    findings: List[str] = Field(description="Key findings (2-3 items)")
+    findings: list[str] = Field(description="Key findings (2-3 items)")
     confidence: float = Field(ge=0.0, le=1.0, description="Confidence score")
     recommendation: str = Field(description="Main recommendation")
 
 
 async def demo_approach_1():
-    """APPROACH 1: Simple Direct Access"""
+    """APPROACH 1: Simple Direct Access."""
     print("\n" + "=" * 60)
     print("APPROACH 1: Simple Direct Access")
     print("=" * 60)
@@ -58,20 +57,20 @@ async def demo_approach_1():
     print(f"✅ Extracted type: {type(analysis).__name__ if analysis else 'None'}")
 
     if analysis:
-        print(f"\n📊 Analysis Content:")
+        print("\n📊 Analysis Content:")
         print(f"  Topic: {analysis.topic}")
         print(f"  Confidence: {analysis.confidence:.2%}")
-        print(f"  Findings:")
+        print("  Findings:")
         for i, finding in enumerate(analysis.findings, 1):
             print(f"    {i}. {finding[:70]}...")
         print(f"  Recommendation: {analysis.recommendation[:80]}...")
 
-    print(f"\n✅ Best for: Quick scripts, prototypes")
-    print(f"⚠️  Limitation: No error handling, hardcoded field name")
+    print("\n✅ Best for: Quick scripts, prototypes")
+    print("⚠️  Limitation: No error handling, hardcoded field name")
 
 
 async def demo_approach_2():
-    """APPROACH 2: StructuredOutputHandler"""
+    """APPROACH 2: StructuredOutputHandler."""
     print("\n" + "=" * 60)
     print("APPROACH 2: StructuredOutputHandler (Recommended)")
     print("=" * 60)
@@ -102,13 +101,13 @@ async def demo_approach_2():
     print(f"✅ Extraction successful: {analysis is not None}")
 
     if analysis:
-        print(f"\n📊 Analysis Content:")
+        print("\n📊 Analysis Content:")
         print(f"  Topic: {analysis.topic}")
         print(f"  Confidence: {analysis.confidence:.2%}")
         print(f"  Total findings: {len(analysis.findings)}")
 
     # Show robustness
-    print(f"\n🧪 Robustness Test:")
+    print("\n🧪 Robustness Test:")
     test_results = {
         "wrong_key": {"data": analysis},
         "analysis_result": analysis,
@@ -119,12 +118,12 @@ async def demo_approach_2():
         found = handler.extract(test_result)
         print(f"  Field '{key}': {'✅ Found' if found else '❌ Not found'}")
 
-    print(f"\n✅ Best for: Production code, libraries, reusable components")
-    print(f"✅ Benefits: Multiple fallbacks, error handling, flexible")
+    print("\n✅ Best for: Production code, libraries, reusable components")
+    print("✅ Benefits: Multiple fallbacks, error handling, flexible")
 
 
 async def demo_approach_3():
-    """APPROACH 3: Convenience Function"""
+    """APPROACH 3: Convenience Function."""
     print("\n" + "=" * 60)
     print("APPROACH 3: Convenience Function")
     print("=" * 60)
@@ -148,13 +147,13 @@ async def demo_approach_3():
     print(f"✅ One-line extraction: {analysis is not None}")
 
     if analysis:
-        print(f"\n📊 Quick Access:")
+        print("\n📊 Quick Access:")
         print(f"  {analysis.topic}")
         print(f"  {analysis.confidence:.0%} confidence")
         print(f"  {len(analysis.findings)} key findings")
 
-    print(f"\n✅ Best for: Simple scripts, quick analysis")
-    print(f"✅ Benefits: Clean, minimal code")
+    print("\n✅ Best for: Simple scripts, quick analysis")
+    print("✅ Benefits: Clean, minimal code")
 
 
 async def show_recommendation():

@@ -8,7 +8,7 @@ Date: August 7, 2025
 """
 
 import asyncio
-from typing import Any, Generic, List, Optional, TypeVar
+from typing import Any, Generic, TypeVar
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import HumanMessage
@@ -24,7 +24,7 @@ class AnalysisResult(BaseModel):
     """Analysis result with structured fields."""
 
     topic: str = Field(description="Topic being analyzed")
-    findings: List[str] = Field(description="Key findings")
+    findings: list[str] = Field(description="Key findings")
     confidence: float = Field(ge=0.0, le=1.0, description="Confidence score")
     recommendation: str = Field(description="Main recommendation")
 
@@ -49,7 +49,7 @@ class StructuredOutputExtractor(Generic[T]):
     AddableValuesDict return type and extracting structured output.
     """
 
-    def __init__(self, output_model: type[T], field_name: Optional[str] = None):
+    def __init__(self, output_model: type[T], field_name: str | None = None):
         """Initialize the extractor.
 
         Args:
@@ -69,7 +69,7 @@ class StructuredOutputExtractor(Generic[T]):
         name = re.sub("([a-z0-9])([A-Z])", r"\1_\2", name).lower()
         return name
 
-    def extract(self, result: Any) -> Optional[T]:
+    def extract(self, result: Any) -> T | None:
         """Extract structured output from result.
 
         Args:
@@ -233,7 +233,7 @@ async def example_1_basic_extraction():
     analysis = extractor.extract(result)
 
     if analysis:
-        print(f"✅ Extracted Analysis:")
+        print("✅ Extracted Analysis:")
         print(f"   Topic: {analysis.topic}")
         print(f"   Confidence: {analysis.confidence}")
         print(f"   Findings: {len(analysis.findings)} items")
@@ -264,7 +264,7 @@ async def example_2_factory_pattern():
     # Extract with error handling
     try:
         task_result = extractor.extract_or_raise(result)
-        print(f"✅ Task Completed:")
+        print("✅ Task Completed:")
         print(f"   ID: {task_result.task_id}")
         print(f"   Status: {task_result.status}")
         print(f"   Output: {task_result.output}")
@@ -292,7 +292,7 @@ async def example_3_convenience_function():
         AnalysisResult,
     )
 
-    print(f"✅ Direct extraction successful:")
+    print("✅ Direct extraction successful:")
     print(f"   Topic: {analysis.topic}")
     print(f"   Recommendation: {analysis.recommendation}")
 
@@ -315,7 +315,7 @@ async def example_4_custom_agent():
         {"messages": [HumanMessage(content="Analyze blockchain impact on finance")]}
     )
 
-    print(f"✅ Direct structured output:")
+    print("✅ Direct structured output:")
     print(f"   Type: {type(analysis).__name__}")
     print(f"   Topic: {analysis.topic}")
     print(f"   Confidence: {analysis.confidence}")

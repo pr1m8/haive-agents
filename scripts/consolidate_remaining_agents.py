@@ -12,13 +12,11 @@ Similar to the base agent consolidation, we:
 - Rename classes to remove version suffixes
 """
 
-import os
 import shutil
 import subprocess
 import sys
 from datetime import datetime
 from pathlib import Path
-from typing import List, Tuple
 
 # Get the package root
 PACKAGE_ROOT = Path(__file__).parent.parent
@@ -58,7 +56,7 @@ def archive_file(file_path: Path, archive_dir: Path) -> bool:
     return False
 
 
-def consolidate_react_agents(dry_run: bool = True) -> List[Tuple[str, str]]:
+def consolidate_react_agents(dry_run: bool = True) -> list[tuple[str, str]]:
     """Consolidate ReactAgent versions."""
     print("\n🔄 Consolidating React Agents...")
     react_dir = SRC_DIR / "react"
@@ -102,17 +100,17 @@ def consolidate_react_agents(dry_run: bool = True) -> List[Tuple[str, str]]:
                 archive_file(agent_new, archive_dir)
             # Move V3 to be the new agent.py
             shutil.move(str(agent_v3), str(agent_new))
-            print(f"  Moved: agent_v3.py → agent.py")
+            print("  Moved: agent_v3.py → agent.py")
 
             # Update the class name in the file
             content = agent_new.read_text()
             content = content.replace("class ReactAgentV3", "class ReactAgent")
             content = content.replace("ReactAgentV3", "ReactAgent")  # Update references
             agent_new.write_text(content)
-            print(f"  Updated: ReactAgentV3 → ReactAgent class name")
+            print("  Updated: ReactAgentV3 → ReactAgent class name")
         else:
-            print(f"    Move: agent_v3.py → agent.py")
-            print(f"    Rename: ReactAgentV3 → ReactAgent")
+            print("    Move: agent_v3.py → agent.py")
+            print("    Rename: ReactAgentV3 → ReactAgent")
 
         changes.append(("ReactAgentV3", "ReactAgent"))
 
@@ -130,14 +128,14 @@ def consolidate_react_agents(dry_run: bool = True) -> List[Tuple[str, str]]:
             content = content.replace('"ReactAgentV3"', "")
             content = content.replace(", , ", ", ")  # Clean up double commas
             init_file.write_text(content)
-            print(f"  Updated: __init__.py exports")
+            print("  Updated: __init__.py exports")
         else:
-            print(f"    Update: __init__.py exports")
+            print("    Update: __init__.py exports")
 
     return changes
 
 
-def consolidate_multi_agents(dry_run: bool = True) -> List[Tuple[str, str]]:
+def consolidate_multi_agents(dry_run: bool = True) -> list[tuple[str, str]]:
     """Consolidate MultiAgent versions."""
     print("\n🔄 Consolidating Multi Agents...")
     multi_dir = SRC_DIR / "multi"
@@ -176,7 +174,7 @@ def consolidate_multi_agents(dry_run: bool = True) -> List[Tuple[str, str]]:
         if not dry_run:
             # Move V4 to be the new agent.py
             shutil.move(str(agent_v4), str(agent_new))
-            print(f"  Moved: enhanced_multi_agent_v4.py → agent.py")
+            print("  Moved: enhanced_multi_agent_v4.py → agent.py")
 
             # Update the class name in the file
             content = agent_new.read_text()
@@ -185,10 +183,10 @@ def consolidate_multi_agents(dry_run: bool = True) -> List[Tuple[str, str]]:
                 "EnhancedMultiAgentV4", "MultiAgent"
             )  # Update references
             agent_new.write_text(content)
-            print(f"  Updated: EnhancedMultiAgentV4 → MultiAgent class name")
+            print("  Updated: EnhancedMultiAgentV4 → MultiAgent class name")
         else:
-            print(f"    Move: enhanced_multi_agent_v4.py → agent.py")
-            print(f"    Rename: EnhancedMultiAgentV4 → MultiAgent")
+            print("    Move: enhanced_multi_agent_v4.py → agent.py")
+            print("    Rename: EnhancedMultiAgentV4 → MultiAgent")
 
         changes.append(("EnhancedMultiAgentV4", "MultiAgent"))
 
@@ -203,14 +201,14 @@ def consolidate_multi_agents(dry_run: bool = True) -> List[Tuple[str, str]]:
                 "from haive.agents.multi.agent import MultiAgent",
             )
             init_file.write_text(content)
-            print(f"  Updated: __init__.py imports")
+            print("  Updated: __init__.py imports")
         else:
-            print(f"    Update: __init__.py imports")
+            print("    Update: __init__.py imports")
 
     return changes
 
 
-def update_all_imports(changes: List[Tuple[str, str]], dry_run: bool = True) -> None:
+def update_all_imports(changes: list[tuple[str, str]], dry_run: bool = True) -> None:
     """Update all imports using the consolidated classes."""
     print("\n📝 Updating imports across the codebase...")
 
@@ -224,7 +222,7 @@ def update_all_imports(changes: List[Tuple[str, str]], dry_run: bool = True) -> 
     update_script = PACKAGE_ROOT / "scripts" / "update_imports_with_rope.py"
     if update_script.exists():
         print("  Using rope to update imports...")
-        subprocess.run([sys.executable, str(update_script), "--execute"])
+        subprocess.run([sys.executable, str(update_script), "--execute"], check=False)
     else:
         print("  Warning: Import update script not found")
 

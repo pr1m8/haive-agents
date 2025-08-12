@@ -1,15 +1,16 @@
 """Simple test to understand multi-agent workflow execution."""
 
 import asyncio
+
+from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import HumanMessage
+
 from haive.agents.multi.enhanced_multi_agent_v4 import EnhancedMultiAgentV4
 from haive.agents.simple.agent_v3 import SimpleAgentV3
-from haive.core.engine.aug_llm import AugLLMConfig
 
 
 async def test_basic_workflow():
     """Test basic multi-agent workflow."""
-
     print("Creating simple agents...")
 
     # Create two simple agents
@@ -52,7 +53,7 @@ async def test_basic_workflow():
         print("\nExecuting workflow...")
         result = await workflow.arun(input_data)
 
-        print(f"\n=== EXECUTION COMPLETE ===")
+        print("\n=== EXECUTION COMPLETE ===")
         print(f"Result type: {type(result)}")
         print(f"Result class: {result.__class__.__name__}")
 

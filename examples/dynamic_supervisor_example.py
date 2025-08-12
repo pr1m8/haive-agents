@@ -68,7 +68,9 @@ async def demonstrate_simple_routing(supervisor: DynamicSupervisorAgent, state):
     await supervisor.arun("What is the square root of 144?", state=state)
 
     # Task 2: Research question
-    await supervisor.arun("What are the latest developments in quantum computing?", state=state)
+    await supervisor.arun(
+        "What are the latest developments in quantum computing?", state=state
+    )
 
     # Task 3: Code question
     await supervisor.arun("Write a Python function to calculate factorial", state=state)
@@ -93,7 +95,9 @@ async def demonstrate_multi_step_task(supervisor: DynamicSupervisorAgent, state)
                 agent_executions.append(agent_name)
 
 
-async def demonstrate_dynamic_agent_management(supervisor: DynamicSupervisorAgent, state):
+async def demonstrate_dynamic_agent_management(
+    supervisor: DynamicSupervisorAgent, state
+):
     """Show dynamic agent management capabilities."""
     # Add a new agent dynamically
     translator_engine = AugLLMConfig(

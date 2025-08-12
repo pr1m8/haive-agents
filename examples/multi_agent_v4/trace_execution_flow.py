@@ -10,7 +10,7 @@ import asyncio
 import json
 import os
 from datetime import datetime
-from typing import Any, Dict, List
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import HumanMessage
@@ -26,7 +26,7 @@ class AnalysisResult(BaseModel):
     """Analysis result with structured fields."""
 
     topic: str = Field(description="Topic being analyzed")
-    findings: List[str] = Field(description="Key findings")
+    findings: list[str] = Field(description="Key findings")
     confidence: float = Field(ge=0.0, le=1.0, description="Confidence score")
     recommendation: str = Field(description="Main recommendation")
 
@@ -50,7 +50,7 @@ class ExecutionTracer:
         self.steps = []
         self.start_time = datetime.now()
 
-    def log(self, step: str, data: Dict[str, Any] = None):
+    def log(self, step: str, data: dict[str, Any] = None):
         """Log a step in the execution."""
         entry = {
             "step_number": len(self.steps) + 1,
@@ -87,7 +87,6 @@ class ExecutionTracer:
 
 async def trace_simple_agent(tracer: ExecutionTracer):
     """Trace SimpleAgentV3 with structured output."""
-
     tracer.log(
         "Creating SimpleAgentV3 with structured_output_model",
         {"agent_class": "SimpleAgentV3", "structured_output_model": AnalysisResult},
@@ -167,7 +166,6 @@ async def trace_simple_agent(tracer: ExecutionTracer):
 
 async def trace_react_agent(tracer: ExecutionTracer):
     """Trace ReactAgentV4 with structured output."""
-
     tracer.log(
         "Creating ReactAgentV4 with structured_output_model",
         {
@@ -239,7 +237,6 @@ async def trace_react_agent(tracer: ExecutionTracer):
 
 async def main():
     """Main execution tracer."""
-
     # Create log file
     log_file = "structured_output_trace.json"
     tracer = ExecutionTracer(log_file)

@@ -55,7 +55,9 @@ def text_analyzer(text: str) -> dict[str, Any]:
     return {
         "word_count": len(words),
         "character_count": len(text),
-        "average_word_length": (sum(len(word) for word in words) / len(words) if words else 0),
+        "average_word_length": (
+            sum(len(word) for word in words) / len(words) if words else 0
+        ),
         "unique_words": len(set(words)),
     }
 
@@ -99,7 +101,9 @@ async def basic_supervisor_example():
     )
 
     # Run task that needs tool discovery
-    await supervisor.arun("I need to calculate 25 * 4 and analyze the word 'supervisor'")
+    await supervisor.arun(
+        "I need to calculate 25 * 4 and analyze the word 'supervisor'"
+    )
 
     # Check discovered tools
 
@@ -258,7 +262,9 @@ async def performance_monitoring_example():
         agents={
             "fast_agent": SimpleAgent(name="fast_agent", engine=config),
             "slow_agent": SimpleAgent(name="slow_agent", engine=config),
-            "reliable_agent": ReactAgent(name="reliable_agent", engine=config, tools=[calculator]),
+            "reliable_agent": ReactAgent(
+                name="reliable_agent", engine=config, tools=[calculator]
+            ),
         },
         engine=config,
         max_discovery_attempts=3,

@@ -1,4 +1,4 @@
-"""Complex Data Flow Example
+"""Complex Data Flow Example.
 
 This example demonstrates a sophisticated multi-agent workflow where
 data flows through structured outputs, enabling each agent to build
@@ -8,7 +8,7 @@ Date: August 7, 2025
 """
 
 import asyncio
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import HumanMessage
@@ -25,21 +25,21 @@ from haive.agents.simple.agent_v3 import SimpleAgentV3
 class ResearchPhase(BaseModel):
     """Research phase output."""
 
-    research_questions: List[str] = Field(description="Key questions to investigate")
-    data_sources: List[str] = Field(description="Identified data sources")
-    initial_findings: Dict[str, str] = Field(
+    research_questions: list[str] = Field(description="Key questions to investigate")
+    data_sources: list[str] = Field(description="Identified data sources")
+    initial_findings: dict[str, str] = Field(
         description="Initial findings per question"
     )
-    confidence_scores: Dict[str, float] = Field(description="Confidence per finding")
+    confidence_scores: dict[str, float] = Field(description="Confidence per finding")
 
 
 class AnalysisPhase(BaseModel):
     """Analysis phase output building on research."""
 
-    key_insights: List[str] = Field(description="Primary insights from research")
-    data_patterns: Dict[str, Any] = Field(description="Identified patterns in data")
-    statistical_summary: Dict[str, float] = Field(description="Statistical measures")
-    correlations: List[Dict[str, Any]] = Field(description="Identified correlations")
+    key_insights: list[str] = Field(description="Primary insights from research")
+    data_patterns: dict[str, Any] = Field(description="Identified patterns in data")
+    statistical_summary: dict[str, float] = Field(description="Statistical measures")
+    correlations: list[dict[str, Any]] = Field(description="Identified correlations")
     analysis_quality: float = Field(
         ge=0.0, le=1.0, description="Analysis quality score"
     )
@@ -48,11 +48,11 @@ class AnalysisPhase(BaseModel):
 class StrategyPhase(BaseModel):
     """Strategy phase building on analysis."""
 
-    strategic_goals: List[str] = Field(description="Strategic goals based on insights")
-    action_items: List[Dict[str, str]] = Field(description="Specific action items")
-    risk_factors: List[str] = Field(description="Identified risks")
-    success_metrics: Dict[str, str] = Field(description="KPIs for each goal")
-    implementation_timeline: List[Dict[str, Any]] = Field(
+    strategic_goals: list[str] = Field(description="Strategic goals based on insights")
+    action_items: list[dict[str, str]] = Field(description="Specific action items")
+    risk_factors: list[str] = Field(description="Identified risks")
+    success_metrics: dict[str, str] = Field(description="KPIs for each goal")
+    implementation_timeline: list[dict[str, Any]] = Field(
         description="Timeline with milestones"
     )
 
@@ -61,9 +61,9 @@ class ValidationPhase(BaseModel):
     """Validation phase checking the strategy."""
 
     feasibility_score: float = Field(ge=0.0, le=1.0, description="Overall feasibility")
-    validated_actions: List[str] = Field(description="Validated action items")
-    concerns: List[str] = Field(description="Validation concerns")
-    recommendations: List[str] = Field(description="Improvement recommendations")
+    validated_actions: list[str] = Field(description="Validated action items")
+    concerns: list[str] = Field(description="Validation concerns")
+    recommendations: list[str] = Field(description="Improvement recommendations")
     final_approval: bool = Field(description="Final approval status")
 
 
@@ -71,10 +71,10 @@ class ExecutiveSummary(BaseModel):
     """Final executive summary combining all phases."""
 
     executive_brief: str = Field(description="One paragraph executive summary")
-    key_decisions: List[str] = Field(description="Key decisions to make")
-    expected_outcomes: List[str] = Field(description="Expected outcomes")
-    resource_requirements: Dict[str, Any] = Field(description="Required resources")
-    next_steps: List[str] = Field(description="Immediate next steps")
+    key_decisions: list[str] = Field(description="Key decisions to make")
+    expected_outcomes: list[str] = Field(description="Expected outcomes")
+    resource_requirements: dict[str, Any] = Field(description="Required resources")
+    next_steps: list[str] = Field(description="Immediate next steps")
     confidence_level: float = Field(ge=0.0, le=1.0, description="Overall confidence")
 
 
@@ -142,15 +142,15 @@ def estimate_timeline(project_scope: str) -> str:
     """Estimate project timeline."""
     if "small" in project_scope.lower():
         return "Timeline: 2-3 months (Planning: 2 weeks, Execution: 6 weeks, Review: 2 weeks)"
-    elif "large" in project_scope.lower():
+    if "large" in project_scope.lower():
         return "Timeline: 6-9 months (Planning: 1 month, Execution: 5 months, Review: 1 month)"
-    else:
-        return "Timeline: 3-6 months (Planning: 3 weeks, Execution: 3 months, Review: 3 weeks)"
+    return (
+        "Timeline: 3-6 months (Planning: 3 weeks, Execution: 3 months, Review: 3 weeks)"
+    )
 
 
 async def main():
     """Run the complex data flow workflow."""
-
     print("Creating multi-stage workflow agents...")
 
     # Create research agent with tools
@@ -179,7 +179,7 @@ async def main():
                 ("system", "Analyze the research findings and identify key insights."),
                 (
                     "human",
-                    """Based on this research:
+                    """Based on this research:.
 Questions investigated: {researcher.research_questions}
 Initial findings: {researcher.initial_findings}
 Confidence scores: {researcher.confidence_scores}
@@ -205,7 +205,7 @@ Perform deep analysis and identify patterns, correlations, and insights.""",
                 ("system", "Develop strategic plans based on research and analysis."),
                 (
                     "human",
-                    """Based on:
+                    """Based on:.
 Key insights: {analyst.key_insights}
 Data patterns: {analyst.data_patterns}
 Statistical summary: {analyst.statistical_summary}
@@ -234,7 +234,7 @@ Develop a comprehensive strategy with goals, actions, and timeline.""",
                 ),
                 (
                     "human",
-                    """Validate this strategy:
+                    """Validate this strategy:.
 Goals: {strategist.strategic_goals}
 Actions: {strategist.action_items}
 Risks: {strategist.risk_factors}
@@ -260,7 +260,7 @@ Consider feasibility, risks, and completeness.""",
                 ("system", "Create an executive summary of the entire analysis."),
                 (
                     "human",
-                    """Synthesize into executive summary:
+                    """Synthesize into executive summary:.
 
 Research findings: {researcher.initial_findings}
 Key insights: {analyst.key_insights}
@@ -351,12 +351,12 @@ Create a concise executive summary with key decisions and next steps.""",
     if hasattr(workflow.state, "summarizer"):
         summary = workflow.state.summarizer
         print("\n📋 [5. EXECUTIVE SUMMARY] ← synthesizes all phases")
-        print(f"\nExecutive Brief:")
+        print("\nExecutive Brief:")
         print(f"  {summary.executive_brief}")
-        print(f"\nKey Decisions Required:")
+        print("\nKey Decisions Required:")
         for decision in summary.key_decisions[:3]:
             print(f"  □ {decision}")
-        print(f"\nNext Steps:")
+        print("\nNext Steps:")
         for step in summary.next_steps[:3]:
             print(f"  → {step}")
         print(f"\nOverall Confidence: {summary.confidence_level:.0%}")
@@ -377,17 +377,17 @@ Create a concise executive summary with key decisions and next steps.""",
     print("  summarizer → (executive summary, decisions, next steps)")
 
     # Performance and tools
-    print(f"\n" + "=" * 60)
+    print("\n" + "=" * 60)
     print("EXECUTION METRICS")
-    print(f"=" * 60)
+    print("=" * 60)
     print(f"Total execution time: {execution_time:.2f}s")
     print(f"Agents executed: {len(workflow.state.agent_execution_order)}")
     print(f"Execution order: {' → '.join(workflow.state.agent_execution_order)}")
 
     # Tool usage verification
-    print(f"\n" + "=" * 60)
+    print("\n" + "=" * 60)
     print("TOOL ISOLATION")
-    print(f"=" * 60)
+    print("=" * 60)
     print(f"Researcher tools: {[t.name for t in researcher.tools]}")
     print(f"Analyst tools: {[t.name for t in analyst.tools]}")
     print(f"Strategist tools: {[t.name for t in strategist.tools]}")

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""ReactAgent.with_structured_output() Pattern
+"""ReactAgent.with_structured_output() Pattern.
 
 This demonstrates using the StructuredOutputMixin pattern:
 1. ReactAgent.with_structured_output() creates both agents automatically
@@ -12,7 +12,6 @@ Date: August 7, 2025
 """
 
 import asyncio
-from typing import List
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import HumanMessage
@@ -30,10 +29,10 @@ class MarketAnalysis(BaseModel):
     market_name: str = Field(description="Name of the analyzed market")
     market_size: str = Field(description="Current market size")
     growth_rate: str = Field(description="Annual growth rate")
-    key_players: List[str] = Field(description="Major companies in the market")
-    opportunities: List[str] = Field(description="Growth opportunities")
-    challenges: List[str] = Field(description="Market challenges")
-    trends: List[str] = Field(description="Current market trends")
+    key_players: list[str] = Field(description="Major companies in the market")
+    opportunities: list[str] = Field(description="Growth opportunities")
+    challenges: list[str] = Field(description="Market challenges")
+    trends: list[str] = Field(description="Current market trends")
     forecast: str = Field(description="Future outlook")
     confidence_level: float = Field(ge=0.0, le=1.0, description="Analysis confidence")
 
@@ -69,7 +68,6 @@ def trend_analysis(sector: str) -> str:
 
 async def main():
     """Demonstrate ReactAgent.with_structured_output() pattern."""
-
     print("🔬 ReactAgent.with_structured_output() Pattern")
     print("=" * 60)
 
@@ -102,7 +100,7 @@ async def main():
     # Execute analysis
     query = "Provide a comprehensive market analysis of the artificial intelligence industry, including market size, key players, growth opportunities, and future outlook."
 
-    print(f"\n📋 Market Analysis Query:")
+    print("\n📋 Market Analysis Query:")
     print(f"{query}")
     print("\n" + "=" * 60)
     print("🚀 EXECUTING WORKFLOW")
@@ -115,16 +113,16 @@ async def main():
         print("=" * 60)
 
         # Show raw research output
-        print(f"\n🔍 REACT AGENT RESEARCH:")
+        print("\n🔍 REACT AGENT RESEARCH:")
         if hasattr(result, react_agent.name):
             research_output = getattr(result, react_agent.name)
             print(f"Research findings: {str(research_output)[:200]}...")
 
         # Show structured analysis
-        print(f"\n📊 STRUCTURED MARKET ANALYSIS:")
+        print("\n📊 STRUCTURED MARKET ANALYSIS:")
         if hasattr(result, structured_agent.name):
             analysis = getattr(result, structured_agent.name)
-            print(f"✅ Successfully structured into MarketAnalysis!")
+            print("✅ Successfully structured into MarketAnalysis!")
             print(f"Market: {analysis.market_name}")
             print(f"Size: {analysis.market_size}")
             print(f"Growth Rate: {analysis.growth_rate}")
@@ -146,7 +144,7 @@ async def main():
             for i, trend in enumerate(analysis.trends, 1):
                 print(f"  {i}. {trend}")
 
-            print(f"\n🔮 Forecast:")
+            print("\n🔮 Forecast:")
             print(f"  {analysis.forecast}")
         else:
             print(f"❌ No structured output found for {structured_agent.name}")
@@ -168,10 +166,10 @@ async def main():
 
         traceback.print_exc()
 
-        print(f"\n💡 This pattern should work because:")
-        print(f"1. ReactAgent has no structured_output_model (no parse_output loop)")
-        print(f"2. StructuredOutputAgent handles all Pydantic formatting")
-        print(f"3. Sequential execution with clear data flow")
+        print("\n💡 This pattern should work because:")
+        print("1. ReactAgent has no structured_output_model (no parse_output loop)")
+        print("2. StructuredOutputAgent handles all Pydantic formatting")
+        print("3. Sequential execution with clear data flow")
 
 
 if __name__ == "__main__":

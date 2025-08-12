@@ -97,7 +97,9 @@ def demo_field_mapping():
 def demo_field_extraction():
     """Demo: Extracting nested fields."""
     # Create adapter that extracts from nested field
-    adapter = OutputAdapter(target_schema=ProductAnalysis, extract_field="analysis_result")
+    adapter = OutputAdapter(
+        target_schema=ProductAnalysis, extract_field="analysis_result"
+    )
 
     # Nested output structure
     raw_output = {
@@ -196,7 +198,9 @@ def demo_output_mixin():
         """Example processor using OutputMixin."""
 
         def __init__(self):
-            super().__init__(structured_output_model=ProductAnalysis, output_field_name="analysis")
+            super().__init__(
+                structured_output_model=ProductAnalysis, output_field_name="analysis"
+            )
 
         def process(self, data: dict[str, Any]) -> ProductAnalysis:
             """Process data and return structured output."""

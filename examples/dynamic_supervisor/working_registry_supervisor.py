@@ -1,4 +1,4 @@
-"""Working Registry-Based Dynamic Supervisor - Fixed for Current APIs
+"""Working Registry-Based Dynamic Supervisor - Fixed for Current APIs.
 
 This creates a supervisor that:
 1. Has an AgentRegistry to store inactive agents
@@ -11,7 +11,7 @@ import asyncio
 import logging
 import operator
 from collections.abc import Sequence
-from typing import Annotated, Any, Dict, Literal, TypedDict
+from typing import Annotated, Any, Literal, TypedDict
 
 # Import current working APIs
 from haive.core.engine.aug_llm import AugLLMConfig
@@ -53,7 +53,7 @@ class AgentRegistry:
     """Registry of available agents that can be added to supervisor."""
 
     def __init__(self):
-        self.available_agents: Dict[str, AgentInfo] = {}
+        self.available_agents: dict[str, AgentInfo] = {}
 
     def register_agent(self, agent_info: AgentInfo):
         """Register an agent as available in registry."""
@@ -66,7 +66,7 @@ class AgentRegistry:
         """Get an agent info from registry."""
         return self.available_agents.get(agent_name)
 
-    def get_available_agents(self) -> Dict[str, str]:
+    def get_available_agents(self) -> dict[str, str]:
         """Get available agents with capabilities."""
         return {name: info.description for name, info in self.available_agents.items()}
 
@@ -79,14 +79,14 @@ class AgentRegistry:
             capability_lower = agent_info.capability.lower()
 
             # Simple keyword matching
-            if any(word in capability_lower for word in task_lower.split()):
-                matches.append(agent_name)
-            elif any(word in task_lower for word in capability_lower.split()):
+            if any(word in capability_lower for word in task_lower.split()) or any(
+                word in task_lower for word in capability_lower.split()
+            ):
                 matches.append(agent_name)
 
         return matches
 
-    def list_all_agents(self) -> Dict[str, Dict[str, Any]]:
+    def list_all_agents(self) -> dict[str, dict[str, Any]]:
         """List all agents with their status."""
         return {
             name: {
@@ -122,7 +122,7 @@ class RegistrySupervisorState(TypedDict):
 
     messages: Annotated[Sequence[BaseMessage], operator.add]
     agent_registry: AgentRegistry
-    active_agents: Dict[str, AgentInfo]
+    active_agents: dict[str, AgentInfo]
     next_agent: str
     agent_task: str
     agent_response: str
@@ -203,7 +203,7 @@ def create_test_agents_registry() -> AgentRegistry:
     return registry
 
 
-async def supervisor_reasoning_node(state: RegistrySupervisorState) -> Dict[str, Any]:
+async def supervisor_reasoning_node(state: RegistrySupervisorState) -> dict[str, Any]:
     """Supervisor that can retrieve agents from registry."""
     # Get the last user message
     user_message = None
@@ -282,7 +282,7 @@ async def supervisor_reasoning_node(state: RegistrySupervisorState) -> Dict[str,
     }
 
 
-async def agent_execution_node(state: RegistrySupervisorState) -> Dict[str, Any]:
+async def agent_execution_node(state: RegistrySupervisorState) -> dict[str, Any]:
     """Execute the selected agent."""
     agent_name = state.get("next_agent")
     task = state.get("agent_task")
@@ -464,12 +464,12 @@ async def test_registry_supervisor():
     for name, agent_info in final_active.items():
         print(f"  - {name}: {agent_info.description}")
 
-    print(f"\n⚪ Inactive agents in registry:")
+    print("\n⚪ Inactive agents in registry:")
     for name, agent_info in registry.available_agents.items():
         if not agent_info.is_active():
             print(f"  - {name}: {agent_info.description}")
 
-    print(f"\n🎯 Registry Summary:")
+    print("\n🎯 Registry Summary:")
     print(f"  - Total agents in registry: {len(registry.available_agents)}")
     print(f"  - Currently active: {len(final_active)}")
     print(

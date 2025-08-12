@@ -1,4 +1,4 @@
-"""Debug Agent with No Postgres - Show What's Happening
+"""Debug Agent with No Postgres - Show What's Happening.
 
 This removes postgres persistence and shows the agent execution with debug=True
 
@@ -28,7 +28,6 @@ class SimpleAnalysis(BaseModel):
 
 async def main():
     """Debug agent execution with v2."""
-
     print("🔍 DEBUG AGENT WITH structured_output_version='v2'")
     print("=" * 60)
 
@@ -83,10 +82,10 @@ async def main():
             if structured:
                 print(f"\n✅ Structured output: {structured}")
             else:
-                print(f"\n❌ No structured output found")
+                print("\n❌ No structured output found")
 
     except Exception as e:
-        print(f"\n❌ EXECUTION FAILED")
+        print("\n❌ EXECUTION FAILED")
         print("=" * 60)
         print(f"Error: {type(e).__name__}: {e}")
 

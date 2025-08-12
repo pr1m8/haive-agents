@@ -31,7 +31,9 @@ class ResearchAnalysis(BaseModel):
     topic: str = Field(description="Research topic")
     key_findings: list[str] = Field(description="Important findings")
     data_points: list[str] = Field(description="Supporting data")
-    confidence_level: float = Field(ge=0.0, le=1.0, description="Confidence in findings")
+    confidence_level: float = Field(
+        ge=0.0, le=1.0, description="Confidence in findings"
+    )
 
 
 class ExecutiveReport(BaseModel):
@@ -194,7 +196,9 @@ Create an executive report with:
             if "report_writer" in result:
                 report = result["report_writer"]
                 if isinstance(report, dict):
-                    for _i, _insight in enumerate(report.get("strategic_insights", [])[:3], 1):
+                    for _i, _insight in enumerate(
+                        report.get("strategic_insights", [])[:3], 1
+                    ):
                         pass
                     for _i, _rec in enumerate(report.get("recommendations", [])[:3], 1):
                         pass
@@ -215,7 +219,9 @@ async def test_individual_agents():
     # Test SimpleAgentV3
     simple = SimpleAgentV3(
         name="test_simple",
-        engine=AugLLMConfig(temperature=0.3, system_message="You are a helpful assistant."),
+        engine=AugLLMConfig(
+            temperature=0.3, system_message="You are a helpful assistant."
+        ),
     )
 
     with contextlib.suppress(Exception):
@@ -230,7 +236,9 @@ async def test_individual_agents():
 
     react = ReactAgentV3(
         name="test_react",
-        engine=AugLLMConfig(system_message="You are a helpful assistant.", tools=[test_tool]),
+        engine=AugLLMConfig(
+            system_message="You are a helpful assistant.", tools=[test_tool]
+        ),
     )
 
     with contextlib.suppress(Exception):

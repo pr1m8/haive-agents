@@ -38,7 +38,9 @@ async def demo_enhanced_memory_retriever():
 
         # Phase 1: Setup Memory Infrastructure
         # Create store manager (using memory for demo)
-        store_manager = StoreManager(store_type="memory", collection_name="enhanced_memory_demo")
+        store_manager = StoreManager(
+            store_type="memory", collection_name="enhanced_memory_demo"
+        )
 
         # Create enhanced memory retriever
         retriever = await create_enhanced_memory_retriever(
@@ -116,7 +118,9 @@ async def demo_enhanced_memory_retriever():
 
         for query, _description in test_queries:
             # Perform enhanced retrieval
-            result = await retriever.retrieve_memories(query=query, limit=3, include_metadata=True)
+            result = await retriever.retrieve_memories(
+                query=query, limit=3, include_metadata=True
+            )
 
             # Show top results
             for i, memory in enumerate(result.memories[:2]):

@@ -1,4 +1,4 @@
-"""Working Dynamic Agent Discovery Supervisor - Fixed for Current APIs
+"""Working Dynamic Agent Discovery Supervisor - Fixed for Current APIs.
 
 This supervisor:
 1. Has active agents registry
@@ -15,14 +15,14 @@ import logging
 import operator
 from collections.abc import Sequence
 from enum import Enum
-from typing import Annotated, Any, Dict, List, Literal, Set, TypedDict
+from typing import Annotated, Any, Literal, TypedDict
 
 # Import current working APIs
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
 from langchain_core.tools import tool
 from langgraph.graph import END, StateGraph
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic import BaseModel, Field
 
 from haive.agents.react.agent import ReactAgent
 from haive.agents.simple.agent_v3 import SimpleAgentV3
@@ -46,10 +46,10 @@ class AgentCapability(BaseModel):
     name: str = Field(..., description="Agent name")
     agent_type: str = Field(..., description="Type of agent")
     description: str = Field(..., description="What this agent can do")
-    specialties: List[str] = Field(
+    specialties: list[str] = Field(
         default_factory=list, description="Areas of expertise"
     )
-    tools: List[str] = Field(default_factory=list, description="Tools this agent has")
+    tools: list[str] = Field(default_factory=list, description="Tools this agent has")
     active: bool = Field(default=True, description="Whether agent is active")
 
 
@@ -57,10 +57,10 @@ class DynamicAgentDiscoveryState(TypedDict):
     """State for dynamic agent discovery supervisor."""
 
     messages: Annotated[Sequence[BaseMessage], operator.add]
-    agents: Dict[str, Any]  # Active agent instances
-    agent_capabilities: Dict[str, AgentCapability]  # Agent capability registry
-    discovered_agents: Set[str]  # Names of discovered agents
-    available_agent_specs: List[Dict[str, Any]]  # Specs for agents that can be created
+    agents: dict[str, Any]  # Active agent instances
+    agent_capabilities: dict[str, AgentCapability]  # Agent capability registry
+    discovered_agents: set[str]  # Names of discovered agents
+    available_agent_specs: list[dict[str, Any]]  # Specs for agents that can be created
     current_agent: str
     agent_task: str
     agent_response: str
@@ -104,7 +104,7 @@ def write_content(topic: str) -> str:
     return f"Content written about '{topic}': Comprehensive article with analysis and recommendations..."
 
 
-def create_initial_agents() -> Dict[str, Any]:
+def create_initial_agents() -> dict[str, Any]:
     """Create initial set of agents."""
     agents = {}
 
@@ -118,7 +118,7 @@ def create_initial_agents() -> Dict[str, Any]:
     return agents
 
 
-def create_initial_capabilities() -> Dict[str, AgentCapability]:
+def create_initial_capabilities() -> dict[str, AgentCapability]:
     """Create initial agent capabilities."""
     return {
         "basic_assistant": AgentCapability(
@@ -132,7 +132,7 @@ def create_initial_capabilities() -> Dict[str, AgentCapability]:
     }
 
 
-def create_available_agent_specs() -> List[Dict[str, Any]]:
+def create_available_agent_specs() -> list[dict[str, Any]]:
     """Create specs for agents that can be discovered/created."""
     return [
         {
@@ -242,8 +242,8 @@ def create_available_agent_specs() -> List[Dict[str, Any]]:
 
 
 def find_matching_agent_specs(
-    task: str, available_specs: List[Dict[str, Any]]
-) -> List[Dict[str, Any]]:
+    task: str, available_specs: list[dict[str, Any]]
+) -> list[dict[str, Any]]:
     """Find agent specs that match the task requirements."""
     task_lower = task.lower()
     matches = []
@@ -264,25 +264,23 @@ def find_matching_agent_specs(
     return matches
 
 
-def create_agent_from_spec(spec: Dict[str, Any]) -> Any:
+def create_agent_from_spec(spec: dict[str, Any]) -> Any:
     """Create an agent instance from a specification."""
     agent_type = spec.get("agent_type", "SimpleAgentV3")
     config = spec.get("config", {})
 
     if agent_type == "SimpleAgentV3":
         return SimpleAgentV3(name=spec["name"], **config)
-    elif agent_type == "ReactAgent":
+    if agent_type == "ReactAgent":
         return ReactAgent(name=spec["name"], **config)
-    else:
-        # Default to SimpleAgentV3
-        return SimpleAgentV3(name=spec["name"], **config)
+    # Default to SimpleAgentV3
+    return SimpleAgentV3(name=spec["name"], **config)
 
 
 async def supervisor_discovery_node(
     state: DynamicAgentDiscoveryState,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Supervisor node that can discover and add new agents."""
-
     # Get the last user message
     user_message = None
     for msg in reversed(state["messages"]):
@@ -415,7 +413,7 @@ async def supervisor_discovery_node(
     }
 
 
-async def agent_execution_node(state: DynamicAgentDiscoveryState) -> Dict[str, Any]:
+async def agent_execution_node(state: DynamicAgentDiscoveryState) -> dict[str, Any]:
     """Execute the selected/discovered agent."""
     agent_name = state.get("next_agent")
     task = state.get("agent_task")
@@ -484,7 +482,7 @@ async def test_dynamic_agent_discovery_supervisor():
     initial_capabilities = create_initial_capabilities()
     available_specs = create_available_agent_specs()
 
-    print(f"✅ Initial setup:")
+    print("✅ Initial setup:")
     print(f"  - Active agents: {list(initial_agents.keys())}")
     print(f"  - Available for discovery: {[spec['name'] for spec in available_specs]}")
 
@@ -639,19 +637,19 @@ async def test_dynamic_agent_discovery_supervisor():
     final_capabilities = result5.get("agent_capabilities", {})
     final_discovered = result5.get("discovered_agents", set())
 
-    print(f"🎯 Discovery Results:")
+    print("🎯 Discovery Results:")
     print(f"  - Started with: {len(initial_agents)} agents")
     print(f"  - Ended with: {len(final_agents)} agents")
     print(f"  - Total discovered: {len(final_discovered)} agents")
     print(f"  - Available for discovery: {len(available_specs)} specs")
 
-    print(f"\n🤖 Active Agents:")
+    print("\n🤖 Active Agents:")
     for name, capability in final_capabilities.items():
         if capability.active:
             status = "🆕 Discovered" if name in final_discovered else "🔄 Initial"
             print(f"  - {name}: {capability.description} {status}")
 
-    print(f"\n🔧 Agent Specialties:")
+    print("\n🔧 Agent Specialties:")
     for name, capability in final_capabilities.items():
         if capability.active:
             specialties = ", ".join(capability.specialties[:3])  # Show first 3
