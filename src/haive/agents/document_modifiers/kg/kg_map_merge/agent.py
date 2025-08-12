@@ -46,7 +46,7 @@ class ParallelKGTransformerConfig(AgentConfig):
 
 @register_agent(ParallelKGTransformerConfig)
 class ParallelKGTransformer(Agent[ParallelKGTransformerConfig]):
-    """An agent that builds a knowledge graph by extracting
+    """An agent that builds a knowledge graph by extracting.
     nodes and relationships in parallel across multiple documents.
     """
 

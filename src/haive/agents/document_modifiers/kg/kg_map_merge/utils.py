@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import networkx as nx
 import numpy as np
 from haive.core.models.llm.base import AzureLLMConfig, LLMConfig
-from langchain_community.graphs.graph_document import GraphDocument, Node, Relationship
+from langchain_community.graphs.graph_document import GraphDocument
 from langchain_core.documents import Document
 from langchain_neo4j.graphs.graph_document import GraphDocument
 

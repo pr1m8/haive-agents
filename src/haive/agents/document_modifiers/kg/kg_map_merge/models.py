@@ -109,7 +109,7 @@ class KnowledgeGraph(BaseModel):
         Args:
             node (EntityNode): Node to add
         """
-        if not any((existing.id == node.id for existing in self.nodes)):
+        if not any(existing.id == node.id for existing in self.nodes):
             self.nodes.append(node)
 
     def add_relationship(self, relationship: EntityRelationship):
@@ -119,12 +119,10 @@ class KnowledgeGraph(BaseModel):
             relationship (EntityRelationship): Relationship to add
         """
         if not any(
-            (
-                existing.source == relationship.source
-                and existing.target == relationship.target
-                and (existing.type == relationship.type)
-                for existing in self.relationships
-            )
+            existing.source == relationship.source
+            and existing.target == relationship.target
+            and (existing.type == relationship.type)
+            for existing in self.relationships
         ):
             self.relationships.append(relationship)
 

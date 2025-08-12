@@ -9,7 +9,7 @@ from haive.agents.document_modifiers.base.utils import (
 
 __all__ = [
     "DocumentModifierState",
-    "normalize_contents",
     "documents_to_strings",
+    "normalize_contents",
     "strings_to_documents",
 ]

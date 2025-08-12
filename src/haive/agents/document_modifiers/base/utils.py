@@ -1,11 +1,11 @@
 """Utility functions for document processing."""
 
-from typing import Any, List, Union
+from typing import Any
 
 from langchain_core.documents import Document
 
 
-def normalize_contents(contents: Any) -> List[str]:
+def normalize_contents(contents: Any) -> list[str]:
     """Normalize inputs to strings.
 
     Accepts:
@@ -26,7 +26,7 @@ def normalize_contents(contents: Any) -> List[str]:
     # Handle single items
     if isinstance(contents, str):
         return [contents]
-    elif isinstance(contents, Document):
+    if isinstance(contents, Document):
         return [contents.page_content]
 
     # Handle lists
@@ -48,11 +48,11 @@ def normalize_contents(contents: Any) -> List[str]:
     return normalized
 
 
-def documents_to_strings(documents: List[Document]) -> List[str]:
+def documents_to_strings(documents: list[Document]) -> list[str]:
     """Convert a list of Documents to a list of strings."""
     return [doc.page_content for doc in documents]
 
 
-def strings_to_documents(strings: List[str]) -> List[Document]:
+def strings_to_documents(strings: list[str]) -> list[Document]:
     """Convert a list of strings to a list of Documents."""
     return [Document(page_content=content) for content in strings]
