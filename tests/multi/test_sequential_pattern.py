@@ -2,9 +2,7 @@
 
 import asyncio
 from datetime import datetime
-from typing import List, Optional
 
-from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.tools import tool
 from pydantic import BaseModel, Field
@@ -16,6 +14,7 @@ from haive.agents.patterns.sequential_with_structured_output import (
     create_react_to_structured,
 )
 from haive.agents.simple.agent import SimpleAgent
+from haive.core.engine.aug_llm import AugLLMConfig
 
 
 # Example 1: React → Structured Research Report
@@ -23,9 +22,9 @@ class ResearchSource(BaseModel):
     """A source used in research."""
 
     title: str = Field(description="Source title or name")
-    url: Optional[str] = Field(default=None, description="Source URL if available")
+    url: str | None = Field(default=None, description="Source URL if available")
     relevance: float = Field(description="Relevance score 0-1", ge=0, le=1)
-    key_points: List[str] = Field(description="Key points from this source")
+    key_points: list[str] = Field(description="Key points from this source")
 
 
 class ResearchReport(BaseModel):
@@ -34,19 +33,19 @@ class ResearchReport(BaseModel):
     topic: str = Field(description="Research topic")
     executive_summary: str = Field(description="Brief executive summary")
 
-    key_findings: List[str] = Field(
+    key_findings: list[str] = Field(
         description="Main findings from the research", min_items=3, max_items=10
     )
 
-    sources: List[ResearchSource] = Field(description="Sources used in the research")
+    sources: list[ResearchSource] = Field(description="Sources used in the research")
 
     methodology: str = Field(description="Research methodology used")
 
-    limitations: Optional[List[str]] = Field(
+    limitations: list[str] | None = Field(
         default=None, description="Research limitations or caveats"
     )
 
-    recommendations: List[str] = Field(description="Recommendations based on findings")
+    recommendations: list[str] = Field(description="Recommendations based on findings")
 
     confidence_level: str = Field(
         description="Overall confidence in findings", pattern="^(high|medium|low)$"
@@ -64,7 +63,7 @@ class MarketAnalysis(BaseModel):
     segment: str = Field(description="Market segment analyzed")
     size: str = Field(description="Market size estimate")
     growth_rate: str = Field(description="Growth rate projection")
-    key_players: List[str] = Field(description="Major players in the market")
+    key_players: list[str] = Field(description="Major players in the market")
 
 
 class BusinessReport(BaseModel):
@@ -75,15 +74,15 @@ class BusinessReport(BaseModel):
 
     market_analysis: MarketAnalysis = Field(description="Market analysis section")
 
-    opportunities: List[str] = Field(description="Business opportunities identified")
+    opportunities: list[str] = Field(description="Business opportunities identified")
 
-    risks: List[str] = Field(description="Potential risks and challenges")
+    risks: list[str] = Field(description="Potential risks and challenges")
 
-    action_items: List[str] = Field(description="Recommended action items")
+    action_items: list[str] = Field(description="Recommended action items")
 
     timeline: str = Field(description="Suggested timeline for implementation")
 
-    budget_estimate: Optional[str] = Field(
+    budget_estimate: str | None = Field(
         default=None, description="Rough budget estimate if applicable"
     )
 
@@ -237,8 +236,8 @@ async def test_custom_sequential():
 
         problem_statement: str = Field(description="Clear problem statement")
         technical_approach: str = Field(description="Technical approach taken")
-        implementation_steps: List[str] = Field(description="Implementation steps")
-        technologies_used: List[str] = Field(description="Technologies involved")
+        implementation_steps: list[str] = Field(description="Implementation steps")
+        technologies_used: list[str] = Field(description="Technologies involved")
         complexity_rating: str = Field(pattern="^(simple|moderate|complex)$")
         estimated_effort: str = Field(description="Effort estimate")
 

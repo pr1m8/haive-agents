@@ -58,7 +58,6 @@ def search_web(query: str) -> str:
 
 class TaskResult(BaseModel):
     """Structured output for task completion."""
-
     task: str = Field(description="The task that was completed")
     result: str = Field(description="The result of the task")
     confidence: float = Field(description="Confidence in the result (0-1)")
@@ -66,7 +65,6 @@ class TaskResult(BaseModel):
 
 class TestMetaStateWithAgents:
     """Test suite for MetaStateSchema with real agents."""
-
     @pytest.fixture
     def simple_agent(self) -> SimpleAgent:
         """Create a simple agent for testing."""
@@ -256,7 +254,6 @@ class TestMetaStateWithAgents:
 
 class TestMetaStatePostgresPersistence:
     """Test MetaStateSchema with PostgreSQL persistence and SecretStr serialization."""
-
     @pytest.fixture
     def postgres_config(self) -> PostgresCheckpointerConfig:
         """Create PostgreSQL configuration for testing."""
@@ -383,14 +380,11 @@ class TestMetaStatePostgresPersistence:
 
 class TestRecompilableAgentIntegration:
     """Test RecompileMixin with real agents."""
-
     def test_agent_with_recompile_mixin(self):
         """Test adding RecompileMixin to an agent."""
-
         # Create an agent class that includes RecompileMixin
         class RecompilableSimpleAgent(SimpleAgent, RecompileMixin):
             """Simple agent with recompilation capability."""
-
             def _trigger_auto_recompile(self) -> None:
                 """Implementation of recompilation logic."""
                 logger.info("Triggering recompilation of agent graph")
@@ -430,7 +424,6 @@ class TestRecompilableAgentIntegration:
 
     def test_recompilation_history_tracking(self):
         """Test that recompilation history is properly tracked."""
-
         class TrackedAgent(SimpleAgent, RecompileMixin):
             def _trigger_auto_recompile(self) -> None:
                 self.rebuild_graph()
@@ -457,14 +450,11 @@ class TestRecompilableAgentIntegration:
 
 class TestDynamicToolRouting:
     """Test DynamicToolRouteMixin with real agents."""
-
     def test_agent_with_dynamic_tool_routing(self):
         """Test adding DynamicToolRouteMixin to an agent."""
-
         # Create agent with dynamic tool routing
         class DynamicToolAgent(SimpleAgent, DynamicToolRouteMixin):
             """Agent with dynamic tool routing capability."""
-
             def __init__(self, *args, **kwargs):
                 super().__init__(*args, **kwargs)
                 # Register callback for tool changes
@@ -497,7 +487,6 @@ class TestDynamicToolRouting:
 
     def test_batch_tool_updates(self):
         """Test batch tool updates with single notification."""
-
         class BatchUpdateAgent(SimpleAgent, DynamicToolRouteMixin):
             def __init__(self, *args, **kwargs):
                 super().__init__(*args, **kwargs)
@@ -528,15 +517,12 @@ class TestDynamicToolRouting:
 
 class TestCompleteIntegration:
     """Test complete integration of all concepts."""
-
     @pytest.mark.asyncio
     async def test_meta_state_with_recompilable_dynamic_agent(self):
         """Test MetaStateSchema with an agent that has both recompilable and dynamic tool capabilities."""
-
         # Create a fully integrated agent class
         class IntegratedAgent(SimpleAgent, RecompileMixin, DynamicToolRouteMixin):
             """Fully integrated agent with all capabilities."""
-
             def __init__(self, *args, **kwargs):
                 super().__init__(*args, **kwargs)
                 self.register_route_change_callback(self._on_tool_change, "recompile_trigger")

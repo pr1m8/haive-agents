@@ -23,14 +23,12 @@ def search_tool(query: str) -> str:
 # Test schema
 class QueryResult(BaseModel):
     """Query result schema."""
-
     answer: str
     confidence: float = 0.8
 
 
 def test_graph_with_conditional_edges():
     """Test graph creation with conditional edges."""
-
     def route_by_content(state: dict) -> str:
         """Route based on message content."""
         messages = state.get("messages", [])
@@ -122,10 +120,8 @@ def test_engine_configuration():
 
 def test_model_post_init_pattern():
     """Test Pydantic model_post_init pattern."""
-
     class ConfiguredModel(BaseModel):
         """Model using model_post_init for setup."""
-
         name: str
         value: int = 0
         computed: str = ""
@@ -153,7 +149,6 @@ def test_model_post_init_pattern():
 
 def test_component_composition():
     """Test component composition patterns."""
-
     # Define components
     def processor(state: dict) -> dict:
         """Process input."""
@@ -188,10 +183,8 @@ def test_component_composition():
 
 def test_multi_agent_concepts():
     """Test multi-agent coordination concepts."""
-
     class AgentState(BaseModel):
         """Shared state for agents."""
-
         messages: list[BaseMessage] = Field(default_factory=list)
         query: str = ""
         results: list[str] = Field(default_factory=list)

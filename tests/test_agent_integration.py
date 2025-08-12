@@ -39,7 +39,6 @@ def calculate_tool(a: int, b: int) -> int:
 # Test schema
 class AnalysisResult(BaseModel):
     """Analysis output schema."""
-
     summary: str
     confidence: float = Field(ge=0, le=1, default=0.8)
 
@@ -147,11 +146,9 @@ def test_multi_agent_schema_composition():
 
 def test_multi_agent_with_model_post_init():
     """Test that multi-agent uses model_post_init properly."""
-
     # Create a custom multi-agent that uses model_post_init
     class CustomMultiAgent(SequentialAgent):
         """Multi-agent with enhanced model_post_init."""
-
         def model_post_init(self, __context):
             """Validate and set up after initialization."""
             super().model_post_init(__context)

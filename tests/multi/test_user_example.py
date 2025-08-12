@@ -4,11 +4,11 @@
 import os
 import sys
 
+
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../../"))
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../../../haive-core/src"))
 
 
-from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import HumanMessage
 from langchain_core.tools import tool
 from pydantic import BaseModel, Field
@@ -16,6 +16,7 @@ from pydantic import BaseModel, Field
 from haive.agents.multi.base import SequentialAgent
 from haive.agents.react.agent import ReactAgent
 from haive.agents.simple.agent import SimpleAgent
+from haive.core.engine.aug_llm import AugLLMConfig
 
 
 @tool
@@ -36,7 +37,6 @@ class Plan(BaseModel):
 
 def test_user_example():
     """Test the exact user example with ReactAgent -> SimpleAgent."""
-
     # Create agents as per user example
     add_aug = AugLLMConfig(tools=[add, get_earth_age])
     plan_aug = AugLLMConfig(structured_output_model=Plan, structured_output_version="v2")
@@ -71,9 +71,7 @@ def test_user_example():
                     pass
 
             # Print plan if available
-            if "simple_agent_plan" in result:
-                pass
-            elif "planner_plan" in result:
+            if "simple_agent_plan" in result or "planner_plan" in result:
                 pass
 
             # Print agent outputs
@@ -83,7 +81,7 @@ def test_user_example():
         else:
             pass
 
-    except Exception as e:
+    except Exception:
         import traceback
 
         traceback.print_exc()
@@ -91,7 +89,6 @@ def test_user_example():
 
 def test_with_different_tools():
     """Test with different tools and tasks."""
-
     @tool
     def multiply(a: int, b: int) -> int:
         """Multiply two numbers."""
@@ -140,7 +137,7 @@ def test_with_different_tools():
             for msg in result["messages"][-3:]:
                 pass
 
-    except Exception as e:
+    except Exception:
         import traceback
 
         traceback.print_exc()

@@ -2,17 +2,14 @@
 
 import asyncio
 
+from haive.agents.react.agent import ReactAgent
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import AzureLLMConfig
 from haive.tools.tools.search_tools import tavily_search_tool
-from langchain_core.messages import HumanMessage
-
-from haive.agents.react.agent import ReactAgent
 
 
 async def test_minimal_flow():
     """Test ReactAgent directly - verify it returns human message."""
-
     # Create ReactAgent with tavily search tool
     search_engine = AugLLMConfig(
         name="search_engine",
@@ -46,7 +43,7 @@ async def test_minimal_flow():
         else:
             pass
 
-    except Exception as e:
+    except Exception:
         import traceback
 
         traceback.print_exc()

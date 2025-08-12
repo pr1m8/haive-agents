@@ -21,6 +21,7 @@ from .compatibility import (
 )
 from .multi_rag import agent_list, base_rag_agent
 
+
 logger = logging.getLogger(__name__)
 
 
@@ -30,7 +31,6 @@ def run_safe_compatibility_tests() -> dict[str, Any]:
     This function demonstrates how to safely test agent compatibility
     without risking damage to existing systems.
     """
-
     results = {}
 
     try:
@@ -117,7 +117,6 @@ def demonstrate_compatibility_workflow():
 
     This shows how to use compatibility testing in a real workflow.
     """
-
     # Step 1: Create agents for testing
     agents = [
         SimpleRAGAgent(name="Demo Retrieval"),
@@ -150,7 +149,6 @@ def demonstrate_compatibility_workflow():
 
 def test_agent_list_compatibility():
     """Test the agent_list from multi_rag.py as mentioned in user prompt."""
-
     if len(agent_list) >= 2:
         tester = SafeCompatibilityTester()
         report = tester.test_workflow_compatibility(agent_list, "Agent List Workflow")

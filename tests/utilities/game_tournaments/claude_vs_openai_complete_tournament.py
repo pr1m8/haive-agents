@@ -6,12 +6,13 @@ Tests ALL discovered games through the API system with consistent LLM configurat
 This is the definitive tournament to determine the champion across all game types.
 """
 
+from datetime import datetime
 import json
 import os
 import sys
 import traceback
-from datetime import datetime
-from typing import Any, Dict, Optional
+from typing import Any
+
 
 # Add the current directory to Python path for imports
 sys.path.append("/home/will/Projects/haive/backend/haive")
@@ -181,7 +182,6 @@ def test_game_via_fixed_script(game_name: str, output_dir: str) -> dict[str, Any
 
 def run_complete_tournament():
     """Run the complete tournament across all discovered games."""
-
     output_dir = ensure_output_directory()
 
     # All games discovered by the API system
@@ -235,7 +235,7 @@ def run_complete_tournament():
                 tournament_results["failed_games"] += 1
                 error_type = result["result"].get("error_type", "UnknownError")
 
-        except Exception as e:
+        except Exception:
             tournament_results["failed_games"] += 1
 
     # Save final tournament summary
@@ -245,9 +245,7 @@ def run_complete_tournament():
     with open(summary_file, "w") as f:
         json.dump(tournament_results, f, indent=2)
 
-    if tournament_results["claude_wins"] > tournament_results["openai_wins"]:
-        pass
-    elif tournament_results["openai_wins"] > tournament_results["claude_wins"]:
+    if tournament_results["claude_wins"] > tournament_results["openai_wins"] or tournament_results["openai_wins"] > tournament_results["claude_wins"]:
         pass
     else:
         pass

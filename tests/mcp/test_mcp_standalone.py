@@ -1,24 +1,21 @@
-"""Standalone test for MCP RAG functionality"""
+"""Standalone test for MCP RAG functionality."""
 
 import asyncio
 import json
 from pathlib import Path
 
-from haive.core.engine.vectorstore.vectorstore import (
-    VectorStoreConfig,
-    VectorStoreProvider,
-)
-from haive.core.models.embeddings.base import HuggingFaceEmbeddingConfig
-from haive.core.models.llm.base import AzureLLMConfig
 from langchain_core.documents import Document
 
 # Use direct imports from haive
 from haive.agents.rag.base.agent import BaseRAGAgent
+from haive.core.engine.vectorstore.vectorstore import (
+    VectorStoreProvider,
+)
+from haive.core.models.embeddings.base import HuggingFaceEmbeddingConfig
 
 
 def create_mcp_documents():
     """Create documents from MCP server data."""
-
     # Direct path to the MCP servers data
     all_servers_path = Path("packages/haive-mcp/data/mcp_servers/ALL_MCP_SERVERS_COMPLETE.json")
 

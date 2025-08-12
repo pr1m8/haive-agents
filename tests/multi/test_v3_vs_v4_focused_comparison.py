@@ -9,20 +9,18 @@ This test compares:
 Focuses on real, practical differences without complex dependencies.
 """
 
-import time
-from typing import List, Dict, Any
 import logging
+import time
 
 from langchain_core.messages import HumanMessage
 from pydantic import BaseModel, Field
 
-from haive.agents.simple.agent_v3 import SimpleAgentV3
-from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.schema.prebuilt.multi_agent_state import MultiAgentState
-
 # Import the versions we can test
 from haive.agents.multi.enhanced_multi_agent_v4 import EnhancedMultiAgentV4
 from haive.agents.multi.simple_multi_agent import SimpleMultiAgent
+from haive.agents.simple.agent_v3 import SimpleAgentV3
+from haive.core.engine.aug_llm import AugLLMConfig
+
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -37,13 +35,13 @@ class TestResults(BaseModel):
     setup_time: float = 0.0
     execution_time: float = 0.0
     success: bool = False
-    features: List[str] = Field(default_factory=list)
-    pros: List[str] = Field(default_factory=list)
-    cons: List[str] = Field(default_factory=list)
+    features: list[str] = Field(default_factory=list)
+    pros: list[str] = Field(default_factory=list)
+    cons: list[str] = Field(default_factory=list)
     error: str = ""
 
 
-def create_test_agents() -> List[SimpleAgentV3]:
+def create_test_agents() -> list[SimpleAgentV3]:
     """Create a set of test agents."""
     config = AugLLMConfig(temperature=0.3, max_tokens=100)
 

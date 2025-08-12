@@ -2,18 +2,18 @@
 
 import asyncio
 from datetime import datetime
-from typing import List, Optional
 
-from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.engine.embedding.providers.HuggingFaceEmbeddingConfig import (
-    HuggingFaceEmbeddingConfig,
-)
 from langchain_core.documents import Document
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field
 
 from haive.agents.rag.base.agent import BaseRAGAgent
 from haive.agents.simple.agent import SimpleAgent
+from haive.core.engine.aug_llm import AugLLMConfig
+from haive.core.engine.embedding.providers.HuggingFaceEmbeddingConfig import (
+    HuggingFaceEmbeddingConfig,
+)
+
 
 # Comprehensive RAG Answer Generation Prompt
 RAG_ANSWER_PROMPT = ChatPromptTemplate.from_messages(
@@ -86,7 +86,7 @@ class DocumentReference(BaseModel):
 
     source_name: str = Field(description="Name or identifier of the source document")
     relevance_score: float = Field(description="How relevant this document was to the answer (0-1)")
-    key_points: List[str] = Field(description="Key points extracted from this document")
+    key_points: list[str] = Field(description="Key points extracted from this document")
 
 
 class AnswerSection(BaseModel):
@@ -94,7 +94,7 @@ class AnswerSection(BaseModel):
 
     heading: str = Field(description="Section heading")
     content: str = Field(description="Section content")
-    supporting_sources: List[str] = Field(description="Sources that support this section")
+    supporting_sources: list[str] = Field(description="Sources that support this section")
 
 
 class ComprehensiveRAGAnswer(BaseModel):
@@ -108,16 +108,16 @@ class ComprehensiveRAGAnswer(BaseModel):
     )
 
     # Structured sections for complex answers
-    answer_sections: Optional[List[AnswerSection]] = Field(
+    answer_sections: list[AnswerSection] | None = Field(
         default=None, description="Structured sections for organizing complex answers"
     )
 
     # Source tracking
-    primary_sources: List[DocumentReference] = Field(
+    primary_sources: list[DocumentReference] = Field(
         description="Primary documents used for the answer"
     )
 
-    all_sources_used: List[str] = Field(description="List of all source documents referenced")
+    all_sources_used: list[str] = Field(description="List of all source documents referenced")
 
     # Quality indicators
     confidence_score: float = Field(
@@ -130,14 +130,14 @@ class ComprehensiveRAGAnswer(BaseModel):
     )
 
     # Additional insights
-    key_findings: List[str] = Field(description="Key findings or insights from the analysis")
+    key_findings: list[str] = Field(description="Key findings or insights from the analysis")
 
-    information_gaps: Optional[List[str]] = Field(
+    information_gaps: list[str] | None = Field(
         default=None,
         description="Important information that was missing from the documents",
     )
 
-    follow_up_questions: Optional[List[str]] = Field(
+    follow_up_questions: list[str] | None = Field(
         default=None,
         description="Suggested follow-up questions for deeper understanding",
     )

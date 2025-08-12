@@ -7,6 +7,7 @@ Validates performance tracking, routing, and enhanced state management.
 
 import logging
 
+
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -221,14 +222,13 @@ def test_enhanced_multi_agent_v3_conditional_execution():
         # Add conditional routing
         def route_by_category(state):
             # Simple routing based on keywords in the last message
-            if "messages" in state and state["messages"]:
+            if state.get("messages"):
                 content = str(state["messages"][-1].content).lower()
                 if any(word in content for word in ["technical", "bug", "error", "crash"]):
                     return "technical_agent"
-                elif any(word in content for word in ["billing", "payment", "invoice", "charge"]):
+                if any(word in content for word in ["billing", "payment", "invoice", "charge"]):
                     return "billing_agent"
-                else:
-                    return "general_agent"
+                return "general_agent"
             return "general_agent"
 
         conditional_multi.add_conditional_routing(
@@ -462,12 +462,11 @@ def test_enhanced_multi_agent_v3_state_management():
     print("=" * 80)
 
     try:
+        from haive.agents.multi.enhanced_multi_agent_v3 import EnhancedMultiAgent
+        from haive.agents.simple.enhanced_agent_v3 import EnhancedSimpleAgent
         from haive.core.schema.prebuilt.enhanced_multi_agent_state import (
             EnhancedMultiAgentState,
         )
-
-        from haive.agents.multi.enhanced_multi_agent_v3 import EnhancedMultiAgent
-        from haive.agents.simple.enhanced_agent_v3 import EnhancedSimpleAgent
 
         # Test enhanced state management
         print("\n📋 Test: Enhanced state schema and management")
@@ -567,7 +566,7 @@ def run_all_enhanced_multi_agent_comprehensive_tests():
         "State Management",
     ]
 
-    for i, (name, result) in enumerate(zip(test_names, results)):
+    for i, (name, result) in enumerate(zip(test_names, results, strict=False)):
         status = "✅ PASS" if result else "❌ FAIL"
         print(f"{i + 1}. {name}: {status}")
 

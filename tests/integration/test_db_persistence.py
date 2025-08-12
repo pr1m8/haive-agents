@@ -4,13 +4,11 @@
 import os
 
 import psycopg
-
 from src.haive.agents.conversation.collaberative.agent import CollaborativeConversation
 
 
 def check_database_after_run():
     """Run a conversation agent and check what gets saved to Supabase."""
-
     # Create and run a conversation agent
     agent = CollaborativeConversation.create_brainstorming_session(
         topic="Test database persistence", participants=["Alice", "Bob"], max_rounds=1
@@ -26,7 +24,7 @@ def check_database_after_run():
         # Get the actual thread_id used
         actual_thread_id = agent.runnable_config["configurable"]["thread_id"]
 
-    except Exception as e:
+    except Exception:
         pass
         # Continue with database check anyway
 
@@ -91,14 +89,12 @@ def check_database_after_run():
 
                 # Summary
 
-                if thread_rows and checkpoint_rows and writes_rows:
-                    pass
-                elif thread_rows:
+                if (thread_rows and checkpoint_rows and writes_rows) or thread_rows:
                     pass
                 else:
                     pass
 
-    except Exception as e:
+    except Exception:
         pass
 
 

@@ -9,14 +9,15 @@ This test demonstrates:
 """
 
 import asyncio
-import logging
-import random
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional
+import logging
+import random
+from typing import Any
 
-from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
+from langchain_core.messages import AIMessage, HumanMessage
 from pydantic import BaseModel, Field
+
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -24,7 +25,6 @@ logger = logging.getLogger(__name__)
 
 class AgentStatus(str, Enum):
     """Agent status in the pool."""
-
     ACTIVE = "active"
     INACTIVE = "inactive"
     BUSY = "busy"
@@ -34,7 +34,6 @@ class AgentStatus(str, Enum):
 
 class AgentMetrics(BaseModel):
     """Performance metrics for an agent."""
-
     total_calls: int = 0
     successful_calls: int = 0
     failed_calls: int = 0
@@ -46,7 +45,6 @@ class AgentMetrics(BaseModel):
 
 class PrebuiltAgent:
     """A sophisticated prebuilt agent with capabilities and metrics."""
-
     def __init__(
         self,
         name: str,
@@ -190,7 +188,6 @@ class PrebuiltAgent:
 
 class AgentPool:
     """Manages a pool of prebuilt agents."""
-
     def __init__(self, resource_limit: int = 10):
         self.agents: dict[str, PrebuiltAgent] = {}
         self.resource_limit = resource_limit
@@ -402,7 +399,6 @@ async def create_prebuilt_agent_pool() -> AgentPool:
 
 async def test_advanced_dynamic_supervisor():
     """Test advanced scenarios with prebuilt agent pool."""
-
     # Import the fixed supervisor
     try:
         from dynamic_supervisor_fixed import DynamicSupervisorFixed
@@ -444,7 +440,7 @@ async def test_advanced_dynamic_supervisor():
             if response:
                 if hasattr(response, "additional_kwargs"):
                     agent_used = response.additional_kwargs.get("agent", "unknown")
-        except Exception as e:
+        except Exception:
             pass
 
     # Test 2: Dynamic activation based on demand
@@ -534,7 +530,6 @@ async def test_advanced_dynamic_supervisor():
 
 async def test_edge_cases_advanced():
     """Test edge cases with advanced scenarios."""
-
     from dynamic_supervisor_fixed import DynamicSupervisorFixed
 
     pool = await create_prebuilt_agent_pool()
@@ -550,7 +545,7 @@ async def test_edge_cases_advanced():
 
     try:
         await supervisor.ainvoke({"messages": [HumanMessage(content="Write some code")]})
-    except Exception as e:
+    except Exception:
         pass
 
     # Edge case 2: All agents inactive
@@ -566,7 +561,7 @@ async def test_edge_cases_advanced():
 
     try:
         await supervisor.ainvoke({"messages": [HumanMessage(content="Do something")]})
-    except Exception as e:
+    except Exception:
         pass
 
 

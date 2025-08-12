@@ -1,13 +1,14 @@
 #!/usr/bin/env python
 """Test SimpleAgent with PlanExecuteState (hybrid schema composition)."""
 
-from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import HumanMessage
 
 from haive.agents.planning.p_and_e.models import Plan
 from haive.agents.planning.p_and_e.prompts import planner_prompt
 from haive.agents.planning.p_and_e.state import PlanExecuteState
 from haive.agents.simple.agent import SimpleAgent
+from haive.core.engine.aug_llm import AugLLMConfig
+
 
 # Create planner engine
 planner_aug = AugLLMConfig(
@@ -67,7 +68,7 @@ try:
 
     # Check PlanExecuteState specific fields
 
-except Exception as e:
+except Exception:
     import traceback
 
     traceback.print_exc()

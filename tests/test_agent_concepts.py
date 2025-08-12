@@ -68,10 +68,8 @@ def test_simple_agent_schema_modification():
 # Test multi-agent with proper validation
 def test_multi_agent_validation():
     """Test multi-agent with model_post_init validation."""
-
     class MultiAgentConfig(BaseModel):
         """Multi-agent configuration with validation."""
-
         agents: list[str] = Field(min_length=2)
         execution_mode: str = Field(default="sequential")
         enable_routing: bool = Field(default=False)
@@ -124,7 +122,6 @@ def test_multi_agent_validation():
 # Test conditional edges and routing
 def test_conditional_routing_pattern():
     """Test conditional routing pattern for agents."""
-
     class ConditionalRouter:
         def __init__(self):
             self.routes = {}
@@ -172,7 +169,6 @@ def test_conditional_routing_pattern():
 # Test schema compatibility
 def test_schema_compatibility():
     """Test schema compatibility between agents."""
-
     # Agent output schemas
     class ProcessorOutput(BaseModel):
         processed_text: str
@@ -209,7 +205,6 @@ def test_schema_compatibility():
             field_mapping: dict[str, str],
         ):
             """Create adapter function."""
-
             def adapter(source_data: dict) -> dict:
                 target_data = {}
                 for target_field, source_field in field_mapping.items():
@@ -242,10 +237,8 @@ def test_schema_compatibility():
 # Test engine and agent field synchronization
 def test_field_synchronization():
     """Test field sync between engines and agents."""
-
     class FieldSyncMixin:
         """Mixin for field synchronization."""
-
         def sync_fields_from_engine(self, engine):
             """Sync fields from engine to self."""
             sync_fields = ["temperature", "model_name", "max_tokens"]

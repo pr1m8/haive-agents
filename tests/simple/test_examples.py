@@ -1,10 +1,10 @@
 """Tests for SimpleAgent specific use cases and examples."""
 
-from haive.agents.simple.factory import create_simple_agent
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field
 
+from haive.agents.simple.factory import create_simple_agent
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import AzureLLMConfig
 

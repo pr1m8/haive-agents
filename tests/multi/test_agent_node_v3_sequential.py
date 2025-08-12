@@ -1,18 +1,17 @@
 """Test AgentNodeV3 with MultiAgentState in sequential execution."""
 
 import asyncio
-from typing import List
 
+from langchain_core.messages import HumanMessage
+from pydantic import Field
+
+# Import Agent for model_rebuild
+from haive.agents.simple.agent import SimpleAgent
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.node.agent_node_v3 import AgentNodeV3Config, create_agent_node_v3
 from haive.core.schema.prebuilt.multi_agent_state import MultiAgentState
 from haive.core.schema.state_schema import StateSchema
-from langchain_core.messages import AIMessage, HumanMessage
-from pydantic import Field
 
-# Import Agent for model_rebuild
-from haive.agents.base.agent import Agent
-from haive.agents.simple.agent import SimpleAgent
 
 # Fix forward reference issue
 MultiAgentState.model_rebuild()
@@ -21,7 +20,6 @@ AgentNodeV3Config.model_rebuild()
 
 class PlannerState(StateSchema):
     """State for planner agent."""
-
     messages: list = Field(default_factory=list)
     plan: str = Field(default="")
     steps: list[str] = Field(default_factory=list)
@@ -29,7 +27,6 @@ class PlannerState(StateSchema):
 
 class ExecutorState(StateSchema):
     """State for executor agent."""
-
     messages: list = Field(default_factory=list)
     execution_result: str = Field(default="")
     success: bool = Field(default=False)
@@ -37,7 +34,6 @@ class ExecutorState(StateSchema):
 
 async def test_agent_node_v3_sequential():
     """Test AgentNodeV3 with sequential execution pattern."""
-
     # Step 1: Create agents with specific schemas
     planner = SimpleAgent(
         name="planner",
@@ -89,7 +85,7 @@ async def test_agent_node_v3_sequential():
                 if hasattr(state, key):
                     setattr(state, key, value)
 
-    except Exception as e:
+    except Exception:
         return False
 
     # Step 5: Execute executor node
@@ -108,7 +104,7 @@ async def test_agent_node_v3_sequential():
                 if hasattr(state, key):
                     setattr(state, key, value)
 
-    except Exception as e:
+    except Exception:
         return False
 
     # Step 6: Verify sequential execution results

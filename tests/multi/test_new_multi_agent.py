@@ -172,7 +172,6 @@ def test_conditional_rag():
 
 def test_parallel_agents():
     """Test parallel agent execution."""
-
     # Create tool for math operations
     @tool
     def add(a: int, b: int) -> int:
@@ -229,7 +228,6 @@ def test_custom_branching():
 
     class CustomBranchingAgent(ConditionalAgent):
         """Custom agent with retry logic."""
-
         def build_custom_graph(self, graph):
             # Would implement custom graph building here
             # For now, use default conditional building

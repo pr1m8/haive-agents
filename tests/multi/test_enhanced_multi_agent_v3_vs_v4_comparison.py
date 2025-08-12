@@ -13,24 +13,23 @@ All tests use REAL LLMs - NO MOCKS.
 """
 
 import asyncio
-import time
-from typing import List, Dict, Any
 import logging
-
-from langchain_core.messages import HumanMessage, BaseMessage
-from pydantic import BaseModel, Field
-
-from haive.agents.simple.agent_v3 import SimpleAgentV3
-from haive.agents.react.agent import ReactAgent
-from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.schema.prebuilt.multi_agent_state import MultiAgentState
-
-# Import both versions
-from haive.agents.multi.enhanced_multi_agent_v4 import EnhancedMultiAgentV4 as MultiAgentV4
+import os
 
 # Import V3 but handle the EnhancedMultiAgentState issue
 import sys
-import os
+import time
+from typing import Any
+
+from langchain_core.messages import HumanMessage
+from pydantic import BaseModel, Field
+
+# Import both versions
+from haive.agents.multi.enhanced_multi_agent_v4 import EnhancedMultiAgentV4 as MultiAgentV4
+from haive.agents.react.agent import ReactAgent
+from haive.agents.simple.agent_v3 import SimpleAgentV3
+from haive.core.engine.aug_llm import AugLLMConfig
+
 
 sys.path.insert(0, os.path.abspath("packages/haive-agents/src"))
 
@@ -68,7 +67,7 @@ class AnalysisResult(BaseModel):
 
     category: str = Field(description="Category of the analysis")
     confidence: float = Field(ge=0.0, le=1.0, description="Confidence score")
-    key_points: List[str] = Field(description="Key points from analysis")
+    key_points: list[str] = Field(description="Key points from analysis")
     recommendation: str = Field(description="Recommendation based on analysis")
 
 
@@ -77,7 +76,7 @@ class ProcessingResult(BaseModel):
 
     status: str = Field(description="Processing status")
     items_processed: int = Field(ge=0, description="Number of items processed")
-    errors: List[str] = Field(default_factory=list, description="Any errors encountered")
+    errors: list[str] = Field(default_factory=list, description="Any errors encountered")
     summary: str = Field(description="Summary of processing")
 
 
@@ -92,10 +91,10 @@ class ComparisonMetrics:
         self.api_calls: int = 0
         self.memory_usage: float = 0.0
         self.success: bool = False
-        self.errors: List[str] = []
-        self.features_used: List[str] = []
+        self.errors: list[str] = []
+        self.features_used: list[str] = []
 
-    def report(self) -> Dict[str, Any]:
+    def report(self) -> dict[str, Any]:
         return {
             "name": self.name,
             "setup_time": round(self.setup_time, 3),
@@ -280,12 +279,9 @@ class TestEnhancedMultiAgentComparison:
             # Add routing logic
             def route_by_content(state):
                 content = str(state.get("messages", [])[-1].content).lower()
-                if "technical" in content:
+                if "technical" in content or "financial" in content:
                     return "processor"
-                elif "financial" in content:
-                    return "processor"
-                else:
-                    return "formatter"
+                return "formatter"
 
             v3_multi.add_conditional_routing(
                 "analyzer", route_by_content, {"processor": "processor", "formatter": "formatter"}
@@ -628,28 +624,28 @@ class TestEnhancedMultiAgentComparison:
         print("-" * 60)
 
         # Setup comparison
-        print(f"Setup Time:")
+        print("Setup Time:")
         print(f"  V3: {v3_metrics.setup_time:.3f}s (Lines: {v3_metrics.lines_of_code})")
         print(f"  V4: {v4_metrics.setup_time:.3f}s (Lines: {v4_metrics.lines_of_code})")
 
         # Execution comparison
         if v3_metrics.execution_time > 0 or v4_metrics.execution_time > 0:
-            print(f"\nExecution Time:")
+            print("\nExecution Time:")
             print(f"  V3: {v3_metrics.execution_time:.3f}s")
             print(f"  V4: {v4_metrics.execution_time:.3f}s")
 
         # Feature comparison
-        print(f"\nFeatures Used:")
+        print("\nFeatures Used:")
         print(f"  V3: {', '.join(v3_metrics.features_used)}")
         print(f"  V4: {', '.join(v4_metrics.features_used)}")
 
         # Success/Error status
-        print(f"\nStatus:")
+        print("\nStatus:")
         print(f"  V3: {'✅ Success' if v3_metrics.success else '❌ Failed'}")
         print(f"  V4: {'✅ Success' if v4_metrics.success else '❌ Failed'}")
 
         if v3_metrics.errors or v4_metrics.errors:
-            print(f"\nErrors:")
+            print("\nErrors:")
             for error in v3_metrics.errors:
                 print(f"  V3: {error}")
             for error in v4_metrics.errors:
@@ -694,7 +690,7 @@ class TestEnhancedMultiAgentComparison:
             "Developer Experience",
         ]
 
-        for test_name, (v3, v4) in zip(test_names, all_results):
+        for test_name, (v3, v4) in zip(test_names, all_results, strict=False):
             print(f"\n{test_name}:")
 
             # Determine winner based on multiple factors
@@ -734,7 +730,7 @@ class TestEnhancedMultiAgentComparison:
                 v4_wins += 1
 
             print(f"  Winner: {winner} (V3: {v3_score} pts, V4: {v4_score} pts)")
-            print(f"  Key advantage: ", end="")
+            print("  Key advantage: ", end="")
 
             if winner == "V3":
                 if "performance" in test_name.lower():

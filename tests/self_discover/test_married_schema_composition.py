@@ -2,19 +2,18 @@
 
 import sys
 
+
 sys.path.insert(0, "/home/will/Projects/haive/backend/haive/packages/haive-agents/src")
 sys.path.insert(0, "/home/will/Projects/haive/backend/haive/packages/haive-core/src")
 
 
 def test_married_schema_composition():
     """Test that AgentSchemaComposer + MultiAgentState marriage works."""
-
-    from haive.core.schema.agent_schema_composer import AgentSchemaComposer
-    from haive.core.schema.prebuilt.multi_agent_state import MultiAgentState
-
     from haive.agents.reasoning_and_critique.self_discover.v2.agent import (
         self_discovery,
     )
+    from haive.core.schema.agent_schema_composer import AgentSchemaComposer
+    from haive.core.schema.prebuilt.multi_agent_state import MultiAgentState
 
     # Check individual agent schema fields
     agent_fields = set(self_discovery.state_schema.model_fields.keys())
@@ -57,7 +56,7 @@ def test_married_schema_composition():
 
         return married_schema
 
-    except Exception as e:
+    except Exception:
         import traceback
 
         traceback.print_exc()
@@ -66,7 +65,6 @@ def test_married_schema_composition():
 
 def test_proper_multi_agent():
     """Test that ProperMultiAgent now uses the married schema."""
-
     try:
         from haive.agents.multi.proper_base import ProperMultiAgent
         from haive.agents.reasoning_and_critique.self_discover.v2.agent import (
@@ -98,7 +96,7 @@ def test_proper_multi_agent():
 
         return multi_agent
 
-    except Exception as e:
+    except Exception:
         import traceback
 
         traceback.print_exc()

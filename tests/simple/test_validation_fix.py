@@ -3,9 +3,12 @@
 
 import asyncio
 import logging
+
 from pydantic import BaseModel, Field
+
 from haive.agents.simple.agent_v3 import SimpleAgentV3
 from haive.core.engine.aug_llm import AugLLMConfig
+
 
 # Set up logging to see what's happening
 logging.basicConfig(level=logging.INFO)
@@ -19,9 +22,8 @@ class SimpleAnalysis(BaseModel):
 
 async def test_simple_agent_with_new_validation():
     """Test SimpleAgentV3 with new ValidationNodeConfigV2."""
-    
     print("🧪 Testing SimpleAgentV3 with LangGraph ValidationNodeConfigV2...")
-    
+
     try:
         # Create agent with structured output
         agent = SimpleAgentV3(
@@ -33,18 +35,18 @@ async def test_simple_agent_with_new_validation():
             ),
             debug=True  # Enable debug for detailed logging
         )
-        
+
         print(f"✅ Agent created: {agent.name}")
         print(f"✅ Engine: {agent.engine}")
         print(f"✅ Structured output model: {agent.structured_output_model}")
-        
+
         # Test the agent
         result = await agent.arun("Analyze the benefits of renewable energy")
-        
-        print(f"🎯 Agent execution completed!")
+
+        print("🎯 Agent execution completed!")
         print(f"📊 Result type: {type(result)}")
         print(f"📊 Result: {result}")
-        
+
         # Check if we got structured output
         if isinstance(result, SimpleAnalysis):
             print("✅ SUCCESS: Got structured output!")
@@ -54,9 +56,9 @@ async def test_simple_agent_with_new_validation():
         else:
             print(f"⚠️ Result is not SimpleAnalysis instance: {type(result)}")
             print(f"  Content: {result}")
-            
+
         return True
-        
+
     except Exception as e:
         print(f"❌ ERROR: {e}")
         logger.exception("Test failed with exception")
@@ -65,7 +67,7 @@ async def test_simple_agent_with_new_validation():
 if __name__ == "__main__":
     print("🚀 Starting ValidationNodeConfigV2 test...")
     success = asyncio.run(test_simple_agent_with_new_validation())
-    
+
     if success:
         print("\n✅ Test completed successfully!")
     else:

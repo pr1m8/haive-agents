@@ -19,7 +19,6 @@ from haive.core.schema.prebuilt.multi_agent_state import MultiAgentState
 
 class TestStructuredOutputAgent:
     """Test suite for StructuredOutputAgent functionality."""
-
     def test_basic_structured_extraction(self):
         """Test basic extraction with GenericStructuredOutput."""
         agent = StructuredOutputAgent(
@@ -71,7 +70,6 @@ class TestStructuredOutputAgent:
 
     def test_multi_agent_workflow_with_react(self):
         """Test StructuredOutputAgent in multi-agent workflow with ReactAgent."""
-
         # Define custom output model
         class PlanOutput(BaseModel):
             objective: str = Field(description="Main objective")
@@ -134,7 +132,6 @@ class TestStructuredOutputAgent:
 
     def test_sequential_simple_agents(self):
         """Test StructuredOutputAgent after SimpleAgent."""
-
         # Create state
         class ResearchState(MultiAgentState):
             topic: str = ""
@@ -231,7 +228,6 @@ class TestStructuredOutputAgent:
 @pytest.mark.integration
 class TestStructuredOutputIntegration:
     """Integration tests with real LLMs."""
-
     def test_real_llm_extraction(self):
         """Test with real LLM (requires API keys)."""
         agent = create_structured_agent(output_model=AnalysisOutput, name="real_analysis")

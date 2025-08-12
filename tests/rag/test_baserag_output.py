@@ -2,12 +2,12 @@
 
 import asyncio
 
-from haive.core.engine.embedding.providers.HuggingFaceEmbeddingConfig import (
-    HuggingFaceEmbeddingConfig,
-)
 from langchain_core.documents import Document
 
 from haive.agents.rag.base.agent import BaseRAGAgent
+from haive.core.engine.embedding.providers.HuggingFaceEmbeddingConfig import (
+    HuggingFaceEmbeddingConfig,
+)
 
 
 async def test_baserag_with_documents():
@@ -138,12 +138,11 @@ async def test_baserag_with_documents():
                             "page_content": obj.page_content[:100] + "...",
                             "metadata": obj.metadata,
                         }
-                    elif isinstance(obj, list) and obj and isinstance(obj[0], Document):
+                    if isinstance(obj, list) and obj and isinstance(obj[0], Document):
                         return [serialize_result(doc) for doc in obj[:2]]  # First 2 docs
-                    elif isinstance(obj, dict):
+                    if isinstance(obj, dict):
                         return {k: serialize_result(v) for k, v in obj.items()}
-                    else:
-                        return str(obj)[:200] + "..." if len(str(obj)) > 200 else str(obj)
+                    return str(obj)[:200] + "..." if len(str(obj)) > 200 else str(obj)
 
                 print(json.dumps(serialize_result(result), indent=2))
 

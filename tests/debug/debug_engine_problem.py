@@ -8,18 +8,16 @@ from haive.agents.simple.agent import SimpleAgent
 
 def test_simple_agent_alone():
     """Test if a simple agent works by itself."""
-
     try:
         agent = SimpleAgent(name="test_simple")
         result = agent.run("What is 2 + 2?")
         return True
-    except Exception as e:
+    except Exception:
         return False
 
 
 def test_plan_execute_state_serialization():
     """Test the PlanExecuteState serialization."""
-
     try:
         # Create state
         state = PlanExecuteState(messages=[HumanMessage("Test")])
@@ -31,7 +29,7 @@ def test_plan_execute_state_serialization():
         new_state = PlanExecuteState(**serialized)
 
         return True
-    except Exception as e:
+    except Exception:
         import traceback
 
         traceback.print_exc()
@@ -40,7 +38,6 @@ def test_plan_execute_state_serialization():
 
 def test_multiagent_creation():
     """Test MultiAgentBase creation without running."""
-
     try:
         from haive.agents.planning.proper_plan_execute import create_proper_plan_execute
 
@@ -53,7 +50,7 @@ def test_multiagent_creation():
                 pass
 
         return agent
-    except Exception as e:
+    except Exception:
         import traceback
 
         traceback.print_exc()
@@ -63,9 +60,6 @@ def test_multiagent_creation():
 def show_engine_field_problem():
     """Show the exact problem with Engine field."""
 
-    import inspect
-
-    from haive.core.engine.base import Engine
 
     from haive.agents.planning.p_and_e.state import PlanExecuteState
 
@@ -81,7 +75,6 @@ def show_engine_field_problem():
 
 def debug_langgraph_input_model():
     """Debug what LangGraph is doing with the input model."""
-
     try:
         from haive.agents.planning.proper_plan_execute import create_proper_plan_execute
 
@@ -99,7 +92,7 @@ def debug_langgraph_input_model():
                     if engine_field:
                         pass
 
-    except Exception as e:
+    except Exception:
         import traceback
 
         traceback.print_exc()

@@ -2,15 +2,16 @@
 """Test that shows Supabase is working despite prepared statement errors."""
 
 import asyncio
+from datetime import datetime
 import os
 import warnings
-from datetime import datetime
 
-import psycopg
-from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import HumanMessage
+import psycopg
 
 from haive.agents.simple.agent import SimpleAgent
+from haive.core.engine.aug_llm import AugLLMConfig
+
 
 # Suppress warnings
 warnings.filterwarnings("ignore", message=".*prepared statement.*")
@@ -67,19 +68,18 @@ async def main():
         await cur.execute("SELECT COUNT(*) FROM checkpoints WHERE thread_id = %s", (thread_id,))
         checkpoint_count = (await cur.fetchone())[0]
 
-        print(f"\n📊 Results:")
+        print("\n📊 Results:")
         print(f"   Checkpoint writes: {write_count}")
         print(f"   Checkpoints: {checkpoint_count}")
 
         if write_count > 0 or checkpoint_count > 0:
             print("\n✅ SUCCESS! Data is being saved to Supabase!")
-            print(f"\n🔗 View your data in Supabase:")
-            print(f"   https://supabase.com/dashboard/project/zkssazqhwcetsnbiuqik/editor/45942")
+            print("\n🔗 View your data in Supabase:")
+            print("   https://supabase.com/dashboard/project/zkssazqhwcetsnbiuqik/editor/45942")
             print(f"   SQL Query: SELECT * FROM checkpoint_writes WHERE thread_id = '{thread_id}';")
             return True
-        else:
-            print("\n❌ No data found")
-            return False
+        print("\n❌ No data found")
+        return False
 
 
 if __name__ == "__main__":

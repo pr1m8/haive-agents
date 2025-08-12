@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
-"""Claude vs OpenAI Tournament
+"""Claude vs OpenAI Tournament.
 Run all working games with consistent LLM configurations.
 """
 
-import asyncio
-import json
 from datetime import datetime
+import json
 from pathlib import Path
-from typing import Any, Dict, List
+
 
 # Create tournament results directory
 TOURNAMENT_DIR = Path("claude_vs_openai_tournament")
@@ -184,7 +183,6 @@ def run_tournament_game(
 
 def main():
     """Run the complete Claude vs OpenAI tournament."""
-
     # Define games to test with their player mappings
     tournament_games = [
         {
@@ -268,7 +266,7 @@ def main():
 
             tournament_results[game["name"]] = winner
 
-        except Exception as e:
+        except Exception:
             tournament_results[game["name"]] = "Failed"
 
     # Final tournament summary
@@ -287,9 +285,7 @@ def main():
         elif winner and winner != "Failed":
             other_results += 1
 
-    if claude_wins > openai_wins:
-        pass
-    elif openai_wins > claude_wins:
+    if claude_wins > openai_wins or openai_wins > claude_wins:
         pass
     else:
         pass

@@ -3,9 +3,9 @@
 import os
 import sys
 from typing import Optional
-from unittest.mock import MagicMock, Mock, patch
 
 from pydantic import BaseModel, Field, create_model
+
 
 # Add packages to path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../../"))
@@ -13,7 +13,6 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../../"))
 
 def test_pydantic_field_addition():
     """Test the fundamental question: Can Pydantic models accept new fields dynamically?"""
-
     # Create a basic model with minimal fields
     BasicModel = create_model(
         "BasicModel",
@@ -32,14 +31,14 @@ def test_pydantic_field_addition():
             new_field="extra_value",  # This should fail
         )
 
-    except Exception as e:
+    except Exception:
         pass
 
     # Test 2: Can we set a new attribute after creation?
     try:
         instance.dynamic_field = "test_value"
 
-    except Exception as e:
+    except Exception:
         pass
 
     # Test 3: What about model updates?
@@ -47,13 +46,12 @@ def test_pydantic_field_addition():
         update_data = {"counter": 10, "unknown_field": "test"}
         updated = BasicModel(**{**instance.model_dump(), **update_data})
 
-    except Exception as e:
+    except Exception:
         pass
 
 
 def test_state_schema_requirements():
     """Test what happens when parser tries to update state with new fields."""
-
     # Test model for structured output
     class TaskResult(BaseModel):
         summary: str = Field(description="Task summary")
@@ -84,7 +82,7 @@ def test_state_schema_requirements():
         update_dict = {"taskresult": structured_result}
         MinimalState(**{**minimal_state.model_dump(), **update_dict})
 
-    except Exception as e:
+    except Exception:
         pass
 
     # Scenario 2: Update pre-defined field in enhanced state
@@ -94,13 +92,12 @@ def test_state_schema_requirements():
         update_dict = {"taskresult": structured_result}
         updated_enhanced = EnhancedState(**{**enhanced_state.model_dump(), **update_dict})
 
-    except Exception as e:
+    except Exception:
         pass
 
 
 def test_command_update_behavior():
     """Test how LangGraph Command updates work with state schemas."""
-
     try:
         from langgraph.types import Command
 
@@ -113,13 +110,12 @@ def test_command_update_behavior():
 
         # The key question: Can Command.update contain fields not in state schema?
 
-    except Exception as e:
+    except Exception:
         pass
 
 
 def test_simple_simulation():
     """Simulate what actually happens in SimpleAgent with/without engine modification."""
-
     class TaskResult(BaseModel):
         summary: str
         completed: bool

@@ -1,9 +1,10 @@
 """Debug the schema composition issue."""
 
+from langchain_core.prompts import ChatPromptTemplate
+
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.schema.prebuilt.llm_state import LLMState
 from haive.core.schema.schema_composer import SchemaComposer
-from langchain_core.prompts import ChatPromptTemplate
 
 
 def debug_schema_composition():
@@ -53,7 +54,7 @@ def debug_schema_composition():
             in_composer_fields = field_name in composer.fields
             in_base_class_fields = field_name in composer.base_class_fields
 
-    except Exception as e:
+    except Exception:
         pass
 
     # Derive input schema
@@ -74,20 +75,20 @@ def debug_schema_composition():
     # Test input schema creation
     try:
         input_instance = input_schema(query="hello")
-    except Exception as e:
+    except Exception:
         pass
 
     # Test state schema creation with just input data
     try:
         # This should fail because engine is required
         state_instance = state_schema(query="hello")
-    except Exception as e:
+    except Exception:
         pass
 
     # Test state schema creation with engine
     try:
         state_instance = state_schema(query="hello", engine=engine)
-    except Exception as e:
+    except Exception:
         pass
 
 

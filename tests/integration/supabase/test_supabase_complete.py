@@ -2,15 +2,16 @@
 """Complete test demonstrating Supabase integration is working."""
 
 import asyncio
+from datetime import datetime
 import os
 import warnings
-from datetime import datetime
 
-import psycopg
-from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import HumanMessage
+import psycopg
 
 from haive.agents.simple.agent import SimpleAgent
+from haive.core.engine.aug_llm import AugLLMConfig
+
 
 # Suppress prepared statement warnings
 warnings.filterwarnings("ignore", message=".*prepared statement.*")
@@ -18,7 +19,6 @@ warnings.filterwarnings("ignore", message=".*prepared statement.*")
 
 async def main():
     """Run complete Supabase test."""
-
     # Check environment
     conn_string = os.getenv("POSTGRES_CONNECTION_STRING")
     if not conn_string:
@@ -49,7 +49,7 @@ async def main():
         # Check recursion limit
         if hasattr(agent, "runnable_config"):
             recursion_limit = agent.runnable_config.get("configurable", {}).get("recursion_limit")
-    except Exception as e:
+    except Exception:
         return False
 
     # Step 2: Run agent
@@ -128,14 +128,12 @@ async def main():
 
                 return success
 
-    except Exception as e:
+    except Exception:
         return False
 
 
 async def summary():
     """Print summary of what's working."""
-
-
 if __name__ == "__main__":
     success = asyncio.run(main())
     asyncio.run(summary())

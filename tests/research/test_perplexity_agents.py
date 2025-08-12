@@ -5,9 +5,9 @@ with real LLM execution and comprehensive validation.
 """
 
 import asyncio
-import logging
 from datetime import datetime
-from typing import Dict
+import logging
+
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -51,9 +51,8 @@ async def test_quick_search_agent():
     print("\n🚀 Testing QuickSearchAgent...")
 
     try:
-        from haive.core.engine.aug_llm import AugLLMConfig
-
         from haive.agents.memory.search.quick_search import QuickSearchAgent
+        from haive.core.engine.aug_llm import AugLLMConfig
 
         # Create agent with optimized config
         config = AugLLMConfig(
@@ -106,9 +105,8 @@ async def test_pro_search_agent():
     print("\n🚀 Testing ProSearchAgent...")
 
     try:
-        from haive.core.engine.aug_llm import AugLLMConfig
-
         from haive.agents.memory.search.pro_search import ProSearchAgent
+        from haive.core.engine.aug_llm import AugLLMConfig
 
         # Create agent with balanced config
         config = AugLLMConfig(
@@ -180,9 +178,8 @@ async def test_deep_research_agent():
     print("\n🚀 Testing DeepResearchAgent...")
 
     try:
-        from haive.core.engine.aug_llm import AugLLMConfig
-
         from haive.agents.memory.search.deep_research import DeepResearchAgent
+        from haive.core.engine.aug_llm import AugLLMConfig
 
         # Create agent with research-optimized config
         config = AugLLMConfig(
@@ -262,9 +259,8 @@ async def test_labs_agent():
     print("\n🚀 Testing LabsAgent...")
 
     try:
-        from haive.core.engine.aug_llm import AugLLMConfig
-
         from haive.agents.memory.search.labs import LabsAgent
+        from haive.core.engine.aug_llm import AugLLMConfig
 
         # Create agent with project-optimized config
         config = AugLLMConfig(
@@ -345,12 +341,11 @@ async def test_multi_agent_coordination():
     print("\n🚀 Testing Multi-Agent Coordination...")
 
     try:
-        from haive.core.engine.aug_llm import AugLLMConfig
-
         from haive.agents.memory.search.deep_research import DeepResearchAgent
         from haive.agents.memory.search.labs import LabsAgent
         from haive.agents.memory.search.pro_search import ProSearchAgent
         from haive.agents.memory.search.quick_search import QuickSearchAgent
+        from haive.core.engine.aug_llm import AugLLMConfig
 
         # Create all agents
         base_config = AugLLMConfig(temperature=0.2, max_tokens=1000)
@@ -440,7 +435,7 @@ async def test_multi_agent_coordination():
         return False
 
 
-def print_performance_summary(test_results: Dict[str, bool], start_time: datetime):
+def print_performance_summary(test_results: dict[str, bool], start_time: datetime):
     """Print performance summary of all tests."""
     print("\n" + "=" * 60)
     print("🏆 PERFORMANCE SUMMARY")

@@ -152,7 +152,6 @@ async def example_simple_agent_v2_configurations():
 
 async def example_direct_usage_pattern():
     """Example: Direct usage pattern as you specified."""
-
     # Define your exact pattern
     @tool
     def add(a: int, b: int) -> int:

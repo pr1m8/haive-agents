@@ -8,7 +8,6 @@ import psycopg
 
 def check_database_persistence():
     """Check what's actually persisted in the Supabase database."""
-
     connection_string = os.getenv("POSTGRES_CONNECTION_STRING")
     if not connection_string:
         return

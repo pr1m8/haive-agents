@@ -5,6 +5,7 @@ import os
 import subprocess
 import sys
 
+
 # Create the actual test script
 test_script = """
 import os
@@ -75,5 +76,5 @@ try:
     # Clean up
     os.remove("_temp_test.py")
 
-except Exception as e:
+except Exception:
     pass

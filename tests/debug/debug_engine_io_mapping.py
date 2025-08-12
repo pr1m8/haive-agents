@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 
-from typing import List
 
-from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field
 
 from haive.agents.simple.agent_v2 import SimpleAgentV2
+from haive.core.engine.aug_llm import AugLLMConfig
+
 
 # Exact notebook setup
 RAG_QUERY_REFINEMENT = ChatPromptTemplate.from_messages(
@@ -69,6 +69,7 @@ config = AugLLMConfig(
 # Patch the schema composer to add debug logging
 import haive.core.schema.schema_composer as schema_composer_module
 
+
 original_add_engine = schema_composer_module.SchemaComposer.add_engine
 
 
@@ -88,6 +89,7 @@ schema_composer_module.SchemaComposer.add_engine = debug_add_engine
 
 # Also patch the engine registration
 from haive.core.engine.base.engine_registry import EngineRegistry
+
 
 original_register = EngineRegistry.register
 

@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 """Simple demo showing SimpleAgent v3 with debug mode - no mocks, real LLM execution."""
 
+from haive.agents.simple.agent_v3 import SimpleAgentV3
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import DeepSeekLLMConfig
-
-from haive.agents.simple.agent_v3 import SimpleAgentV3
 
 
 def demo_debug_execution():

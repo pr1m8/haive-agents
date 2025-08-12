@@ -1,17 +1,16 @@
 """Debug test for AgentNodeV3 schema validation issues."""
 
 import asyncio
-from typing import List
 
-from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.schema.prebuilt.multi_agent_state import MultiAgentState
-from haive.core.schema.state_schema import StateSchema
 from langchain_core.messages import HumanMessage
 from pydantic import Field
 
 # Import Agent for model_rebuild
-from haive.agents.base.agent import Agent
 from haive.agents.simple.agent import SimpleAgent
+from haive.core.engine.aug_llm import AugLLMConfig
+from haive.core.schema.prebuilt.multi_agent_state import MultiAgentState
+from haive.core.schema.state_schema import StateSchema
+
 
 # Fix forward reference issue
 MultiAgentState.model_rebuild()
@@ -19,7 +18,6 @@ MultiAgentState.model_rebuild()
 
 class PlannerState(StateSchema):
     """State for planner agent."""
-
     messages: list = Field(default_factory=list)
     plan: str = Field(default="")
     steps: list[str] = Field(default_factory=list)
@@ -27,7 +25,6 @@ class PlannerState(StateSchema):
 
 async def test_debug_schema_validation():
     """Debug schema validation in AgentNodeV3."""
-
     # Create simple agent
     planner = SimpleAgent(
         name="planner", engine=AugLLMConfig(temperature=0.7), state_schema=PlannerState
@@ -51,8 +48,7 @@ async def test_debug_schema_validation():
         # Try to dump back to dict
         dumped = schema_instance.model_dump()
 
-    except Exception as e:
-        pass
+    except Exception:
 
         # Check for engine fields
         for field_name, field_info in planner.state_schema.model_fields.items():
@@ -68,7 +64,7 @@ async def test_debug_schema_validation():
         # Try to get agent state
         agent_state = state.get_agent_state("planner")
 
-    except Exception as e:
+    except Exception:
         pass
 
     return True

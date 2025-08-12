@@ -6,6 +6,7 @@ from langchain_core.messages import HumanMessage
 from haive.agents.multi.base import SequentialAgent
 from haive.agents.react.agent import ReactAgent
 
+
 # Test 1: Single ReactAgent
 
 react_agent = ReactAgent(name="Solo React")
@@ -31,7 +32,7 @@ try:
 
     # Run
     result = react_agent.run({"messages": [HumanMessage(content="What is 5 + 3?")]})
-except Exception as e:
+except Exception:
     import traceback
 
     traceback.print_exc()
@@ -47,7 +48,7 @@ try:
     state = multi_single.state_schema()
 
     result = multi_single.run({"messages": [HumanMessage(content="What is 5 + 3?")]})
-except Exception as e:
+except Exception:
     import traceback
 
     traceback.print_exc()

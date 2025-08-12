@@ -2,7 +2,7 @@
 
 import sys
 import traceback
-from pathlib import Path
+
 
 # Add project paths
 sys.path.append("/home/will/Projects/haive/backend/haive/packages/haive-core/src")
@@ -11,19 +11,17 @@ sys.path.append("/home/will/Projects/haive/backend/haive/packages/haive-agents/s
 
 def test_imports():
     """Test that all main imports work."""
-
     try:
         # Core schema imports
 
         return True
-    except Exception as e:
+    except Exception:
         traceback.print_exc()
         return False
 
 
 def test_state_schema_methods():
     """Test StateSchema has all expected methods."""
-
     try:
         from haive.core.schema import StateSchema
 
@@ -70,14 +68,13 @@ def test_state_schema_methods():
 
         return True
 
-    except Exception as e:
+    except Exception:
         traceback.print_exc()
         return False
 
 
 def test_schema_composer_methods():
     """Test SchemaComposer has all expected methods."""
-
     try:
         from haive.core.schema import SchemaComposer
 
@@ -106,14 +103,13 @@ def test_schema_composer_methods():
 
         return True
 
-    except Exception as e:
+    except Exception:
         traceback.print_exc()
         return False
 
 
 def test_messages_state_methods():
     """Test MessagesState has all expected methods."""
-
     try:
         from haive.core.schema.prebuilt import MessagesState
 
@@ -143,14 +139,13 @@ def test_messages_state_methods():
 
         return True
 
-    except Exception as e:
+    except Exception:
         traceback.print_exc()
         return False
 
 
 def test_token_usage_functionality():
     """Test token usage components work."""
-
     try:
         from haive.core.schema.prebuilt.messages import (
             MessagesStateWithTokenUsage,
@@ -177,14 +172,13 @@ def test_token_usage_functionality():
 
         return True
 
-    except Exception as e:
+    except Exception:
         traceback.print_exc()
         return False
 
 
 def test_engine_management():
     """Test engine management functionality."""
-
     try:
         from haive.core.schema import SchemaComposer, StateSchema
 
@@ -204,14 +198,13 @@ def test_engine_management():
 
         return True
 
-    except Exception as e:
+    except Exception:
         traceback.print_exc()
         return False
 
 
 def test_backward_compatibility():
     """Test that existing patterns still work."""
-
     try:
         from haive.core.schema import SchemaComposer
 
@@ -225,14 +218,13 @@ def test_backward_compatibility():
 
         return True
 
-    except Exception as e:
+    except Exception:
         traceback.print_exc()
         return False
 
 
 def test_agent_integration():
     """Test that agents work with new schema system."""
-
     try:
         # Test we can import agents
         from haive.agents.base import Agent, TokenTrackingAgent
@@ -244,14 +236,13 @@ def test_agent_integration():
 
         return True
 
-    except Exception as e:
+    except Exception:
         traceback.print_exc()
         return False
 
 
 def test_modular_imports():
     """Test that modular imports work."""
-
     try:
         # Test new modular structure imports
         from haive.core.schema.composer.engine import EngineComposerMixin
@@ -262,14 +253,13 @@ def test_modular_imports():
 
         return True
 
-    except Exception as e:
+    except Exception:
         traceback.print_exc()
         return False
 
 
 def run_all_tests():
     """Run all test suites."""
-
     tests = [
         test_imports,
         test_state_schema_methods,
@@ -291,7 +281,7 @@ def run_all_tests():
                 passed += 1
             else:
                 failed += 1
-        except Exception as e:
+        except Exception:
             failed += 1
 
     if failed == 0:

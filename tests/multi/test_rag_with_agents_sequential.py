@@ -7,8 +7,13 @@ This test demonstrates:
 """
 
 import asyncio
-from typing import List
 
+from langchain_core.documents import Document
+from langchain_core.messages import HumanMessage
+from pydantic import Field
+
+from haive.agents.rag.base.agent import BaseRAGAgent
+from haive.agents.simple.agent import SimpleAgent
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.engine.vectorstore.vectorstore import (
     VectorStoreConfig,
@@ -18,13 +23,7 @@ from haive.core.graph.node.agent_node_v3 import AgentNodeV3Config, create_agent_
 from haive.core.models.embeddings.base import HuggingFaceEmbeddingConfig
 from haive.core.schema.prebuilt.multi_agent_state import MultiAgentState
 from haive.core.schema.state_schema import StateSchema
-from langchain_core.documents import Document
-from langchain_core.messages import HumanMessage
-from pydantic import Field
 
-from haive.agents.base.agent import Agent
-from haive.agents.rag.base.agent import BaseRAGAgent
-from haive.agents.simple.agent import SimpleAgent
 
 # Fix forward reference issue
 MultiAgentState.model_rebuild()
@@ -33,7 +32,6 @@ AgentNodeV3Config.model_rebuild()
 
 class RAGState(StateSchema):
     """State for RAG agent."""
-
     messages: list = Field(default_factory=list)
     query: str = Field(default="")
     context: list[str] = Field(default_factory=list)
@@ -42,7 +40,6 @@ class RAGState(StateSchema):
 
 class AnswerState(StateSchema):
     """State for answer agent."""
-
     messages: list = Field(default_factory=list)
     context: list[str] = Field(default_factory=list)
     answer: str = Field(default="")
@@ -77,7 +74,6 @@ def create_test_documents():
 
 async def test_rag_with_agents_sequential():
     """Test RAG agent retrieving documents followed by answer agent."""
-
     # Step 1: Create test documents
     documents = create_test_documents()
 
@@ -176,7 +172,7 @@ async def test_rag_with_agents_sequential():
             # Also update the retriever's context field for consistency
             state.update_agent_state("retriever", {"context": context_strings})
 
-    except Exception as e:
+    except Exception:
         import traceback
 
         traceback.print_exc()
@@ -195,7 +191,7 @@ async def test_rag_with_agents_sequential():
                 if hasattr(state, key):
                     setattr(state, key, value)
 
-    except Exception as e:
+    except Exception:
         import traceback
 
         traceback.print_exc()

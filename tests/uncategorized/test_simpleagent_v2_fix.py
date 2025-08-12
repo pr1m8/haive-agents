@@ -3,14 +3,12 @@
 
 import asyncio
 
-from haive.core.engine.aug_llm import AugLLMConfig
-
 from haive.agents.simple.agent_v2 import SimpleAgentV2
+from haive.core.engine.aug_llm import AugLLMConfig
 
 
 async def test_simpleagent_v2():
     """Test SimpleAgent v2 with the engine fix."""
-
     # Create a simple AugLLMConfig (defaults to gpt-4o-mini)
     config = AugLLMConfig(temperature=0.7)
 
@@ -21,7 +19,7 @@ async def test_simpleagent_v2():
     try:
         result = await agent.arun("Hello! What's 2+2?")
         return True
-    except Exception as e:
+    except Exception:
         import traceback
 
         traceback.print_exc()

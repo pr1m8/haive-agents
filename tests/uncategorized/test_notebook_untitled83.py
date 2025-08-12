@@ -13,6 +13,7 @@ from rich.console import Console
 from rich.logging import RichHandler
 from rich.traceback import install
 
+
 # Install rich tracebacks
 install()
 
@@ -192,9 +193,8 @@ Focus on improvements that will lead to better document retrieval.""",
         console.print("✅ Cell 3: Pydantic models created")
 
         # Cell 4: Import SimpleAgentV2 and AugLLMConfig - CRITICAL IMPORTS
-        from haive.core.engine.aug_llm import AugLLMConfig
-
         from haive.agents.simple.agent_v2 import SimpleAgentV2
+        from haive.core.engine.aug_llm import AugLLMConfig
 
         console.print("✅ Cell 4: SimpleAgentV2 and AugLLMConfig imported")
 

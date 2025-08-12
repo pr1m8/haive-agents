@@ -1,20 +1,19 @@
 """Direct example of getting structured output from SimpleAgent."""
 
 import asyncio
-from typing import List
 
-from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field
 
 from haive.agents.simple.agent import SimpleAgent
+from haive.core.engine.aug_llm import AugLLMConfig
 
 
 # Simple structured output model
 class TaskList(BaseModel):
     """A simple task list."""
 
-    tasks: List[str] = Field(description="List of tasks")
+    tasks: list[str] = Field(description="List of tasks")
     priority: str = Field(description="Overall priority level")
     total_hours: float = Field(description="Total estimated hours")
 

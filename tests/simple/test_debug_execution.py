@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 """Test SimpleAgent v3 with debug flag enabled."""
 
+from haive.agents.simple.agent_v3 import SimpleAgentV3
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import DeepSeekLLMConfig
-
-from haive.agents.simple.agent_v3 import SimpleAgentV3
 
 
 def test_with_debug():

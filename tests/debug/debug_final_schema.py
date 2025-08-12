@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 
-from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field
 
 from haive.agents.simple.agent_v2 import SimpleAgentV2
+from haive.core.engine.aug_llm import AugLLMConfig
+
 
 # Exact notebook setup
 RAG_QUERY_REFINEMENT = ChatPromptTemplate.from_messages(
@@ -49,17 +50,17 @@ for field_name, field_info in schema_class.model_fields.items():
 try:
     test_data = {"query": "test"}
     instance = schema_class.model_validate(test_data)
-except Exception as e:
+except Exception:
     pass
 
 try:
     test_data_with_context = {"query": "test", "context": ""}
     instance = schema_class.model_validate(test_data_with_context)
-except Exception as e:
+except Exception:
     pass
 
 try:
     empty_data = {}
     instance = schema_class.model_validate(empty_data)
-except Exception as e:
+except Exception:
     pass

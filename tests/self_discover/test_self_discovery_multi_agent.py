@@ -2,6 +2,7 @@
 
 import sys
 
+
 sys.path.insert(0, "/home/will/Projects/haive/backend/haive/packages/haive-agents/src")
 sys.path.insert(0, "/home/will/Projects/haive/backend/haive/packages/haive-core/src")
 
@@ -10,7 +11,6 @@ import asyncio
 
 def test_self_discovery_schema_structure():
     """Test that self-discovery agent has proper schema structure in multi-agent setup."""
-
     try:
         from haive.agents.multi.proper_base import ProperMultiAgent
         from haive.agents.reasoning_and_critique.self_discover.v2.agent import (
@@ -50,10 +50,10 @@ def test_self_discovery_schema_structure():
 
             return multi_agent, state_instance
 
-        except Exception as e:
+        except Exception:
             return multi_agent, None
 
-    except Exception as e:
+    except Exception:
         import traceback
 
         traceback.print_exc()
@@ -62,7 +62,6 @@ def test_self_discovery_schema_structure():
 
 async def test_self_discovery_execution():
     """Test actual execution of self-discovery agent in multi-agent setup."""
-
     try:
         from haive.agents.multi.proper_base import ProperMultiAgent
         from haive.agents.reasoning_and_critique.self_discover.v2.agent import (
@@ -91,7 +90,7 @@ async def test_self_discovery_execution():
         # For now, just test the state structure - actual execution would require graph compilation
         return initial_state
 
-    except Exception as e:
+    except Exception:
         import traceback
 
         traceback.print_exc()
@@ -100,7 +99,6 @@ async def test_self_discovery_execution():
 
 def test_hierarchical_state_management():
     """Test hierarchical state management capabilities."""
-
     try:
         from haive.agents.multi.proper_base import ProperMultiAgent
         from haive.agents.reasoning_and_critique.self_discover.v2.agent import (
@@ -130,7 +128,7 @@ def test_hierarchical_state_management():
 
         return state
 
-    except Exception as e:
+    except Exception:
         import traceback
 
         traceback.print_exc()
@@ -139,7 +137,6 @@ def test_hierarchical_state_management():
 
 async def main():
     """Run all self-discovery multi-agent tests."""
-
     # Test 1: Schema structure
     multi_agent, state_instance = test_self_discovery_schema_structure()
 

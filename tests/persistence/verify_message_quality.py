@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """Verify message quality and logical flow."""
 
+from datetime import datetime
 import json
 import os
 import sys
-from datetime import datetime
+
 
 sys.path.insert(0, "/home/will/Projects/haive/backend/haive/packages/haive-core/src")
 sys.path.insert(0, "/home/will/Projects/haive/backend/haive/packages/haive-agents/src")
@@ -12,7 +13,6 @@ sys.path.insert(0, "/home/will/Projects/haive/backend/haive/packages/haive-agent
 
 def test_message_flow():
     """Test that messages flow logically and sound right."""
-
     from langchain_core.messages import HumanMessage
 
     from haive.agents.simple.agent import SimpleAgent
@@ -94,7 +94,6 @@ def test_message_flow():
 
 def check_ssl_connection_issue():
     """Check SSL connection configuration."""
-
     conn_string = os.environ.get("POSTGRES_CONNECTION_STRING")
     if conn_string:
         # Check if SSL mode is specified
@@ -128,7 +127,7 @@ def check_ssl_connection_issue():
             else:
                 pass
 
-    except Exception as e:
+    except Exception:
         pass
 
 

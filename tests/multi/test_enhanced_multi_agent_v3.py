@@ -6,7 +6,7 @@ all advanced features while maintaining backward compatibility.
 """
 
 import logging
-from typing import Dict
+
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -63,13 +63,13 @@ def test_enhanced_multi_agent_v3_creation():
         # Test 3: Generic typing validation
         print("\n📋 Test 3: Generic typing validation")
 
-        agent_dict: Dict[str, EnhancedSimpleAgent] = {
+        agent_dict: dict[str, EnhancedSimpleAgent] = {
             "planner": EnhancedSimpleAgent(name="planner", temperature=0.1),
             "executor": EnhancedSimpleAgent(name="executor", temperature=0.5),
             "reviewer": EnhancedSimpleAgent(name="reviewer", temperature=0.3),
         }
 
-        typed_multi: EnhancedMultiAgent[Dict[str, EnhancedSimpleAgent]] = EnhancedMultiAgent(
+        typed_multi: EnhancedMultiAgent[dict[str, EnhancedSimpleAgent]] = EnhancedMultiAgent(
             name="typed_workflow", agents=agent_dict, performance_mode=True
         )
 
@@ -184,10 +184,9 @@ def test_enhanced_multi_agent_v3_routing():
             category = state.get("category", "general")
             if category == "billing":
                 return "billing_agent"
-            elif category == "technical":
+            if category == "technical":
                 return "technical_agent"
-            else:
-                return "billing_agent"  # Default
+            return "billing_agent"  # Default
 
         multi_agent.add_conditional_routing(
             "classifier",
@@ -443,7 +442,7 @@ def run_all_enhanced_multi_agent_tests():
         "Factory Methods",
     ]
 
-    for i, (name, result) in enumerate(zip(test_names, results)):
+    for i, (name, result) in enumerate(zip(test_names, results, strict=False)):
         status = "✅ PASS" if result else "❌ FAIL"
         print(f"{i + 1}. {name}: {status}")
 

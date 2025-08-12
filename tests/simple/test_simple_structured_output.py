@@ -1,13 +1,12 @@
 """Simple example of using SimpleAgent with structured output."""
 
 import asyncio
-from typing import List, Optional
 
-from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field
 
 from haive.agents.simple.agent import SimpleAgent
+from haive.core.engine.aug_llm import AugLLMConfig
 
 
 # Define structured output models
@@ -17,7 +16,7 @@ class TaskItem(BaseModel):
     task: str = Field(description="The task description")
     priority: str = Field(description="Priority level", pattern="^(high|medium|low)$")
     estimated_hours: float = Field(description="Estimated hours to complete", ge=0.5, le=40.0)
-    assigned_to: Optional[str] = Field(default=None, description="Person assigned to the task")
+    assigned_to: str | None = Field(default=None, description="Person assigned to the task")
 
 
 class ProjectPlan(BaseModel):
@@ -25,11 +24,11 @@ class ProjectPlan(BaseModel):
 
     project_name: str = Field(description="Name of the project")
     objective: str = Field(description="Main project objective")
-    tasks: List[TaskItem] = Field(description="List of tasks", min_items=3, max_items=10)
+    tasks: list[TaskItem] = Field(description="List of tasks", min_items=3, max_items=10)
     timeline: str = Field(description="Overall timeline estimate")
     total_hours: float = Field(description="Total estimated hours")
-    risks: List[str] = Field(description="Identified risks", min_items=1, max_items=5)
-    success_criteria: List[str] = Field(description="Success criteria", min_items=2)
+    risks: list[str] = Field(description="Identified risks", min_items=1, max_items=5)
+    success_criteria: list[str] = Field(description="Success criteria", min_items=2)
 
 
 # Another example - Analysis Report
@@ -47,9 +46,9 @@ class AnalysisReport(BaseModel):
 
     subject: str = Field(description="What was analyzed")
     summary: str = Field(description="Executive summary")
-    findings: List[FindingItem] = Field(description="Key findings", min_items=2, max_items=8)
+    findings: list[FindingItem] = Field(description="Key findings", min_items=2, max_items=8)
     conclusion: str = Field(description="Overall conclusion")
-    next_steps: List[str] = Field(description="Recommended next steps", min_items=2, max_items=5)
+    next_steps: list[str] = Field(description="Recommended next steps", min_items=2, max_items=5)
     confidence_score: float = Field(description="Confidence in analysis", ge=0.0, le=1.0)
 
 
@@ -189,7 +188,7 @@ async def test_simple_list_output():
         """A list of ideas."""
 
         topic: str = Field(description="Topic for the ideas")
-        ideas: List[str] = Field(description="List of creative ideas", min_items=5, max_items=10)
+        ideas: list[str] = Field(description="List of creative ideas", min_items=5, max_items=10)
         best_idea: str = Field(description="The best idea from the list")
 
     # Simple prompt

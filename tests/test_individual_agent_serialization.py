@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 """Test individual agent serialization issue."""
 
-from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import HumanMessage
 from langchain_core.tools import tool
 
 from haive.agents.react.agent import ReactAgent
+from haive.core.engine.aug_llm import AugLLMConfig
 
 
 # Define tool
@@ -31,7 +31,6 @@ react_agent.compile()
 try:
     result = react_agent.run({"messages": [HumanMessage(content="Calculate 5 + 3")]})
 except Exception as e:
-    pass
 
     if "msgpack" in str(e):
         pass

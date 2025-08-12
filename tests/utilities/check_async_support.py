@@ -5,13 +5,13 @@ import asyncio
 import os
 import sys
 
+
 # Add paths
 sys.path.insert(0, "/home/will/Projects/haive/backend/haive/packages/haive-core/src")
 
 
 async def test_async_persistence():
     """Test async PostgreSQL persistence."""
-
     try:
         from haive.core.persistence.factory import acreate_postgres_checkpointer
         from haive.core.persistence.postgres_config import PostgresCheckpointerConfig
@@ -67,7 +67,7 @@ async def test_async_persistence():
         else:
             pass
 
-    except Exception as e:
+    except Exception:
         import traceback
 
         traceback.print_exc()
@@ -75,7 +75,6 @@ async def test_async_persistence():
 
 def check_langgraph_modifications():
     """Check if LangGraph files were modified."""
-
     langgraph_files = [
         "/home/will/Projects/haive/backend/haive/.venv/lib/python3.12/site-packages/langgraph/checkpoint/postgres/__init__.py",
         "/home/will/Projects/haive/backend/haive/.venv/lib/python3.12/site-packages/langgraph/checkpoint/postgres/base.py",
@@ -93,14 +92,12 @@ def check_langgraph_modifications():
                     # Find the line
                     for i, line in enumerate(content.split("\n")):
                         if "prepare_threshold" in line:
-                            if "prepare_threshold=0" in line:
-                                pass
-                            elif "prepare_threshold=None" in line:
+                            if "prepare_threshold=0" in line or "prepare_threshold=None" in line:
                                 pass
                 else:
                     pass
 
-            except Exception as e:
+            except Exception:
                 pass
         else:
             pass
@@ -108,7 +105,6 @@ def check_langgraph_modifications():
 
 def main():
     """Run async support checks."""
-
     # Check async support
     asyncio.run(test_async_persistence())
 

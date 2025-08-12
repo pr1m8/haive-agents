@@ -3,12 +3,13 @@
 
 import logging
 
-from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.models.llm.base import DeepSeekLLMConfig
 from langchain_core.messages import AIMessage
 from langchain_core.tools import tool
 
 from haive.agents.simple.agent_v3 import SimpleAgentV3
+from haive.core.engine.aug_llm import AugLLMConfig
+from haive.core.models.llm.base import DeepSeekLLMConfig
+
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -34,7 +35,7 @@ def calculator(expression: str) -> str:
         result = eval(expression)
         return str(result)
     except Exception as e:
-        return f"Error calculating '{expression}': {str(e)}"
+        return f"Error calculating '{expression}': {e!s}"
 
 
 @tool
@@ -100,9 +101,8 @@ def test_agent_with_single_tool():
     if ai_response and expected_result in ai_response:
         print(f"✅ SUCCESS: Tool used correctly, found expected result {expected_result}")
         return True
-    else:
-        print(f"❌ FAILURE: Expected result {expected_result} not found in response")
-        return False
+    print(f"❌ FAILURE: Expected result {expected_result} not found in response")
+    return False
 
 
 def test_agent_with_multiple_tools():
@@ -220,9 +220,8 @@ def test_tool_error_handling():
     if ai_response and ("error" in ai_response.lower() or "invalid" in ai_response.lower()):
         print("✅ SUCCESS: Error handled gracefully by agent")
         return True
-    else:
-        print("❌ FAILURE: Error not handled properly")
-        return False
+    print("❌ FAILURE: Error not handled properly")
+    return False
 
 
 def run_all_tool_tests():

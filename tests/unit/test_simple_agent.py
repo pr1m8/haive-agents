@@ -47,7 +47,6 @@ def inspect_module_members(module):
 
 def test_simple_agent_schema_validation():
     """Test that SimpleAgent correctly derives schema from AugLLMConfig with structured output model."""
-
     # Define a custom structured model for demonstration
     class PersonInfo(BaseModel):
         name: str = Field(description="Person's name")

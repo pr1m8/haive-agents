@@ -3,19 +3,19 @@
 
 import sys
 
+
 sys.path.insert(0, "/home/will/Projects/haive/backend/haive")
 
-from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field
 
 from haive.agents.simple.agent_v2 import SimpleAgentV2
+from haive.core.engine.aug_llm import AugLLMConfig
 
 
 # Define test model
 class TestResponse(BaseModel):
     """Simple test model."""
-
     message: str = Field(description="Test message")
 
 
@@ -27,7 +27,6 @@ TEST_PROMPT = ChatPromptTemplate.from_messages(
 
 def test_simple_debug():
     """Debug test with simple model."""
-
     # Create agent with structured output
     agent = SimpleAgentV2(
         name="debug_agent",
@@ -58,7 +57,7 @@ def test_simple_debug():
 
         return result
 
-    except Exception as e:
+    except Exception:
         import traceback
 
         traceback.print_exc()

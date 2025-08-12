@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 
-from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field
+
+from haive.core.engine.aug_llm import AugLLMConfig
+
 
 # Exact notebook setup
 RAG_QUERY_REFINEMENT = ChatPromptTemplate.from_messages(
@@ -49,7 +51,7 @@ if hasattr(config, "derive_input_schema"):
         input_schema = config.derive_input_schema()
         for name, field_info in input_schema.model_fields.items():
             pass
-    except Exception as e:
+    except Exception:
         pass
 else:
     pass

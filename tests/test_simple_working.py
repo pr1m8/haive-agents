@@ -9,7 +9,6 @@ import pytest
 # Test conditional routing concept
 def test_conditional_routing_concept():
     """Test the concept of conditional routing."""
-
     def router(state: dict) -> str:
         """Route based on state content."""
         query = state.get("query", "").lower()
@@ -28,7 +27,6 @@ def test_conditional_routing_concept():
 # Test model_post_init pattern
 def test_model_post_init_pattern():
     """Test Pydantic model_post_init for validation."""
-
     class ValidatedAgent(BaseModel):
         name: str
         min_tools: int = Field(default=1, ge=0)
@@ -56,7 +54,6 @@ def test_model_post_init_pattern():
 # Test schema composition concept
 def test_schema_composition_concept():
     """Test schema composition patterns."""
-
     # Base schema
     class BaseState(BaseModel):
         messages: list[str] = Field(default_factory=list)
@@ -104,10 +101,8 @@ def test_multi_agent_coordination():
 # Test field sync concept
 def test_field_sync_concept():
     """Test field synchronization between components."""
-
     class Component(BaseModel):
         """Component with field sync."""
-
         temperature: float = 0.7
         model: str = "gpt-4"
 
@@ -130,7 +125,6 @@ def test_field_sync_concept():
 # Test conditional edges in graph concept
 def test_conditional_edges_concept():
     """Test conditional edges concept for graphs."""
-
     class SimpleGraph:
         def __init__(self):
             self.nodes = {}

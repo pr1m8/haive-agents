@@ -1,26 +1,25 @@
 """Test SimpleAgent with improved validation node that can add ToolMessages."""
 
+from typing import Any
 import uuid
-from typing import Any, Dict, List, Optional, Sequence, Union
 
+from langchain_core.messages import AIMessage, ToolMessage
+from langchain_core.tools import tool
+from langgraph.graph import END, START
+from langgraph.types import Command
+from pydantic import BaseModel, Field
+
+from haive.agents.simple import SimpleAgent
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.node.engine_node import EngineNodeConfig
 from haive.core.graph.node.parser_node_config import ParserNodeConfig
 from haive.core.graph.node.tool_node_config import ToolNodeConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
-from langchain_core.messages import AIMessage, BaseMessage, ToolMessage
-from langchain_core.tools import tool
-from langgraph.graph import END, START
-from langgraph.types import Command, Send
-from pydantic import BaseModel, Field
-
-from haive.agents.simple import SimpleAgent
 
 
 # Test schemas
 class Plan(BaseModel):
     """A plan with steps."""
-
     steps: list[str] = Field(description="A list of steps to complete the task")
 
 
@@ -37,7 +36,6 @@ def improved_validation_node(state: dict[str, Any]) -> Command:
     This node replaces the conditional edge validation with a proper node
     that can update state by adding ToolMessages when needed.
     """
-
     # Get messages from state
     messages = state.get("messages", [])
     if not messages:
@@ -146,7 +144,6 @@ def improved_validation_node(state: dict[str, Any]) -> Command:
 
 class ImprovedSimpleAgent(SimpleAgent):
     """SimpleAgent with improved validation node that can add ToolMessages."""
-
     def build_graph(self) -> BaseGraph:
         """Build the agent graph with improved validation node."""
         graph = BaseGraph(name=self.name)
@@ -246,7 +243,6 @@ class ImprovedSimpleAgent(SimpleAgent):
 # Test functions
 async def test_improved_pydantic_validation():
     """Test the improved validation with Pydantic models."""
-
     # Create engine with Pydantic model
     engine = AugLLMConfig(
         id=f"engine_{uuid.uuid4().hex[:8]}",
@@ -311,7 +307,6 @@ async def test_improved_pydantic_validation():
 
 async def test_improved_regular_tool_validation():
     """Test the improved validation with regular tools."""
-
     # Create engine with regular tools
     engine = AugLLMConfig(
         id=f"engine_{uuid.uuid4().hex[:8]}",
@@ -368,13 +363,13 @@ if __name__ == "__main__":
         try:
             result1 = await test_improved_pydantic_validation()
             results.append(("Improved Pydantic", result1))
-        except Exception as e:
+        except Exception:
             results.append(("Improved Pydantic", False))
 
         try:
             result2 = await test_improved_regular_tool_validation()
             results.append(("Improved Regular Tool", result2))
-        except Exception as e:
+        except Exception:
             results.append(("Improved Regular Tool", False))
 
         for test_name, passed in results:

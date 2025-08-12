@@ -6,12 +6,13 @@ Tests EVERY SINGLE GAME in the haive-games system - no games left behind!
 This is the definitive, complete, comprehensive tournament.
 """
 
+from datetime import datetime
 import json
 import os
 import sys
 import traceback
-from datetime import datetime
-from typing import Any, Dict, Optional
+from typing import Any
+
 
 # Add the current directory to Python path for imports
 sys.path.append("/home/will/Projects/haive/backend/haive")
@@ -254,7 +255,6 @@ def test_any_game(game_path: str, output_dir: str) -> dict[str, Any]:
 
 def run_truly_all_games_tournament():
     """Run tournament for EVERY SINGLE GAME in the system."""
-
     output_dir = ensure_output_directory()
 
     # Discover every single game
@@ -295,7 +295,7 @@ def run_truly_all_games_tournament():
                 tournament_results["failed_games"] += 1
                 error_type = result["result"].get("error_type", "UnknownError")
 
-        except Exception as e:
+        except Exception:
             tournament_results["failed_games"] += 1
 
     # Save final tournament summary
@@ -309,9 +309,7 @@ def run_truly_all_games_tournament():
         tournament_results["successful_games"] / tournament_results["total_games"]
     ) * 100
 
-    if tournament_results["claude_wins"] > tournament_results["openai_wins"]:
-        pass
-    elif tournament_results["openai_wins"] > tournament_results["claude_wins"]:
+    if tournament_results["claude_wins"] > tournament_results["openai_wins"] or tournament_results["openai_wins"] > tournament_results["claude_wins"]:
         pass
     else:
         pass

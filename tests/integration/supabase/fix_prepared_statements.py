@@ -2,26 +2,25 @@
 """Clean up prepared statements and test again."""
 
 import asyncio
-import os
 from datetime import datetime
+import os
 
-import psycopg
-from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import HumanMessage
+import psycopg
 
 from haive.agents.simple.agent import SimpleAgent
+from haive.core.engine.aug_llm import AugLLMConfig
 
 
 async def cleanup_prepared_statements():
     """Clean up all prepared statements."""
-
     conn_string = os.getenv("POSTGRES_CONNECTION_STRING")
     try:
         async with await psycopg.AsyncConnection.connect(conn_string) as conn:
             async with conn.cursor() as cur:
                 # Deallocate all prepared statements
                 await cur.execute("DEALLOCATE ALL")
-    except Exception as e:
+    except Exception:
         pass
 
 
@@ -76,7 +75,7 @@ async def test_after_cleanup():
                 else:
                     pass
 
-    except Exception as e:
+    except Exception:
         pass
 
 

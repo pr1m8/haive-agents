@@ -28,7 +28,6 @@ from haive.core.schema.state import MessagesState, StateSchema
 # Custom Agent Types for Testing
 class RetrieverAgent(Agent):
     """Agent that primarily uses a retriever engine."""
-
     def __init__(self, retriever_engine: EngineRetriever, **kwargs):
         # Set engines with retriever as main
         engines = {"retriever": retriever_engine}
@@ -78,7 +77,6 @@ class RetrieverAgent(Agent):
 
 class HybridAgent(Agent):
     """Agent that combines multiple engine types."""
-
     def __init__(self, llm_engine: Engine, retriever_engine: Engine, **kwargs):
         engines = {"llm": llm_engine, "retriever": retriever_engine}
         super().__init__(engines=engines, **kwargs)
@@ -126,14 +124,12 @@ class HybridAgent(Agent):
 # Test Models
 class QueryInput(BaseModel):
     """Input schema for queries."""
-
     query: str = Field(description="User query")
     search_type: str | None = Field(default="semantic", description="Type of search")
 
 
 class RetrievalOutput(BaseModel):
     """Output schema for retrieval."""
-
     documents: list[Document] = Field(default_factory=list)
     context: list[str] = Field(default_factory=list)
     relevance_scores: list[float] | None = None
@@ -141,7 +137,6 @@ class RetrievalOutput(BaseModel):
 
 class AnalysisOutput(BaseModel):
     """Output schema for analysis."""
-
     response: str
     sources: list[str] = Field(default_factory=list)
     confidence: float = Field(ge=0, le=1)
@@ -150,7 +145,6 @@ class AnalysisOutput(BaseModel):
 # Test __init_subclass__ pattern
 class AutoConfiguredAgent(Agent):
     """Agent that uses __init_subclass__ for auto-configuration."""
-
     # Class-level configuration
     default_temperature: float = 0.7
     default_model: str = "gpt-4"
@@ -194,7 +188,6 @@ class AutoConfiguredAgent(Agent):
 
 class TestFieldSync:
     """Test field synchronization between agents and engines."""
-
     def test_agent_engine_field_sync(self):
         """Test that agent fields sync to engines."""
         # Create mock engine
@@ -242,10 +235,8 @@ class TestFieldSync:
 
 class TestSchemaAdaptation:
     """Test schema adaptation between different agent types."""
-
     def test_simple_to_rag_adaptation(self):
         """Test adapting SimpleAgent output to RAG agent input."""
-
         # Simple agent output schema
         class SimpleOutput(BaseModel):
             query: str
@@ -306,7 +297,6 @@ class TestSchemaAdaptation:
 
 class TestAgentTypeDetection:
     """Test automatic agent type detection and configuration."""
-
     def test_rag_agent_detection(self):
         """Test that RAG agents are properly detected and configured."""
         with patch("haive.agents.rag.agent.SimpleRAGAgent.setup_workflow"):
@@ -353,7 +343,6 @@ class TestAgentTypeDetection:
 
 class TestSchemaCompositionPatterns:
     """Test different schema composition patterns."""
-
     def test_incremental_schema_building(self):
         """Test building schemas incrementally based on agent needs."""
         # Start with base
@@ -379,7 +368,6 @@ class TestSchemaCompositionPatterns:
 
     def test_schema_composition_with_conflicts(self):
         """Test handling schema conflicts in multi-agent systems."""
-
         # Two agents with conflicting field types
         class Agent1Schema(StateSchema):
             result: str = Field(description="Text result")
@@ -408,13 +396,10 @@ class TestSchemaCompositionPatterns:
 
 class TestAutoConfiguredAgents:
     """Test agents with __init_subclass__ auto-configuration."""
-
     def test_auto_configured_rag_agent(self):
         """Test that RAG agents get auto-configured."""
-
         class AutoRAGAgent(AutoConfiguredAgent):
             """Automatically configured RAG agent."""
-
         # Should have auto-detected RAG configuration
         assert hasattr(AutoRAGAgent, "requires_retriever")
         assert AutoRAGAgent.requires_retriever
@@ -427,10 +412,8 @@ class TestAutoConfiguredAgents:
 
     def test_auto_configured_tool_agent(self):
         """Test that Tool agents get auto-configured."""
-
         class AutoToolAgent(AutoConfiguredAgent):
             """Automatically configured tool-using agent."""
-
         # Should have tool requirements
         assert AutoToolAgent.requires_tools
 

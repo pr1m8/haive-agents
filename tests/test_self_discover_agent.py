@@ -1,8 +1,8 @@
 """Test the rewritten self-discover agent."""
 
 import asyncio
-import os
 import sys
+
 
 # Add direct paths to avoid import issues
 sys.path.insert(0, "/home/will/Projects/haive/backend/haive/packages/haive-agents/src")
@@ -18,7 +18,6 @@ from haive.agents.reasoning_and_critique.self_discover.v2.agent import (
 
 async def test_self_discover_agent():
     """Test the rewritten self-discover agent."""
-
     # Check agent setup
 
     # Test with a reasoning problem
@@ -58,7 +57,7 @@ async def test_self_discover_agent():
 
         return True
 
-    except Exception as e:
+    except Exception:
         import traceback
 
         traceback.print_exc()
@@ -67,7 +66,6 @@ async def test_self_discover_agent():
 
 async def test_agent_structure():
     """Test the agent structure and configuration."""
-
     # Check that all agents have proper names and configurations
     for agent_name, agent in self_discovery.agents.items():
         if (
@@ -83,7 +81,6 @@ async def test_agent_structure():
 
 async def main():
     """Run all tests."""
-
     # Test agent structure
     await test_agent_structure()
 

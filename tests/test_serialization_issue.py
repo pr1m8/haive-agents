@@ -7,6 +7,7 @@ from haive.agents.multi.base import SequentialAgent
 from haive.agents.react.agent import ReactAgent
 from haive.agents.simple.agent import SimpleAgent
 
+
 # Create agents with tools already configured
 react_agent = ReactAgent(name="React Agent")
 simple_agent = SimpleAgent(
@@ -37,7 +38,6 @@ try:
     result = multi.run({"messages": [HumanMessage(content="Hello")]})
 
 except Exception as e:
-    pass
 
     # Check if it's the msgpack error
     if "msgpack" in str(e):

@@ -13,14 +13,12 @@ from haive.core.engine.aug_llm import AugLLMConfig
 
 class MockVectorStoreConfig:
     """Mock vector store for testing."""
-
     def __init__(self, name: str, documents: list[Document]):
         self.name = name
         self.documents = documents
 
     def as_retriever(self, k=4):
         """Mock retriever that returns preset documents."""
-
         class MockRetriever:
             def __init__(self, docs):
                 self.docs = docs
@@ -34,7 +32,6 @@ class MockVectorStoreConfig:
 
 class TestCollectiveRAGAgentV4:
     """Test CollectiveRAGAgentV4 basic functionality."""
-
     @pytest.fixture
     def tech_documents(self):
         """Technical domain documents."""
@@ -238,7 +235,6 @@ class TestCollectiveRAGAgentV4:
 
     def test_invalid_rag_agent_type(self):
         """Test validation of RAG agent types."""
-
         # Create a non-RAG agent
         class NotRAGAgent:
             def __init__(self):
@@ -250,7 +246,6 @@ class TestCollectiveRAGAgentV4:
 
 class TestCollectiveRAGAgentV4Factory:
     """Test factory methods for creating collective RAG agents."""
-
     def test_from_vector_stores(self):
         """Test creation from vector store configurations."""
         configs = [
@@ -305,7 +300,6 @@ class TestCollectiveRAGAgentV4Factory:
 
 class TestCollectiveRAGAgentV4Integration:
     """Integration tests for multi-source RAG orchestration."""
-
     @pytest.fixture
     def multi_domain_setup(self):
         """Create multi-domain RAG setup."""

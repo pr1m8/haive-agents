@@ -2,15 +2,14 @@
 """Direct test to verify Supabase writes."""
 
 import asyncio
-import os
 from datetime import datetime
+import os
 
 import psycopg
 
 
 async def direct_write_test():
     """Test writing directly to Supabase."""
-
     conn_string = os.getenv("POSTGRES_CONNECTION_STRING")
     if not conn_string:
         return False
@@ -41,13 +40,12 @@ async def direct_write_test():
 
                 return True
 
-    except Exception as e:
+    except Exception:
         return False
 
 
 async def check_tables():
     """Check table structure."""
-
     conn_string = os.getenv("POSTGRES_CONNECTION_STRING")
 
     try:
@@ -77,7 +75,7 @@ async def check_tables():
                     await cur.execute(f"SELECT COUNT(*) FROM {table_name}")
                     count = (await cur.fetchone())[0]
 
-    except Exception as e:
+    except Exception:
         pass
 
 

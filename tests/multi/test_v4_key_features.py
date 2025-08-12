@@ -8,8 +8,9 @@ Focuses on V4's strengths:
 - AgentNodeV3 state projection
 """
 
-import sys
 import os
+import sys
+
 
 sys.path.insert(0, os.path.abspath("packages/haive-agents/src"))
 sys.path.insert(0, os.path.abspath("packages/haive-core/src"))
@@ -17,9 +18,9 @@ sys.path.insert(0, os.path.abspath("packages/haive-core/src"))
 from langchain_core.messages import HumanMessage
 from pydantic import BaseModel, Field
 
+from haive.agents.multi.enhanced_multi_agent_v4 import EnhancedMultiAgentV4
 from haive.agents.simple.agent_v3 import SimpleAgentV3
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.agents.multi.enhanced_multi_agent_v4 import EnhancedMultiAgentV4
 
 
 # Structured output models
@@ -125,7 +126,7 @@ def test_v4_features():
             content = str(messages[-1].content).lower()
             if "technical" in content or "error" in content:
                 return "tech_support"
-            elif "billing" in content or "payment" in content:
+            if "billing" in content or "payment" in content:
                 return "billing_support"
         return "general_support"
 
@@ -180,7 +181,7 @@ def test_v4_features():
         print(f"\n🧪 Test {i}: {test_input}")
         try:
             result = compiled.invoke({"messages": [HumanMessage(content=test_input)]})
-            print(f"✅ Routed successfully")
+            print("✅ Routed successfully")
 
             # Check which agent handled it
             if "messages" in result and len(result["messages"]) > 1:

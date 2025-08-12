@@ -1,11 +1,12 @@
 """Test with REAL haive ReactAgents and save proper state history - NO MOCKS."""
 
 import asyncio
+from datetime import datetime
 import json
 import os
-import sys
-from datetime import datetime
 from pathlib import Path
+import sys
+
 
 # Add the source path for imports
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../src"))
@@ -17,13 +18,12 @@ try:
 
     from haive.agents.react.agent import ReactAgent
 
-except ImportError as e:
+except ImportError:
     sys.exit(1)
 
 
 class ResearchTool(BaseTool):
     """Real research tool for testing."""
-
     name = "research_tool"
     description = "Research information on any topic"
 
@@ -33,7 +33,6 @@ class ResearchTool(BaseTool):
 
 class CodingTool(BaseTool):
     """Real coding tool for testing."""
-
     name = "coding_tool"
     description = "Write and analyze code in multiple languages"
 
@@ -43,7 +42,6 @@ class CodingTool(BaseTool):
 
 class WritingTool(BaseTool):
     """Real writing tool for testing."""
-
     name = "writing_tool"
     description = "Create professional written content and documentation"
 
@@ -82,7 +80,6 @@ def save_state_history(agent_name: str, state_data: dict, test_phase: str):
 
 async def test_real_haive_reactagents():
     """Test with actual haive ReactAgents."""
-
     try:
         # Create REAL ReactAgent instances
         research_agent = ReactAgent(

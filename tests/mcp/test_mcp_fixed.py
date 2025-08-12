@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Test the fixed MCP RAG agent with proper VectorStoreConfig pattern"""
+"""Test the fixed MCP RAG agent with proper VectorStoreConfig pattern."""
 
 import asyncio
-import sys
 from pathlib import Path
+import sys
+
 
 # Add the correct path for imports
 sys.path.insert(0, str(Path(__file__).parent))
@@ -11,7 +12,6 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 async def test_mcp_rag_agent():
     """Test the MCP RAG agent with proper configuration."""
-
     try:
         # Import after path setup
         sys.path.insert(0, str(Path(__file__).parent / "packages" / "haive-mcp" / "src"))
@@ -39,25 +39,24 @@ async def test_mcp_rag_agent():
 
                     if docs:
                         pass
-                    else:
-                        # Try direct vector store test
-                        if hasattr(agent.engine, "vector_store_config"):
-                            vs_config = agent.engine.vector_store_config
-                            vectorstore = vs_config.create_vectorstore()
-                            direct_results = vectorstore.similarity_search(query, k=3)
+                    # Try direct vector store test
+                    elif hasattr(agent.engine, "vector_store_config"):
+                        vs_config = agent.engine.vector_store_config
+                        vectorstore = vs_config.create_vectorstore()
+                        direct_results = vectorstore.similarity_search(query, k=3)
 
-                            if direct_results:
-                                for i, doc in enumerate(direct_results[:2], 1):
-                                    pass
+                        if direct_results:
+                            for i, doc in enumerate(direct_results[:2], 1):
+                                pass
                 else:
                     pass
 
-            except Exception as e:
+            except Exception:
                 import traceback
 
                 traceback.print_exc()
 
-    except Exception as e:
+    except Exception:
         import traceback
 
         traceback.print_exc()

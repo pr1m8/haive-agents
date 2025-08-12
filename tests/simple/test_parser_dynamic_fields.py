@@ -2,9 +2,10 @@
 
 import os
 import sys
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import Mock
 
 from pydantic import BaseModel, Field, create_model
+
 
 # Add packages to path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../../"))
@@ -13,10 +14,11 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../../"))
 def test_parser_node_dynamic_field_addition():
     """Test if parser node can add structured output to state dynamically."""
     try:
-        from haive.core.graph.node.parser_node_config import ParserNodeConfig
         from langchain_core.messages import AIMessage, ToolMessage
 
-    except Exception as e:
+        from haive.core.graph.node.parser_node_config import ParserNodeConfig
+
+    except Exception:
         return
 
     # Test model
@@ -86,7 +88,7 @@ def test_parser_node_dynamic_field_addition():
         else:
             pass
 
-    except Exception as e:
+    except Exception:
         pass
 
     # Test Case 2: State schema WITH the structured output field pre-defined
@@ -113,13 +115,12 @@ def test_parser_node_dynamic_field_addition():
         else:
             pass
 
-    except Exception as e:
+    except Exception:
         pass
 
 
 def test_state_update_mechanics():
     """Test the basic mechanics of state updates with new fields."""
-
     # Create a basic state model
     BasicState = create_model(
         "BasicState",
@@ -137,7 +138,7 @@ def test_state_update_mechanics():
         # This is how LangGraph updates state
         new_state = BasicState(**{**state.model_dump(), **update_dict})
 
-    except Exception as e:
+    except Exception:
         pass
 
     # Test 2: Can we add completely new fields?
@@ -147,7 +148,7 @@ def test_state_update_mechanics():
 
         new_state = BasicState(**{**state.model_dump(), **update_dict})
 
-    except Exception as e:
+    except Exception:
         pass
 
 

@@ -1,13 +1,12 @@
 """Working example of extracting structured output from SimpleAgent."""
 
 import asyncio
-from typing import List
 
-from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field
 
 from haive.agents.simple.agent import SimpleAgent
+from haive.core.engine.aug_llm import AugLLMConfig
 
 
 # Simple structured output model
@@ -15,7 +14,7 @@ class TodoList(BaseModel):
     """A todo list with items."""
 
     title: str = Field(description="Title of the todo list")
-    items: List[str] = Field(description="List of todo items", min_items=3, max_items=8)
+    items: list[str] = Field(description="List of todo items", min_items=3, max_items=8)
     priority: str = Field(description="Overall priority", pattern="^(high|medium|low)$")
     estimated_hours: float = Field(description="Total estimated hours")
 
@@ -37,7 +36,7 @@ def extract_structured_output_from_messages(messages, model_class):
                         return model_class(**args)
 
                     # Handle OpenAI format
-                    elif "function" in tool_call:
+                    if "function" in tool_call:
                         func = tool_call["function"]
                         if func.get("name") == model_class.__name__:
                             args = func.get("arguments", {})
@@ -111,7 +110,7 @@ async def test_multiple_examples():
         """A project plan."""
 
         name: str = Field(description="Project name")
-        phases: List[str] = Field(description="Project phases", min_items=2, max_items=5)
+        phases: list[str] = Field(description="Project phases", min_items=2, max_items=5)
         duration_weeks: int = Field(description="Total duration in weeks", ge=1, le=52)
         budget: float = Field(description="Budget in thousands", ge=0)
 

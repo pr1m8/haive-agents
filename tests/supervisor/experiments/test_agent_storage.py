@@ -3,18 +3,17 @@
 import asyncio
 import os
 
-import psycopg
-from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.models.llm.base import AzureLLMConfig
-from haive.tools.tools.search_tools import tavily_search_tool
 from langchain_core.messages import HumanMessage
 from langgraph.checkpoint.postgres import PostgresSaver
 from langgraph.graph import END, START, StateGraph
+import psycopg
 
-from haive.agents.experiments.supervisor.agent_info import AgentInfo
 from haive.agents.experiments.supervisor.supervisor_state import SupervisorState
 from haive.agents.react.agent import ReactAgent
 from haive.agents.simple.agent import SimpleAgent
+from haive.core.engine.aug_llm import AugLLMConfig
+from haive.core.models.llm.base import AzureLLMConfig
+from haive.tools.tools.search_tools import tavily_search_tool
 
 
 def test_node(state: SupervisorState):
@@ -26,7 +25,6 @@ def test_node(state: SupervisorState):
 
 async def test_agent_storage():
     """Test storing agents in state with PostgreSQL checkpointer."""
-
     # Create some agents
     search_engine = AugLLMConfig(
         name="search_engine",
@@ -64,7 +62,7 @@ async def test_agent_storage():
 
     try:
         result = await memory_app.ainvoke(state, {"configurable": {"thread_id": "test1"}})
-    except Exception as e:
+    except Exception:
         pass
 
     # Test with PostgreSQL (might fail)
@@ -78,7 +76,7 @@ async def test_agent_storage():
         await postgres_app.ainvoke(state, {"configurable": {"thread_id": "test2"}})
 
         conn.close()
-    except Exception as e:
+    except Exception:
         import traceback
 
         traceback.print_exc()
@@ -93,7 +91,7 @@ async def test_agent_storage():
         # Check what's in the agents field
         for i, agent_data in enumerate(state_dict.get("agents", [])):
             pass
-    except Exception as e:
+    except Exception:
         pass
 
 

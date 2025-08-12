@@ -2,14 +2,14 @@
 """Test ReactAgentV3 with real execution - no mocks, comprehensive validation."""
 
 import logging
-from typing import List
 
-from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.models.llm.base import DeepSeekLLMConfig
 from langchain_core.tools import tool
 from pydantic import BaseModel, Field
 
 from haive.agents.react.agent_v3 import ReactAgentV3
+from haive.core.engine.aug_llm import AugLLMConfig
+from haive.core.models.llm.base import DeepSeekLLMConfig
+
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -25,8 +25,8 @@ class MathAnalysis(BaseModel):
     """Mathematical analysis with reasoning trace."""
 
     original_problem: str = Field(description="Original mathematical problem")
-    reasoning_steps: List[str] = Field(description="Step-by-step reasoning process")
-    calculations: List[str] = Field(description="Mathematical calculations performed")
+    reasoning_steps: list[str] = Field(description="Step-by-step reasoning process")
+    calculations: list[str] = Field(description="Mathematical calculations performed")
     final_answer: str = Field(description="Final numerical answer")
     confidence: float = Field(ge=0.0, le=1.0, description="Confidence in solution")
 
@@ -35,8 +35,8 @@ class ResearchResult(BaseModel):
     """Research findings with methodology."""
 
     research_question: str = Field(description="Original research question")
-    approach: List[str] = Field(description="Research methodology steps")
-    key_findings: List[str] = Field(description="Important discoveries")
+    approach: list[str] = Field(description="Research methodology steps")
+    key_findings: list[str] = Field(description="Important discoveries")
     conclusion: str = Field(description="Comprehensive conclusion")
     sources_used: int = Field(ge=0, description="Number of sources consulted")
 
@@ -64,7 +64,7 @@ def calculator(expression: str) -> str:
         result = eval(expression)
         return str(result)
     except Exception as e:
-        return f"Error calculating '{expression}': {str(e)}"
+        return f"Error calculating '{expression}': {e!s}"
 
 
 @tool
@@ -150,9 +150,8 @@ def test_basic_react_execution():
                 if "40.075" in response or "40075" in response:
                     print("✅ SUCCESS: Found expected calculation result")
                     return True
-                else:
-                    print("❌ PARTIAL: Response generated but calculation not clearly found")
-                    return False
+                print("❌ PARTIAL: Response generated but calculation not clearly found")
+                return False
                 break
 
     print("❌ FAILURE: No AI response found")
@@ -311,9 +310,8 @@ def test_react_vs_simple_comparison():
         print("✅ SUCCESS: Both agents found correct answer (500)")
         print("   ReactAgent shows enhanced reasoning process")
         return True
-    else:
-        print(f"❌ MIXED RESULTS: Simple={simple_found_500}, React={react_found_500}")
-        return False
+    print(f"❌ MIXED RESULTS: Simple={simple_found_500}, React={react_found_500}")
+    return False
 
 
 def run_all_react_tests():

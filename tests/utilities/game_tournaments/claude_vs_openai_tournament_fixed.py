@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
-"""Claude vs OpenAI Tournament - FIXED VERSION
+"""Claude vs OpenAI Tournament - FIXED VERSION.
 Run all working games with consistent LLM configurations.
 Properly handles state initialization for each game type.
 """
 
-import asyncio
-import json
 from datetime import datetime
+import json
 from pathlib import Path
-from typing import Any, Dict, List
+
 
 # Create tournament results directory
 TOURNAMENT_DIR = Path("claude_vs_openai_tournament_fixed")
@@ -43,15 +42,14 @@ def create_initial_state(game_name: str, state_class):
     if game_name == "connect4":
         # Connect4 requires initialize() method
         return state_class.initialize()
-    elif game_name == "reversi":
+    if game_name == "reversi":
         # Check if Reversi has initialize method
         if hasattr(state_class, "initialize"):
             return state_class.initialize()
         # Try with required fields
         return state_class(turn="B", board=[[None] * 8 for _ in range(8)])
-    else:
-        # Tic Tac Toe, Mancala, Nim work with default constructor
-        return state_class()
+    # Tic Tac Toe, Mancala, Nim work with default constructor
+    return state_class()
 
 
 def create_claude_openai_config(game_config_class, claude_player: str, openai_player: str):
@@ -232,7 +230,6 @@ def run_tournament_game(
 
 def main():
     """Run the complete Claude vs OpenAI tournament."""
-
     # Define games to test with their player mappings (only working ones)
     tournament_games = [
         {
@@ -316,7 +313,7 @@ def main():
 
             tournament_results[game["name"]] = winner
 
-        except Exception as e:
+        except Exception:
             tournament_results[game["name"]] = "Failed"
 
     # Final tournament summary
@@ -335,9 +332,7 @@ def main():
         elif winner and winner != "Failed":
             other_results += 1
 
-    if claude_wins > openai_wins:
-        pass
-    elif openai_wins > claude_wins:
+    if claude_wins > openai_wins or openai_wins > claude_wins:
         pass
     else:
         pass

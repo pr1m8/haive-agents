@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 """Comprehensive test of all agent types with PostgreSQL persistence."""
 
-import json
-import os
-import sys
 from datetime import datetime
-from typing import Any, Dict
+import json
+import sys
+from typing import Any
 
 
 def setup_paths():
@@ -184,11 +183,10 @@ def test_rag_agent() -> dict[str, Any]:
 def test_collaborative_conversation() -> dict[str, Any]:
     """Test Collaborative conversation agent with persistence."""
     try:
-        from haive.core.engine.aug_llm import AugLLMConfig
-
         from haive.agents.conversation.collaberative.agent import (
             CollaborativeConversation,
         )
+        from haive.core.engine.aug_llm import AugLLMConfig
 
         timestamp = datetime.now().strftime("%H%M%S")
 
@@ -259,9 +257,8 @@ def test_collaborative_conversation() -> dict[str, Any]:
 def test_debate_conversation() -> dict[str, Any]:
     """Test Debate conversation agent with persistence."""
     try:
-        from haive.core.engine.aug_llm import AugLLMConfig
-
         from haive.agents.conversation.debate.agent import DebateAgent
+        from haive.core.engine.aug_llm import AugLLMConfig
 
         timestamp = datetime.now().strftime("%H%M%S")
 
@@ -313,7 +310,6 @@ def test_debate_conversation() -> dict[str, Any]:
 
 def main():
     """Run comprehensive tests on all agent types."""
-
     setup_paths()
 
     # Run all tests

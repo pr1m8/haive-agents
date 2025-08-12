@@ -5,6 +5,7 @@ import logging
 
 from haive.agents.conversation.collaberative.agent import CollaborativeConversation
 
+
 # Set up logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -12,7 +13,6 @@ logger = logging.getLogger(__name__)
 
 def test_persistence_fix():
     """Test that conversation agents properly use persistence when persistence=True."""
-
     # Test 1: Create conversation with persistence=True
     session = CollaborativeConversation.create_brainstorming_session(
         topic="Database Persistence Test",
@@ -50,7 +50,7 @@ def test_persistence_fix():
                 pass
             else:
                 pass
-        except Exception as e:
+        except Exception:
             pass
     else:
         pass
@@ -88,7 +88,7 @@ def test_persistence_fix():
         else:
             pass
 
-    except Exception as e:
+    except Exception:
         pass
 
 

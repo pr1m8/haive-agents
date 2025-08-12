@@ -5,12 +5,12 @@ Run with: poetry run python packages/haive-agents/tests/ltm/test_real_langmem.py
 """
 
 import logging
-import sys
 
-from haive.core.models.llm.base import LLMConfig
 from langchain_core.messages import AIMessage, HumanMessage
 
 from haive.agents.ltm.agent import LTMAgent, LTMState
+from haive.core.models.llm.base import LLMConfig
+
 
 # Setup logging
 logging.basicConfig(level=logging.INFO)
@@ -19,7 +19,6 @@ logger = logging.getLogger(__name__)
 
 def test_langmem_with_anthropic():
     """Test LangMem with Anthropic provider."""
-
     try:
         # Create agent with Anthropic provider
         anthropic_config = LLMConfig(provider="anthropic", model="claude-3-haiku-20240307")
@@ -84,7 +83,7 @@ def test_langmem_with_anthropic():
         else:
             pass
 
-    except Exception as e:
+    except Exception:
         import traceback
 
         traceback.print_exc()
@@ -93,7 +92,6 @@ def test_langmem_with_anthropic():
 
 def test_langmem_with_groq():
     """Test LangMem with Groq provider as backup."""
-
     try:
         # Create agent with Groq provider
         groq_config = LLMConfig(provider="groq", model="llama3-8b-8192")
@@ -130,13 +128,12 @@ def test_langmem_with_groq():
             return memories
         print("❌ Groq also fell back to simple extraction")
 
-    except Exception as e:
+    except Exception:
         return None
 
 
 def test_langmem_with_deepseek():
     """Test LangMem with DeepSeek provider."""
-
     try:
         # Create agent with DeepSeek provider
         deepseek_config = LLMConfig(provider="deepseek", model="deepseek-chat")
@@ -162,13 +159,12 @@ def test_langmem_with_deepseek():
             return memories
         print("❌ DeepSeek also used fallback")
 
-    except Exception as e:
+    except Exception:
         return None
 
 
 def test_langchain_direct():
     """Test creating LangChain models directly to verify they work."""
-
     providers_to_test = [
         ("anthropic", "claude-3-haiku-20240307"),
         ("groq", "llama3-8b-8192"),
@@ -195,7 +191,7 @@ def test_langchain_direct():
 
             create_memory_manager(llm)
 
-        except Exception as e:
+        except Exception:
             pass
 
 

@@ -11,6 +11,7 @@ from langchain_core.messages import AIMessage, HumanMessage
 
 from haive.agents.ltm.agent import LTMAgent, LTMState
 
+
 # Setup logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -18,7 +19,6 @@ logger = logging.getLogger(__name__)
 
 def test_initial_version():
     """Test that the initial version works perfectly."""
-
     # Create agent with default Anthropic config
     agent = LTMAgent(name="Initial LTM Agent")
     agent.setup_agent()
@@ -74,7 +74,6 @@ def test_initial_version():
 
 def test_agent_graph_execution():
     """Test the core extraction functionality (what matters)."""
-
     agent = LTMAgent(name="Core Test Agent")
     agent.setup_agent()
 
@@ -105,7 +104,7 @@ def test_agent_graph_execution():
 
         return True
 
-    except Exception as e:
+    except Exception:
         return False
 
 

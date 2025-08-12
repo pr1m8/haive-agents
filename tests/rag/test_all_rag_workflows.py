@@ -3,13 +3,10 @@
 Tests all RAG agent implementations to ensure they work correctly.
 """
 
-from typing import List
 
-import pytest
-from haive.core.fixtures.documents import conversation_documents
-from haive.core.models.llm.base import AzureLLMConfig
 from langchain_core.documents import Document
 from langchain_core.messages import AIMessage, HumanMessage
+import pytest
 
 from haive.agents.rag.adaptive.agent import AdaptiveRAGAgent
 
@@ -20,6 +17,7 @@ from haive.agents.rag.hyde.agent_v2 import HyDERAGAgentV2
 from haive.agents.rag.memory_aware.agent import MemoryAwareRAGAgent
 from haive.agents.rag.multi_query.agent import MultiQueryRAGAgent
 from haive.agents.rag.simple.agent import SimpleRAGAgent
+from haive.core.models.llm.base import AzureLLMConfig
 
 
 class TestAllRAGWorkflows:
@@ -182,13 +180,13 @@ class TestAllRAGWorkflows:
         try:
             agent1 = SimpleRAGAgent.from_documents(empty_docs, llm_config)
             agent1.run({"query": "test"})
-        except Exception as e:
+        except Exception:
             pass
 
         try:
             agent2 = SimpleRAGAgent.from_documents(single_doc, llm_config)
             agent2.run({"query": "test"})
-        except Exception as e:
+        except Exception:
             pass
 
 

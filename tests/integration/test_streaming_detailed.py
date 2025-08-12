@@ -6,7 +6,6 @@ from src.haive.agents.conversation.collaberative.agent import CollaborativeConve
 
 def test_detailed_streaming():
     """Test streaming with stream_mode configuration to get detailed metadata."""
-
     # Create agent
     agent = CollaborativeConversation.create_brainstorming_session(
         topic="Test streaming", participants=["Alice"], max_rounds=1
@@ -31,7 +30,7 @@ def test_detailed_streaming():
 
             if i >= 5:  # Limit output
                 break
-    except Exception as e:
+    except Exception:
         pass
 
     try:
@@ -50,7 +49,7 @@ def test_detailed_streaming():
 
             if i >= 5:
                 break
-    except Exception as e:
+    except Exception:
         pass
 
     try:
@@ -74,7 +73,7 @@ def test_detailed_streaming():
 
             if i >= 5:
                 break
-    except Exception as e:
+    except Exception:
         pass
 
     try:
@@ -97,7 +96,7 @@ def test_detailed_streaming():
 
             if i >= 3:
                 break
-    except Exception as e:
+    except Exception:
         pass
 
     try:
@@ -109,7 +108,7 @@ def test_detailed_streaming():
         # Try to get available modes
         available_modes = ["values", "updates", "messages", "debug"]
 
-    except Exception as e:
+    except Exception:
         pass
 
 

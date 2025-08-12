@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-"""Focused debug: Trace exactly how the schema composer builds the final schema
+"""Focused debug: Trace exactly how the schema composer builds the final schema.
 and why engine/context fields are marked as required.
 """
 

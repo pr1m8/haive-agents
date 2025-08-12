@@ -4,14 +4,14 @@ import json
 import logging
 from typing import Any
 
-from haive.agents.simple.agent import SimpleAgent
-from haive.agents.simple.chain_agent import ChainAgentSchema
 from langchain_core.messages import AIMessage
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langgraph.graph import END
 from pydantic import BaseModel, Field
 
+from haive.agents.simple.agent import SimpleAgent
+from haive.agents.simple.chain_agent import ChainAgentSchema
 from haive.core.engine.aug_llm import AugLLMConfig, compose_runnable
 from haive.core.graph.dynamic_graph_builder import DynamicGraph
 from haive.core.models.llm.base import AzureLLMConfig
@@ -28,7 +28,6 @@ logger = logging.getLogger(__name__)
 
 class DocumentClassification(BaseModel):
     """Model for document classification."""
-
     document_type: str = Field(
         description="Type of document (legal, financial, technical, creative, academic, news)"
     )
@@ -47,7 +46,6 @@ class DocumentClassification(BaseModel):
 
 class LegalAnalysis(BaseModel):
     """Model for legal document analysis."""
-
     document_type: str = Field(description="Specific type of legal document")
     jurisdiction: str = Field(description="Relevant legal jurisdiction")
     parties: list[str] = Field(description="Parties involved in the legal document")
@@ -60,7 +58,6 @@ class LegalAnalysis(BaseModel):
 
 class FinancialAnalysis(BaseModel):
     """Model for financial document analysis."""
-
     document_type: str = Field(description="Specific type of financial document")
     entities: list[str] = Field(description="Financial entities mentioned")
     key_metrics: dict[str, Any] = Field(description="Important financial metrics")
@@ -73,7 +70,6 @@ class FinancialAnalysis(BaseModel):
 
 class TechnicalAnalysis(BaseModel):
     """Model for technical document analysis."""
-
     document_type: str = Field(description="Specific type of technical document")
     technologies: list[str] = Field(description="Technologies or systems mentioned")
     methodologies: list[str] = Field(description="Technical methodologies described")
@@ -86,7 +82,6 @@ class TechnicalAnalysis(BaseModel):
 
 class AcademicAnalysis(BaseModel):
     """Model for academic document analysis."""
-
     document_type: str = Field(description="Specific type of academic document")
     research_field: str = Field(description="Primary research field")
     methodologies: list[str] = Field(description="Research methodologies used")
@@ -128,10 +123,9 @@ Format the summary with clear sections, bullet points, and actionable insights.
 
 
 class BranchingDocumentAnalyzer:
-    """An advanced document analysis system with specialized branches
+    """An advanced document analysis system with specialized branches.
     for different document types and dynamic routing.
     """
-
     def __init__(self, verbose=True):
         self.verbose = verbose
         self.engines = {}
@@ -297,10 +291,9 @@ class BranchingDocumentAnalyzer:
         }
 
     def build_chain(self):
-        """Build the document analysis chain with branching logic
+        """Build the document analysis chain with branching logic.
         based on document classification.
         """
-
         # Create an extended schema that includes branch information
         class BranchingChainSchema(ChainAgentSchema):
             branch_path: str = Field(default="", description="The branch path chosen for analysis")
@@ -684,7 +677,7 @@ class BranchingDocumentAnalyzer:
 # Example usage
 if __name__ == "__main__":
     # Sample financial document for testing
-    financial_doc = """QUARTERLY FINANCIAL REPORT - Q2 2023
+    financial_doc = """QUARTERLY FINANCIAL REPORT - Q2 2023.
 ACME HOLDINGS, INC.
 
 INCOME STATEMENT (in millions USD)

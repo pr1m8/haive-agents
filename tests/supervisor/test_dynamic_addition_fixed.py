@@ -6,9 +6,10 @@ This test demonstrates the correct approach based on BaseGraph2 limitations.
 
 import asyncio
 import logging
-from typing import Any, Dict, List
+from typing import Any
 
 from langchain_core.messages import AIMessage, HumanMessage
+
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -16,7 +17,6 @@ logger = logging.getLogger(__name__)
 
 class TestAgent:
     """Simple test agent."""
-
     def __init__(self, name: str, response_prefix: str | None = None):
         self.name = name
         self.response_prefix = response_prefix or f"Response from {name}"
@@ -42,7 +42,6 @@ class TestAgent:
 
 async def test_dynamic_addition_with_fixed_supervisor():
     """Test the fixed dynamic supervisor implementation."""
-
     # Import the fixed supervisor
     try:
         from dynamic_supervisor_fixed import DynamicSupervisorFixed
@@ -66,7 +65,7 @@ async def test_dynamic_addition_with_fixed_supervisor():
         result1 = await supervisor.ainvoke(
             {"messages": [HumanMessage(content="Write me a short story")]}
         )
-    except Exception as e:
+    except Exception:
         return False
 
     # Now add new agent AFTER compilation
@@ -91,7 +90,7 @@ async def test_dynamic_addition_with_fixed_supervisor():
         else:
             pass
 
-    except Exception as e:
+    except Exception:
         return False
 
     # Add another agent to test multiple additions
@@ -114,7 +113,7 @@ async def test_dynamic_addition_with_fixed_supervisor():
             result3.get("messages", [])[-1].content if result3.get("messages") else "No messages"
         )
 
-    except Exception as e:
+    except Exception:
         return False
 
     # Summary
@@ -124,7 +123,6 @@ async def test_dynamic_addition_with_fixed_supervisor():
 
 async def test_edge_cases():
     """Test edge cases for dynamic supervisor."""
-
     try:
         from dynamic_supervisor_fixed import DynamicSupervisorFixed
     except ImportError:
@@ -135,7 +133,7 @@ async def test_edge_cases():
     # Test 1: Invoke with no agents
     try:
         await supervisor.ainvoke({"messages": [HumanMessage(content="Hello")]})
-    except Exception as e:
+    except Exception:
         pass
 
     # Test 2: Add duplicate agent

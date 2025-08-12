@@ -238,9 +238,176 @@ def real_retriever_engine(
 
 
 # --------------------------------------------------------------------
+# ✅ Agent Fixtures for Testing Auto-Wrap Behavior
+# --------------------------------------------------------------------
+
+from datetime import datetime
+
+from langchain_core.tools import tool
+from pydantic import BaseModel
+
+# Import our agents
+from haive.agents.react.agent import ReactAgent
+from haive.agents.simple.agent import SimpleAgent
+
+
+# Test models for structured output
+class SimpleResult(BaseModel):
+    """Simple structured output model for testing."""
+    message: str = Field(description="Result message")
+    confidence: float = Field(description="Confidence score", ge=0.0, le=1.0, default=0.8)
+    timestamp: str = Field(default_factory=lambda: datetime.now().isoformat())
+
+
+class AnalysisResult(BaseModel):
+    """More complex structured output model."""
+    summary: str = Field(description="Analysis summary")
+    key_points: list[str] = Field(description="Key findings", default_factory=list)
+    score: float = Field(description="Overall score", ge=0.0, le=10.0)
+    recommendation: str = Field(description="Next steps recommendation")
+
+
+# Test tools
+@tool
+def simple_calculator(expression: str) -> str:
+    """Calculate simple math expressions safely."""
+    try:
+        # Safe eval with limited builtins
+        allowed_names = {"__builtins__": {}}
+        result = eval(expression, allowed_names, {})
+        return f"Result: {result}"
+    except Exception as e:
+        return f"Error: {e}"
+
+
+@tool
+def text_analyzer(text: str) -> str:
+    """Analyze text and return basic stats."""
+    word_count = len(text.split())
+    char_count = len(text)
+    return f"Words: {word_count}, Characters: {char_count}"
+
+
+# Test models for structured output
+class ReactResult(BaseModel):
+    """Structured output for ReactAgent testing."""
+    analysis: str = Field(description="Analysis result")
+    tool_calls_made: int = Field(description="Number of tool calls", default=0)
+    confidence: float = Field(description="Confidence score", ge=0.0, le=1.0, default=0.8)
+
+
+# Agent fixtures
+@pytest.fixture
+def simple_agent_with_structured_output():
+    """SimpleAgent WITH structured output model (will auto-wrap)."""
+    return SimpleAgent(
+        name="simple_structured",
+        engine=AugLLMConfig(
+            llm_config=AzureLLMConfig(
+                model="gpt-4o",
+                temperature=0.3,
+            ),
+            system_message="You are a formatter agent that creates structured outputs.",
+        ),
+        structured_output_model=SimpleResult,
+        structured_output_version="v2",
+        debug=True,
+    )
+
+
+@pytest.fixture
+def simple_agent_without_structured_output():
+    """SimpleAgent WITHOUT structured output model (no auto-wrap)."""
+    return SimpleAgent(
+        name="simple_plain",
+        engine=AugLLMConfig(
+            llm_config=AzureLLMConfig(
+                model="gpt-4o",
+                temperature=0.5,
+            ),
+            system_message="You are a simple conversational agent.",
+        ),
+        debug=True,
+    )
+
+
+@pytest.fixture
+def react_agent_with_tools():
+    """ReactAgent with tools (no structured output)."""
+    return ReactAgent(
+        name="react_with_tools",
+        engine=AugLLMConfig(
+            llm_config=AzureLLMConfig(
+                model="gpt-4o",
+                temperature=0.7,
+            ),
+            system_message="You are a reasoning agent. Use tools when needed.",
+            tools=[simple_calculator, text_analyzer],
+        ),
+        debug=True,
+    )
+
+
+@pytest.fixture
+def complex_structured_agent():
+    """SimpleAgent with complex structured output for advanced testing."""
+    return SimpleAgent(
+        name="complex_structured",
+        engine=AugLLMConfig(
+            llm_config=AzureLLMConfig(
+                model="gpt-4o",
+                temperature=0.2,
+            ),
+            system_message="You are an analysis agent that provides detailed structured outputs.",
+        ),
+        structured_output_model=AnalysisResult,
+        structured_output_version="v2",
+        debug=True,
+    )
+
+
+@pytest.fixture
+def react_agent_with_structured_output():
+    """ReactAgent WITH structured output model (will auto-wrap)."""
+    return ReactAgent(
+        name="react_structured",
+        engine=AugLLMConfig(
+            llm_config=AzureLLMConfig(
+                model="gpt-4o",
+                temperature=0.3,
+            ),
+            system_message="You are a reasoning agent that provides structured outputs.",
+            tools=[simple_calculator, text_analyzer],
+        ),
+        structured_output_model=ReactResult,
+        structured_output_version="v2",
+        debug=True,
+    )
+
+
+@pytest.fixture
+def all_test_agents(
+    simple_agent_with_structured_output,
+    simple_agent_without_structured_output,
+    react_agent_with_tools,
+    react_agent_with_structured_output,
+    complex_structured_agent
+):
+    """Return all test agents for comparison testing."""
+    return {
+        "simple_structured": simple_agent_with_structured_output,
+        "simple_plain": simple_agent_without_structured_output,
+        "react_tools": react_agent_with_tools,
+        "react_structured": react_agent_with_structured_output,
+        "complex_structured": complex_structured_agent,
+    }
+
+
+# --------------------------------------------------------------------
 # ℹ️ Note on Test vs Real Fixtures:
 # - Mock fixtures are good for testing Engine base class logic without external deps.
 # - Real fixtures use actual EngineConfig subclasses, useful for integration tests.
+# - Agent fixtures provide different agent configurations for testing auto-wrap behavior
 # - The 'Test...' classes and fixtures from the original file are removed as
 #   they are largely covered by the mock and real fixtures now.
 # --------------------------------------------------------------------

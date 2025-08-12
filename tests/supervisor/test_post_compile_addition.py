@@ -6,7 +6,8 @@ This is the critical test to ensure dynamic agent addition works post-compilatio
 
 import asyncio
 import logging
-from typing import Any, Dict, List
+from typing import Any
+
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -14,7 +15,6 @@ logger = logging.getLogger(__name__)
 
 class MockEngine:
     """Simple mock engine for testing."""
-
     def __init__(self, name: str = "mock_engine"):
         self.name = name
         self.tools = []
@@ -40,7 +40,6 @@ class MockEngine:
 
 class MockAgent:
     """Simple mock agent for testing."""
-
     def __init__(self, name: str, tools: list[str] = None):
         self.name = name
         self.engine = MockEngine(f"{name}_engine")
@@ -49,7 +48,6 @@ class MockAgent:
 
     async def ainvoke(self, state: Any, config: Any = None) -> Any:
         """Mock agent execution."""
-
         class MockResult:
             def __init__(self, messages):
                 self.messages = messages
@@ -67,7 +65,6 @@ from haive.core.common.models.dynamic_choice_model import DynamicChoiceModel
 
 class SimpleDynamicSupervisor:
     """Simplified dynamic supervisor for testing post-compile addition."""
-
     def __init__(self, name: str = "test_supervisor"):
         self.name = name
         self.agent_registry = {}
@@ -132,7 +129,6 @@ class SimpleDynamicSupervisor:
 
 async def test_post_compile_agent_addition():
     """Test adding agents after graph compilation."""
-
     # Step 1: Create supervisor with initial agent
     supervisor = SimpleDynamicSupervisor()
 
@@ -175,7 +171,6 @@ async def test_post_compile_agent_addition():
 
 async def test_graph_rebuilding():
     """Test the actual graph rebuilding mechanism."""
-
     # This tests the actual _rebuild_graph method concept
     class GraphRebuildingSupervisor(SimpleDynamicSupervisor):
         def __init__(self, name: str = "rebuild_supervisor"):

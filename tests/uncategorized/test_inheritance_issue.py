@@ -2,9 +2,9 @@
 """Test if create_model properly inherits fields from base classes."""
 
 import logging
-from typing import Optional
 
 from pydantic import BaseModel, Field, create_model
+
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)

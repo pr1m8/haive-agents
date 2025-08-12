@@ -3,6 +3,7 @@
 import os
 import sys
 
+
 # Add direct path to the validation node file
 current_dir = os.path.dirname(__file__)
 core_src = os.path.join(current_dir, "..", "..", "..", "haive-core", "src")
@@ -11,7 +12,6 @@ sys.path.insert(0, core_src)
 
 def test_direct_validation_node_import():
     """Test importing validation node directly."""
-
     try:
         # Import directly, bypassing __init__.py
         module_path = os.path.join(
@@ -103,7 +103,7 @@ def test_direct_validation_node_import():
 
         return True
 
-    except Exception as e:
+    except Exception:
         import traceback
 
         traceback.print_exc()
@@ -112,7 +112,6 @@ def test_direct_validation_node_import():
 
 def test_simple_workflow():
     """Test a simple workflow with mock state."""
-
     try:
         # Re-import the working module
         module_path = os.path.join(
@@ -178,7 +177,7 @@ def test_simple_workflow():
 
         return True
 
-    except Exception as e:
+    except Exception:
         import traceback
 
         traceback.print_exc()
@@ -187,7 +186,6 @@ def test_simple_workflow():
 
 def run_direct_tests():
     """Run direct tests."""
-
     # Memory anchor
     MEMORY_ANCHOR = {
         "goal": "Test v2 validation node works without full haive imports",
@@ -208,7 +206,7 @@ def run_direct_tests():
         try:
             result = test_func()
             results.append((test_name, "PASS" if result else "FAIL"))
-        except Exception as e:
+        except Exception:
             results.append((test_name, "ERROR"))
 
     # Summary

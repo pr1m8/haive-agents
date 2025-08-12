@@ -15,7 +15,6 @@ from haive.core.schema.prebuilt.meta_state import MetaStateSchema
 
 class MetaCapableAgentState(StateSchema):
     """State for agents with meta capabilities."""
-
     # Standard agent state
     messages: list[dict[str, Any]] = Field(default_factory=list)
 
@@ -35,7 +34,6 @@ class MetaCapableAgent(Agent):
     This demonstrates how to integrate MetaStateSchema into agents
     to enable nested agent composition and recompilation tracking.
     """
-
     def __init__(self, *args, **kwargs):
         # Extract meta_agent if provided
         self._meta_agent = kwargs.pop("meta_agent", None)
@@ -93,7 +91,6 @@ class MetaCapableAgent(Agent):
 
 class SimpleMetaAgent(SimpleAgent):
     """SimpleAgent with meta capabilities."""
-
     def __init__(self, *args, **kwargs):
         # Extract meta_agent if provided
         self._meta_agent = kwargs.pop("meta_agent", None)
@@ -287,11 +284,9 @@ def test_react_agent_with_meta_state():
 
 def test_agent_class_method_meta_creation():
     """Test creating meta-capable agents via class methods."""
-
     # Add class method to Agent base class for meta creation
     def create_as_meta(cls: type[Agent], embedded_agent: Agent, **kwargs) -> Agent:
         """Create this agent type with an embedded agent."""
-
         # Custom state with meta field
         class MetaEnabledState(cls.get_state_schema()):
             meta_state: MetaStateSchema | None = Field(default=None)

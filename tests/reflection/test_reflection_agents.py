@@ -19,7 +19,6 @@ from haive.core.engine.aug_llm import AugLLMConfig
 
 class TestReflectionAgents:
     """Test reflection agents with real components."""
-
     def test_simple_reflection_agent(self):
         """Test basic reflection agent improving a response."""
         # Create reflection agent
@@ -86,7 +85,6 @@ class TestReflectionAgents:
 
     def test_tool_based_reflection_agent(self):
         """Test reflection agent that uses tools."""
-
         # Create a simple calculation tool
         @tool
         def calculator(expression: str) -> str:
@@ -118,7 +116,6 @@ class TestReflectionAgents:
 
 class TestPrePostHookPatterns:
     """Test the generic pre/post hook multi-agent patterns."""
-
     def test_reflection_multi_agent(self):
         """Test main agent with reflection post-processing."""
         # Create main agent
@@ -153,7 +150,6 @@ class TestPrePostHookPatterns:
 
     def test_structured_output_multi_agent(self):
         """Test main agent with structured output extraction."""
-
         # Define output model
         class Summary(BaseModel):
             main_topic: str = Field(description="Main topic discussed")
@@ -241,7 +237,6 @@ class TestPrePostHookPatterns:
 
 class TestReflectionWithMessageTransform:
     """Test reflection patterns that use message transformation."""
-
     def test_reflection_preserves_context(self):
         """Test that reflection preserves original query context."""
         # This tests the pattern where:

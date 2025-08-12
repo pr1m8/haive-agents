@@ -2,11 +2,10 @@
 """Comprehensive test suite for conversation persistence without expensive LLM calls."""
 
 import asyncio
+from datetime import datetime
 import json
 import os
 import sys
-from datetime import datetime
-from pathlib import Path
 
 
 def setup_paths():
@@ -65,7 +64,7 @@ async def test_async_postgresql_setup():
 
         return True
 
-    except Exception as e:
+    except Exception:
         import traceback
 
         traceback.print_exc()
@@ -75,7 +74,6 @@ async def test_async_postgresql_setup():
 def test_thread_continuation():
     """Test continuing conversations on existing thread IDs."""
     try:
-        from haive.core.engine.aug_llm import AugLLMConfig
         from langchain_core.messages import HumanMessage
 
         from haive.agents.simple.agent import SimpleAgent
@@ -110,10 +108,9 @@ def test_thread_continuation():
                 return True
             print("⚠️  Thread continuation may not be working - same message count")
             return False
-        else:
-            return False
+        return False
 
-    except Exception as e:
+    except Exception:
         import traceback
 
         traceback.print_exc()
@@ -123,7 +120,6 @@ def test_thread_continuation():
 def test_react_agent_persistence():
     """Test React agent with persistence and tool usage."""
     try:
-        from haive.core.engine.aug_llm import AugLLMConfig
         from langchain_core.messages import HumanMessage
 
         from haive.agents.react.agent import ReactAgent
@@ -159,7 +155,7 @@ def test_react_agent_persistence():
         print("❌ No messages in result")
         return False
 
-    except Exception as e:
+    except Exception:
         import traceback
 
         traceback.print_exc()
@@ -225,7 +221,7 @@ def check_database_health():
         conn.close()
         return True
 
-    except Exception as e:
+    except Exception:
         return False
 
 
@@ -269,7 +265,6 @@ def create_test_report(results):
 
 async def main():
     """Run comprehensive persistence tests."""
-
     setup_paths()
 
     # Run all tests

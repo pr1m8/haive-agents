@@ -1,25 +1,23 @@
 """Simple test for multi-agent execution."""
 
 import asyncio
-import os
 import sys
+
 
 # Add paths
 sys.path.insert(0, "/home/will/Projects/haive/backend/haive/packages/haive-agents/src")
 sys.path.insert(0, "/home/will/Projects/haive/backend/haive/packages/haive-core/src")
-
-from haive.core.engine.aug_llm import AugLLMConfig
 
 # Direct imports to avoid broken __init__.py
 from langchain_core.messages import HumanMessage
 
 from haive.agents.multi.proper_base import ProperMultiAgent
 from haive.agents.simple.agent import SimpleAgent
+from haive.core.engine.aug_llm import AugLLMConfig
 
 
 async def test_execution():
     """Test multi-agent execution."""
-
     # Create agents
     agent1 = SimpleAgent(
         name="agent1",
@@ -50,7 +48,7 @@ async def test_execution():
 
         return True
 
-    except Exception as e:
+    except Exception:
         import traceback
 
         traceback.print_exc()

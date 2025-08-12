@@ -102,7 +102,6 @@ def test_dynamic_agent_update():
 
 def test_recompilation_tracking():
     """Test recompilation tracking in MetaAgent."""
-
     # Create agent that supports recompilation
     class RecompilableSimpleAgent(SimpleAgent):
         def __init__(self, *args, **kwargs):

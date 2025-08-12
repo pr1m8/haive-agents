@@ -8,22 +8,21 @@ This test actually runs both implementations to show differences in:
 - Feature availability
 """
 
-import asyncio
-import sys
 import os
-from typing import Dict, Any
+import sys
+
 
 # Add path for imports
 sys.path.insert(0, os.path.abspath("packages/haive-agents/src"))
 sys.path.insert(0, os.path.abspath("packages/haive-core/src"))
 
-from langchain_core.messages import HumanMessage, AIMessage
+from langchain_core.messages import HumanMessage
 from pydantic import BaseModel, Field
 
+from haive.agents.multi.enhanced_multi_agent_v4 import EnhancedMultiAgentV4
 from haive.agents.simple.agent_v3 import SimpleAgentV3
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.schema.prebuilt.multi_agent_state import MultiAgentState
-from haive.agents.multi.enhanced_multi_agent_v4 import EnhancedMultiAgentV4
+
 
 # Try to import V3 - it might fail due to missing dependencies
 try:
@@ -295,7 +294,7 @@ def test_v3_if_available():
 
         multi = MultiAgentV3(**v3_kwargs)
 
-        print(f"\n✅ V3 created successfully")
+        print("\n✅ V3 created successfully")
 
         # Test V3-specific features if available
         if hasattr(multi, "update_performance"):
@@ -315,7 +314,7 @@ def test_v3_if_available():
             {"messages": [HumanMessage(content="Analyze and improve our workflow.")]}
         )
 
-        print(f"\n✅ V3 Execution completed!")
+        print("\n✅ V3 Execution completed!")
         print(f"   Messages: {len(result.get('messages', []))}")
 
         return True

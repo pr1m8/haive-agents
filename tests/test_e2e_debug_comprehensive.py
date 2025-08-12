@@ -6,7 +6,8 @@ This will trace the exact location where BasePromptTemplate serialization fails.
 import logging
 import sys
 import traceback
-from typing import Any, Dict
+from typing import Any
+
 
 # Add the packages to Python path
 sys.path.insert(0, "/home/will/Projects/haive/backend/haive/packages/haive-core/src")
@@ -66,10 +67,11 @@ def test_schema_composer():
     logger.info("\n🔍 TESTING SCHEMA COMPOSER")
 
     try:
-        from haive.core.engine.aug_llm import AugLLMConfig
-        from haive.core.schema.composer import SchemaComposer
         from langchain_core.prompts import ChatPromptTemplate
         from langchain_core.tools import tool
+
+        from haive.core.engine.aug_llm import AugLLMConfig
+        from haive.core.schema.composer import SchemaComposer
 
         # Create a simple tool
         @tool
@@ -153,10 +155,10 @@ def test_agent_creation():
     logger.info("\n🔍 TESTING AGENT CREATION AND EXECUTION")
 
     try:
-        from haive.core.engine.aug_llm import AugLLMConfig
         from langchain_core.tools import tool
 
         from haive.agents.react.agent import ReactAgent
+        from haive.core.engine.aug_llm import AugLLMConfig
 
         @tool
         def calc_add(a: int, b: int) -> str:
@@ -224,8 +226,9 @@ def test_state_reconstruction():
     logger.info("\n🔍 TESTING STATE RECONSTRUCTION FROM DICT")
 
     try:
-        from haive.core.engine.aug_llm import AugLLMConfig
         from langchain_core.prompts import ChatPromptTemplate
+
+        from haive.core.engine.aug_llm import AugLLMConfig
 
         # Create a dict that simulates serialized state
         chat_prompt = ChatPromptTemplate.from_messages(

@@ -1,8 +1,8 @@
 """Clean test for self-discover agent to see actual results."""
 
 import asyncio
-import os
 import sys
+
 
 # Add direct paths to avoid import issues
 sys.path.insert(0, "/home/will/Projects/haive/backend/haive/packages/haive-agents/src")
@@ -10,6 +10,7 @@ sys.path.insert(0, "/home/will/Projects/haive/backend/haive/packages/haive-core/
 
 # Suppress debug logging
 import logging
+
 
 logging.getLogger().setLevel(logging.ERROR)
 
@@ -23,7 +24,6 @@ from haive.agents.reasoning_and_critique.self_discover.v2.agent import (
 
 async def test_self_discover_clean():
     """Test self-discover agent with clean output."""
-
     # Simple test problem
     test_problem = "How do I solve 25 * 36?"
 
@@ -56,7 +56,7 @@ async def test_self_discover_clean():
 
         return result
 
-    except Exception as e:
+    except Exception:
         import traceback
 
         traceback.print_exc()

@@ -1,9 +1,7 @@
 """Example: ReactAgent with Structured Output for Code Analysis."""
 
 import asyncio
-from typing import Dict, List, Optional
 
-from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.tools import tool
 from pydantic import BaseModel, Field
@@ -13,6 +11,7 @@ from haive.agents.patterns.sequential_with_structured_output import (
     SequentialHooks,
 )
 from haive.agents.react.agent import ReactAgent
+from haive.core.engine.aug_llm import AugLLMConfig
 
 
 # Structured output models for code analysis
@@ -22,8 +21,8 @@ class CodeIssue(BaseModel):
     severity: str = Field(description="Severity level", pattern="^(critical|high|medium|low)$")
     category: str = Field(description="Issue category (bug, performance, security, style)")
     description: str = Field(description="Description of the issue")
-    file_path: Optional[str] = Field(default=None, description="File where issue was found")
-    line_number: Optional[int] = Field(default=None, description="Line number if applicable")
+    file_path: str | None = Field(default=None, description="File where issue was found")
+    line_number: int | None = Field(default=None, description="Line number if applicable")
     suggestion: str = Field(description="Suggested fix or improvement")
 
 
@@ -32,9 +31,9 @@ class DependencyInfo(BaseModel):
 
     name: str = Field(description="Dependency name")
     version: str = Field(description="Current version")
-    latest_version: Optional[str] = Field(default=None, description="Latest available version")
+    latest_version: str | None = Field(default=None, description="Latest available version")
     security_issues: bool = Field(default=False, description="Has known security issues")
-    update_recommendation: Optional[str] = Field(default=None)
+    update_recommendation: str | None = Field(default=None)
 
 
 class CodeAnalysisReport(BaseModel):
@@ -46,14 +45,14 @@ class CodeAnalysisReport(BaseModel):
     overall_health_score: float = Field(description="Overall project health score", ge=0.0, le=10.0)
 
     # Issues found
-    issues: List[CodeIssue] = Field(description="List of issues found during analysis")
+    issues: list[CodeIssue] = Field(description="List of issues found during analysis")
 
     critical_issues_count: int = Field(
         description="Number of critical issues requiring immediate attention"
     )
 
     # Code metrics
-    code_metrics: Dict[str, float] = Field(
+    code_metrics: dict[str, float] = Field(
         description="Code quality metrics",
         examples=[
             {
@@ -66,12 +65,12 @@ class CodeAnalysisReport(BaseModel):
     )
 
     # Dependencies
-    dependencies_analyzed: List[DependencyInfo] = Field(description="Dependencies analyzed")
+    dependencies_analyzed: list[DependencyInfo] = Field(description="Dependencies analyzed")
 
     outdated_dependencies: int = Field(description="Number of outdated dependencies")
 
     # Recommendations
-    top_recommendations: List[str] = Field(
+    top_recommendations: list[str] = Field(
         description="Top recommendations for improvement", min_items=3, max_items=5
     )
 
@@ -80,14 +79,14 @@ class CodeAnalysisReport(BaseModel):
         description="Security assessment", pattern="^(excellent|good|fair|poor)$"
     )
 
-    security_recommendations: Optional[List[str]] = Field(
+    security_recommendations: list[str] | None = Field(
         default=None, description="Security-specific recommendations"
     )
 
     # Next steps
-    immediate_actions: List[str] = Field(description="Actions to take immediately")
+    immediate_actions: list[str] = Field(description="Actions to take immediately")
 
-    long_term_improvements: List[str] = Field(description="Long-term improvement suggestions")
+    long_term_improvements: list[str] = Field(description="Long-term improvement suggestions")
 
 
 # Mock tools for code analysis

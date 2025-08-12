@@ -7,7 +7,6 @@ from pydantic import BaseModel, Field, create_model
 
 def test_key_insight():
     """Test the key insight about Pydantic field handling."""
-
     # Create a model with just messages (like v2 engine output)
     class TaskResult(BaseModel):
         summary: str
@@ -38,7 +37,6 @@ def test_key_insight():
 
 def test_schema_composer_approach():
     """Test if SchemaComposer approach would work."""
-
     class TaskResult(BaseModel):
         summary: str
         completed: bool

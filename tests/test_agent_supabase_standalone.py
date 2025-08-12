@@ -1,8 +1,9 @@
 """Standalone agent Supabase integration tests (no conftest dependencies)."""
 
 import os
-import sys
 from pathlib import Path
+import sys
+
 
 # Add the packages to Python path
 agents_path = Path(__file__).parent.parent / "src"
@@ -11,6 +12,7 @@ sys.path.insert(0, str(agents_path))
 sys.path.insert(0, str(core_path))
 
 from dotenv import load_dotenv
+
 
 # Load environment variables
 load_dotenv()
@@ -21,7 +23,7 @@ def test_agent_import():
     try:
         return True
 
-    except Exception as e:
+    except Exception:
         return False
 
 
@@ -31,12 +33,12 @@ def test_agent_with_supabase_config():
         return True
 
     try:
-        from haive.core.graph.state_graph.base_graph2 import BaseGraph
-        from haive.core.persistence.supabase_config import SupabaseCheckpointerConfig
-        from haive.core.persistence.types import CheckpointerMode
         from langgraph.graph import END
 
         from haive.agents.base import Agent
+        from haive.core.graph.state_graph.base_graph2 import BaseGraph
+        from haive.core.persistence.supabase_config import SupabaseCheckpointerConfig
+        from haive.core.persistence.types import CheckpointerMode
 
         # Create a test agent class
         class TestAgent(Agent):
@@ -93,7 +95,7 @@ def test_agent_with_supabase_config():
 
         return True
 
-    except Exception as e:
+    except Exception:
         import traceback
 
         traceback.print_exc()
@@ -106,10 +108,9 @@ def test_agent_store_integration():
         return True
 
     try:
+        from haive.agents.base import Agent
         from haive.core.graph.state_graph.base_graph2 import BaseGraph
         from haive.core.persistence.supabase_config import SupabaseCheckpointerConfig
-
-        from haive.agents.base import Agent
 
         class StoreTestAgent(Agent):
             def setup_agent(self):
@@ -145,16 +146,15 @@ def test_agent_store_integration():
 
         return True
 
-    except Exception as e:
+    except Exception:
         return False
 
 
 def test_agent_persistence_fields():
     """Test that agent persistence fields are properly set."""
     try:
-        from haive.core.graph.state_graph.base_graph2 import BaseGraph
-
         from haive.agents.base import Agent
+        from haive.core.graph.state_graph.base_graph2 import BaseGraph
 
         class FieldTestAgent(Agent):
             def setup_agent(self):
@@ -185,7 +185,7 @@ def test_agent_persistence_fields():
 
         return True
 
-    except Exception as e:
+    except Exception:
         return False
 
 
@@ -195,10 +195,9 @@ def test_agent_factory_pattern():
         return True
 
     try:
+        from haive.agents.base import Agent
         from haive.core.graph.state_graph.base_graph2 import BaseGraph
         from haive.core.persistence.supabase_config import SupabaseCheckpointerConfig
-
-        from haive.agents.base import Agent
 
         class FactoryAgent(Agent):
             def setup_agent(self):
@@ -228,13 +227,12 @@ def test_agent_factory_pattern():
 
         return True
 
-    except Exception as e:
+    except Exception:
         return False
 
 
 def main():
     """Run all agent tests."""
-
     results = []
     results.append(test_agent_import())
     results.append(test_agent_with_supabase_config())

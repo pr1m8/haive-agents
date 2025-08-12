@@ -4,14 +4,15 @@
 import os
 import sys
 
+
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../../"))
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../../../haive-core/src"))
 
-import json
 
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, ToolMessage
 from langchain_core.messages.utils import messages_from_dict
 from pydantic import BaseModel, Field
+
 
 # Test 1: Direct ToolMessage serialization
 
@@ -22,17 +23,17 @@ tool_msg = ToolMessage(content="Result: 8", tool_call_id="call_123", name="add")
 # Try different serialization methods
 try:
     msg_dict = dict(tool_msg)
-except Exception as e:
+except Exception:
     pass
 
 try:
     msg_dict = tool_msg.model_dump()
-except Exception as e:
+except Exception:
     pass
 
 try:
     msg_dict = tool_msg.__dict__
-except Exception as e:
+except Exception:
     pass
 
 
@@ -78,7 +79,7 @@ try:
         if isinstance(msg, ToolMessage):
             pass
 
-except Exception as e:
+except Exception:
     import traceback
 
     traceback.print_exc()

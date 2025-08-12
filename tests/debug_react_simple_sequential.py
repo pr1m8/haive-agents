@@ -3,17 +3,18 @@
 import asyncio
 import sys
 
+
 # Add paths
 sys.path.insert(0, "/home/will/Projects/haive/backend/haive/packages/haive-agents/src")
 sys.path.insert(0, "/home/will/Projects/haive/backend/haive/packages/haive-core/src")
 
-from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import HumanMessage
 from langchain_core.tools import tool
 
 from haive.agents.multi.proper_base import ProperMultiAgent
 from haive.agents.react.agent import ReactAgent
 from haive.agents.simple.agent import SimpleAgent
+from haive.core.engine.aug_llm import AugLLMConfig
 
 
 # Create a simple tool for ReactAgent
@@ -24,12 +25,11 @@ def calculator(expression: str) -> str:
         result = eval(expression)
         return f"The result of {expression} is {result}"
     except Exception as e:
-        return f"Error calculating {expression}: {str(e)}"
+        return f"Error calculating {expression}: {e!s}"
 
 
 async def debug_execution():
     """Debug ReactAgent → SimpleAgent sequential execution."""
-
     print("\n" + "=" * 80)
     print("🔍 DEBUG: ReactAgent → SimpleAgent Sequential Execution")
     print("=" * 80 + "\n")
@@ -180,7 +180,7 @@ async def debug_execution():
         return result
 
     except Exception as e:
-        print(f"\n❌ ERROR during execution: {type(e).__name__}: {str(e)}")
+        print(f"\n❌ ERROR during execution: {type(e).__name__}: {e!s}")
         import traceback
 
         traceback.print_exc()
@@ -204,7 +204,6 @@ async def inspect_intermediate_states():
 
     # This would require modifying the graph nodes to add inspection points
     # For now, we'll use the simpler debug approach above
-    pass
 
 
 if __name__ == "__main__":

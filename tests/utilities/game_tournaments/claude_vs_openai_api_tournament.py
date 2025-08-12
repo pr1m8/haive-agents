@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Claude vs OpenAI Tournament via API
+"""Claude vs OpenAI Tournament via API.
 Uses the existing working API system to run all games.
 """
 

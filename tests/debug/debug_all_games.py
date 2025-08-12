@@ -8,12 +8,12 @@ This script will:
 4. Test which games can be added to __all__
 """
 
-import ast
 import importlib
+from pathlib import Path
 import sys
 import traceback
-from pathlib import Path
-from typing import Any, Dict, List, Tuple
+from typing import Any
+
 
 # Add package paths
 project_root = Path(__file__).parent
@@ -203,7 +203,6 @@ def check_game_exports(game_name: str, module: Any) -> dict[str, Any]:
 
 def main():
     """Run comprehensive game import diagnostics."""
-
     # Get all game directories
     games = get_game_directories()
     for game in games:

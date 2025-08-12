@@ -16,10 +16,10 @@ RAG_QUERY_REFINEMENT = ChatPromptTemplate.from_messages(
     [("system", "You are a query optimizer"), ("human", "{query}")]
 )
 
-from haive.core.engine.aug_llm import AugLLMConfig
-
 # Import our components
 from haive.agents.simple.agent_v2 import SimpleAgentV2
+from haive.core.engine.aug_llm import AugLLMConfig
+
 
 # Create agent
 agent = SimpleAgentV2(
@@ -43,7 +43,6 @@ if engine_field:
 
 from typing import get_type_hints
 
-from langgraph.graph import StateGraph
 
 # This is what LangGraph does internally
 try:
@@ -53,10 +52,10 @@ try:
     # Then compile it - this is where the error happens
     compiled = graph.compile()
 
-except NameError as e:
+except NameError:
     pass
 
-except Exception as e:
+except Exception:
     import traceback
 
     traceback.print_exc()
@@ -71,7 +70,7 @@ try:
     # LangGraph does this: get_type_hints(schema, localns={schema.__name__: schema})
     localns = {state_schema.__name__: state_schema}
     hints = get_type_hints(state_schema, localns=localns)
-except NameError as e:
+except NameError:
     pass
 
 # Test if we can make BaseOutputParser available
@@ -84,5 +83,5 @@ try:
         "AugLLMConfig": AugLLMConfig,
     }
     hints = get_type_hints(state_schema, localns=localns)
-except Exception as e:
+except Exception:
     pass

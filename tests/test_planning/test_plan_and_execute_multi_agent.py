@@ -48,7 +48,6 @@ def calculate_tool(expression: str) -> str:
 
 class TestPlanAndExecuteMultiAgent:
     """Test suite for Multi-Agent Plan and Execute Agent."""
-
     @pytest.fixture
     def aug_llm_config(self):
         """Create an AugLLM config for testing.
@@ -268,7 +267,6 @@ class TestPlanAndExecuteMultiAgent:
         Args:
             plan_execute_agent: Plan and execute agent fixture.
         """
-
         # Test add_tool method
         @tool
         def new_tool(input_text: str) -> str:

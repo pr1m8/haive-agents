@@ -4,11 +4,11 @@
 import os
 import sys
 
+
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../../"))
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../../../../haive-core/src"))
 
 
-from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import HumanMessage
 from langchain_core.tools import tool
 from pydantic import BaseModel, Field
@@ -16,6 +16,7 @@ from pydantic import BaseModel, Field
 from haive.agents.multi.base import SequentialAgent
 from haive.agents.react.agent import ReactAgent
 from haive.agents.simple.agent import SimpleAgent
+from haive.core.engine.aug_llm import AugLLMConfig
 
 
 @tool
@@ -61,13 +62,12 @@ simple_agent.compile()
 try:
     # The SequentialAgent would pass the entire state from ReactAgent to SimpleAgent
     simple_result = simple_agent.run(react_dict)
-except Exception as e:
-    pass
+except Exception:
 
     # Try with just messages
     try:
         simple_result = simple_agent.run({"messages": react_dict.get("messages", [])})
-    except Exception as e2:
+    except Exception:
         pass
 
 # Now test the actual SequentialAgent
@@ -78,6 +78,7 @@ seq_agent = SequentialAgent(agents=[react_agent, simple_agent])
 # Add some debug logging to see state transfer
 import logging
 
+
 logging.basicConfig(level=logging.DEBUG, format="%(name)s - %(levelname)s - %(message)s")
 
 seq_agent.compile()
@@ -86,7 +87,7 @@ try:
     result = seq_agent.run(
         {"messages": [HumanMessage(content="Calculate 5 + 3, then plan a calculator")]}
     )
-except Exception as e:
+except Exception:
     import traceback
 
     traceback.print_exc()

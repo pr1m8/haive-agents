@@ -5,10 +5,10 @@ This test is set up to diagnose why multi-agent tests are running slowly.
 It uses the new debugkit utilities for comprehensive debugging.
 """
 
-import sys
-import os
 import asyncio
-from typing import Dict, Any
+import os
+import sys
+
 
 # Add paths for imports
 sys.path.insert(0, os.path.abspath("packages/haive-agents/src"))
@@ -16,6 +16,7 @@ sys.path.insert(0, os.path.abspath("packages/haive-core/src"))
 
 # Import debugkit FIRST
 from haive.core.utils.debugkit import debugkit
+
 
 # Enable comprehensive debugging
 debugkit.configure(
@@ -38,9 +39,9 @@ os.environ["LOGURU_LEVEL"] = "TRACE"
 from langchain_core.messages import HumanMessage
 from pydantic import BaseModel, Field
 
+from haive.agents.multi.enhanced_multi_agent_v4 import EnhancedMultiAgentV4
 from haive.agents.simple.agent_v3 import SimpleAgentV3
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.agents.multi.enhanced_multi_agent_v4 import EnhancedMultiAgentV4
 
 
 # Structured output model

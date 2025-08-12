@@ -13,9 +13,7 @@ Test cases:
 
 import asyncio
 import uuid
-from typing import List
 
-from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import AIMessage, HumanMessage, ToolMessage
 from langchain_core.tools import tool
 from pydantic import BaseModel, Field
@@ -23,6 +21,8 @@ from pydantic import BaseModel, Field
 # Import both V1 and V2 agents
 from haive.agents.simple.agent import SimpleAgent  # V1
 from haive.agents.simple.agent_v2 import SimpleAgentV2  # V2
+from haive.core.engine.aug_llm import AugLLMConfig
+
 
 # Try to import ReactAgent
 try:
@@ -37,7 +37,6 @@ except ImportError:
 # Define test models and tools exactly as specified
 class Plan(BaseModel):
     """A plan with steps."""
-
     steps: list[str] = Field(description="list of steps")
 
 
@@ -49,7 +48,6 @@ def add(a: int, b: int) -> int:
 
 async def test_simple_agent_v1_with_plan():
     """Test SimpleAgent V1 with Plan model - should fail to create ToolMessages."""
-
     # Create engine with Plan model as specified
     plan_aug = AugLLMConfig(
         id=f"engine_{uuid.uuid4().hex[:8]}",
@@ -96,7 +94,6 @@ async def test_simple_agent_v1_with_plan():
         for i, msg in enumerate(result["messages"]):
             if isinstance(msg, ToolMessage):
                 pass
-                pass
 
         # Check for ToolMessages
         tool_messages = [msg for msg in result["messages"] if isinstance(msg, ToolMessage)]
@@ -105,13 +102,12 @@ async def test_simple_agent_v1_with_plan():
         print(f"✅ V1 UNEXPECTED: Created {len(tool_messages)} ToolMessage(s)")
         return True
 
-    except Exception as e:
+    except Exception:
         return False
 
 
 async def test_simple_agent_v2_with_plan():
     """Test SimpleAgent V2 with Plan model - should succeed in creating ToolMessages."""
-
     # Create engine with Plan model as specified
     plan_aug = AugLLMConfig(
         id=f"engine_{uuid.uuid4().hex[:8]}",
@@ -168,16 +164,14 @@ async def test_simple_agent_v2_with_plan():
                 return True
             print("❌ ToolMessage has incorrect name or ID")
             return False
-        else:
-            return False
+        return False
 
-    except Exception as e:
+    except Exception:
         return False
 
 
 async def test_simple_agent_v1_with_add_tool():
     """Test SimpleAgent V1 with add tool - should work fine."""
-
     # Create engine with add tool as specified
     add_aug = AugLLMConfig(
         id=f"engine_{uuid.uuid4().hex[:8]}",
@@ -218,16 +212,14 @@ async def test_simple_agent_v1_with_add_tool():
                 return True
             print(f"❌ Tool calculation is incorrect: {tool_msg.content}")
             return False
-        else:
-            return False
+        return False
 
-    except Exception as e:
+    except Exception:
         return False
 
 
 async def test_simple_agent_v2_with_add_tool():
     """Test SimpleAgent V2 with add tool - should work fine."""
-
     # Create engine with add tool as specified
     add_aug = AugLLMConfig(
         id=f"engine_{uuid.uuid4().hex[:8]}",
@@ -268,10 +260,9 @@ async def test_simple_agent_v2_with_add_tool():
                 return True
             print(f"❌ Tool calculation is incorrect: {tool_msg.content}")
             return False
-        else:
-            return False
+        return False
 
-    except Exception as e:
+    except Exception:
         return False
 
 
@@ -326,51 +317,49 @@ async def test_react_agent_with_add_tool():
                 return True
             print(f"❌ Tool calculation is incorrect: {tool_msg.content}")
             return False
-        else:
-            return False
+        return False
 
-    except Exception as e:
+    except Exception:
         return False
 
 
 async def main():
     """Run all comparison tests."""
-
     results = []
 
     # Test 1: V1 with Plan (should fail to create ToolMessages)
     try:
         result1 = await test_simple_agent_v1_with_plan()
         results.append(("SimpleAgent V1 + Plan", not result1))  # Expect failure for V1
-    except Exception as e:
+    except Exception:
         results.append(("SimpleAgent V1 + Plan", True))  # Crash is expected
 
     # Test 2: V2 with Plan (should succeed)
     try:
         result2 = await test_simple_agent_v2_with_plan()
         results.append(("SimpleAgent V2 + Plan", result2))
-    except Exception as e:
+    except Exception:
         results.append(("SimpleAgent V2 + Plan", False))
 
     # Test 3: V1 with add tool (should succeed)
     try:
         result3 = await test_simple_agent_v1_with_add_tool()
         results.append(("SimpleAgent V1 + add", result3))
-    except Exception as e:
+    except Exception:
         results.append(("SimpleAgent V1 + add", False))
 
     # Test 4: V2 with add tool (should succeed)
     try:
         result4 = await test_simple_agent_v2_with_add_tool()
         results.append(("SimpleAgent V2 + add", result4))
-    except Exception as e:
+    except Exception:
         results.append(("SimpleAgent V2 + add", False))
 
     # Test 5: ReactAgent with add tool (should succeed)
     try:
         result5 = await test_react_agent_with_add_tool()
         results.append(("ReactAgent + add", result5))
-    except Exception as e:
+    except Exception:
         results.append(("ReactAgent + add", False))
 
     all_passed = True

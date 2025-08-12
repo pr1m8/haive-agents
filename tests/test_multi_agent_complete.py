@@ -28,7 +28,6 @@ from haive.core.schema.state import MessagesState, ToolState
 # Enhanced Multi-Agent with Conditional Routing
 class ConditionalMultiAgent(MultiAgent):
     """Multi-agent that uses conditional edges for dynamic routing."""
-
     router_config: dict[str, Any] = Field(default_factory=dict)
     enable_conditional_routing: bool = Field(default=True)
 
@@ -150,7 +149,6 @@ class ConditionalMultiAgent(MultiAgent):
 # Component-based Agent using composition
 class ComponentAgent(Agent):
     """Agent built from reusable components."""
-
     components: dict[str, Any] = Field(default_factory=dict)
     component_config: dict[str, Any] = Field(default_factory=dict)
 
@@ -216,7 +214,6 @@ class ComponentAgent(Agent):
 # RAG Agent with proper schema
 class EnhancedRAGAgent(Agent):
     """RAG agent with retriever engine and proper schema handling."""
-
     retriever_engine: EngineRetriever = Field(description="Retriever engine")
     llm_engine: AugLLMConfig | None = Field(default=None, description="Optional LLM for processing")
     min_relevance_score: float = Field(default=0.7, ge=0, le=1)
@@ -328,7 +325,6 @@ def mock_engines():
 # Test complete multi-agent system
 class TestCompleteMultiAgent:
     """Test comprehensive multi-agent functionality."""
-
     def test_conditional_multi_agent_routing(self, mock_engines):
         """Test multi-agent with conditional routing."""
         with patch.multiple(
@@ -362,7 +358,6 @@ class TestCompleteMultiAgent:
 
     def test_component_agent_composition(self):
         """Test agent built from components."""
-
         # Create mock components
         def processor(state):
             return {"processed": True}
@@ -443,10 +438,8 @@ class TestCompleteMultiAgent:
 # Test model_post_init patterns
 class TestModelPostInit:
     """Test proper use of model_post_init."""
-
     def test_model_post_init_validation(self):
         """Test that model_post_init validates configuration."""
-
         class ValidatingAgent(Agent):
             required_field: str
             optional_field: str = "default"
@@ -475,7 +468,6 @@ class TestModelPostInit:
 
     def test_model_post_init_component_setup(self, mock_engines):
         """Test using model_post_init for component setup."""
-
         class ComponentSetupAgent(Agent):
             auto_setup_tools: bool = True
 

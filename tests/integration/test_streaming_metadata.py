@@ -6,7 +6,6 @@ from src.haive.agents.conversation.collaberative.agent import CollaborativeConve
 
 def test_streaming_metadata():
     """Test what metadata gets streamed back from conversation agents."""
-
     # Create agent
     agent = CollaborativeConversation.create_brainstorming_session(
         topic="Test streaming metadata", participants=["Alice", "Bob"], max_rounds=1
@@ -22,7 +21,7 @@ def test_streaming_metadata():
                     pass
                 else:
                     pass
-    except Exception as e:
+    except Exception:
         pass
 
     try:
@@ -41,14 +40,13 @@ def test_streaming_metadata():
                         metadata_chunks.append(value)
                     elif isinstance(value, dict) and any("metadata" in k.lower() for k in value):
                         pass
+                    # Show preview of value
+                    elif isinstance(value, str):
+                        preview = value[:50] + "..." if len(value) > 50 else value
                     else:
-                        # Show preview of value
-                        if isinstance(value, str):
-                            preview = value[:50] + "..." if len(value) > 50 else value
-                        else:
-                            preview = (
-                                str(value)[:50] + "..." if len(str(value)) > 50 else str(value)
-                            )
+                        preview = (
+                            str(value)[:50] + "..." if len(str(value)) > 50 else str(value)
+                        )
             else:
                 pass
 
@@ -56,7 +54,7 @@ def test_streaming_metadata():
             if chunk_count >= 5:
                 break
 
-    except Exception as e:
+    except Exception:
         pass
 
     try:
@@ -84,7 +82,7 @@ def test_streaming_metadata():
 
         asyncio.run(test_astream())
 
-    except Exception as e:
+    except Exception:
         pass
 
     if metadata_chunks:

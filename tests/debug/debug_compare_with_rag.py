@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 
-from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.engine.vectorstore.vectorstore import VectorStoreConfig
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field
 
 from haive.agents.rag.base.agent import BaseRAGAgent
+from haive.core.engine.aug_llm import AugLLMConfig
+from haive.core.engine.vectorstore.vectorstore import VectorStoreConfig
+
 
 # Same exact setup as the failing notebook
 RAG_QUERY_REFINEMENT = ChatPromptTemplate.from_messages(
@@ -42,8 +43,7 @@ try:
     # Test with same input
     rag_result = rag_agent.run({"query": "what is the tallest building in france"}, debug=True)
 
-except Exception as e:
-    pass
+except Exception:
 
     try:
         rag_agent = BaseRAGAgent(name="rag_test", engine=vectorstore_config)
@@ -56,7 +56,7 @@ except Exception as e:
                     field_info = schema_class.model_fields[name]
                 else:
                     pass
-    except Exception as e2:
+    except Exception:
         pass
 
 
@@ -78,7 +78,7 @@ try:
             if name in ["engine", "context", "query", "messages"]:
                 pass
 
-except Exception as e:
+except Exception:
     pass
 
 
@@ -101,7 +101,7 @@ try:
     if hasattr(agent, "composer"):
         pass
 
-except Exception as e:
+except Exception:
     import traceback
 
     traceback.print_exc()

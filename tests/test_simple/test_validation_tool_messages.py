@@ -2,20 +2,18 @@
 
 import asyncio
 import uuid
-from typing import List
 
-from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import AIMessage, HumanMessage, ToolMessage
 from langchain_core.tools import tool
 from pydantic import BaseModel, Field
 
 from haive.agents.simple import SimpleAgent
+from haive.core.engine.aug_llm import AugLLMConfig
 
 
 # Test schemas
 class Plan(BaseModel):
     """A plan with steps."""
-
     steps: list[str] = Field(description="A list of steps to complete the task")
 
 
@@ -28,7 +26,6 @@ def add_numbers(a: float, b: float) -> float:
 
 async def test_pydantic_tool_message_creation():
     """Test that Pydantic model validation creates ToolMessage."""
-
     # Create engine with Pydantic model
     engine = AugLLMConfig(
         id=f"engine_{uuid.uuid4().hex[:8]}",
@@ -102,7 +99,6 @@ async def test_pydantic_tool_message_creation():
 
 async def test_regular_tool_message_creation():
     """Test that regular tools create ToolMessages."""
-
     # Create engine with tools
     engine = AugLLMConfig(
         id=f"engine_{uuid.uuid4().hex[:8]}",
@@ -153,19 +149,18 @@ async def test_regular_tool_message_creation():
 
 async def main():
     """Run all tests to see current behavior."""
-
     results = []
 
     try:
         result1 = await test_pydantic_tool_message_creation()
         results.append(("Pydantic", result1))
-    except Exception as e:
+    except Exception:
         results.append(("Pydantic", False))
 
     try:
         result2 = await test_regular_tool_message_creation()
         results.append(("Regular Tool", result2))
-    except Exception as e:
+    except Exception:
         results.append(("Regular Tool", False))
 
     for test_name, passed in results:

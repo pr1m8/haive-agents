@@ -3,26 +3,21 @@
 Tests core functionality with proper imports.
 """
 
-from typing import Any, Dict, List
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import Mock, patch
 
-import pytest
+from langchain_core.messages import BaseMessage, HumanMessage
+from langchain_core.tools import tool
+from langgraph.graph import END, START
+from pydantic import BaseModel, Field
+
+# Import SimpleAgent from correct location
+from haive.agents.simple.agent import SimpleAgent
 from haive.core.engine.aug_llm import AugLLMConfig
 
 # Use base_graph2 as indicated
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.schema.schema_composer import SchemaComposer
 from haive.core.schema.state import MessagesState
-from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
-from langchain_core.tools import tool
-from langgraph.graph import END, START
-from pydantic import BaseModel, Field
-
-from haive.agents.multi.base import SequentialAgent
-from haive.agents.react.agent import ReactAgent
-
-# Import SimpleAgent from correct location
-from haive.agents.simple.agent import SimpleAgent
 
 
 # Test tools
@@ -41,14 +36,12 @@ def calculate_tool(a: int, b: int) -> int:
 # Test schema
 class AnalysisResult(BaseModel):
     """Analysis output schema."""
-
     summary: str
     confidence: float = Field(ge=0, le=1, default=0.8)
 
 
 def test_graph_with_conditional_edges():
     """Test graph creation with conditional edges."""
-
     def route_by_content(state: dict) -> str:
         """Route based on message content."""
         messages = state.get("messages", [])
@@ -156,11 +149,9 @@ def test_simple_agent_mock():
 
 def test_multi_agent_concept():
     """Test multi-agent coordination concept with model_post_init."""
-
     # Create a custom base model that uses model_post_init
     class ValidatedConfig(BaseModel):
         """Config that validates on initialization."""
-
         name: str
         min_agents: int = Field(default=2, ge=1)
         agents: list[str] = Field(default_factory=list)
@@ -183,7 +174,7 @@ def test_multi_agent_concept():
     try:
         ValidatedConfig(name="bad_multi", min_agents=5, agents=["only_one"])
         raise AssertionError("Should have raised ValueError")
-    except ValueError as e:
+    except ValueError:
         pass
 
     return True
@@ -191,7 +182,6 @@ def test_multi_agent_concept():
 
 def test_conditional_routing_in_graph():
     """Test conditional routing with actual BaseGraph."""
-
     # Create routing function
     def intent_router(state: dict) -> str:
         """Route based on detected intent."""
@@ -201,8 +191,7 @@ def test_conditional_routing_in_graph():
             return "analyzer"
         if "search" in query:
             return "searcher"
-        else:
-            return "default"
+        return "default"
 
     # Create graph with conditional routing
     graph = BaseGraph()

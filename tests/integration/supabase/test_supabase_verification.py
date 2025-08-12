@@ -2,14 +2,15 @@
 """Test and verify Supabase writes are working."""
 
 import asyncio
-import os
 from datetime import datetime
+import os
 
-import psycopg
-from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import HumanMessage
+import psycopg
 
 from haive.agents.simple.agent import SimpleAgent
+from haive.core.engine.aug_llm import AugLLMConfig
+
 
 # Clear cached pools
 try:
@@ -30,7 +31,6 @@ except:
 
 async def test_and_verify():
     """Test agent and verify data in Supabase."""
-
     # Create unique thread ID
     thread_id = f"verify_test_{datetime.now().strftime('%Y%m%d_%H%M%S_%f')}"
 
@@ -51,7 +51,7 @@ async def test_and_verify():
 
         if "messages" in result and len(result["messages"]) > 1:
             pass
-    except Exception as e:
+    except Exception:
         return False
 
     # Step 2: Wait for writes to complete
@@ -141,7 +141,7 @@ async def test_and_verify():
 
                 return success
 
-    except Exception as e:
+    except Exception:
         import traceback
 
         traceback.print_exc()
@@ -150,7 +150,6 @@ async def test_and_verify():
 
 async def check_database_status():
     """Check overall database status."""
-
     conn_string = os.getenv("POSTGRES_CONNECTION_STRING")
 
     try:
@@ -180,7 +179,7 @@ async def check_database_status():
                     await cur.execute(f"SELECT COUNT(*) FROM {table_name}")
                     count = (await cur.fetchone())[0]
 
-    except Exception as e:
+    except Exception:
         pass
 
 

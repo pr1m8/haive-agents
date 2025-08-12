@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 
-from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.schema.schema_composer import SchemaComposer
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field
+
+from haive.core.engine.aug_llm import AugLLMConfig
+from haive.core.schema.schema_composer import SchemaComposer
+
 
 # Exact notebook setup
 RAG_QUERY_REFINEMENT = ChatPromptTemplate.from_messages(
@@ -51,13 +53,13 @@ for field_name, field_info in schema_class.model_fields.items():
 try:
     test_data = {"query": "test"}
     instance = schema_class.model_validate(test_data)
-except Exception as e:
+except Exception:
     pass
 
 try:
     empty_data = {}
     instance = schema_class.model_validate(empty_data)
-except Exception as e:
+except Exception:
     pass
 
 for name, info in schema_class.model_fields.items():

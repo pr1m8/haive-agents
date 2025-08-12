@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """Test RAG agents with PostgreSQL persistence - PROPERLY LOCATED IN AGENT MODULE."""
 
+from datetime import datetime
 import os
 import sys
-from datetime import datetime
+
 
 # Since we're in the proper module, use relative imports
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -11,7 +12,6 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 def test_base_rag_agent():
     """Test Base RAG agent with minimal configuration."""
-
     try:
         from langchain_core.messages import HumanMessage
 
@@ -39,7 +39,7 @@ def test_base_rag_agent():
 
         return True
 
-    except Exception as e:
+    except Exception:
         import traceback
 
         traceback.print_exc()
@@ -48,7 +48,6 @@ def test_base_rag_agent():
 
 def test_simple_rag_agent():
     """Test Simple RAG agent."""
-
     try:
         from langchain_core.messages import HumanMessage
 
@@ -76,7 +75,7 @@ def test_simple_rag_agent():
 
         return True
 
-    except Exception as e:
+    except Exception:
         import traceback
 
         traceback.print_exc()
@@ -85,7 +84,6 @@ def test_simple_rag_agent():
 
 def verify_message_quality():
     """Verify messages flow properly and make sense."""
-
     try:
         from langchain_core.messages import HumanMessage
 
@@ -149,13 +147,12 @@ def verify_message_quality():
 
         return True
 
-    except Exception as e:
+    except Exception:
         return False
 
 
 def main():
     """Run all RAG persistence tests."""
-
     results = {
         "base_rag": test_base_rag_agent(),
         "simple_rag": test_simple_rag_agent(),

@@ -18,7 +18,6 @@ from haive.agents.rag.multi_agent_rag.grading_components import (
 
 def test_grading_components():
     """Test individual grading components."""
-
     results = []
 
     # Test document grader
@@ -64,7 +63,6 @@ def test_grading_components():
 
 def test_graded_workflows():
     """Test graded RAG workflows."""
-
     results = []
 
     # Test Fully Graded RAG

@@ -2,9 +2,6 @@
 
 import asyncio
 
-from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.models.llm.base import AzureLLMConfig
-from haive.tools.tools.search_tools import tavily_search_tool
 from langchain_core.messages import HumanMessage
 
 from haive.agents.experiments.supervisor.agent_info import AgentInfo
@@ -16,11 +13,13 @@ from haive.agents.experiments.supervisor.dynamic_supervisor_agent import (
 )
 from haive.agents.experiments.supervisor.test_utils import add, multiply
 from haive.agents.simple.agent import SimpleAgent
+from haive.core.engine.aug_llm import AugLLMConfig
+from haive.core.models.llm.base import AzureLLMConfig
+from haive.tools.tools.search_tools import tavily_search_tool
 
 
 async def create_prebuilt_agents():
     """Create our 3 distinct agent types with clear purposes."""
-
     # 1. Search Agent - for finding information
     search_engine = AugLLMConfig(
         name="search_engine",
@@ -67,7 +66,6 @@ async def create_prebuilt_agents():
 
 async def test_multi_task_natural_flow():
     """Test: Find population → Calculate percentage → Translate result."""
-
     # Create all agents but only give supervisor 2 initially
     search_agent, math_agent, translation_agent = await create_prebuilt_agents()
 
@@ -127,7 +125,7 @@ Please complete all three steps."""
         else:
             pass
 
-    except Exception as e:
+    except Exception:
         import traceback
 
         traceback.print_exc()
@@ -174,14 +172,10 @@ Execute step by step using the appropriate specialist agents."""
             pass
 
         # Show the natural progression
-        if result2.get("next_agent") == "search_agent":
-            pass
-        elif result2.get("next_agent") == "math_agent":
-            pass
-        elif result2.get("next_agent") == "translation_agent":
+        if result2.get("next_agent") == "search_agent" or result2.get("next_agent") == "math_agent" or result2.get("next_agent") == "translation_agent":
             pass
 
-    except Exception as e:
+    except Exception:
         import traceback
 
         traceback.print_exc()

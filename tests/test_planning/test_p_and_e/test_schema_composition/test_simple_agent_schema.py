@@ -2,15 +2,15 @@
 
 import sys
 
+
 sys.path.append("/home/will/Projects/haive/backend/haive/packages/haive-core/src")
 sys.path.append("/home/will/Projects/haive/backend/haive/packages/haive-agents/src")
 
-from typing import List
 
-from haive.core.engine.aug_llm import AugLLMConfig
 from pydantic import BaseModel, Field
 
 from haive.agents.simple.agent import SimpleAgent
+from haive.core.engine.aug_llm import AugLLMConfig
 
 
 class Plan(BaseModel):

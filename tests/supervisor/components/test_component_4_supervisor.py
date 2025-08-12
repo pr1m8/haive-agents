@@ -13,7 +13,6 @@ from haive.agents.experiments.supervisor.test_component_1_state import (
 
 def test_supervisor_creation():
     """Test basic supervisor creation and setup."""
-
     # Test basic creation
     supervisor = DynamicSupervisor(name="test_supervisor")
 
@@ -22,7 +21,6 @@ def test_supervisor_creation():
 
 def test_supervisor_factory():
     """Test factory function with initial agents."""
-
     # Create real agents
     agents = create_real_agents()
 
@@ -53,7 +51,6 @@ def test_supervisor_factory():
 
 def test_dynamic_agent_management():
     """Test adding/removing agents dynamically."""
-
     supervisor = DynamicSupervisor(name="dynamic_test")
     agents = create_real_agents()
 
@@ -73,7 +70,6 @@ def test_dynamic_agent_management():
 
 async def test_supervisor_reasoning():
     """Test supervisor reasoning with simple task."""
-
     # Create supervisor with agents
     agents = create_real_agents()
     initial_agents = {
@@ -100,7 +96,7 @@ async def test_supervisor_reasoning():
         # Test routing decision
         routing = supervisor._route_supervisor_decision(state)
 
-    except Exception as e:
+    except Exception:
         raise
 
     return supervisor
@@ -108,7 +104,6 @@ async def test_supervisor_reasoning():
 
 def test_graph_structure():
     """Test supervisor graph structure."""
-
     supervisor = DynamicSupervisor(name="graph_test")
 
     # Check if graph is built
@@ -117,7 +112,7 @@ def test_graph_structure():
         try:
             # Try to get node information
             pass
-        except Exception as e:
+        except Exception:
             pass
     else:
         pass
@@ -127,7 +122,6 @@ def test_graph_structure():
 
 def test_state_integration():
     """Test state integration with supervisor."""
-
     supervisor = DynamicSupervisor(name="state_test")
     agents = create_real_agents()
 
@@ -143,12 +137,12 @@ def test_state_integration():
     # Test validation
     try:
         state.next_agent = "math_agent"
-    except Exception as e:
+    except Exception:
         pass
 
     try:
         state.next_agent = "nonexistent"
-    except Exception as e:
+    except Exception:
         pass
 
     return state
@@ -170,10 +164,10 @@ if __name__ == "__main__":
         # Test reasoning (async)
         try:
             reasoning_supervisor = asyncio.run(test_supervisor_reasoning())
-        except Exception as e:
+        except Exception:
             pass
 
-    except Exception as e:
+    except Exception:
         import traceback
 
         traceback.print_exc()

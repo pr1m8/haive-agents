@@ -21,7 +21,6 @@ from haive.agents.rag.enhanced_simple_rag_agent import SimpleRAGAgent, create_si
 # Test retriever for real testing
 class TestRetriever(BaseRetriever):
     """Test retriever with configurable documents."""
-
     def __init__(self, documents: list[Document]):
         self.documents = documents
 
@@ -63,7 +62,6 @@ TEST_DOCUMENTS = [
 
 class TestBaseRAGAgent:
     """Test BaseRAGAgent functionality."""
-
     def test_base_rag_creation(self):
         """Test creating BaseRAGAgent."""
         retriever = TestRetriever(TEST_DOCUMENTS)
@@ -128,7 +126,6 @@ class TestBaseRAGAgent:
 
     def test_create_rag_agent_factory(self):
         """Test factory function."""
-
         # Mock vector store
         class MockVectorStore:
             def as_retriever(self, **kwargs):
@@ -144,7 +141,6 @@ class TestBaseRAGAgent:
 
 class TestSimpleRAGAgent:
     """Test SimpleRAGAgent functionality."""
-
     def test_simple_rag_creation(self):
         """Test creating SimpleRAGAgent with defaults."""
         retriever = TestRetriever(TEST_DOCUMENTS)
@@ -192,7 +188,6 @@ class TestSimpleRAGAgent:
 
     def test_create_simple_rag_factory(self):
         """Test simplified factory function."""
-
         class MockVectorStore:
             def as_retriever(self):
                 return TestRetriever(TEST_DOCUMENTS)
@@ -207,7 +202,6 @@ class TestSimpleRAGAgent:
 
 class TestRAGAgentIntegration:
     """Test integration scenarios with RAG agents."""
-
     def test_rag_agent_representations(self):
         """Test string representations."""
         retriever = TestRetriever(TEST_DOCUMENTS)
@@ -281,7 +275,6 @@ class TestRAGAgentIntegration:
 # Performance and edge case tests
 class TestRAGEdgeCases:
     """Test edge cases and error handling."""
-
     def test_empty_retrieval(self):
         """Test handling when no documents are retrieved."""
         # Empty retriever
