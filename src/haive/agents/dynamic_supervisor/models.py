@@ -135,10 +135,8 @@ class AgentInfo(BaseModel):
         """
         required_lower = required.lower()
         return any(
-            (
-                cap.lower() in required_lower or required_lower in cap.lower()
-                for cap in self.capabilities
-            )
+            cap.lower() in required_lower or required_lower in cap.lower()
+            for cap in self.capabilities
         )
 
 
