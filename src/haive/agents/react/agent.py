@@ -528,6 +528,24 @@ class ReactAgent(SimpleAgent):
 
             if has_structured_model:
                 # Structured output models should END, not loop
+                # Remove any existing parse_output → agent_node edge
+                try:
+                    graph.remove_edge("parse_output", "agent_node")
+                    if self.debug:
+                        logger.debug("Removed parse_output → agent_node loop for structured output")
+                except Exception as e:
+                    if self.debug:
+                        logger.debug(f"No parse_output → agent_node edge to remove: {e}")
+                
+                # Ensure parse_output → END edge exists
+                try:
+                    graph.add_edge("parse_output", END)
+                    if self.debug:
+                        logger.debug("Ensured parse_output → END for structured output")
+                except Exception as e:
+                    if self.debug:
+                        logger.debug(f"parse_output → END edge already exists: {e}")
+                
                 if self.debug:
                     logger.debug(
                         "Structured output model detected - parse_output → END (no loop)"
