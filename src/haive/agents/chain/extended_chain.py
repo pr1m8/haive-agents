@@ -6,14 +6,11 @@ complex multi-step agent workflows with easy-to-use chain syntax.
 
 from __future__ import annotations
 
-from abc import ABC, abstractmethod
-from typing import Any, Callable, Dict, List, Optional, Union
+from collections.abc import Callable
+from typing import Any, Dict
 
 from haive.core.engine.agent import Agent, AgentConfig
-from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.schema.state_schema import StateSchema
-from langchain_core.messages import BaseMessage
-from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field
 
 
@@ -22,10 +19,10 @@ class ChainNode(BaseModel):
 
     name: str = Field(..., description="Name of the chain node")
     agent: Any = Field(..., description="The agent for this node")
-    config: Optional[Dict[str, Any]] = Field(
+    config: dict[str, Any] | None = Field(
         default=None, description="Node configuration"
     )
-    dependencies: List[str] = Field(
+    dependencies: list[str] = Field(
         default_factory=list, description="Dependencies on other nodes"
     )
 
@@ -35,7 +32,7 @@ class ChainEdge(BaseModel):
 
     from_node: str = Field(..., description="Source node name")
     to_node: str = Field(..., description="Target node name")
-    condition: Optional[Callable] = Field(
+    condition: Callable | None = Field(
         default=None, description="Optional condition for edge traversal"
     )
 
@@ -43,8 +40,8 @@ class ChainEdge(BaseModel):
 class ChainConfig(AgentConfig):
     """Configuration for ExtendedChainAgent."""
 
-    nodes: List[ChainNode] = Field(default_factory=list, description="Chain nodes")
-    edges: List[ChainEdge] = Field(default_factory=list, description="Chain edges")
+    nodes: list[ChainNode] = Field(default_factory=list, description="Chain nodes")
+    edges: list[ChainEdge] = Field(default_factory=list, description="Chain edges")
     execution_mode: str = Field(
         default="sequential",
         description="Execution mode: sequential, parallel, conditional",
@@ -56,11 +53,11 @@ class ChainState(StateSchema):
     """State schema for chain execution."""
 
     current_node: str = Field(default="", description="Current executing node")
-    node_results: Dict[str, Any] = Field(
+    node_results: dict[str, Any] = Field(
         default_factory=dict, description="Results from each node"
     )
     iteration_count: int = Field(default=0, description="Current iteration count")
-    completed_nodes: List[str] = Field(
+    completed_nodes: list[str] = Field(
         default_factory=list, description="List of completed nodes"
     )
     chain_complete: bool = Field(
@@ -72,20 +69,20 @@ class ChainBuilder:
     """Builder class for creating chain workflows."""
 
     def __init__(self):
-        self.nodes: List[ChainNode] = []
-        self.edges: List[ChainEdge] = []
+        self.nodes: list[ChainNode] = []
+        self.edges: list[ChainEdge] = []
 
     def add_node(
-        self, name: str, agent: Any, config: Optional[Dict[str, Any]] = None
-    ) -> "ChainBuilder":
+        self, name: str, agent: Any, config: dict[str, Any] | None = None
+    ) -> ChainBuilder:
         """Add a node to the chain."""
         node = ChainNode(name=name, agent=agent, config=config or {})
         self.nodes.append(node)
         return self
 
     def add_edge(
-        self, from_node: str, to_node: str, condition: Optional[Callable] = None
-    ) -> "ChainBuilder":
+        self, from_node: str, to_node: str, condition: Callable | None = None
+    ) -> ChainBuilder:
         """Add an edge between nodes."""
         edge = ChainEdge(from_node=from_node, to_node=to_node, condition=condition)
         self.edges.append(edge)
@@ -112,7 +109,6 @@ class ExtendedChainAgent(Agent):
         """Set up the chain workflow."""
         # Implementation would set up the actual graph workflow
         # based on the chain configuration
-        pass
 
     def execute_node(self, node_name: str, state: ChainState) -> Any:
         """Execute a specific node in the chain."""
@@ -124,10 +120,9 @@ class ExtendedChainAgent(Agent):
         # Execute the node's agent
         if hasattr(node.agent, "run"):
             return node.agent.run(state.model_dump())
-        else:
-            return {"error": f"Agent {node.agent} does not have run method"}
+        return {"error": f"Agent {node.agent} does not have run method"}
 
-    def get_next_nodes(self, current_node: str, state: ChainState) -> List[str]:
+    def get_next_nodes(self, current_node: str, state: ChainState) -> list[str]:
         """Get the next nodes to execute based on current state."""
         next_nodes = []
         for edge in self.chain_config.edges:
@@ -163,7 +158,7 @@ def chain(*agents: Any) -> ChainBuilder:
     return builder
 
 
-def chain_with_edges(nodes: Dict[str, Any], edges: List[tuple]) -> ChainBuilder:
+def chain_with_edges(nodes: dict[str, Any], edges: list[tuple]) -> ChainBuilder:
     """Create a chain with explicit nodes and edges.
 
     Args:
@@ -188,14 +183,14 @@ def chain_with_edges(nodes: Dict[str, Any], edges: List[tuple]) -> ChainBuilder:
 
 # Export commonly used types
 __all__ = [
-    "ExtendedChainAgent",
+    "Any",
     "ChainBuilder",
     "ChainConfig",
-    "ChainState",
-    "ChainNode",
     "ChainEdge",
+    "ChainNode",
+    "ChainState",
+    "Dict",
+    "ExtendedChainAgent",
     "chain",
     "chain_with_edges",
-    "Any",
-    "Dict",
 ]

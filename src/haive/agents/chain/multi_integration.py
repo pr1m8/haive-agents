@@ -152,24 +152,19 @@ def conditional_multi(
 
 def build_graph(*args, **kwargs):
     """Stub function for build_graph - temporarily disabled."""
-    pass
 
 
 def from_chain(*args, **kwargs):
     """Stub function for from_chain - temporarily disabled."""
-    pass
 
 
 def from_nodes(*args, **kwargs):
     """Stub function for from_nodes - temporarily disabled."""
-    pass
 
 
 def multi_to_chain(*args, **kwargs):
     """Stub function for multi_to_chain - temporarily disabled."""
-    pass
 
 
 def chain_to_multi(*args, **kwargs):
     """Stub function for chain_to_multi - temporarily disabled."""
-    pass

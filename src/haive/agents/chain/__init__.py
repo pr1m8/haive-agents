@@ -71,69 +71,54 @@ from haive.agents.chain.multi_integration import (
 class ChainAgent:
     """Placeholder for ChainAgent - temporarily disabled."""
 
-    pass
-
 
 class FlowBuilder:
     """Placeholder for FlowBuilder - temporarily disabled."""
 
-    pass
-
 
 def flow(*args, **kwargs):
     """Placeholder for flow function - temporarily disabled."""
-    pass
 
 
 def flow_with_edges(*args, **kwargs):
     """Placeholder for flow_with_edges function - temporarily disabled."""
-    pass
 
 
 def branch(*args, **kwargs):
     """Placeholder for branch function - not implemented."""
-    pass
 
 
 def merge_to(*args, **kwargs):
     """Placeholder for merge_to function - not implemented."""
-    pass
 
 
 # Stub functions for examples_simple (commented out due to circular import)
 def example_basic(*args, **kwargs):
     """Placeholder for example_basic - temporarily disabled."""
-    pass
 
 
 def example_direct(*args, **kwargs):
     """Placeholder for example_direct - temporarily disabled."""
-    pass
 
 
 def example_incremental(*args, **kwargs):
     """Placeholder for example_incremental - temporarily disabled."""
-    pass
 
 
 def example_mixed(*args, **kwargs):
     """Placeholder for example_mixed - temporarily disabled."""
-    pass
 
 
 def example_rag_router(*args, **kwargs):
     """Placeholder for example_rag_router - temporarily disabled."""
-    pass
 
 
 def example_routing(*args, **kwargs):
     """Placeholder for example_routing - temporarily disabled."""
-    pass
 
 
 def formatter(*args, **kwargs):
     """Placeholder for formatter - temporarily disabled."""
-    pass
 
 
 __all__ = [
@@ -153,9 +138,9 @@ __all__ = [
     "add",
     "branch",
     "build_graph",
-    "complex_rag",
     "chain_multi",
     "chain_to_multi",
+    "complex_rag",
     "conditional_multi",
     "create_agentic_router_declarative",
     "create_complex_flow_from_spec",
