@@ -182,7 +182,6 @@ type MessageType = Literal["statement", "question", "response", "argument", "reb
 @runtime_checkable
 class ConversationParticipant(Protocol):
     """Protocol for agents that can participate in conversations."""
-
     name: str
 
     async def arun(self, input_data: Any) -> Any:
@@ -197,7 +196,6 @@ class ConversationParticipant(Protocol):
 # Configuration types
 class ConversationConfig(TypedDict, total=False):
     """Configuration for conversation agents."""
-
     max_turns: NotRequired[int]
     timeout_seconds: NotRequired[float]
     auto_moderation: NotRequired[bool]
@@ -207,7 +205,6 @@ class ConversationConfig(TypedDict, total=False):
 
 class DebateConfig(ConversationConfig, total=False):
     """Configuration specific to debate conversations."""
-
     rounds: NotRequired[int]
     time_per_round: NotRequired[float]
     scoring_system: NotRequired[str]
@@ -216,7 +213,6 @@ class DebateConfig(ConversationConfig, total=False):
 
 class CollaborativeConfig(ConversationConfig, total=False):
     """Configuration specific to collaborative conversations."""
-
     task_decomposition: NotRequired[bool]
     role_assignment: NotRequired[dict[str, str]]
     deliverables: NotRequired[list[str]]
@@ -259,7 +255,6 @@ __all__ = [
 # Module initialization
 def _initialize_conversation_module() -> None:
     """Initialize the conversation module with default configurations."""
-
     # Set up logging for conversation operations
     logger = logging.getLogger(__name__)
     logger.setLevel(logging.INFO)

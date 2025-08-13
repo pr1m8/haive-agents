@@ -28,7 +28,7 @@ logger = logging.getLogger(__name__)
 
 
 class GraphRAGResult(BaseModel):
-    """Comprehensive result from Graph RAG retrieval combining knowledge graph and vector
+    """Comprehensive result from Graph RAG retrieval combining knowledge graph and vector.
     search.
 
     This class encapsulates all information from a Graph RAG retrieval operation,
@@ -320,7 +320,7 @@ class GraphRAGRetrieverConfig(BaseModel):
 
 
 class GraphRAGRetriever:
-    """Advanced Graph RAG retriever that combines knowledge graph traversal with vector
+    """Advanced Graph RAG retriever that combines knowledge graph traversal with vector.
     similarity search.
 
     The GraphRAGRetriever enhances traditional vector-based memory retrieval by leveraging
@@ -1035,7 +1035,7 @@ Analyze the relationship path now:""",
         return None
 
     async def get_entity_context(self, entity_name: str) -> dict[str, Any]:
-        """Get comprehensive context information for a specific entity in the knowledge
+        """Get comprehensive context information for a specific entity in the knowledge.
         graph.
 
         This method provides detailed information about an entity including its neighborhood,

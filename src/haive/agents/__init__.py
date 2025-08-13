@@ -101,7 +101,7 @@ from .react import ReactAgent
 from .simple import SimpleAgent
 
 # Add eager imports to __all__
-__all__ += ["Agent", "SimpleAgent", "ReactAgent", "MultiAgent"]
+__all__ += ["Agent", "MultiAgent", "ReactAgent", "SimpleAgent"]
 
 # Note: Heavy agent implementations and specialized modules are lazy loaded
 # to improve import performance and reduce memory usage

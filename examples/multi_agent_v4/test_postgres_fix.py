@@ -52,13 +52,13 @@ async def test_postgres_persistence():
 
     try:
         print("\n🎯 RUNNING FIRST EXECUTION...")
-        result1 = await agent.arun(
+        await agent.arun(
             {"messages": [HumanMessage(content="Analyze today's weather briefly")]}
         )
         print("✅ First execution completed successfully!")
 
         print("\n🎯 RUNNING SECOND EXECUTION (same agent)...")
-        result2 = await agent.arun({"messages": [HumanMessage(content="What's 2+2?")]})
+        await agent.arun({"messages": [HumanMessage(content="What's 2+2?")]})
         print("✅ Second execution completed successfully!")
 
         print("\n🎯 CREATING NEW AGENT WITH SAME NAME...")
@@ -71,9 +71,7 @@ async def test_postgres_persistence():
             ),
         )
 
-        result3 = await agent2.arun(
-            {"messages": [HumanMessage(content="Tell me about cats")]}
-        )
+        await agent2.arun({"messages": [HumanMessage(content="Tell me about cats")]})
         print("✅ Third execution (new agent, same name) completed!")
 
         print("\n" + "=" * 60)

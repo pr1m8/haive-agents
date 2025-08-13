@@ -16,7 +16,7 @@ from collections import defaultdict
 
 
 class MemoryValidationMeta(ABCMeta):
-    """Advanced metaclass for memory models with automatic validation registration and
+    """Advanced metaclass for memory models with automatic validation registration and.
     cross-model consistency checking.
     """
 

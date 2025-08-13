@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Simple Agent Basic Example - Your First Haive Agent
+"""Simple Agent Basic Example - Your First Haive Agent
 
 This is the simplest possible example of creating an agent in Haive.
 Think of it as the "Hello World" of AI agents!
@@ -8,8 +7,7 @@ Think of it as the "Hello World" of AI agents!
 What you'll learn:
 - How to create a basic SimpleAgent
 - How to configure it with an LLM
-- How to run the agent and get a response
-"""
+- How to run the agent and get a response"""
 
 # Suppress logging for a cleaner demo
 import logging
@@ -49,7 +47,7 @@ print("=" * 50)
 response = agent.run("Hello! What's the weather like today?")
 
 # The response is just a string - simple!
-print(f"You: Hello! What's the weather like today?")
+print("You: Hello! What's the weather like today?")
 print(f"\nAgent: {response}")
 print("=" * 50)
 
@@ -62,7 +60,7 @@ print("=" * 50)
 
 # Ask a follow-up question
 follow_up = agent.run("Can you recommend indoor activities?")
-print(f"You: Can you recommend indoor activities?")
+print("You: Can you recommend indoor activities?")
 print(f"\nAgent: {follow_up}")
 print("=" * 50)
 

@@ -4,10 +4,9 @@ This module provides the core supervisor classes that can manage multiple agents
 handle tool synchronization, and support dynamic agent creation.
 """
 
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
-from langchain_core.tools import Tool
 from pydantic import BaseModel, Field
 
 from haive.agents.react.agent import ReactAgent
@@ -19,26 +18,26 @@ class AgentMetadata(BaseModel):
     name: str = Field(..., description="Agent name/identifier")
     description: str = Field(..., description="Description of agent capabilities")
     agent_type: str = Field(..., description="Type/class of the agent")
-    capabilities: List[str] = Field(
+    capabilities: list[str] = Field(
         default_factory=list, description="List of agent capabilities"
     )
     created_at: str = Field(..., description="Creation timestamp")
-    last_used: Optional[str] = Field(None, description="Last usage timestamp")
+    last_used: str | None = Field(None, description="Last usage timestamp")
 
 
 class SupervisorState(BaseModel):
     """State model for supervisor agents."""
 
-    agents: Dict[str, AgentMetadata] = Field(
+    agents: dict[str, AgentMetadata] = Field(
         default_factory=dict, description="Registered agents"
     )
-    current_context: Dict[str, Any] = Field(
+    current_context: dict[str, Any] = Field(
         default_factory=dict, description="Current execution context"
     )
-    execution_history: List[Dict[str, Any]] = Field(
+    execution_history: list[dict[str, Any]] = Field(
         default_factory=list, description="Execution history"
     )
-    active_agent: Optional[str] = Field(None, description="Currently active agent")
+    active_agent: str | None = Field(None, description="Currently active agent")
 
 
 class BaseSupervisor(ReactAgent):
@@ -52,7 +51,7 @@ class BaseSupervisor(ReactAgent):
         self,
         name: str,
         engine: AugLLMConfig,
-        agents: Optional[Dict[str, Any]] = None,
+        agents: dict[str, Any] | None = None,
         **kwargs,
     ):
         """Initialize the supervisor.
@@ -97,7 +96,7 @@ class BaseSupervisor(ReactAgent):
         # Store actual agent instance (simplified approach)
         setattr(self, f"_agent_{name}", agent)
 
-    def get_agent(self, name: str) -> Optional[Any]:
+    def get_agent(self, name: str) -> Any | None:
         """Get a registered agent by name.
 
         Args:
@@ -110,7 +109,7 @@ class BaseSupervisor(ReactAgent):
             return getattr(self, f"_agent_{name}", None)
         return None
 
-    def list_agents(self) -> Dict[str, AgentMetadata]:
+    def list_agents(self) -> dict[str, AgentMetadata]:
         """List all registered agents.
 
         Returns:
@@ -163,9 +162,9 @@ class BaseSupervisor(ReactAgent):
             return str(result)
 
         except Exception as e:
-            return f"Error executing task with agent '{agent_name}': {str(e)}"
+            return f"Error executing task with agent '{agent_name}': {e!s}"
 
-    def get_execution_status(self) -> Dict[str, Any]:
+    def get_execution_status(self) -> dict[str, Any]:
         """Get current execution status.
 
         Returns:
@@ -231,7 +230,7 @@ class DynamicSupervisor(BaseSupervisor):
         except Exception:
             return False
 
-    def get_capabilities(self) -> Dict[str, Any]:
+    def get_capabilities(self) -> dict[str, Any]:
         """Get supervisor capabilities.
 
         Returns:

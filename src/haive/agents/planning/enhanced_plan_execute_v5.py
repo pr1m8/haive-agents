@@ -104,7 +104,7 @@ of the enhanced base agent pattern and modern multi-agent orchestration.
 from __future__ import annotations
 
 import logging
-from typing import Any, Literal, Optional
+from typing import Literal
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.schema.prebuilt.multi_agent_state import MultiAgentState
@@ -137,7 +137,7 @@ class TaskStep(BaseModel):
     priority: Literal["high", "medium", "low"] = Field(
         default="medium", description="Priority level for execution"
     )
-    estimated_time: Optional[str] = Field(
+    estimated_time: str | None = Field(
         default=None, description="Estimated time to complete (e.g., '5 minutes')"
     )
     dependencies: list[str] = Field(
@@ -156,7 +156,7 @@ class TaskPlan(BaseModel):
     success_criteria: str = Field(
         ..., description="How we'll know the objective has been achieved"
     )
-    estimated_total_time: Optional[str] = Field(
+    estimated_total_time: str | None = Field(
         default=None, description="Estimated total time for all steps"
     )
 
@@ -170,7 +170,7 @@ class ExecutionResult(BaseModel):
     tools_used: list[str] = Field(
         default_factory=list, description="Tools that were actually used"
     )
-    execution_time: Optional[str] = Field(
+    execution_time: str | None = Field(
         default=None, description="How long the step took to execute"
     )
     issues_encountered: list[str] = Field(
@@ -191,13 +191,13 @@ class PlanningDecision(BaseModel):
     confidence: float = Field(
         ..., ge=0.0, le=1.0, description="Confidence in this decision (0-1)"
     )
-    final_answer: Optional[str] = Field(
+    final_answer: str | None = Field(
         default=None, description="Final answer if the task is complete"
     )
-    new_plan: Optional[TaskPlan] = Field(
+    new_plan: TaskPlan | None = Field(
         default=None, description="Revised plan if replanning is needed"
     )
-    next_step_id: Optional[str] = Field(
+    next_step_id: str | None = Field(
         default=None, description="Next step to execute if continuing"
     )
 
@@ -207,13 +207,13 @@ class EnhancedPlanExecuteState(MultiAgentState):
 
     # Core planning fields
     original_objective: str = Field(default="", description="The original user request")
-    current_plan: Optional[TaskPlan] = Field(
+    current_plan: TaskPlan | None = Field(
         default=None, description="The current execution plan"
     )
     execution_results: list[ExecutionResult] = Field(
         default_factory=list, description="Results from completed steps"
     )
-    current_step_id: Optional[str] = Field(
+    current_step_id: str | None = Field(
         default=None, description="ID of step currently being executed"
     )
 
@@ -228,18 +228,18 @@ class EnhancedPlanExecuteState(MultiAgentState):
     replan_count: int = Field(default=0, description="Number of times we've replanned")
 
     # Decision tracking
-    last_decision: Optional[PlanningDecision] = Field(
+    last_decision: PlanningDecision | None = Field(
         default=None, description="The most recent planning decision made"
     )
-    final_answer: Optional[str] = Field(
+    final_answer: str | None = Field(
         default=None, description="Final answer when task is complete"
     )
 
     # Metadata
-    planning_start_time: Optional[str] = Field(
+    planning_start_time: str | None = Field(
         default=None, description="When planning started"
     )
-    total_execution_time: Optional[str] = Field(
+    total_execution_time: str | None = Field(
         default=None, description="Total time for entire workflow"
     )
 
@@ -385,9 +385,9 @@ def should_continue_enhanced(state: EnhancedPlanExecuteState) -> str:
     if state.last_decision:
         if state.last_decision.action == "complete":
             return END
-        elif state.last_decision.action == "continue":
+        if state.last_decision.action == "continue":
             return "executor"
-        elif state.last_decision.action == "replan":
+        if state.last_decision.action == "replan":
             return "replanner"
 
     # If we have a current plan and next step, continue execution
@@ -402,7 +402,7 @@ def should_continue_enhanced(state: EnhancedPlanExecuteState) -> str:
     return "replanner"
 
 
-def get_next_step_id(plan: TaskPlan, completed_steps: list[str]) -> Optional[str]:
+def get_next_step_id(plan: TaskPlan, completed_steps: list[str]) -> str | None:
     """Get the next step ID to execute based on plan and completed steps."""
     if not plan or not plan.steps:
         return None
@@ -423,10 +423,10 @@ def get_next_step_id(plan: TaskPlan, completed_steps: list[str]) -> Optional[str
 
 def create_enhanced_plan_execute_v5(
     name: str = "EnhancedPlanExecuteV5",
-    planner_config: Optional[AugLLMConfig] = None,
-    executor_config: Optional[AugLLMConfig] = None,
-    replanner_config: Optional[AugLLMConfig] = None,
-    tools: Optional[list] = None,
+    planner_config: AugLLMConfig | None = None,
+    executor_config: AugLLMConfig | None = None,
+    replanner_config: AugLLMConfig | None = None,
+    tools: list | None = None,
     max_iterations: int = 20,
     enable_hooks: bool = True,
 ) -> MultiAgent:
@@ -575,14 +575,14 @@ def _add_monitoring_hooks(workflow: MultiAgent) -> None:
 # ============================================================================
 
 
-def create_simple_enhanced_plan_execute(tools: Optional[list] = None) -> MultiAgent:
+def create_simple_enhanced_plan_execute(tools: list | None = None) -> MultiAgent:
     """Create a simple enhanced plan and execute agent with default settings."""
     return create_enhanced_plan_execute_v5(
         name="SimpleEnhancedPlanExecute", tools=tools or []
     )
 
 
-def create_research_plan_execute(tools: Optional[list] = None) -> MultiAgent:
+def create_research_plan_execute(tools: list | None = None) -> MultiAgent:
     """Create a plan and execute agent optimized for research tasks."""
     from haive.tools import duckduckgo_search_tool
 

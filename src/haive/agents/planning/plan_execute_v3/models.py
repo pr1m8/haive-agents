@@ -6,7 +6,6 @@ are separated into distinct phases with structured outputs.
 
 from datetime import datetime
 from enum import Enum
-from typing import List, Optional
 
 from pydantic import BaseModel, Field, field_validator, model_validator
 
@@ -59,10 +58,8 @@ class Plan(BaseModel):
     """Simple plan model for basic planning operations."""
 
     objective: str = Field(description="The main objective this plan aims to achieve")
-    steps: List[str] = Field(description="List of step descriptions")
-    reasoning: Optional[str] = Field(
-        default=None, description="Reasoning behind the plan"
-    )
+    steps: list[str] = Field(description="List of step descriptions")
+    reasoning: str | None = Field(default=None, description="Reasoning behind the plan")
 
     @classmethod
     def from_execution_plan(cls, execution_plan: "ExecutionPlan") -> "Plan":
@@ -110,25 +107,25 @@ class ExecutionPlan(BaseModel):
         }
         for step in self.steps:
             if step.status == StepStatus.PENDING:
-                if all((dep_id in completed_ids for dep_id in step.dependencies)):
+                if all(dep_id in completed_ids for dep_id in step.dependencies):
                     return step
         return None
 
     def is_complete(self) -> bool:
         """Check if all steps are completed."""
         return all(
-            (s.status in [StepStatus.COMPLETED, StepStatus.SKIPPED] for s in self.steps)
+            s.status in [StepStatus.COMPLETED, StepStatus.SKIPPED] for s in self.steps
         )
 
     def has_failures(self) -> bool:
         """Check if any steps have failed."""
-        return any((s.status == StepStatus.FAILED for s in self.steps))
+        return any(s.status == StepStatus.FAILED for s in self.steps)
 
     def get_progress_percentage(self) -> float:
         """Calculate completion percentage."""
         if self.total_steps == 0:
             return 0.0
-        completed = sum((1 for s in self.steps if s.status == StepStatus.COMPLETED))
+        completed = sum(1 for s in self.steps if s.status == StepStatus.COMPLETED)
         return completed / self.total_steps * 100
 
 

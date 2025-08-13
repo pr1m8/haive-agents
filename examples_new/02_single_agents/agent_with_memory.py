@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Agent with Memory Example - Intermediate Level
+"""Agent with Memory Example - Intermediate Level
 
 This example demonstrates how to use conversation memory with agents,
 showing both in-memory and persistent memory patterns. Memory allows
@@ -11,17 +10,15 @@ Key concepts covered:
 - ConversationSummaryMemory for long conversations
 - Memory persistence to disk
 - Memory window management
-- Contextual responses based on history
-"""
+- Contextual responses based on history"""
 
 import asyncio
 import json
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List
 
 from haive.core.engine.aug_llm import AugLLMConfig
-from langchain.memory import ConversationBufferMemory, ConversationSummaryMemory
+from langchain.memory import ConversationBufferMemory
 from langchain_core.messages import AIMessage, HumanMessage
 from langchain_core.prompts import ChatPromptTemplate
 
@@ -35,7 +32,7 @@ class MemoryPersistenceManager:
         self.storage_dir = Path(storage_dir)
         self.storage_dir.mkdir(exist_ok=True)
 
-    def save_memory(self, agent_name: str, messages: List[Dict[str, str]]) -> str:
+    def save_memory(self, agent_name: str, messages: list[dict[str, str]]) -> str:
         """Save memory to disk."""
         filepath = self.storage_dir / f"{agent_name}_memory.json"
 
@@ -51,14 +48,14 @@ class MemoryPersistenceManager:
 
         return str(filepath)
 
-    def load_memory(self, agent_name: str) -> List[Dict[str, str]]:
+    def load_memory(self, agent_name: str) -> list[dict[str, str]]:
         """Load memory from disk."""
         filepath = self.storage_dir / f"{agent_name}_memory.json"
 
         if not filepath.exists():
             return []
 
-        with open(filepath, "r") as f:
+        with open(filepath) as f:
             data = json.load(f)
 
         return data.get("messages", [])
@@ -104,7 +101,7 @@ async def main():
         "Can you give me a Python tip based on what you know about me?",
     ]
 
-    for i, query in enumerate(conversations, 1):
+    for _i, query in enumerate(conversations, 1):
         print(f"\n🗣️  User: {query}")
 
         # Prepare input with memory
@@ -119,7 +116,7 @@ async def main():
         memory.chat_memory.add_ai_message(response)
 
     # Show memory contents
-    print(f"\n📊 Memory Statistics:")
+    print("\n📊 Memory Statistics:")
     print(f"   Total messages: {len(memory.chat_memory.messages)}")
     print(
         f"   User messages: {len([m for m in memory.chat_memory.messages if isinstance(m, HumanMessage)])}"
@@ -226,7 +223,7 @@ async def main():
         full_memory.chat_memory.add_user_message(query)
         full_memory.chat_memory.add_ai_message(response)
 
-    print(f"\n📊 Memory Window Stats:")
+    print("\n📊 Memory Window Stats:")
     print(f"   Total messages: {len(full_memory.chat_memory.messages)}")
     print(f"   Window size: {window_size}")
     print(
@@ -271,7 +268,7 @@ async def main():
     print("\n\n5. Contextual Memory Search")
     print("-" * 40)
 
-    def search_memory(memory: ConversationBufferMemory, keyword: str) -> List[str]:
+    def search_memory(memory: ConversationBufferMemory, keyword: str) -> list[str]:
         """Search memory for messages containing keyword."""
         results = []
         for msg in memory.chat_memory.messages:

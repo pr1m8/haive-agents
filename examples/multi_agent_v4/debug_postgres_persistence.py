@@ -83,7 +83,7 @@ async def test_postgres_persistence():
 
         # First execution - this should create state in PostgreSQL
         print("\n🔄 First execution (creating state)...")
-        result1 = await agent.arun(
+        await agent.arun(
             {"messages": [HumanMessage(content="Remember: I like pizza")]},
             config={"configurable": {"thread_id": thread_id}},
         )

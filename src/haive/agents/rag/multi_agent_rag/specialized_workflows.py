@@ -46,7 +46,7 @@ class DebateRAGState(RAGState):
 
 
 class FLAREAgent(MultiAgent):
-    """Forward-Looking Active REtrieval (FLARE) - generates text while actively
+    """Forward-Looking Active REtrieval (FLARE) - generates text while actively.
     predicting when retrieval would be beneficial.
     """
 
@@ -152,7 +152,7 @@ class FLAREAgent(MultiAgent):
 
 
 class DynamicRAGAgent(MultiAgent):
-    """Dynamic RAG with add/remove retrievers - adapts retrieval strategy
+    """Dynamic RAG with add/remove retrievers - adapts retrieval strategy.
     based on query characteristics and retriever performance.
     """
 
@@ -252,7 +252,7 @@ class DynamicRAGAgent(MultiAgent):
 
 
 class DebateRAGAgent(MultiAgent):
-    """Debate RAG - multiple agents with different perspectives debate
+    """Debate RAG - multiple agents with different perspectives debate.
     to reach a comprehensive answer through dialectical reasoning.
     """
 
@@ -364,7 +364,7 @@ class DebateRAGAgent(MultiAgent):
 
 
 class AdaptiveThresholdRAGAgent(MultiAgent):
-    """Adaptive Threshold RAG - dynamically adjusts retrieval thresholds
+    """Adaptive Threshold RAG - dynamically adjusts retrieval thresholds.
     based on query difficulty and answer confidence.
     """
 

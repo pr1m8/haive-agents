@@ -24,7 +24,9 @@ from typing_extensions import TypedDict
 
 from haive.agents.react.enhanced_react_agent import ReactAgent
 from haive.agents.simple.enhanced_simple_real import EnhancedAgentBase as Agent
-from haive.agents.simple.enhanced_simple_real import SimpleAgent
+from haive.agents.simple.enhanced_simple_real import (
+    SimpleAgent,
+)
 
 logger = logging.getLogger(__name__)
 

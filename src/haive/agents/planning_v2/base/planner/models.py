@@ -10,8 +10,6 @@ class TaskPlan(Plan[Task]):
     generic class names like Plan[Task] - it needs a simple name.
     """
 
-    pass
-
 
 # Force model rebuild to resolve forward references
 TaskPlan.model_rebuild()

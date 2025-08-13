@@ -1,6 +1,6 @@
 # src/haive/agents/tot/state.py
 
-from typing import Annotated, Any, Optional, Union
+from typing import Annotated, Any
 
 from langchain_core.messages import BaseMessage
 from langgraph.graph import add_messages
@@ -41,12 +41,12 @@ class TOTState(TOTInput, TOTOutput):
 
     max_depth: int = Field(default=5, description="Maximum search depth")
 
-    best_candidate: Optional[dict[str, Any]] = Field(
+    best_candidate: dict[str, Any] | None = Field(
         default=None, description="Best candidate found so far"
     )
 
     # For expansion
-    current_seed: Optional[dict[str, Any]] = Field(
+    current_seed: dict[str, Any] | None = Field(
         default=None, description="Current seed candidate for expansion"
     )
 

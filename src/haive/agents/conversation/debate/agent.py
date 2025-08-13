@@ -273,7 +273,7 @@ class DebateConversation(BaseConversationAgent):
             if progress < 1.0:
                 candidates.append(speaker)
         if candidates:
-            min_args = min((len(state.arguments_made.get(s, [])) for s in candidates))
+            min_args = min(len(state.arguments_made.get(s, [])) for s in candidates)
             for speaker in candidates:
                 if len(state.arguments_made.get(speaker, [])) == min_args:
                     return {"current_speaker": speaker}
@@ -301,15 +301,13 @@ class DebateConversation(BaseConversationAgent):
                 if msg.name in state.debate_positions:
                     content_lower = str(msg.content).lower()
                     if any(
-                        (
-                            word in content_lower
-                            for word in [
-                                "closing",
-                                "conclusion",
-                                "final statement",
-                                "summary",
-                            ]
-                        )
+                        word in content_lower
+                        for word in [
+                            "closing",
+                            "conclusion",
+                            "final statement",
+                            "summary",
+                        ]
                     ):
                         closing_speakers.add(msg.name)
                     if len(closing_speakers) == len(state.debate_positions):
@@ -428,10 +426,8 @@ class DebateConversation(BaseConversationAgent):
                     if msg.name in state.debate_positions:
                         content_lower = str(msg.content).lower()
                         if any(
-                            (
-                                word in content_lower
-                                for word in ["closing", "conclusion", "final"]
-                            )
+                            word in content_lower
+                            for word in ["closing", "conclusion", "final"]
                         ):
                             closing_speakers.add(msg.name)
             if len(closing_speakers) >= len(state.debate_positions):
@@ -456,15 +452,13 @@ class DebateConversation(BaseConversationAgent):
         content_lower = judge_content.lower()
         for participant in state.debate_positions:
             if any(
-                (
-                    phrase in content_lower
-                    for phrase in [
-                        f"{participant.lower()} wins",
-                        f"winner is {participant.lower()}",
-                        f"victory to {participant.lower()}",
-                        f"{participant.lower()} has won",
-                    ]
-                )
+                phrase in content_lower
+                for phrase in [
+                    f"{participant.lower()} wins",
+                    f"winner is {participant.lower()}",
+                    f"victory to {participant.lower()}",
+                    f"{participant.lower()} has won",
+                ]
             ):
                 return participant
         return None

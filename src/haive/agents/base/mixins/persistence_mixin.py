@@ -436,7 +436,6 @@ class PersistenceMixin:
         For cases where you need consistent thread IDs (e.g., resuming conversations),
         explicitly pass a thread_id to the run() method.
         """
-
         # Generate a unique UUID for this agent instance
         unique_id = str(uuid.uuid4())
 

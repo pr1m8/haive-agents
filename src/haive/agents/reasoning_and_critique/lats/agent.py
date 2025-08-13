@@ -18,7 +18,7 @@ from langchain_core.runnables import RunnableConfig
 from langchain_core.runnables import chain as as_runnable
 from langgraph.graph import END, START, StateGraph
 from langgraph.prebuilt import ToolNode
-from pydantic import BaseModel, Field
+from pydantic import Field
 
 from haive.agents.reasoning_and_critique.lats.models import Node, Reflection
 from haive.agents.reasoning_and_critique.lats.state import TreeState
@@ -124,7 +124,7 @@ class LATSAgentConfig(AgentConfig):
 
 @register_agent(LATSAgentConfig)
 class LATSAgent(Agent[LATSAgentConfig]):
-    """A Look-Ahead Tree Search (LATS) agent that uses tree search to
+    """A Look-Ahead Tree Search (LATS) agent that uses tree search to.
     explore multiple response candidates and find optimal solutions.
 
     This agent builds a tree of possible responses and evaluates them

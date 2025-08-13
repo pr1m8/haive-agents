@@ -6,7 +6,7 @@ scoring, and metadata extraction using language models.
 
 import logging
 import re
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from pydantic import BaseModel, Field
@@ -17,7 +17,6 @@ from haive.agents.memory.core.types import (
     MemoryImportance,
     MemoryQueryIntent,
     MemoryType,
-    Union,
 )
 
 logger = logging.getLogger(__name__)
@@ -58,7 +57,7 @@ class MemoryClassifierConfig(BaseModel):
 
 
 class MemoryClassifier:
-    """LLM-based memory classifier for automatic memory type detection and metadata
+    """LLM-based memory classifier for automatic memory type detection and metadata.
     extraction.
 
     This classifier analyzes memory content to:
@@ -279,7 +278,7 @@ Determine:
         content: str,
         user_context: dict[str, Any] | None = None,
         conversation_context: dict[str, Any] | None = None,
-        namespace: Optional[str] = None,
+        namespace: str | None = None,
     ) -> MemoryEntry:
         """Create a complete memory entry with automatic classification.
 

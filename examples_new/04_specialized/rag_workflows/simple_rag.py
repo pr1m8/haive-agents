@@ -1,5 +1,4 @@
-"""
-Simple RAG Example - Basic Document Q&A Agent
+"""Simple RAG Example - Basic Document Q&A Agent
 ============================================
 
 This example demonstrates a basic RAG (Retrieval-Augmented Generation) agent
@@ -9,11 +8,9 @@ Key concepts:
 - Document loading and chunking
 - Vector store creation and embedding
 - Similarity search for retrieval
-- Context-aware Q&A generation
-"""
+- Context-aware Q&A generation"""
 
 import asyncio
-from typing import Any, Dict, List
 
 from haive.core.embeddings import HuggingFaceEmbeddings
 from haive.core.engine.aug_llm import AugLLMConfig
@@ -32,47 +29,39 @@ async def main():
     # Step 1: Create sample documents about AI agents
     documents = [
         Document(
-            page_content="""
-            AI agents are autonomous software programs that can perceive their environment,
+            page_content="""AI agents are autonomous software programs that can perceive their environment,
             make decisions, and take actions to achieve specific goals. They use various
             techniques including machine learning, natural language processing, and 
-            reasoning to interact with their surroundings and complete tasks.
-            """,
+            reasoning to interact with their surroundings and complete tasks.""",
             metadata={"source": "ai_basics.txt", "topic": "introduction"},
         ),
         Document(
-            page_content="""
-            There are several types of AI agents:
+            page_content="""There are several types of AI agents:
             1. Simple Reflex Agents: React to current percepts without considering history
             2. Model-Based Agents: Maintain internal state to track the world
             3. Goal-Based Agents: Work towards achieving specific objectives
             4. Utility-Based Agents: Maximize a utility function to make optimal decisions
-            5. Learning Agents: Improve performance through experience
-            """,
+            5. Learning Agents: Improve performance through experience""",
             metadata={"source": "agent_types.txt", "topic": "classification"},
         ),
         Document(
-            page_content="""
-            RAG (Retrieval-Augmented Generation) combines the power of large language
+            page_content="""RAG (Retrieval-Augmented Generation) combines the power of large language
             models with external knowledge retrieval. It works by:
             1. Indexing documents into a vector database
             2. Converting user queries into embeddings
             3. Finding relevant documents through similarity search
             4. Using retrieved context to generate accurate responses
-            This approach reduces hallucinations and provides more factual answers.
-            """,
+            This approach reduces hallucinations and provides more factual answers.""",
             metadata={"source": "rag_explained.txt", "topic": "rag"},
         ),
         Document(
-            page_content="""
-            Best practices for building AI agents include:
+            page_content="""Best practices for building AI agents include:
             - Clear goal definition and success metrics
             - Robust error handling and fallback mechanisms
             - Continuous monitoring and improvement
             - Ethical considerations and bias mitigation
             - User feedback integration
-            - Transparent decision-making processes
-            """,
+            - Transparent decision-making processes""",
             metadata={"source": "best_practices.txt", "topic": "guidelines"},
         ),
     ]

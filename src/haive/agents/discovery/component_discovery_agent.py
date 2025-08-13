@@ -390,7 +390,7 @@ class ComponentDiscoveryAgent(BaseModel):
             return True
         keywords = ["tool", "agent", "component", "function", "class"]
         return any(
-            (keyword in doc_text and keyword in output_text for keyword in keywords)
+            keyword in doc_text and keyword in output_text for keyword in keywords
         )
 
     def _extract_description(self, doc: Document) -> str:
@@ -475,7 +475,7 @@ class ComponentDiscoveryAgent(BaseModel):
                 print(f"Total components: {stats['total_components']}")
         """
         total_components = sum(
-            (len(components) for components in self.component_cache.values())
+            len(components) for components in self.component_cache.values()
         )
         return {
             "cached_queries": len(self.component_cache),

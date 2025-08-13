@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Example script that demonstrates running the open_perplexity research agent,
+"""Example script that demonstrates running the open_perplexity research agent,.
 saving state history, and visualizing results.
 """
 

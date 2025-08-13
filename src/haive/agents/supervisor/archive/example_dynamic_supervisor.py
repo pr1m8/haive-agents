@@ -209,7 +209,7 @@ async def demonstrate_react_agent_integration(supervisor):
             result = eval(expression)
             return str(result)
         except Exception as e:
-            return f"Error calculating: {str(e)}"
+            return f"Error calculating: {e!s}"
 
     @tool
     def web_search(query: str) -> str:

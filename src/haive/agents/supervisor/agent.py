@@ -7,7 +7,7 @@ runtime agent discovery, creation, and task routing.
 import asyncio
 import logging
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
@@ -86,7 +86,7 @@ class DynamicSupervisor(ReactAgent):
     """
 
     # Agent specifications and discovery
-    agent_specs: List[AgentSpec] = Field(
+    agent_specs: list[AgentSpec] = Field(
         default_factory=list, description="Initial agent specifications"
     )
     discovery_config: DiscoveryConfig = Field(
@@ -106,7 +106,7 @@ class DynamicSupervisor(ReactAgent):
 
     # Internal state (not in Field to avoid Pydantic issues)
     _state: DynamicSupervisorState
-    _graph: Optional[StateGraph]
+    _graph: StateGraph | None
 
     def __init__(self, **data):
         """Initialize the dynamic supervisor.
@@ -141,7 +141,7 @@ class DynamicSupervisor(ReactAgent):
 
     @field_validator("agent_specs")
     @classmethod
-    def validate_agent_specs(cls, v: List[AgentSpec]) -> List[AgentSpec]:
+    def validate_agent_specs(cls, v: list[AgentSpec]) -> list[AgentSpec]:
         """Validate agent specifications have unique names."""
         names = [spec.name for spec in v]
         if len(names) != len(set(names)):
@@ -192,7 +192,7 @@ class DynamicSupervisor(ReactAgent):
         # Compile graph
         self._graph = graph.compile()
 
-    async def _supervisor_node(self, state: DynamicSupervisorState) -> Dict[str, Any]:
+    async def _supervisor_node(self, state: DynamicSupervisorState) -> dict[str, Any]:
         """Supervisor reasoning node.
 
         Analyzes tasks and determines routing strategy.
@@ -261,18 +261,17 @@ class DynamicSupervisor(ReactAgent):
                 "messages": [AIMessage(content="Discovering new agents")],
                 "workflow_state": "discovering",
             }
-        else:
-            available_names = list(active_agents.keys())
-            return {
-                "messages": [
-                    AIMessage(
-                        content=f"No suitable agent found. Available: {available_names}"
-                    )
-                ],
-                "workflow_state": "complete",
-            }
+        available_names = list(active_agents.keys())
+        return {
+            "messages": [
+                AIMessage(
+                    content=f"No suitable agent found. Available: {available_names}"
+                )
+            ],
+            "workflow_state": "complete",
+        }
 
-    async def _discovery_node(self, state: DynamicSupervisorState) -> Dict[str, Any]:
+    async def _discovery_node(self, state: DynamicSupervisorState) -> dict[str, Any]:
         """Agent discovery and creation node."""
         # Get the task
         user_message = None
@@ -363,15 +362,14 @@ class DynamicSupervisor(ReactAgent):
                 "messages": [AIMessage(content=f"Created agent: {created_agent}")],
                 "workflow_state": "routing",
             }
-        else:
-            return {
-                "messages": [AIMessage(content="No suitable agents discovered")],
-                "workflow_state": "routing",
-            }
+        return {
+            "messages": [AIMessage(content="No suitable agents discovered")],
+            "workflow_state": "routing",
+        }
 
     async def _agent_execution_node(
         self, state: DynamicSupervisorState
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Execute task with selected agent."""
         agent_name = state["current_agent"]
         task = state["agent_task"]
@@ -431,7 +429,7 @@ class DynamicSupervisor(ReactAgent):
             state["supervisor_metrics"].failed_tasks += 1
 
             return {
-                "messages": [AIMessage(content=f"Agent failed: {str(e)}")],
+                "messages": [AIMessage(content=f"Agent failed: {e!s}")],
                 "workflow_state": "complete",
             }
 
@@ -441,10 +439,9 @@ class DynamicSupervisor(ReactAgent):
 
         if workflow_state == "discovering":
             return "discover"
-        elif workflow_state == "executing":
+        if workflow_state == "executing":
             return "execute"
-        else:
-            return "end"
+        return "end"
 
     def _cleanup_inactive_agents(self, state: DynamicSupervisorState) -> None:
         """Remove least recently used agents when at capacity."""
@@ -466,9 +463,7 @@ class DynamicSupervisor(ReactAgent):
             del active_agents[agent_name]
             del state["agent_capabilities"][agent_name]
 
-    async def arun(
-        self, input_data: Union[str, Dict[str, Any], List[BaseMessage]]
-    ) -> Any:
+    async def arun(self, input_data: str | dict[str, Any] | list[BaseMessage]) -> Any:
         """Run the supervisor asynchronously.
 
         Args:
@@ -505,7 +500,7 @@ class DynamicSupervisor(ReactAgent):
 
         return "No response generated"
 
-    def run(self, input_data: Union[str, Dict[str, Any], List[BaseMessage]]) -> Any:
+    def run(self, input_data: str | dict[str, Any] | list[BaseMessage]) -> Any:
         """Run the supervisor synchronously.
 
         Args:
@@ -516,7 +511,7 @@ class DynamicSupervisor(ReactAgent):
         """
         return asyncio.run(self.arun(input_data))
 
-    def get_metrics(self) -> Dict[str, Any]:
+    def get_metrics(self) -> dict[str, Any]:
         """Get supervisor performance metrics.
 
         Returns:
@@ -547,7 +542,7 @@ class DynamicSupervisor(ReactAgent):
 
 def create_dynamic_supervisor(
     name: str = "dynamic_supervisor",
-    agent_specs: Optional[List[AgentSpec]] = None,
+    agent_specs: list[AgentSpec] | None = None,
     discovery_mode: AgentDiscoveryMode = AgentDiscoveryMode.MANUAL,
     **kwargs,
 ) -> DynamicSupervisor:

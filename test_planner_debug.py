@@ -11,7 +11,6 @@ from haive.agents.simple.agent import SimpleAgent
 
 async def test_planner_debug():
     """Test planner with proper context_section handling."""
-
     # Check the prompt template structure
     print("1. Checking planner_prompt structure:")
     print(f"   Input variables: {planner_prompt.input_variables}")

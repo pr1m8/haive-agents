@@ -8,7 +8,6 @@ from haive.agents.planning_v2.base.planner.prompts import planner_prompt
 
 async def main():
     """Show the simplest way to use the planner."""
-
     # Create planner - that's it!
     planner = PlannerAgent()
 

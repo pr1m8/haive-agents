@@ -7,6 +7,7 @@ dynamically based on the supervisor's routing decision, similar to how tool_node
 import asyncio
 from datetime import datetime
 from typing import Any, Literal
+
 from haive.core.common.models.dynamic_choice_model import DynamicChoiceModel
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
@@ -16,6 +17,7 @@ from langchain_core.messages import HumanMessage
 from langchain_core.tools import tool
 from langgraph.graph import END
 from pydantic import BaseModel, Field, model_validator
+
 from haive.agents.react.agent import ReactAgent
 from haive.agents.simple.agent import SimpleAgent
 
@@ -29,7 +31,12 @@ class DynamicAgentRegistry:
         self.agent_metadata = {}
 
     def register(
-        self, name: str, agent: Any, description: str, capabilities: list[str], active: bool = True
+        self,
+        name: str,
+        agent: Any,
+        description: str,
+        capabilities: list[str],
+        active: bool = True,
     ):
         """Register an agent with metadata."""
         self.agents[name] = agent
@@ -121,15 +128,21 @@ class DynamicNodeSupervisor(ReactAgent):
             """Analyze a task to determine required capabilities."""
             capabilities = []
             task_lower = task.lower()
-            if any((word in task_lower for word in ["research", "search", "find", "investigate"])):
+            if any(
+                word in task_lower
+                for word in ["research", "search", "find", "investigate"]
+            ):
                 capabilities.append("research")
             if any(
-                (word in task_lower for word in ["calculate", "compute", "math", "sum", "multiply"])
+                word in task_lower
+                for word in ["calculate", "compute", "math", "sum", "multiply"]
             ):
                 capabilities.append("math")
-            if any((word in task_lower for word in ["write", "essay", "document", "compose"])):
+            if any(
+                word in task_lower for word in ["write", "essay", "document", "compose"]
+            ):
                 capabilities.append("writing")
-            if any((word in task_lower for word in ["analyze", "data", "statistics"])):
+            if any(word in task_lower for word in ["analyze", "data", "statistics"]):
                 capabilities.append("analysis")
             return {
                 "task": task,
@@ -141,7 +154,9 @@ class DynamicNodeSupervisor(ReactAgent):
         def check_agent_availability(capability: str) -> dict[str, Any]:
             """Check which agents can handle a specific capability."""
             matching_agents = self.agent_registry.find_agents_by_capability(capability)
-            active_matches = [a for a in matching_agents if a in self.agent_registry.active_agents]
+            active_matches = [
+                a for a in matching_agents if a in self.agent_registry.active_agents
+            ]
             inactive_matches = [
                 a for a in matching_agents if a not in self.agent_registry.active_agents
             ]
@@ -205,7 +220,9 @@ class DynamicNodeSupervisor(ReactAgent):
         graph.add_node("process_result", self._process_result_node)
         graph.set_entry_point("supervisor")
         graph.add_conditional_edges(
-            "supervisor", self._route_decision, {"execute_agent": "agent_execution", "end": END}
+            "supervisor",
+            self._route_decision,
+            {"execute_agent": "agent_execution", "end": END},
         )
         graph.add_edge("agent_execution", "process_result")
         graph.add_edge("process_result", "supervisor")
@@ -213,21 +230,29 @@ class DynamicNodeSupervisor(ReactAgent):
 
     async def _supervisor_node(self, state: DynamicSupervisorState) -> dict[str, Any]:
         """Supervisor node that makes routing decisions."""
-        task = state.current_task or state.messages[-1]["content"] if state.messages else ""
+        task = (
+            state.current_task or state.messages[-1]["content"]
+            if state.messages
+            else ""
+        )
         prompt = f"\nYou are a supervisor managing multiple specialized agents.\n\nCurrent task: {task}\n\nAvailable agents: {list(self.agent_registry.active_agents)}\n\nYour job:\n1. Analyze the task requirements\n2. Check which agents are available\n3. If a required agent is inactive, activate it\n4. Route the task to the appropriate agent\n5. If you can handle it yourself, don't route to any agent\n\nUse the tools provided to analyze, check availability, activate agents, and route tasks.\n"
         result = await self.engine.ainvoke({"messages": [HumanMessage(content=prompt)]})
         if hasattr(result, "agent_route"):
             state.agent_route = result.agent_route
         return {"state": state}
 
-    async def _agent_execution_node(self, state: DynamicSupervisorState) -> dict[str, Any]:
+    async def _agent_execution_node(
+        self, state: DynamicSupervisorState
+    ) -> dict[str, Any]:
         """General node that executes any routed agent."""
         if not state.agent_route:
             state.agent_response = "No agent route specified"
             return {"state": state}
         agent = self.agent_registry.get_agent(state.agent_route)
         if not agent:
-            state.agent_response = f"Agent '{state.agent_route}' not found or not active"
+            state.agent_response = (
+                f"Agent '{state.agent_route}' not found or not active"
+            )
             return {"state": state}
         try:
             result = await agent.arun(state.current_task)
@@ -255,7 +280,9 @@ class DynamicNodeSupervisor(ReactAgent):
         state.agent_route = None
         return {"state": state}
 
-    async def _process_result_node(self, state: DynamicSupervisorState) -> dict[str, Any]:
+    async def _process_result_node(
+        self, state: DynamicSupervisorState
+    ) -> dict[str, Any]:
         """Process results from agent execution."""
         if state.agent_response:
             state.messages.append(
@@ -270,7 +297,9 @@ class DynamicNodeSupervisor(ReactAgent):
             )
         return {"state": state}
 
-    def _route_decision(self, state: DynamicSupervisorState) -> Literal["execute_agent", "end"]:
+    def _route_decision(
+        self, state: DynamicSupervisorState
+    ) -> Literal["execute_agent", "end"]:
         """Decide whether to execute an agent or end."""
         if state.agent_route and state.agent_route != "none":
             return "execute_agent"
@@ -322,7 +351,9 @@ async def test_dynamic_node_supervisor():
         system_message="You are a dynamic task supervisor.",
     ).create()
     supervisor = DynamicNodeSupervisor(
-        name="dynamic_supervisor", engine=supervisor_engine, state_schema=DynamicSupervisorState
+        name="dynamic_supervisor",
+        engine=supervisor_engine,
+        state_schema=DynamicSupervisorState,
     )
     supervisor.agent_registry.register(
         "research_agent",
@@ -345,7 +376,9 @@ async def test_dynamic_node_supervisor():
         ["writing", "essay", "documentation"],
         active=False,
     )
-    await supervisor.arun("Calculate the compound interest on $10,000 at 5% for 10 years")
+    await supervisor.arun(
+        "Calculate the compound interest on $10,000 at 5% for 10 years"
+    )
     await supervisor.arun("Write an essay about the benefits of renewable energy")
 
 

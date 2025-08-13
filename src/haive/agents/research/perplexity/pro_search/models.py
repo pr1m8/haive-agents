@@ -172,7 +172,7 @@ class QueryBatch(BaseModel):
         if len(query_texts) != len(set(query_texts)):
             raise ValueError("Duplicate queries detected")
         priorities = [q.priority for q in self.queries]
-        if len(self.queries) > 3 and all((p == priorities[0] for p in priorities)):
+        if len(self.queries) > 3 and all(p == priorities[0] for p in priorities):
             for i, query in enumerate(self.queries):
                 query.priority = min(i + 1, 5)
         return self
@@ -299,7 +299,7 @@ class SearchSynthesis(BaseModel):
         """Count total unique sources used."""
         urls = set()
         for result in self.search_results:
-            urls.update((r.url for r in result.results))
+            urls.update(r.url for r in result.results)
         return len(urls)
 
     @computed_field
@@ -356,10 +356,8 @@ class PerplexitySearchState(BaseModel):
     def is_complete(self) -> bool:
         """Check if search workflow is complete."""
         return (
-            self.synthesis is not None
-            and (not self.synthesis.requires_follow_up)
-            or self.iteration_count >= self.max_iterations
-        )
+            self.synthesis is not None and (not self.synthesis.requires_follow_up)
+        ) or self.iteration_count >= self.max_iterations
 
     @computed_field
     @property

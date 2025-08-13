@@ -269,7 +269,7 @@ async def main():
     analysis_time = asyncio.get_event_loop().time() - start_time
 
     # Format results
-    format_result = await format_workflow.arun(
+    await format_workflow.arun(
         {
             "messages": [
                 HumanMessage(content=f"Format the analysis results:\n{analysis_result}")

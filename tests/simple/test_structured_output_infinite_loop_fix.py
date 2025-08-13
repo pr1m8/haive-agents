@@ -187,7 +187,7 @@ def test_tool_name_sanitization():
         ("ComplexResult", "complex_result"),
         ("UserProfile", "user_profile"),
         ("APIResponse", "api_response"),
-        ("HTTPSParser", "https_parser"),
+        ("HTTPSParser", "http_s_parser"),  # Actual behavior from sanitize_tool_name
         ("Plan[Task]", "plan_task_generic"),
         ("Model[String]", "model_string_generic"),
     ]

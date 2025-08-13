@@ -197,7 +197,7 @@ class Agent(
         return values
 
     @model_validator(mode="after")
-    def complete_agent_setup(self) -> "Agent":
+    def complete_agent_setup(self):
         """STEP 2-5: Complete agent setup in proper order."""
         try:
             self._setup_hooks()
@@ -410,6 +410,8 @@ class Agent(
         is_structured_handler = (
             self.__class__.__name__ == "StructuredOutputAgent"
             or self.__class__.__name__ == "MultiAgent"
+            or self.__class__.__name__
+            == "SimpleAgent"  # SimpleAgent handles structured output natively
             or hasattr(self, "_is_structured_output_handler")
         )
 

@@ -86,7 +86,9 @@ class DynamicSupervisorAgent(SimpleAgent):
         return graph
 
 
-def create_supervisor_agent(name: str = "supervisor", engine=None) -> DynamicSupervisorAgent:
+def create_supervisor_agent(
+    name: str = "supervisor", engine=None
+) -> DynamicSupervisorAgent:
     """Create a configured supervisor agent."""
     return DynamicSupervisorAgent(
         name=name,

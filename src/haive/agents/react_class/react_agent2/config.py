@@ -11,7 +11,7 @@ from haive.agents.react_class.react_agent2.models import ReactState, Thought
 
 
 class ReactAgentConfig(AgentConfig):
-    """Configuration for a React agent that follows the ReAct pattern:
+    """Configuration for a React agent that follows the ReAct pattern:.
     1. Think: Reason about the current state
     2. Act: Decide on an action and execute it
     3. Observe: See the result of the action
@@ -23,7 +23,7 @@ class ReactAgentConfig(AgentConfig):
 
     # System prompts
     system_prompt: str = Field(
-        default="""You are an AI assistant that follows the ReAct framework:
+        default="""You are an AI assistant that follows the ReAct framework:.
 
 1. Think: Reason step-by-step about the problem
 2. Act: Choose an action from the available tools
@@ -197,4 +197,3 @@ Action Input: <your final answer>
 
 def from_scratch(**kwargs):
     """Module-level from_scratch function."""
-    pass

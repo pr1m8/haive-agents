@@ -98,7 +98,7 @@ class StructuredOutputExtractor(Generic[T]):
                         return value
 
             # Check all fields for the model type
-            for key, value in result.items():
+            for _key, value in result.items():
                 if isinstance(value, self.output_model):
                     return value
 

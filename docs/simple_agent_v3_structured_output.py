@@ -50,7 +50,7 @@ See Also:
 """
 
 import logging
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import DeepSeekLLMConfig
@@ -119,7 +119,7 @@ class TaskAnalysis(BaseModel):
         examples=[3, 7, 9],
     )
 
-    steps_required: List[str] = Field(
+    steps_required: list[str] = Field(
         description="Ordered list of specific actionable steps needed",
         min_items=1,
         max_items=15,
@@ -164,7 +164,7 @@ class TaskAnalysis(BaseModel):
 
     @field_validator("steps_required")
     @classmethod
-    def validate_steps(cls, v: List[str]) -> List[str]:
+    def validate_steps(cls, v: list[str]) -> list[str]:
         """Validate steps are non-empty and reasonable.
 
         Args:
@@ -360,7 +360,7 @@ class ProgrammingAdvice(BaseModel):
         ],
     )
 
-    best_practices: List[str] = Field(
+    best_practices: list[str] = Field(
         description="List of actionable best practices and recommendations",
         min_items=1,
         max_items=10,
@@ -415,7 +415,7 @@ class ProgrammingAdvice(BaseModel):
 
     @field_validator("best_practices")
     @classmethod
-    def validate_best_practices(cls, v: List[str]) -> List[str]:
+    def validate_best_practices(cls, v: list[str]) -> list[str]:
         """Validate best practices list contains meaningful content.
 
         Args:
@@ -435,9 +435,13 @@ class ProgrammingAdvice(BaseModel):
             if not practice or not practice.strip():
                 raise ValueError(f"Best practice {i + 1} cannot be empty")
             if len(practice.strip()) < 10:
-                raise ValueError(f"Best practice {i + 1} must be at least 10 characters")
+                raise ValueError(
+                    f"Best practice {i + 1} must be at least 10 characters"
+                )
             if len(practice.strip()) > 200:
-                raise ValueError(f"Best practice {i + 1} must be 200 characters or less")
+                raise ValueError(
+                    f"Best practice {i + 1} must be 200 characters or less"
+                )
             cleaned_practices.append(practice.strip())
 
         return cleaned_practices
@@ -475,7 +479,7 @@ class ExecutionSummary(BaseModel):
         examples=[1250, 2100, 850],
     )
 
-    token_usage: Dict[str, int] = Field(
+    token_usage: dict[str, int] = Field(
         description="Token consumption metrics",
         examples=[
             {"input_tokens": 150, "output_tokens": 85, "total_tokens": 235},
@@ -500,7 +504,7 @@ class ExecutionSummary(BaseModel):
         examples=[0.1, 0.7, 1.0],
     )
 
-    error_details: Optional[Dict[str, Any]] = Field(
+    error_details: dict[str, Any] | None = Field(
         default=None,
         description="Error information if execution failed",
         examples=[
@@ -583,7 +587,8 @@ def create_structured_output_agent(
     """
     # Validate structured output model
     if not (
-        isinstance(structured_output_model, type) and issubclass(structured_output_model, BaseModel)
+        isinstance(structured_output_model, type)
+        and issubclass(structured_output_model, BaseModel)
     ):
         raise ValueError(
             f"structured_output_model must be a Pydantic BaseModel class, "
@@ -625,7 +630,7 @@ def create_structured_output_agent(
 
 def validate_structured_output(
     output: Any, expected_model: type[BaseModel], strict: bool = True
-) -> tuple[bool, Optional[str], Optional[BaseModel]]:
+) -> tuple[bool, str | None, BaseModel | None]:
     """Validate output against expected Pydantic model.
 
     This function validates that generated output conforms to the expected
@@ -681,7 +686,7 @@ def validate_structured_output(
             try:
                 output = json.loads(output)
             except json.JSONDecodeError as e:
-                return False, f"Invalid JSON: {str(e)}", None
+                return False, f"Invalid JSON: {e!s}", None
 
         elif isinstance(output, expected_model):
             # Already correct model type
@@ -693,17 +698,17 @@ def validate_structured_output(
                 validated_model = expected_model(**output)
                 return True, None, validated_model
             except Exception as e:
-                return False, f"Model validation failed: {str(e)}", None
+                return False, f"Model validation failed: {e!s}", None
         else:
             return False, f"Unsupported output type: {type(output)}", None
 
     except Exception as e:
-        return False, f"Validation error: {str(e)}", None
+        return False, f"Validation error: {e!s}", None
 
 
 def extract_structured_output_from_messages(
-    messages: List[Any], expected_model: type[BaseModel]
-) -> tuple[bool, Optional[BaseModel], Optional[str]]:
+    messages: list[Any], expected_model: type[BaseModel]
+) -> tuple[bool, BaseModel | None, str | None]:
     """Extract and validate structured output from agent message history.
 
     This function searches through agent message history to find structured
@@ -753,7 +758,9 @@ def extract_structured_output_from_messages(
             if hasattr(message, "content") and message.content:
                 content = message.content.strip()
                 if content.startswith("{") and content.endswith("}"):
-                    is_valid, error, model = validate_structured_output(content, expected_model)
+                    is_valid, error, model = validate_structured_output(
+                        content, expected_model
+                    )
                     if is_valid:
                         return True, model, None
 
@@ -764,7 +771,7 @@ def extract_structured_output_from_messages(
         )
 
     except Exception as e:
-        return False, None, f"Extraction error: {str(e)}"
+        return False, None, f"Extraction error: {e!s}"
 
 
 # ============================================================================
@@ -816,7 +823,9 @@ def demonstrate_task_analysis():
     result = agent.run(task_query.strip())
 
     # Extract and validate structured output
-    found, analysis, error = extract_structured_output_from_messages(result.messages, TaskAnalysis)
+    found, analysis, error = extract_structured_output_from_messages(
+        result.messages, TaskAnalysis
+    )
 
     if found and analysis:
         print("\n✅ TaskAnalysis Results:")
@@ -831,9 +840,8 @@ def demonstrate_task_analysis():
             print(f"   {i}. {step}")
 
         return analysis
-    else:
-        print(f"\n❌ Failed to extract structured output: {error}")
-        return None
+    print(f"\n❌ Failed to extract structured output: {error}")
+    return None
 
 
 def demonstrate_question_answer():
@@ -856,9 +864,7 @@ def demonstrate_question_answer():
         max_tokens=300,
     )
 
-    question = (
-        "What are the key benefits of using Pydantic for data validation in Python applications?"
-    )
+    question = "What are the key benefits of using Pydantic for data validation in Python applications?"
 
     print(f"❓ Question: {question}")
     print("\n🤖 Generating structured answer...")
@@ -879,9 +885,8 @@ def demonstrate_question_answer():
         print(f"   Certainty: {qa_result.certainty}")
 
         return qa_result
-    else:
-        print(f"\n❌ Failed to extract Q&A output: {error}")
-        return None
+    print(f"\n❌ Failed to extract Q&A output: {error}")
+    return None
 
 
 def demonstrate_programming_advice():
@@ -904,7 +909,9 @@ def demonstrate_programming_advice():
         max_tokens=500,
     )
 
-    coding_question = "Explain Python decorators with a practical example and best practices"
+    coding_question = (
+        "Explain Python decorators with a practical example and best practices"
+    )
 
     print(f"💡 Coding Question: {coding_question}")
     print("\n🤖 Generating structured programming advice...")
@@ -929,9 +936,8 @@ def demonstrate_programming_advice():
             print(f"   {i}. {practice}")
 
         return advice
-    else:
-        print(f"\n❌ Failed to extract programming advice: {error}")
-        return None
+    print(f"\n❌ Failed to extract programming advice: {error}")
+    return None
 
 
 def run_all_demonstrations():

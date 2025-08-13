@@ -186,17 +186,14 @@ async def test_branching_workflow():
                 agent_result = await technical.arun(
                     {"messages": [HumanMessage(content=query)]}
                 )
-                agent_used = "technical_expert"
             elif classification_result.category == "creative":
                 agent_result = await creative.arun(
                     {"messages": [HumanMessage(content=query)]}
                 )
-                agent_used = "creative_writer"
             else:  # research
                 agent_result = await research.arun(
                     {"messages": [HumanMessage(content=query)]}
                 )
-                agent_used = "researcher"
 
             # Extract response text
             if hasattr(agent_result, "content"):

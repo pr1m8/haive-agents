@@ -154,7 +154,11 @@ def test_individual_agent_capabilities():
     # Test research agent
     with contextlib.suppress(Exception):
         agents["research_agent"].invoke(
-            {"messages": [HumanMessage("Search for average cost of AI chatbot implementation")]}
+            {
+                "messages": [
+                    HumanMessage("Search for average cost of AI chatbot implementation")
+                ]
+            }
         )
 
     # Test math agent
@@ -174,7 +178,9 @@ def test_individual_agent_capabilities():
         agents["essay_writer_agent"].invoke(
             {
                 "messages": [
-                    HumanMessage("Write a brief essay about AI adoption in small businesses")
+                    HumanMessage(
+                        "Write a brief essay about AI adoption in small businesses"
+                    )
                 ]
             }
         )

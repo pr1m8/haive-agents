@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-ReactAgent with Tools Example - Give Your Agent Superpowers!
+"""ReactAgent with Tools Example - Give Your Agent Superpowers!
 
 This example shows how to create a ReactAgent that can use tools.
 ReactAgent uses a "Reason-Act" pattern to think about problems and use tools to solve them.
@@ -8,8 +7,7 @@ ReactAgent uses a "Reason-Act" pattern to think about problems and use tools to 
 What you'll learn:
 - How to create simple tools using the @tool decorator
 - How to create a ReactAgent with tools
-- How ReactAgent thinks step-by-step to solve problems
-"""
+- How ReactAgent thinks step-by-step to solve problems"""
 
 # Suppress logging for a cleaner demo
 import logging
@@ -31,34 +29,30 @@ from haive.agents.react.agent import ReactAgent
 
 @tool
 def calculator(expression: str) -> str:
-    """
-    A simple calculator that can evaluate mathematical expressions.
+    """A simple calculator that can evaluate mathematical expressions.
 
     Args:
         expression: A mathematical expression like "2 + 2" or "10 * 5"
 
     Returns:
-        The result of the calculation as a string
-    """
+        The result of the calculation as a string"""
     try:
         # Safely evaluate the mathematical expression
         result = eval(expression)
         return f"The result is: {result}"
     except Exception as e:
-        return f"Error calculating: {str(e)}"
+        return f"Error calculating: {e!s}"
 
 
 @tool
 def word_counter(text: str) -> str:
-    """
-    Count the number of words in a text.
+    """Count the number of words in a text.
 
     Args:
         text: The text to count words in
 
     Returns:
-        The word count as a string
-    """
+        The word count as a string"""
     word_count = len(text.split())
     return f"The text contains {word_count} words"
 
@@ -102,11 +96,9 @@ print("\n📊 Using Multiple Tools")
 print("=" * 50)
 
 # Ask a question that requires multiple tools
-complex_question = """
-I have a sentence: "The quick brown fox jumps over the lazy dog"
+complex_question = """I have a sentence: "The quick brown fox jumps over the lazy dog"
 1. How many words are in this sentence?
-2. If each word costs $3.50, what's the total cost?
-"""
+2. If each word costs $3.50, what's the total cost?"""
 
 print(f"You: {complex_question}")
 print("\n🧠 Agent is thinking (this might use multiple tools)...")

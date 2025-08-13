@@ -22,7 +22,7 @@ from haive.agents.memory.models_dir.meta import MemoryValidationMeta
 
 
 class BaseMemoryModel(BaseModel, metaclass=MemoryValidationMeta):
-    """Enhanced base memory model with sophisticated validation patterns and automatic
+    """Enhanced base memory model with sophisticated validation patterns and automatic.
     metadata management.
     """
 

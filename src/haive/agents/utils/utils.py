@@ -4,7 +4,6 @@ import base64
 # Some javascript we will run on each step
 # to take a screenshot of the page, select the
 # elements to annotate, and add bounding boxes
-import os
 from pathlib import Path
 
 from langchain_core.runnables import chain

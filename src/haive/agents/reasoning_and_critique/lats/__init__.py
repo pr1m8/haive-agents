@@ -21,9 +21,9 @@ from haive.agents.reasoning_and_critique.lats.utils import (
 __all__ = [
     "LATSAgent",
     "LATSAgentConfig",
+    "ModelNode",
     "Node",
     "NodeManager",
-    "ModelNode",
     "Reflection",
     "TreeState",
     "create_lats_agent",

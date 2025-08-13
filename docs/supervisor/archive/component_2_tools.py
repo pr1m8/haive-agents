@@ -3,6 +3,7 @@
 from haive.core.common.models.dynamic_choice_model import DynamicChoiceModel
 from langchain_core.tools import tool
 from pydantic import Field, model_validator
+
 from haive.agents.experiments.supervisor.supervisor_state import SupervisorState
 
 
@@ -10,7 +11,9 @@ class SupervisorStateWithTools(SupervisorState):
     """SupervisorState with dynamic tool generation and choice model integration."""
 
     agent_choice_model: DynamicChoiceModel = Field(
-        default_factory=lambda: DynamicChoiceModel(model_name="AgentChoice", include_end=True),
+        default_factory=lambda: DynamicChoiceModel(
+            model_name="AgentChoice", include_end=True
+        ),
         description="Dynamic choice model for agent selection validation",
     )
     generated_tools: list[str] = Field(
@@ -82,13 +85,19 @@ class SupervisorStateWithTools(SupervisorState):
             try:
                 task_lower = task_description.lower()
                 chosen_agent = "END"
-                if any((word in task_lower for word in ["search", "find", "research", "look up"])):
+                if any(
+                    word in task_lower
+                    for word in ["search", "find", "research", "look up"]
+                ):
                     if "search_agent" in self.agents:
                         chosen_agent = "search_agent"
-                elif any((word in task_lower for word in ["math", "calculate", "add", "multiply"])):
+                elif any(
+                    word in task_lower
+                    for word in ["math", "calculate", "add", "multiply"]
+                ):
                     if "math_agent" in self.agents:
                         chosen_agent = "math_agent"
-                elif any((word in task_lower for word in ["plan", "organize", "steps"])):
+                elif any(word in task_lower for word in ["plan", "organize", "steps"]):
                     if "planning_agent" in self.agents:
                         chosen_agent = "planning_agent"
                 elif self.active_agents:
@@ -97,9 +106,7 @@ class SupervisorStateWithTools(SupervisorState):
                 validated_choice = ChoiceModel(choice=chosen_agent)
                 result = f"Chosen agent: {validated_choice.choice}"
                 if validated_choice.choice != "END":
-                    result += (
-                        f"\nNext: Use handoff_to_{validated_choice.choice} to execute the task"
-                    )
+                    result += f"\nNext: Use handoff_to_{validated_choice.choice} to execute the task"
                 return result
             except Exception as e:
                 return f"Error choosing agent: {e!s}"

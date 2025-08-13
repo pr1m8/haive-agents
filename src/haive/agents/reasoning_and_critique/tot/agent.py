@@ -5,7 +5,7 @@ This module implements the Tree of Thoughts algorithm as a Haive agent.
 
 import logging
 import re
-from typing import Generic, Literal, TypeVar, Union
+from typing import Generic, Literal, TypeVar
 
 from haive.core.engine.agent.agent import Agent, register_agent
 from haive.core.graph.dynamic_graph_builder import DynamicGraph
@@ -233,16 +233,15 @@ class ToTAgent(Agent[TOTAgentConfig], Generic[T]):
                     seed_content = candidate.get("content", str(candidate))
                 else:
                     seed_content = getattr(candidate, "content", str(candidate))
+            # Handle object case
+            elif hasattr(current_seed, "candidate") and hasattr(
+                current_seed.candidate, "content"
+            ):
+                seed_content = current_seed.candidate.content
+            elif hasattr(current_seed, "content"):
+                seed_content = current_seed.content
             else:
-                # Handle object case
-                if hasattr(current_seed, "candidate") and hasattr(
-                    current_seed.candidate, "content"
-                ):
-                    seed_content = current_seed.candidate.content
-                elif hasattr(current_seed, "content"):
-                    seed_content = current_seed.content
-                else:
-                    seed_content = str(current_seed)
+                seed_content = str(current_seed)
 
             seed_info = f"\nUsing this as a starting point:\n{seed_content}"
 
@@ -573,9 +572,7 @@ class ToTAgent(Agent[TOTAgentConfig], Generic[T]):
         # Continue to evaluation
         return "continue"
 
-    def _map_beam_expansion(
-        self, state: TOTState
-    ) -> Union[Literal["__end__"], list[Send]]:
+    def _map_beam_expansion(self, state: TOTState) -> Literal["__end__"] | list[Send]:
         """Map beam candidates to parallel expansion nodes.
 
         Args:

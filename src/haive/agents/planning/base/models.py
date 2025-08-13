@@ -13,15 +13,14 @@ from __future__ import annotations
 
 import asyncio
 import uuid
-from abc import ABC, abstractmethod
+from abc import ABC
 from collections import deque
+from collections.abc import Callable
 from datetime import datetime
 from enum import Enum
-from functools import wraps
-from typing import Any, Callable, Dict, Generic, List, Optional, Set, TypeVar, Union
+from typing import Any, Generic, Self, TypeVar, Union
 
-from pydantic import BaseModel, Field, computed_field, field_validator, model_validator
-from typing_extensions import Self
+from pydantic import BaseModel, Field, computed_field
 
 # ============================================================================
 # TYPE DEFINITIONS AND ADVANCED GENERICS
@@ -33,7 +32,7 @@ PlanType = TypeVar("PlanType", bound="BasePlan")
 
 # Maximum flexibility - plans can contain anything
 PlanContent = Union[
-    "BasePlan[Any]", "BaseStep", List["BaseStep"], Callable, str, Dict[str, Any], Any
+    "BasePlan[Any]", "BaseStep", list["BaseStep"], Callable, str, dict[str, Any], Any
 ]
 
 
@@ -86,15 +85,15 @@ class ChangeEvent(BaseModel):
     timestamp: datetime = Field(default_factory=datetime.now)
     old_value: Any = None
     new_value: Any = None
-    metadata: Dict[str, Any] = Field(default_factory=dict)
+    metadata: dict[str, Any] = Field(default_factory=dict)
 
 
 class EventEmitter:
     """Event system for tracking changes."""
 
     def __init__(self):
-        self.listeners: Dict[str, List[Callable]] = {}
-        self.event_history: List[ChangeEvent] = []
+        self.listeners: dict[str, list[Callable]] = {}
+        self.event_history: list[ChangeEvent] = []
 
     def on(self, event_type: str, callback: Callable):
         """Register event listener."""
@@ -124,17 +123,15 @@ class IntelligentStatusMixin(BaseModel, ABC):
     id: str = Field(
         default_factory=lambda: str(uuid.uuid4()), description="Unique identifier"
     )
-    index: Optional[int] = Field(
-        default=None, description="Index within parent container"
-    )
+    index: int | None = Field(default=None, description="Index within parent container")
     status: TaskStatus = Field(default=TaskStatus.PENDING, description="Current status")
 
     # Timestamps with full lifecycle tracking
     created_at: datetime = Field(default_factory=datetime.now)
-    updated_at: Optional[datetime] = Field(default=None)
-    started_at: Optional[datetime] = Field(default=None)
-    completed_at: Optional[datetime] = Field(default=None)
-    failed_at: Optional[datetime] = Field(default=None)
+    updated_at: datetime | None = Field(default=None)
+    started_at: datetime | None = Field(default=None)
+    completed_at: datetime | None = Field(default=None)
+    failed_at: datetime | None = Field(default=None)
 
     # Intelligent features
     auto_status_propagation: bool = Field(
@@ -149,8 +146,8 @@ class IntelligentStatusMixin(BaseModel, ABC):
 
     # Event system
     _event_emitter: EventEmitter = Field(default_factory=EventEmitter, exclude=True)
-    _parent_ref: Optional["IntelligentStatusMixin"] = Field(default=None, exclude=True)
-    _children_refs: Set[str] = Field(default_factory=set, exclude=True)
+    _parent_ref: IntelligentStatusMixin | None = Field(default=None, exclude=True)
+    _children_refs: set[str] = Field(default_factory=set, exclude=True)
 
     def __init__(self, **data):
         super().__init__(**data)
@@ -194,7 +191,7 @@ class IntelligentStatusMixin(BaseModel, ABC):
     def _adapt_model(self) -> None:
         """Dynamically adapt model based on content."""
         # If we have steps/children, become a container
-        if hasattr(self, "steps") and getattr(self, "steps"):
+        if hasattr(self, "steps") and self.steps:
             self._adapt_as_container()
 
         # If we have callable content, become executable
@@ -204,7 +201,7 @@ class IntelligentStatusMixin(BaseModel, ABC):
     def _adapt_as_container(self) -> None:
         """Adapt to container behavior."""
         if hasattr(self, "steps"):
-            steps = getattr(self, "steps")
+            steps = self.steps
             for step in steps:
                 if hasattr(step, "_parent_ref"):
                     step._parent_ref = self
@@ -227,10 +224,10 @@ class IntelligentStatusMixin(BaseModel, ABC):
 
     def _update_container_status(self) -> None:
         """Intelligently update container status based on children."""
-        if not hasattr(self, "steps") or not getattr(self, "steps"):
+        if not hasattr(self, "steps") or not self.steps:
             return
 
-        steps = getattr(self, "steps")
+        steps = self.steps
         if not steps:
             return
 
@@ -333,16 +330,16 @@ class IntelligentStatusMixin(BaseModel, ABC):
 # ============================================================================
 
 
-class IntelligentSequence(List[PlanContent], Generic[T]):
+class IntelligentSequence(list[PlanContent], Generic[T]):
     """Advanced modifiable sequence with event system, undo/redo, and cycle detection."""
 
-    def __init__(self, items: List[T] = None, parent: Optional["BasePlan"] = None):
+    def __init__(self, items: list[T] = None, parent: BasePlan | None = None):
         super().__init__(items or [])
         self.parent = parent
         self._event_emitter = EventEmitter()
-        self._undo_stack: List[Callable] = []
-        self._redo_stack: List[Callable] = []
-        self._modification_history: List[ChangeEvent] = []
+        self._undo_stack: list[Callable] = []
+        self._redo_stack: list[Callable] = []
+        self._modification_history: list[ChangeEvent] = []
         self._reindex()
 
     def _reindex(self) -> None:
@@ -367,11 +364,9 @@ class IntelligentSequence(List[PlanContent], Generic[T]):
         """Create undo action for operation."""
         if operation == "append":
             return lambda: self._raw_remove(item)
-        elif operation == "insert":
+        if operation == "insert":
             return lambda: self._raw_pop(index)
-        elif operation == "remove":
-            return lambda: self._raw_insert(index, item)
-        elif operation == "pop":
+        if operation == "remove" or operation == "pop":
             return lambda: self._raw_insert(index, item)
         return lambda: None
 
@@ -403,7 +398,9 @@ class IntelligentSequence(List[PlanContent], Generic[T]):
             raise ValueError(f"Adding item {item.id} would create a cycle")
 
         # Create undo action
-        undo_action = lambda: self._raw_remove(item)
+        def undo_action():
+            return self._raw_remove(item)
+
         self._undo_stack.append(undo_action)
         self._redo_stack.clear()  # Clear redo on new action
 
@@ -422,7 +419,9 @@ class IntelligentSequence(List[PlanContent], Generic[T]):
         if hasattr(item, "id") and self.parent and self._would_create_cycle(item):
             raise ValueError(f"Adding item {item.id} would create a cycle")
 
-        undo_action = lambda: self._raw_pop(index)
+        def undo_action():
+            return self._raw_pop(index)
+
         self._undo_stack.append(undo_action)
         self._redo_stack.clear()
 
@@ -435,7 +434,10 @@ class IntelligentSequence(List[PlanContent], Generic[T]):
     def remove(self, item: T) -> None:
         """Remove item with undo support and events."""
         index = self.index(item)
-        undo_action = lambda: self._raw_insert(index, item)
+
+        def undo_action():
+            return self._raw_insert(index, item)
+
         self._undo_stack.append(undo_action)
         self._redo_stack.clear()
 
@@ -450,7 +452,9 @@ class IntelligentSequence(List[PlanContent], Generic[T]):
         item = self[index]
         actual_index = index if index >= 0 else len(self) + index
 
-        undo_action = lambda: self._raw_insert(actual_index, item)
+        def undo_action():
+            return self._raw_insert(actual_index, item)
+
         self._undo_stack.append(undo_action)
         self._redo_stack.clear()
 
@@ -472,7 +476,10 @@ class IntelligentSequence(List[PlanContent], Generic[T]):
 
         # Store current state for redo
         current_state = list(self)
-        redo_action = lambda: self._restore_state(current_state)
+
+        def redo_action():
+            return self._restore_state(current_state)
+
         self._redo_stack.append(redo_action)
 
         # Execute undo
@@ -490,7 +497,7 @@ class IntelligentSequence(List[PlanContent], Generic[T]):
 
         return True
 
-    def _restore_state(self, state: List[T]) -> None:
+    def _restore_state(self, state: list[T]) -> None:
         """Restore sequence to specific state."""
         self.clear()
         for item in state:
@@ -537,30 +544,30 @@ class BaseStep(IntelligentStatusMixin):
 
     # Enhanced metadata
     priority: Priority = Field(default=Priority.MEDIUM)
-    estimated_duration: Optional[str] = Field(default=None)
-    actual_duration: Optional[str] = Field(default=None)
+    estimated_duration: str | None = Field(default=None)
+    actual_duration: str | None = Field(default=None)
 
     # Advanced dependencies
-    depends_on: List[str] = Field(default_factory=list, description="Hard dependencies")
-    soft_depends_on: List[str] = Field(
+    depends_on: list[str] = Field(default_factory=list, description="Hard dependencies")
+    soft_depends_on: list[str] = Field(
         default_factory=list, description="Soft dependencies"
     )
-    blocks: List[str] = Field(default_factory=list, description="What this blocks")
+    blocks: list[str] = Field(default_factory=list, description="What this blocks")
 
     # Execution requirements
-    tools_required: List[str] = Field(default_factory=list)
-    resources_required: List[str] = Field(default_factory=list)
-    skills_required: List[str] = Field(default_factory=list)
+    tools_required: list[str] = Field(default_factory=list)
+    resources_required: list[str] = Field(default_factory=list)
+    skills_required: list[str] = Field(default_factory=list)
 
     # Execution content (maximum flexibility)
-    content: Optional[Union[str, Callable, Dict[str, Any], Any]] = Field(default=None)
-    execution_context: Dict[str, Any] = Field(default_factory=dict)
+    content: str | Callable | dict[str, Any] | Any | None = Field(default=None)
+    execution_context: dict[str, Any] = Field(default_factory=dict)
 
     # Results and feedback
-    result: Optional[Any] = Field(default=None)
-    error_message: Optional[str] = Field(default=None)
-    feedback: List[str] = Field(default_factory=list)
-    quality_score: Optional[float] = Field(default=None, ge=0.0, le=1.0)
+    result: Any | None = Field(default=None)
+    error_message: str | None = Field(default=None)
+    feedback: list[str] = Field(default_factory=list)
+    quality_score: float | None = Field(default=None, ge=0.0, le=1.0)
 
     @computed_field
     @property
@@ -666,9 +673,7 @@ class BaseStep(IntelligentStatusMixin):
             self.update_status(TaskStatus.FAILED)
             raise
 
-    def add_feedback(
-        self, feedback: str, quality_score: Optional[float] = None
-    ) -> Self:
+    def add_feedback(self, feedback: str, quality_score: float | None = None) -> Self:
         """Add execution feedback."""
         self.feedback.append(feedback)
         if quality_score is not None:
@@ -698,24 +703,24 @@ class BasePlan(IntelligentStatusMixin, Generic[T]):
     execution_mode: str = Field(
         default="sequential", description="How to execute steps"
     )
-    parallel_limit: Optional[int] = Field(
+    parallel_limit: int | None = Field(
         default=None, description="Max parallel execution"
     )
 
     # Advanced planning metadata
     plan_type: str = Field(default="flexible")
     complexity_level: str = Field(default="medium")
-    estimated_total_duration: Optional[str] = Field(default=None)
-    actual_duration: Optional[str] = Field(default=None)
+    estimated_total_duration: str | None = Field(default=None)
+    actual_duration: str | None = Field(default=None)
 
     # Context and constraints
-    context: Dict[str, Any] = Field(default_factory=dict)
-    constraints: List[str] = Field(default_factory=list)
-    assumptions: List[str] = Field(default_factory=list)
+    context: dict[str, Any] = Field(default_factory=dict)
+    constraints: list[str] = Field(default_factory=list)
+    assumptions: list[str] = Field(default_factory=list)
 
     # Quality and performance
-    quality_gates: List[str] = Field(default_factory=list)
-    performance_targets: Dict[str, Any] = Field(default_factory=dict)
+    quality_gates: list[str] = Field(default_factory=list)
+    performance_targets: dict[str, Any] = Field(default_factory=dict)
 
     def __init__(self, **data):
         super().__init__(**data)
@@ -775,7 +780,7 @@ class BasePlan(IntelligentStatusMixin, Generic[T]):
 
     @computed_field
     @property
-    def next_executable_items(self) -> List[Union[BaseStep, "BasePlan"]]:
+    def next_executable_items(self) -> list[BaseStep | BasePlan]:
         """Find all items ready for execution (supports parallel)."""
         executable = []
 
@@ -816,9 +821,9 @@ class BasePlan(IntelligentStatusMixin, Generic[T]):
         """Check if item is ready for execution."""
         if hasattr(item, "is_executable"):
             return item.is_executable
-        elif callable(item):
+        if callable(item):
             return True
-        elif hasattr(item, "status"):
+        if hasattr(item, "status"):
             return item.status == TaskStatus.READY
         return False
 
@@ -833,20 +838,19 @@ class BasePlan(IntelligentStatusMixin, Generic[T]):
 
         return max_depth
 
-    def traverse(self, mode: TraversalMode = TraversalMode.DEPTH_FIRST) -> List[Any]:
+    def traverse(self, mode: TraversalMode = TraversalMode.DEPTH_FIRST) -> list[Any]:
         """Traverse the plan tree using specified mode."""
         if mode == TraversalMode.DEPTH_FIRST:
             return self._traverse_depth_first()
-        elif mode == TraversalMode.BREADTH_FIRST:
+        if mode == TraversalMode.BREADTH_FIRST:
             return self._traverse_breadth_first()
-        elif mode == TraversalMode.PRIORITY_FIRST:
+        if mode == TraversalMode.PRIORITY_FIRST:
             return self._traverse_priority_first()
-        elif mode == TraversalMode.DEPENDENCY_ORDER:
+        if mode == TraversalMode.DEPENDENCY_ORDER:
             return self._traverse_dependency_order()
-        else:
-            return self._traverse_depth_first()
+        return self._traverse_depth_first()
 
-    def _traverse_depth_first(self) -> List[Any]:
+    def _traverse_depth_first(self) -> list[Any]:
         """Depth-first traversal."""
         result = []
 
@@ -864,7 +868,7 @@ class BasePlan(IntelligentStatusMixin, Generic[T]):
 
         return result
 
-    def _traverse_breadth_first(self) -> List[Any]:
+    def _traverse_breadth_first(self) -> list[Any]:
         """Breadth-first traversal."""
         result = []
         queue = deque(self.steps)
@@ -880,7 +884,7 @@ class BasePlan(IntelligentStatusMixin, Generic[T]):
 
         return result
 
-    def _traverse_priority_first(self) -> List[Any]:
+    def _traverse_priority_first(self) -> list[Any]:
         """Priority-first traversal."""
         all_items = self._traverse_depth_first()
 
@@ -901,7 +905,7 @@ class BasePlan(IntelligentStatusMixin, Generic[T]):
 
         return sorted(all_items, key=get_priority)
 
-    def _traverse_dependency_order(self) -> List[Any]:
+    def _traverse_dependency_order(self) -> list[Any]:
         """Dependency-order traversal (topological sort)."""
         # Simplified implementation - would need full dependency graph
         return self._traverse_depth_first()
@@ -911,24 +915,24 @@ class BasePlan(IntelligentStatusMixin, Generic[T]):
         self.steps.append(step)
         return self
 
-    def add_steps(self, steps: List[PlanContent]) -> Self:
+    def add_steps(self, steps: list[PlanContent]) -> Self:
         """Add multiple steps."""
         for step in steps:
             self.steps.append(step)
         return self
 
-    def find_by_id(self, item_id: str) -> Optional[Any]:
+    def find_by_id(self, item_id: str) -> Any | None:
         """Find any item by ID recursively."""
         for item in self.traverse():
             if hasattr(item, "id") and item.id == item_id:
                 return item
         return None
 
-    def find_by_predicate(self, predicate: Callable[[Any], bool]) -> List[Any]:
+    def find_by_predicate(self, predicate: Callable[[Any], bool]) -> list[Any]:
         """Find all items matching predicate."""
         return [item for item in self.traverse() if predicate(item)]
 
-    def get_statistics(self) -> Dict[str, Any]:
+    def get_statistics(self) -> dict[str, Any]:
         """Get comprehensive plan statistics."""
         all_items = self.traverse()
 
@@ -969,7 +973,7 @@ class BasePlan(IntelligentStatusMixin, Generic[T]):
 
         return stats
 
-    async def execute(self, mode: str = None) -> Dict[str, Any]:
+    async def execute(self, mode: str = None) -> dict[str, Any]:
         """Execute the plan using specified mode."""
         execution_mode = mode or self.execution_mode
 
@@ -978,17 +982,16 @@ class BasePlan(IntelligentStatusMixin, Generic[T]):
         try:
             if execution_mode == "sequential":
                 return await self._execute_sequential()
-            elif execution_mode == "parallel":
+            if execution_mode == "parallel":
                 return await self._execute_parallel()
-            elif execution_mode == "conditional":
+            if execution_mode == "conditional":
                 return await self._execute_conditional()
-            else:
-                return await self._execute_flexible()
-        except Exception as e:
+            return await self._execute_flexible()
+        except Exception:
             self.update_status(TaskStatus.FAILED)
             raise
 
-    async def _execute_sequential(self) -> Dict[str, Any]:
+    async def _execute_sequential(self) -> dict[str, Any]:
         """Execute steps sequentially."""
         results = {}
 
@@ -1006,11 +1009,11 @@ class BasePlan(IntelligentStatusMixin, Generic[T]):
         self.update_status(TaskStatus.COMPLETED)
         return results
 
-    async def _execute_parallel(self) -> Dict[str, Any]:
+    async def _execute_parallel(self) -> dict[str, Any]:
         """Execute steps in parallel."""
         tasks = []
 
-        for i, item in enumerate(self.steps):
+        for _i, item in enumerate(self.steps):
             if hasattr(item, "execute"):
                 tasks.append(item.execute())
             elif callable(item) and asyncio.iscoroutinefunction(item):
@@ -1023,12 +1026,12 @@ class BasePlan(IntelligentStatusMixin, Generic[T]):
         self.update_status(TaskStatus.COMPLETED)
         return {}
 
-    async def _execute_conditional(self) -> Dict[str, Any]:
+    async def _execute_conditional(self) -> dict[str, Any]:
         """Execute with conditional logic."""
         # Would implement conditional execution based on context
         return await self._execute_sequential()
 
-    async def _execute_flexible(self) -> Dict[str, Any]:
+    async def _execute_flexible(self) -> dict[str, Any]:
         """Execute using flexible strategy."""
         executable_items = self.next_executable_items
 
@@ -1039,8 +1042,7 @@ class BasePlan(IntelligentStatusMixin, Generic[T]):
         # Execute ready items in parallel if possible
         if len(executable_items) > 1 and self.parallel_limit != 1:
             return await self._execute_parallel()
-        else:
-            return await self._execute_sequential()
+        return await self._execute_sequential()
 
 
 # ============================================================================
@@ -1067,7 +1069,7 @@ class ConditionalPlan(BasePlan[Union[BaseStep, "BasePlan", Callable]]):
 
     execution_mode: str = Field(default="conditional", frozen=True)
     plan_type: str = Field(default="conditional", frozen=True)
-    conditions: Dict[str, Callable] = Field(default_factory=dict)
+    conditions: dict[str, Callable] = Field(default_factory=dict)
 
 
 class FlexiblePlan(BasePlan[PlanContent]):
@@ -1091,29 +1093,29 @@ class Task(IntelligentStatusMixin):
     success_criteria: str = Field(..., description="How we measure success")
 
     # Plans with maximum flexibility
-    primary_plan: Optional[BasePlan] = Field(default=None)
-    alternative_plans: List[BasePlan] = Field(default_factory=list)
-    contingency_plans: List[BasePlan] = Field(default_factory=list)
+    primary_plan: BasePlan | None = Field(default=None)
+    alternative_plans: list[BasePlan] = Field(default_factory=list)
+    contingency_plans: list[BasePlan] = Field(default_factory=list)
 
     # Advanced task metadata
-    category: Optional[str] = Field(default=None)
+    category: str | None = Field(default=None)
     complexity: str = Field(default="medium")
     priority: Priority = Field(default=Priority.MEDIUM)
 
     # Stakeholders and resources
-    stakeholders: List[str] = Field(default_factory=list)
-    owner: Optional[str] = Field(default=None)
-    team: List[str] = Field(default_factory=list)
+    stakeholders: list[str] = Field(default_factory=list)
+    owner: str | None = Field(default=None)
+    team: list[str] = Field(default_factory=list)
 
     # Context and constraints
-    context: Dict[str, Any] = Field(default_factory=dict)
-    constraints: List[str] = Field(default_factory=list)
-    assumptions: List[str] = Field(default_factory=list)
-    risks: List[str] = Field(default_factory=list)
+    context: dict[str, Any] = Field(default_factory=dict)
+    constraints: list[str] = Field(default_factory=list)
+    assumptions: list[str] = Field(default_factory=list)
+    risks: list[str] = Field(default_factory=list)
 
     # Quality and performance
-    quality_targets: Dict[str, Any] = Field(default_factory=dict)
-    performance_metrics: Dict[str, Any] = Field(default_factory=dict)
+    quality_targets: dict[str, Any] = Field(default_factory=dict)
+    performance_metrics: dict[str, Any] = Field(default_factory=dict)
 
     @computed_field
     @property
@@ -1171,7 +1173,7 @@ class Task(IntelligentStatusMixin):
         self.contingency_plans.append(plan)
         return self
 
-    def get_comprehensive_status(self) -> Dict[str, Any]:
+    def get_comprehensive_status(self) -> dict[str, Any]:
         """Get comprehensive status across all plans."""
         status = {
             "task_status": self.status,
@@ -1212,7 +1214,7 @@ class Task(IntelligentStatusMixin):
 
         return status
 
-    async def execute(self) -> Dict[str, Any]:
+    async def execute(self) -> dict[str, Any]:
         """Execute the primary plan intelligently."""
         if not self.primary_plan:
             raise ValueError("No primary plan to execute")
@@ -1226,7 +1228,7 @@ class Task(IntelligentStatusMixin):
                 self.update_status(TaskStatus.COMPLETED)
 
             return result
-        except Exception as e:
+        except Exception:
             # Check if we should activate contingency plan
             for contingency in self.contingency_plans:
                 trigger = contingency.context.get("trigger_condition", "")

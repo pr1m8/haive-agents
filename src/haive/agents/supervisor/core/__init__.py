@@ -6,4 +6,4 @@ from haive.agents.supervisor.core.supervisor_agent import (
     SupervisorState,
 )
 
-__all__ = ["SupervisorAgent", "SupervisorState", "SimpleSupervisor"]
+__all__ = ["SimpleSupervisor", "SupervisorAgent", "SupervisorState"]

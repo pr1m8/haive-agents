@@ -151,7 +151,9 @@ async def test_multiagent_supervisor():
 
     # Create initial state with agents
     initial_state = {
-        "messages": [HumanMessage(content="Search for information about Haive framework")],
+        "messages": [
+            HumanMessage(content="Search for information about Haive framework")
+        ],
         "agents": agents_dict,
         "active_agents": {"search_agent", "math_agent"},  # planning_agent is inactive
     }

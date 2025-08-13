@@ -1,4 +1,4 @@
-"""SimpleSupervisor - Lightweight supervisor for basic routing needs.
+r"""SimpleSupervisor - Lightweight supervisor for basic routing needs.
 
 This module provides the SimpleSupervisor class, a lightweight alternative to
 SupervisorAgent that extends MultiAgent instead of ReactAgent. It's designed

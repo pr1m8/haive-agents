@@ -34,7 +34,7 @@ class InstructionComponent(BaseModel):
             "when",
             "if",
         ]
-        if not any((v.lower().startswith(starter) for starter in imperative_starters)):
+        if not any(v.lower().startswith(starter) for starter in imperative_starters):
             pass
         return v
 
@@ -103,7 +103,7 @@ class ProceduralMemory(BaseMemoryModel, TemporalMixin):
         """Validate overall procedural memory integrity."""
         if self.core_instructions:
             total_effectiveness = sum(
-                (instr.effectiveness_score for instr in self.core_instructions)
+                instr.effectiveness_score for instr in self.core_instructions
             )
             self.overall_effectiveness = total_effectiveness / len(
                 self.core_instructions
@@ -187,7 +187,7 @@ def validate_procedural_integrity(memory: ProceduralMemory) -> ProceduralMemory:
     """Validate overall procedural memory integrity."""
     if memory.core_instructions:
         total_effectiveness = sum(
-            (instr.effectiveness_score for instr in memory.core_instructions)
+            instr.effectiveness_score for instr in memory.core_instructions
         )
         memory.overall_effectiveness = total_effectiveness / len(
             memory.core_instructions

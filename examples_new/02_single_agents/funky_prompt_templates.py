@@ -9,11 +9,10 @@ Date: August 7, 2025
 
 import asyncio
 from datetime import datetime
-from typing import Any, Dict, List
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.schema import StateSchema
-from langchain_core.messages import HumanMessage
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field
 
@@ -24,12 +23,12 @@ from haive.agents.simple.agent_v3 import SimpleAgentV3
 class RecipeState(StateSchema):
     """State for recipe generation."""
 
-    ingredients: List[str] = Field(default_factory=list)
+    ingredients: list[str] = Field(default_factory=list)
     cuisine_type: str = Field(default="")
-    dietary_restrictions: List[str] = Field(default_factory=list)
+    dietary_restrictions: list[str] = Field(default_factory=list)
     cooking_time_minutes: int = Field(default=30)
     skill_level: str = Field(default="intermediate")
-    kitchen_tools: List[str] = Field(default_factory=list)
+    kitchen_tools: list[str] = Field(default_factory=list)
     mood: str = Field(default="adventurous")
 
 
@@ -37,13 +36,13 @@ class StoryState(StateSchema):
     """State for story generation."""
 
     protagonist_name: str = Field(default="")
-    protagonist_traits: List[str] = Field(default_factory=list)
+    protagonist_traits: list[str] = Field(default_factory=list)
     setting_description: str = Field(default="")
     genre: str = Field(default="")
     plot_twist_required: bool = Field(default=True)
     target_word_count: int = Field(default=500)
     emotional_arc: str = Field(default="")
-    forbidden_words: List[str] = Field(default_factory=list)
+    forbidden_words: list[str] = Field(default_factory=list)
 
 
 class CodeReviewState(StateSchema):
@@ -51,10 +50,10 @@ class CodeReviewState(StateSchema):
 
     code_snippet: str = Field(default="")
     programming_language: str = Field(default="")
-    review_focus_areas: List[str] = Field(default_factory=list)
+    review_focus_areas: list[str] = Field(default_factory=list)
     severity_threshold: str = Field(default="medium")
     suggest_refactoring: bool = Field(default=True)
-    check_patterns: Dict[str, bool] = Field(default_factory=dict)
+    check_patterns: dict[str, bool] = Field(default_factory=dict)
     context_description: str = Field(default="")
 
 
@@ -65,10 +64,10 @@ class Recipe(BaseModel):
     name: str = Field(description="Recipe name")
     prep_time: int = Field(description="Prep time in minutes")
     cook_time: int = Field(description="Cook time in minutes")
-    ingredients_list: List[str] = Field(description="Ingredients with quantities")
-    instructions: List[str] = Field(description="Step-by-step instructions")
+    ingredients_list: list[str] = Field(description="Ingredients with quantities")
+    instructions: list[str] = Field(description="Step-by-step instructions")
     difficulty: str = Field(description="Difficulty level")
-    tips: List[str] = Field(description="Cooking tips")
+    tips: list[str] = Field(description="Cooking tips")
 
 
 class Story(BaseModel):
@@ -77,7 +76,7 @@ class Story(BaseModel):
     title: str = Field(description="Story title")
     content: str = Field(description="Full story content")
     word_count: int = Field(description="Actual word count")
-    themes: List[str] = Field(description="Main themes")
+    themes: list[str] = Field(description="Main themes")
     plot_twist_location: str = Field(description="Where the twist occurs")
 
 
@@ -85,15 +84,14 @@ class CodeReview(BaseModel):
     """Code review results."""
 
     overall_quality: str = Field(description="Overall code quality assessment")
-    issues_found: List[Dict[str, str]] = Field(description="List of issues")
-    refactoring_suggestions: List[str] = Field(description="Refactoring ideas")
-    positive_aspects: List[str] = Field(description="What's done well")
-    security_concerns: List[str] = Field(description="Security issues if any")
+    issues_found: list[dict[str, str]] = Field(description="List of issues")
+    refactoring_suggestions: list[str] = Field(description="Refactoring ideas")
+    positive_aspects: list[str] = Field(description="What's done well")
+    security_concerns: list[str] = Field(description="Security issues if any")
 
 
 async def funky_recipe_agent():
     """Demonstrate recipe agent with complex prompt template."""
-
     print("\n🍳 FUNKY RECIPE AGENT")
     print("=" * 60)
 
@@ -158,7 +156,7 @@ Be creative and make it delicious!""",
     print(f"✨ Recipe: {result.name}")
     print(f"⏱️  Total Time: {result.prep_time + result.cook_time} min")
     print(f"📊 Difficulty: {result.difficulty}")
-    print(f"\n🥗 Ingredients:")
+    print("\n🥗 Ingredients:")
     for ing in result.ingredients_list[:3]:
         print(f"   • {ing}")
     print(f"   ... and {len(result.ingredients_list) - 3} more")
@@ -167,7 +165,6 @@ Be creative and make it delicious!""",
 
 async def funky_story_agent():
     """Demonstrate story agent with creative constraints."""
-
     print("\n\n📚 FUNKY STORY AGENT")
     print("=" * 60)
 
@@ -219,13 +216,12 @@ The protagonist should clearly demonstrate their traits throughout the story."""
     print(f"📏 Word Count: {result.word_count}")
     print(f"🎭 Themes: {', '.join(result.themes)}")
     print(f"🌀 Plot Twist: {result.plot_twist_location}")
-    print(f"\n📄 Story Preview:")
+    print("\n📄 Story Preview:")
     print(f"{result.content[:150]}...")
 
 
 async def funky_code_review_agent():
     """Demonstrate code review with complex pattern matching."""
-
     print("\n\n🔍 FUNKY CODE REVIEW AGENT")
     print("=" * 60)
 
@@ -298,7 +294,7 @@ def process_user_data(users):
     print(f"\n❌ Issues Found: {len(result.issues_found)}")
     for issue in result.issues_found[:2]:
         print(f"   • {issue.get('type', 'Issue')}: {issue.get('description', '')}")
-    print(f"\n✅ Positive Aspects:")
+    print("\n✅ Positive Aspects:")
     for aspect in result.positive_aspects[:2]:
         print(f"   • {aspect}")
     print(f"\n🔒 Security Concerns: {len(result.security_concerns)}")
@@ -306,7 +302,6 @@ def process_user_data(users):
 
 async def multi_modal_funky_agent():
     """Demonstrate agent that combines multiple funky inputs."""
-
     print("\n\n🎨 MULTI-MODAL FUNKY AGENT")
     print("=" * 60)
 
@@ -314,18 +309,18 @@ async def multi_modal_funky_agent():
         """State with various input types."""
 
         timestamp: datetime = Field(default_factory=datetime.now)
-        user_preferences: Dict[str, Any] = Field(default_factory=dict)
-        numerical_data: List[float] = Field(default_factory=list)
-        boolean_flags: Dict[str, bool] = Field(default_factory=dict)
-        nested_config: Dict[str, Dict[str, Any]] = Field(default_factory=dict)
+        user_preferences: dict[str, Any] = Field(default_factory=dict)
+        numerical_data: list[float] = Field(default_factory=list)
+        boolean_flags: dict[str, bool] = Field(default_factory=dict)
+        nested_config: dict[str, dict[str, Any]] = Field(default_factory=dict)
 
     class Analysis(BaseModel):
         """Multi-modal analysis result."""
 
         summary: str
-        insights: List[str]
-        recommendations: Dict[str, str]
-        confidence_scores: Dict[str, float]
+        insights: list[str]
+        recommendations: dict[str, str]
+        confidence_scores: dict[str, float]
 
     analyzer = SimpleAgentV3(
         name="multi_modal_analyzer",
@@ -394,7 +389,7 @@ Provide comprehensive analysis considering:
     )
 
     print(f"📊 Summary: {result.summary[:100]}...")
-    print(f"\n💡 Key Insights:")
+    print("\n💡 Key Insights:")
     for insight in result.insights[:2]:
         print(f"   • {insight}")
     print(f"\n🎯 Top Recommendation: {list(result.recommendations.values())[0]}")
@@ -402,7 +397,6 @@ Provide comprehensive analysis considering:
 
 async def main():
     """Run all funky prompt template examples."""
-
     print("🎪 FUNKY PROMPT TEMPLATE EXAMPLES")
     print("=" * 60)
     print("Demonstrating creative ways to map state fields to prompts")

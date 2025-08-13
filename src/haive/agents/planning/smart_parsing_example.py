@@ -6,23 +6,20 @@ to handle different types of agent outputs intelligently.
 
 import asyncio
 import logging
-from typing import Any, Dict
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from pydantic import BaseModel, Field
 
 from haive.agents.base.smart_output_parsing import (
     SmartOutputParsingMixin,
-    create_smart_engine_node,
     create_smart_parsing_callable,
-    detect_content_type,
     parse_json_content,
     parse_structured_content,
 )
 from haive.agents.multi.agent import MultiAgent
 from haive.agents.planning.base.agents.executor import BaseExecutorAgent
 from haive.agents.planning.base.agents.planner import BasePlannerAgent
-from haive.agents.planning.base.models import BasePlan, ExecutionResult, PlanContent
 
 logger = logging.getLogger(__name__)
 
@@ -91,7 +88,6 @@ class DecisionPoint(BaseModel):
 
 async def create_smart_planning_workflow():
     """Create a planning workflow with smart output parsing."""
-
     # Configuration for different agents
     planner_config = AugLLMConfig(
         model="gpt-4o-mini",
@@ -162,7 +158,6 @@ def _parse_progress(context) -> ProgressReport | None:
     """Custom parser for progress report output."""
     try:
         if hasattr(context.result, "content"):
-            import json
             import re
 
             content = context.result.content
@@ -188,7 +183,6 @@ def _parse_progress(context) -> ProgressReport | None:
 
 def create_adaptive_parsing_workflow():
     """Create workflow with adaptive parsing based on content detection."""
-
     # Create content type detection callable
     content_detector = create_smart_parsing_callable(
         name="content_detector",
@@ -230,17 +224,16 @@ def _enhanced_content_detection(state) -> str:
         word in content for word in ["complexity", "estimated_time", "risk_factors"]
     ):
         return "task_analysis"
-    elif any(word in content for word in ["completed", "progress", "steps"]):
+    if any(word in content for word in ["completed", "progress", "steps"]):
         return "progress"
-    elif content.strip().startswith("{") and "json" in content:
+    if content.strip().startswith("{") and "json" in content:
         return "json"
-    elif content.strip().startswith("["):
+    if content.strip().startswith("["):
         return "list"
-    else:
-        return "text"
+    return "text"
 
 
-def _parse_task_analysis_callable(state) -> Dict[str, Any]:
+def _parse_task_analysis_callable(state) -> dict[str, Any]:
     """Callable version of task analysis parser."""
     try:
         messages = getattr(state, "messages", [])
@@ -268,7 +261,7 @@ def _parse_task_analysis_callable(state) -> Dict[str, Any]:
     return {}
 
 
-def _parse_progress_callable(state) -> Dict[str, Any]:
+def _parse_progress_callable(state) -> dict[str, Any]:
     """Callable version of progress parser."""
     try:
         messages = getattr(state, "messages", [])
@@ -301,7 +294,6 @@ def _parse_progress_callable(state) -> Dict[str, Any]:
 
 async def test_smart_parsing_workflow():
     """Test the smart parsing workflow with different input types."""
-
     logger.info("Creating smart parsing workflow...")
     workflow = await create_smart_planning_workflow()
 

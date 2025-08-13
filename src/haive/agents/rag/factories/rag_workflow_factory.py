@@ -6,7 +6,7 @@ building complex RAG systems.
 """
 
 from collections.abc import Callable
-from typing import Any, Dict
+from typing import Any
 
 from haive.core.graph.node.callable_node import CallableNodeConfig
 from haive.core.graph.node.rag_callables import *
@@ -83,7 +83,7 @@ class ConditionalCallableAgent(Agent):
             graph.add_node(action_name, action_node)
 
         # Add conditional edges from router
-        def route_condition(state: Dict[str, Any]) -> str:
+        def route_condition(state: dict[str, Any]) -> str:
             next_action = getattr(state, "next_action", "complete")
             if next_action in self.action_callables:
                 return next_action
@@ -236,7 +236,7 @@ def create_adaptive_rag_agent(
     complex_rag = create_corrective_rag_agent(documents, "Complex RAG")
 
     # Adaptive router
-    def adaptive_router(state: Dict[str, Any]) -> str:
+    def adaptive_router(state: dict[str, Any]) -> str:
         complexity = getattr(state, "complexity", QueryComplexity.UNKNOWN)
 
         if complexity == QueryComplexity.SIMPLE:

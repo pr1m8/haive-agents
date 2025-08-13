@@ -8,7 +8,6 @@ from haive.agents.planning_v2.base.planner.prompts import create_planner_prompt
 
 async def demo_planner():
     """Demonstrate the planner agent with and without context."""
-
     # Example 1: Basic planning without context
     print("=== Example 1: Planning without context ===")
     planner = PlannerAgent(name="basic_planner")

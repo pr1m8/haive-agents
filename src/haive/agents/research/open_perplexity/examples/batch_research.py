@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Batch research example demonstrating how to use the Open Perplexity research agent
+"""Batch research example demonstrating how to use the Open Perplexity research agent.
 to process multiple research topics in sequence.
 """
 

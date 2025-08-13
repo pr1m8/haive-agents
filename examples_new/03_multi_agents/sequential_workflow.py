@@ -10,8 +10,6 @@ Date: August 7, 2025
 import asyncio
 import logging
 import os
-from datetime import datetime
-from typing import List
 
 # Suppress debug logging
 logging.getLogger().setLevel(logging.WARNING)
@@ -32,16 +30,16 @@ class ResearchPlan(BaseModel):
     """Research planning output."""
 
     topic: str = Field(description="Research topic")
-    objectives: List[str] = Field(description="Research objectives")
-    search_queries: List[str] = Field(description="Specific queries to investigate")
+    objectives: list[str] = Field(description="Research objectives")
+    search_queries: list[str] = Field(description="Specific queries to investigate")
     methodology: str = Field(description="Research methodology")
 
 
 class ResearchData(BaseModel):
     """Research findings."""
 
-    key_findings: List[str] = Field(description="Key research findings")
-    data_points: List[str] = Field(description="Important data points")
+    key_findings: list[str] = Field(description="Key research findings")
+    data_points: list[str] = Field(description="Important data points")
     sources_cited: int = Field(ge=0, description="Number of sources")
     confidence_level: float = Field(ge=0.0, le=1.0)
 
@@ -49,10 +47,10 @@ class ResearchData(BaseModel):
 class AnalysisResult(BaseModel):
     """Analysis output."""
 
-    insights: List[str] = Field(description="Key insights")
-    trends: List[str] = Field(description="Identified trends")
-    recommendations: List[str] = Field(description="Recommendations")
-    risk_factors: List[str] = Field(description="Potential risks")
+    insights: list[str] = Field(description="Key insights")
+    trends: list[str] = Field(description="Identified trends")
+    recommendations: list[str] = Field(description="Recommendations")
+    risk_factors: list[str] = Field(description="Potential risks")
 
 
 class FinalReport(BaseModel):
@@ -60,7 +58,7 @@ class FinalReport(BaseModel):
 
     title: str = Field(description="Report title")
     executive_summary: str = Field(description="Executive summary")
-    sections: List[str] = Field(description="Main report sections")
+    sections: list[str] = Field(description="Main report sections")
     conclusion: str = Field(description="Report conclusion")
     word_count: int = Field(ge=0, description="Approximate word count")
 
@@ -90,7 +88,6 @@ def statistical_analysis(data: str) -> str:
 
 async def main():
     """Run sequential workflow example."""
-
     print("📊 Sequential Multi-Agent Workflow Example")
     print("=" * 60)
     print("\nWorkflow: Research → Analyze → Report")
@@ -167,7 +164,7 @@ async def main():
 
     plan = await planner.arun({"topic": topic})
 
-    print(f"✅ Research Plan Created:")
+    print("✅ Research Plan Created:")
     print(f"   Topic: {plan.topic}")
     print(f"   Objectives: {len(plan.objectives)} defined")
     for obj in plan.objectives[:2]:
@@ -191,7 +188,7 @@ async def main():
 
     data = await researcher.arun({"messages": [HumanMessage(content=research_context)]})
 
-    print(f"✅ Data Collected:")
+    print("✅ Data Collected:")
     print(f"   Key Findings: {len(data.key_findings)} items")
     for finding in data.key_findings[:2]:
         print(f"   • {finding[:80]}...")
@@ -220,7 +217,7 @@ async def main():
         {"messages": [HumanMessage(content=analysis_context)]}
     )
 
-    print(f"✅ Analysis Complete:")
+    print("✅ Analysis Complete:")
     print(f"   Insights: {len(analysis.insights)} discovered")
     for insight in analysis.insights[:2]:
         print(f"   • {insight[:80]}...")
@@ -247,7 +244,7 @@ async def main():
         }
     )
 
-    print(f"✅ Report Generated:")
+    print("✅ Report Generated:")
     print(f"   Title: {report.title}")
     print(f"   Executive Summary: {report.executive_summary[:150]}...")
     print(f"   Sections: {len(report.sections)} sections")
@@ -282,11 +279,11 @@ async def main():
     # Show state transfer
     print("\n🔄 State Transfer Visualization:")
     print(f"Topic → Plan ({len(plan.search_queries)} queries)")
-    print(f"      ↓")
+    print("      ↓")
     print(f"Plan → Research ({data.sources_cited} sources)")
-    print(f"      ↓")
+    print("      ↓")
     print(f"Data → Analysis ({len(analysis.insights)} insights)")
-    print(f"      ↓")
+    print("      ↓")
     print(f"Analysis → Report (~{report.word_count} words)")
 
 

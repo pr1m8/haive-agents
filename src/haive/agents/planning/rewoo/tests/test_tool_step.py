@@ -1,4 +1,4 @@
-"""from typing import Any, List
+"""from typing import Any, List.
 Tests for ToolStep - Tool validation and execution.
 """
 

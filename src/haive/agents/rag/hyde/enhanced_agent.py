@@ -6,7 +6,7 @@ output by appending a SimpleAgent. This approach is more modular and follows the
 principle of separation of concerns.
 """
 
-from typing import Any, Dict
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
@@ -28,7 +28,7 @@ from haive.agents.simple.agent import SimpleAgent
 
 def create_hyde_enhancer():
     """Stub function for create_hyde_enhancer."""
-    return None
+    return
 
 
 # Improved HyDE generation prompt based on LangChain best practices
@@ -234,7 +234,6 @@ class EnhancedHyDERetriever(Agent):
 
     def build_graph(self) -> Any:
         """Build graph that adapts to both enhancement and traditional patterns."""
-
         graph = BaseGraph(name="EnhancedHyDERetriever")
 
         def adaptive_retrieval(state: dict[str, Any]) -> dict[str, Any]:
@@ -335,9 +334,8 @@ def create_enhanced_hyde_agent(
 
 
 # Demonstration of the pattern
-def demonstrate_enhancement_vs_traditional() -> Dict[str, Any]:
+def demonstrate_enhancement_vs_traditional() -> dict[str, Any]:
     """Demonstrate the difference between enhancement and traditional patterns."""
-
     # Sample documents
     docs = [
         Document(

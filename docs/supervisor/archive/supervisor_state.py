@@ -31,13 +31,21 @@ class SupervisorState(MessagesState):
         return list(set(v)) if v else []
 
     # Routing control
-    next_agent: str | None = Field(default=None, description="Name of agent to execute next")
-    agent_task: str = Field(default="", description="Task to pass to the selected agent")
-    agent_response: str | None = Field(default=None, description="Response from the executed agent")
+    next_agent: str | None = Field(
+        default=None, description="Name of agent to execute next"
+    )
+    agent_task: str = Field(
+        default="", description="Task to pass to the selected agent"
+    )
+    agent_response: str | None = Field(
+        default=None, description="Response from the executed agent"
+    )
 
     def add_agent(self, name: str, agent: any, description: str, active: bool = True):
         """Add an agent to the registry."""
-        agent_info = AgentInfo(agent=agent, name=name, description=description, active=active)
+        agent_info = AgentInfo(
+            agent=agent, name=name, description=description, active=active
+        )
 
         self.agents[name] = agent_info
 
@@ -79,7 +87,11 @@ class SupervisorState(MessagesState):
 
     def list_active_agents(self) -> dict[str, str]:
         """List active agents with descriptions."""
-        return {name: info.description for name, info in self.agents.items() if info.is_active()}
+        return {
+            name: info.description
+            for name, info in self.agents.items()
+            if info.is_active()
+        }
 
     def list_all_agents(self) -> dict[str, str]:
         """List all agents with descriptions."""

@@ -124,14 +124,11 @@ class ReactAgent(Agent):
             if isinstance(last_message, AIMessage):
                 content = last_message.content.lower()
                 if any(
-                    (
-                        word in content
-                        for word in ["final answer", "complete", "finished"]
-                    )
+                    word in content for word in ["final answer", "complete", "finished"]
                 ):
                     return END
                 if self.tools and any(
-                    (word in content for word in ["use", "call", "need"])
+                    word in content for word in ["use", "call", "need"]
                 ):
                     return "act"
                 if len(self.reasoning_history) >= self.max_iterations:

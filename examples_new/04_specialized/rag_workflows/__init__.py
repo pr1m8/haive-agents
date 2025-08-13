@@ -1,5 +1,4 @@
-"""
-RAG Workflow Examples
+"""RAG Workflow Examples
 ====================
 
 This module contains examples of RAG (Retrieval-Augmented Generation) workflows:
@@ -17,5 +16,4 @@ This module contains examples of RAG (Retrieval-Augmented Generation) workflows:
    - Structured outputs with sources and confidence
 
 These examples demonstrate the evolution from simple RAG to more sophisticated
-agentic RAG systems that can handle complex queries with higher accuracy.
-"""
+agentic RAG systems that can handle complex queries with higher accuracy."""

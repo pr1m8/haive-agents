@@ -173,10 +173,7 @@ class MultiAgent(Agent):
             node_name = base_name
             counter = 1
             while any(
-                (
-                    node_name == existing
-                    for existing in self._agent_node_mapping.values()
-                )
+                node_name == existing for existing in self._agent_node_mapping.values()
             ):
                 node_name = f"{base_name}_{counter}"
                 counter += 1

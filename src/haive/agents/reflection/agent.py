@@ -256,7 +256,7 @@ class ReflectionAgent(SimpleAgent):
         if hasattr(self.engine, "system_message") and not getattr(
             self.engine, "system_message", None
         ):
-            setattr(self.engine, "system_message", REFLECTION_SYSTEM_PROMPT)
+            self.engine.system_message = REFLECTION_SYSTEM_PROMPT
 
 
 class GradingAgent(SimpleAgent):
@@ -272,7 +272,7 @@ class GradingAgent(SimpleAgent):
         if hasattr(self.engine, "system_message") and not getattr(
             self.engine, "system_message", None
         ):
-            setattr(self.engine, "system_message", GRADING_SYSTEM_PROMPT)
+            self.engine.system_message = GRADING_SYSTEM_PROMPT
 
 
 class ExpertAgent(SimpleAgent):
@@ -286,7 +286,7 @@ class ExpertAgent(SimpleAgent):
 
         # Build system prompt from expertise config
         if hasattr(self.engine, "system_message"):
-            setattr(self.engine, "system_message", self.expertise_config.to_prompt())
+            self.engine.system_message = self.expertise_config.to_prompt()
 
 
 class ToolBasedReflectionAgent(ReactAgent):
@@ -376,4 +376,3 @@ def create(*args, **kwargs):
 
 def model_post_init(*args, **kwargs):
     """Model post-init function (placeholder for compatibility)."""
-    pass

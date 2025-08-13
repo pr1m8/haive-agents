@@ -118,7 +118,6 @@ class RAGFactory:
             return create_agentic_rag_router_chain(documents, llm_config, name)
 
         if rag_type == RAGType.QUERY_PLANNING:
-            pass
 
             return create_query_planning_chain(documents, llm_config, name)
 

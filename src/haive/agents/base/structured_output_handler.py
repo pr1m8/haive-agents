@@ -4,7 +4,7 @@ This module provides utilities to handle LangGraph's AddableValuesDict
 return type and extract structured output cleanly.
 """
 
-from typing import Any, Dict, Generic, Optional, Type, TypeVar, Union
+from typing import Any, Generic, TypeVar, Union
 
 from langgraph.pregel.io import AddableValuesDict
 from pydantic import BaseModel
@@ -41,9 +41,9 @@ class StructuredOutputHandler(Generic[T]):
 
     def __init__(
         self,
-        output_model: Type[T],
-        field_name: Optional[str] = None,
-        common_fields: Optional[list[str]] = None,
+        output_model: type[T],
+        field_name: str | None = None,
+        common_fields: list[str] | None = None,
     ):
         """Initialize the handler.
 
@@ -85,7 +85,7 @@ class StructuredOutputHandler(Generic[T]):
 
         return name
 
-    def extract(self, result: Union[Dict, AddableValuesDict, Any]) -> Optional[T]:
+    def extract(self, result: dict | AddableValuesDict | Any) -> T | None:
         """Extract structured output from result.
 
         This method handles various result types including AddableValuesDict,
@@ -104,7 +104,7 @@ class StructuredOutputHandler(Generic[T]):
                 value = result[self.field_name]
                 if isinstance(value, self.output_model):
                     return value
-                elif isinstance(value, dict):
+                if isinstance(value, dict):
                     # Try to construct from dict
                     try:
                         return self.output_model(**value)
@@ -117,7 +117,7 @@ class StructuredOutputHandler(Generic[T]):
                     value = result[field]
                     if isinstance(value, self.output_model):
                         return value
-                    elif isinstance(value, dict):
+                    if isinstance(value, dict):
                         try:
                             return self.output_model(**value)
                         except Exception:
@@ -128,7 +128,7 @@ class StructuredOutputHandler(Generic[T]):
                 if isinstance(value, self.output_model):
                     return value
                 # Also check if it's a dict that can be converted
-                elif isinstance(value, dict) and key not in ["messages", "metadata"]:
+                if isinstance(value, dict) and key not in ["messages", "metadata"]:
                     try:
                         # Attempt to validate as our model
                         validated = self.output_model(**value)
@@ -167,9 +167,7 @@ class StructuredOutputHandler(Generic[T]):
             )
         return output
 
-    def extract_or_default(
-        self, result: Any, default: Optional[T] = None
-    ) -> Optional[T]:
+    def extract_or_default(self, result: Any, default: T | None = None) -> T | None:
         """Extract structured output or return default.
 
         Args:
@@ -188,8 +186,8 @@ class StructuredOutputHandler(Generic[T]):
 
 
 def extract_structured_output(
-    result: Any, output_model: Type[T], field_name: Optional[str] = None
-) -> Optional[T]:
+    result: Any, output_model: type[T], field_name: str | None = None
+) -> T | None:
     """Convenience function to extract structured output.
 
     Args:
@@ -218,7 +216,7 @@ def extract_structured_output(
 
 
 def require_structured_output(
-    result: Any, output_model: Type[T], field_name: Optional[str] = None
+    result: Any, output_model: type[T], field_name: str | None = None
 ) -> T:
     """Extract structured output or raise error.
 
@@ -244,4 +242,4 @@ def require_structured_output(
 
 
 # Type alias for clarity
-LangGraphResult = Union[Dict[str, Any], AddableValuesDict]
+LangGraphResult = Union[dict[str, Any], AddableValuesDict]

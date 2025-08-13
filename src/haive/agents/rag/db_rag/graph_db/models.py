@@ -18,7 +18,7 @@ Example:
         MATCH (m:Movie) WHERE m.year = $year RETURN m.title
 """
 
-from typing import Any, List, Literal, TypeVar
+from typing import Any, Literal, TypeVar
 
 from pydantic import BaseModel, Field, field_validator
 
@@ -280,7 +280,7 @@ class Config(BaseModel):
     domain_name: str = Field(
         default="general", description="Domain name for the configuration"
     )
-    allowed_categories: List[str] = Field(
+    allowed_categories: list[str] = Field(
         default_factory=list, description="Allowed categories"
     )
     validation_enabled: bool = Field(
@@ -301,7 +301,7 @@ def validate_cypher_syntax(query: str) -> bool:
     return query.strip().upper().startswith(("MATCH", "CREATE", "MERGE", "RETURN"))
 
 
-def validate_decision(decision: str, allowed_values: List[str]) -> bool:
+def validate_decision(decision: str, allowed_values: list[str]) -> bool:
     """Validate decision against allowed values.
 
     Args:
@@ -336,13 +336,13 @@ def validate_filter_type(filter_type: str) -> bool:
 
 # Export all models for module use
 __all__ = [
-    "CypherQueryOutput",
-    "QueryValidationOutput",
-    "DomainRelevanceOutput",
-    "PropertyFilter",
-    "ValidateCypherOutput",
-    "GuardrailsOutput",
     "Config",
+    "CypherQueryOutput",
+    "DomainRelevanceOutput",
+    "GuardrailsOutput",
+    "PropertyFilter",
+    "QueryValidationOutput",
+    "ValidateCypherOutput",
     "validate_cypher_syntax",
     "validate_decision",
     "validate_filter_type",

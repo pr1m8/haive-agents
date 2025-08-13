@@ -10,7 +10,7 @@ Date: August 7, 2025
 import asyncio
 import logging
 import os
-from typing import List, Literal
+from typing import Literal
 
 # Suppress all logging
 logging.getLogger().setLevel(logging.CRITICAL)
@@ -18,7 +18,6 @@ os.environ["HAIVE_LOG_LEVEL"] = "CRITICAL"
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import HumanMessage
-from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.tools import tool
 from pydantic import BaseModel, Field
 
@@ -57,7 +56,7 @@ class ResearchFindings(BaseModel):
     """Research findings."""
 
     summary: str = Field(description="Research summary")
-    key_findings: List[str] = Field(description="Key findings list")
+    key_findings: list[str] = Field(description="Key findings list")
     sources_count: int = Field(ge=0, description="Number of sources")
 
 
@@ -70,7 +69,7 @@ def python_executor(code: str) -> str:
         exec(code, exec_globals)
         return f"Code executed successfully. Output: {exec_globals.get('result', 'No result variable')}"
     except Exception as e:
-        return f"Error: {str(e)}"
+        return f"Error: {e!s}"
 
 
 @tool
@@ -81,7 +80,6 @@ def research_database(query: str) -> str:
 
 async def main():
     """Run clean branching example."""
-
     print("🌳 Clean Branching Multi-Agent Example")
     print("=" * 50)
     print("\nUsing automatic structured output extraction!")
@@ -165,7 +163,7 @@ async def main():
         if classification.category == "technical":
             result = await technical.arun({"messages": [HumanMessage(content=query)]})
             # result is TechnicalAnswer!
-            print(f"\n📊 Technical Answer:")
+            print("\n📊 Technical Answer:")
             print(f"   Solution: {result.solution[:150]}...")
             if result.code_example:
                 print(f"   Code Example:\n{result.code_example}")
@@ -174,7 +172,7 @@ async def main():
         elif classification.category == "creative":
             result = await creative.arun({"messages": [HumanMessage(content=query)]})
             # result is CreativeResponse!
-            print(f"\n🎨 Creative Response:")
+            print("\n🎨 Creative Response:")
             print(f"   Content: {result.content}")
             print(f"   Style: {result.style}")
             print(f"   Mood: {result.mood}")
@@ -182,9 +180,9 @@ async def main():
         else:  # research
             result = await research.arun({"messages": [HumanMessage(content=query)]})
             # result is ResearchFindings!
-            print(f"\n🔍 Research Findings:")
+            print("\n🔍 Research Findings:")
             print(f"   Summary: {result.summary}")
-            print(f"   Key Findings:")
+            print("   Key Findings:")
             for finding in result.key_findings:
                 print(f"   • {finding}")
             print(f"   Sources: {result.sources_count} studies")

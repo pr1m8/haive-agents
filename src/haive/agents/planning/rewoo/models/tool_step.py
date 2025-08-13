@@ -132,7 +132,7 @@ class ToolStep(AbstractStep):
     def can_execute(self, completed_steps: set[str]) -> bool:
         """Check if this step can execute."""
         return (
-            all((dep in completed_steps for dep in self.depends_on))
+            all(dep in completed_steps for dep in self.depends_on)
             and self.is_tool_valid
         )
 

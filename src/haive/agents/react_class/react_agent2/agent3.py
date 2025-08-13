@@ -515,7 +515,6 @@ def search(query):
 
 def setup_workflow():
     """Module-level setup_workflow function."""
-    pass
 
 
 def structured_output_node(state):

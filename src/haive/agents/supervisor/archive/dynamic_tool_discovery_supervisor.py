@@ -406,13 +406,11 @@ class DynamicToolDiscoverySupervisor(BaseSupervisor):
                     "convert",
                     "translate",
                 ]
-                if any((keyword in task_content for keyword in tool_keywords)):
+                if any(keyword in task_content for keyword in tool_keywords):
                     recent_discovery = any(
-                        (
-                            "discover_and_load_tools" in str(msg.content)
-                            for msg in messages[-5:]
-                            if hasattr(msg, "content")
-                        )
+                        "discover_and_load_tools" in str(msg.content)
+                        for msg in messages[-5:]
+                        if hasattr(msg, "content")
                     )
                     if not recent_discovery and len(self.discovered_tools) < 10:
                         return SupervisorDecision(

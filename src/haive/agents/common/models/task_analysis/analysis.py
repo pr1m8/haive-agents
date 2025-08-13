@@ -584,7 +584,7 @@ class TaskAnalysis(BaseModel):
         }
         domain_scores = {}
         for domain, keywords in domain_keywords.items():
-            score = sum((1 for keyword in keywords if keyword in text_lower))
+            score = sum(1 for keyword in keywords if keyword in text_lower)
             if score > 0:
                 domain_scores[domain] = score
         if domain_scores:
@@ -630,16 +630,16 @@ class TaskAnalysis(BaseModel):
             "perpetual motion",
         ]
         simple_score = sum(
-            (1 for indicator in simple_indicators if indicator in text_lower)
+            1 for indicator in simple_indicators if indicator in text_lower
         )
         complex_score = sum(
-            (1 for indicator in complex_indicators if indicator in text_lower)
+            1 for indicator in complex_indicators if indicator in text_lower
         )
         research_score = sum(
-            (1 for indicator in research_indicators if indicator in text_lower)
+            1 for indicator in research_indicators if indicator in text_lower
         )
         impossible_score = sum(
-            (1 for indicator in impossible_indicators if indicator in text_lower)
+            1 for indicator in impossible_indicators if indicator in text_lower
         )
         if impossible_score > 0:
             overall_complexity = ComplexityType.UNSOLVABLE

@@ -5,7 +5,7 @@ plans, steps, and other planning-related data structures.
 """
 
 from enum import Enum
-from typing import Generic, List, Optional, TypeVar, Union
+from typing import Generic, TypeVar, Union
 
 from pydantic import BaseModel, Field, PrivateAttr, computed_field
 
@@ -30,12 +30,12 @@ class Task(BaseModel):
     """
 
     objective: str = Field(..., description="What this task aims to accomplish")
-    result: Optional[str] = Field(None, description="The outcome of the task")
+    result: str | None = Field(None, description="The outcome of the task")
     status: Status = Field(Status.PENDING, description="Current task status")
 
     # Private auto-indexing
     _index: int = PrivateAttr(default=0)
-    _parent_index: Optional[int] = PrivateAttr(default=None)
+    _parent_index: int | None = PrivateAttr(default=None)
 
 
 # Create a TypeVar for the step type
@@ -55,15 +55,15 @@ class Plan(BaseModel, Generic[StepType]):
     """
 
     objective: str = Field(..., description="What this plan aims to accomplish")
-    steps: List[Union[StepType, "Plan"]] = Field(
+    steps: list[Union[StepType, "Plan"]] = Field(
         default_factory=list, description="List of steps (can be tasks or nested plans)"
     )
-    result: Optional[str] = Field(None, description="The outcome of the plan")
+    result: str | None = Field(None, description="The outcome of the plan")
     status: Status = Field(Status.PENDING, description="Current plan status")
 
     # Private auto-indexing
     _index: int = PrivateAttr(default=0)
-    _parent_index: Optional[int] = PrivateAttr(default=None)
+    _parent_index: int | None = PrivateAttr(default=None)
     _next_index: int = PrivateAttr(default=1)
 
     def add_step(self, step: Union[StepType, "Plan"]) -> Union[StepType, "Plan"]:
@@ -78,8 +78,8 @@ class Plan(BaseModel, Generic[StepType]):
         return step
 
     def add_parallel_steps(
-        self, steps: List[Union[StepType, "Plan"]]
-    ) -> List[Union[StepType, "Plan"]]:
+        self, steps: list[Union[StepType, "Plan"]]
+    ) -> list[Union[StepType, "Plan"]]:
         """Add multiple steps that can be executed in parallel (same parent index)."""
         parent_index = self._next_index
 
@@ -115,7 +115,7 @@ class Plan(BaseModel, Generic[StepType]):
 
     @computed_field
     @property
-    def completed_steps(self) -> List[Union[StepType, "Plan"]]:
+    def completed_steps(self) -> list[Union[StepType, "Plan"]]:
         """List of completed steps."""
         completed = []
         for step in self.steps:
@@ -140,12 +140,12 @@ class Plan(BaseModel, Generic[StepType]):
 
     @computed_field
     @property
-    def current_step(self) -> Optional[Union[StepType, "Plan"]]:
+    def current_step(self) -> Union[StepType, "Plan"] | None:
         """The current step being executed (first in_progress or pending)."""
         for step in self.steps:
             if step.status == Status.IN_PROGRESS:
                 return step
-            elif isinstance(step, Plan) and step.status == Status.IN_PROGRESS:
+            if isinstance(step, Plan) and step.status == Status.IN_PROGRESS:
                 # Check nested plan for current step
                 nested_current = step.current_step
                 if nested_current:
@@ -155,7 +155,7 @@ class Plan(BaseModel, Generic[StepType]):
         for step in self.steps:
             if step.status == Status.PENDING:
                 return step
-            elif isinstance(step, Plan) and step.status == Status.PENDING:
+            if isinstance(step, Plan) and step.status == Status.PENDING:
                 nested_current = step.current_step
                 if nested_current:
                     return nested_current
@@ -164,7 +164,7 @@ class Plan(BaseModel, Generic[StepType]):
 
     @computed_field
     @property
-    def steps_remaining(self) -> List[Union[StepType, "Plan"]]:
+    def steps_remaining(self) -> list[Union[StepType, "Plan"]]:
         """List of steps that haven't been completed yet."""
         remaining = []
         for step in self.steps:
@@ -190,7 +190,7 @@ class Plan(BaseModel, Generic[StepType]):
 
     @computed_field
     @property
-    def failed_steps(self) -> List[Union[StepType, "Plan"]]:
+    def failed_steps(self) -> list[Union[StepType, "Plan"]]:
         """List of failed steps."""
         failed = []
         for step in self.steps:

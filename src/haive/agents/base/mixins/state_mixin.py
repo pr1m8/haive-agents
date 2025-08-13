@@ -14,7 +14,7 @@ from langchain_core.runnables import RunnableConfig
 
 if TYPE_CHECKING:
     # Type hints for attributes expected from mixed-in classes
-    from pydantic import BaseModel
+    pass
 
 logger = logging.getLogger(__name__)
 

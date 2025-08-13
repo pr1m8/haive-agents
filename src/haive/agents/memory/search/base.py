@@ -31,15 +31,13 @@ def extract_memory_items(memory_data: Any) -> list[str]:
     # Handle different memory data formats
     if isinstance(memory_data, list):
         return [str(item) for item in memory_data]
-    elif isinstance(memory_data, dict):
+    if isinstance(memory_data, dict):
         if "items" in memory_data:
             return [str(item) for item in memory_data["items"]]
-        elif "memories" in memory_data:
+        if "memories" in memory_data:
             return [str(item) for item in memory_data["memories"]]
-        else:
-            return [f"{key}: {value}" for key, value in memory_data.items()]
-    else:
-        return [str(memory_data)]
+        return [f"{key}: {value}" for key, value in memory_data.items()]
+    return [str(memory_data)]
 
 
 class SearchResponse(BaseModel):

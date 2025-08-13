@@ -282,7 +282,7 @@ async def main():
         print(f"{'='*60}")
 
         # Execute workflow
-        result = await router.arun({"messages": [HumanMessage(content=query)]})
+        await router.arun({"messages": [HumanMessage(content=query)]})
 
         # Display classification
         if hasattr(router.state, "query_classifier"):

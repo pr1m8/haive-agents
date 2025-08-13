@@ -229,12 +229,10 @@ class RubricGrade(Grade):
         if not self.criteria:
             return 0.0
         total_weighted_score = sum(
-            (
-                criterion.get_normalized_score() * criterion.weight
-                for criterion in self.criteria
-            )
+            criterion.get_normalized_score() * criterion.weight
+            for criterion in self.criteria
         )
-        total_weight = sum((criterion.weight for criterion in self.criteria))
+        total_weight = sum(criterion.weight for criterion in self.criteria)
         if total_weight == 0:
             return 0.0
         return total_weighted_score / total_weight
@@ -245,7 +243,7 @@ class RubricGrade(Grade):
         Returns:
             Sum of all weighted scores
         """
-        return sum((criterion.get_weighted_score() for criterion in self.criteria))
+        return sum(criterion.get_weighted_score() for criterion in self.criteria)
 
     def get_max_weighted_score(self) -> float:
         """Get the maximum possible weighted score.
@@ -253,7 +251,7 @@ class RubricGrade(Grade):
         Returns:
             Sum of all weighted maximum scores
         """
-        return sum((criterion.get_weighted_max_score() for criterion in self.criteria))
+        return sum(criterion.get_weighted_max_score() for criterion in self.criteria)
 
     def is_passing(self, threshold: float | None = None) -> bool:
         """Determine if the rubric grade represents a passing score.

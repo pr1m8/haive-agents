@@ -7,7 +7,7 @@ agents, tasks, metrics, and workflow execution.
 import operator
 from collections.abc import Sequence
 from datetime import datetime
-from typing import Annotated, Any, Dict, List, Optional, Set, TypedDict
+from typing import Annotated, Any, TypedDict
 
 from langchain_core.messages import BaseMessage
 from pydantic import BaseModel, Field
@@ -36,7 +36,7 @@ class ActiveAgent(BaseModel):
     created_at: datetime = Field(
         default_factory=datetime.now, description="Creation timestamp"
     )
-    last_task: Optional[str] = Field(None, description="Last assigned task")
+    last_task: str | None = Field(None, description="Last assigned task")
     task_count: int = Field(0, description="Tasks completed")
     total_execution_time: float = Field(0.0, description="Total execution seconds")
     error_count: int = Field(0, description="Errors encountered")
@@ -102,7 +102,7 @@ class SupervisorMetrics(BaseModel):
     start_time: datetime = Field(
         default_factory=datetime.now, description="Supervisor start time"
     )
-    last_task_time: Optional[datetime] = Field(None, description="Last task timestamp")
+    last_task_time: datetime | None = Field(None, description="Last task timestamp")
 
     @property
     def success_rate(self) -> float:
@@ -150,10 +150,10 @@ class DynamicSupervisorState(TypedDict):
     messages: Annotated[Sequence[BaseMessage], operator.add]
 
     # Agent management
-    active_agents: Dict[str, ActiveAgent]
-    agent_capabilities: Dict[str, AgentCapability]
-    discovered_agents: Set[str]
-    available_specs: List[AgentSpec]
+    active_agents: dict[str, ActiveAgent]
+    agent_capabilities: dict[str, AgentCapability]
+    discovered_agents: set[str]
+    available_specs: list[AgentSpec]
 
     # Task routing
     current_agent: str
@@ -165,15 +165,15 @@ class DynamicSupervisorState(TypedDict):
     supervisor_metrics: SupervisorMetrics
 
     # Discovery and caching
-    discovery_cache: Dict[str, List[AgentSpec]]
+    discovery_cache: dict[str, list[AgentSpec]]
 
     # Workflow control
     workflow_state: str  # "routing", "discovering", "executing", "complete"
 
 
 def create_initial_state(
-    available_specs: Optional[List[AgentSpec]] = None,
-    discovery_cache: Optional[Dict[str, List[AgentSpec]]] = None,
+    available_specs: list[AgentSpec] | None = None,
+    discovery_cache: dict[str, list[AgentSpec]] | None = None,
 ) -> DynamicSupervisorState:
     """Create initial state for dynamic supervisor.
 

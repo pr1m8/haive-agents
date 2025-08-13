@@ -7,6 +7,7 @@ Instead of creating tools for each agent, we have:
 
 from datetime import datetime
 from typing import Any, Literal
+
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.schema import StateSchema
@@ -14,6 +15,7 @@ from langchain_core.messages import HumanMessage
 from langchain_core.tools import tool
 from langgraph.graph import END
 from pydantic import Field, model_validator
+
 from haive.agents.react.agent import ReactAgent
 from haive.agents.simple.agent import SimpleAgent
 
@@ -41,7 +43,9 @@ class AgentExecutionNode:
             return {"state": state}
         agent = state.available_agents.get(state.selected_agent)
         if not agent:
-            state.agent_response = f"Agent '{state.selected_agent}' not found in registry"
+            state.agent_response = (
+                f"Agent '{state.selected_agent}' not found in registry"
+            )
             state.selected_agent = None
             return {"state": state}
         task = state.agent_task or "No task specified"
@@ -54,9 +58,15 @@ class AgentExecutionNode:
                 result = await agent.ainvoke({"messages": [HumanMessage(content=task)]})
                 if isinstance(result, dict) and "messages" in result:
                     last_msg = result["messages"][-1]
-                    result = last_msg.content if hasattr(last_msg, "content") else str(last_msg)
+                    result = (
+                        last_msg.content
+                        if hasattr(last_msg, "content")
+                        else str(last_msg)
+                    )
             else:
-                result = f"Agent {state.selected_agent} doesn't have a runnable interface"
+                result = (
+                    f"Agent {state.selected_agent} doesn't have a runnable interface"
+                )
             state.agent_response = result
             state.messages.append(
                 {
@@ -136,7 +146,9 @@ class SupervisorWithAgentNode(ReactAgent):
         graph.add_node("agent_node", agent_node)
         graph.set_entry_point("supervisor")
         graph.add_conditional_edges(
-            "supervisor", self._check_agent_selection, {"execute": "agent_node", "end": END}
+            "supervisor",
+            self._check_agent_selection,
+            {"execute": "agent_node", "end": END},
         )
         graph.add_edge("agent_node", "supervisor")
         return graph.compile()
@@ -145,7 +157,11 @@ class SupervisorWithAgentNode(ReactAgent):
         """Supervisor analyzes task and selects agent."""
         if state.messages:
             last_msg = state.messages[-1]
-            task = last_msg.get("content", "") if isinstance(last_msg, dict) else str(last_msg)
+            task = (
+                last_msg.get("content", "")
+                if isinstance(last_msg, dict)
+                else str(last_msg)
+            )
         else:
             task = ""
         prompt = f"\nYou are a supervisor that routes tasks to specialized agents.\n\nTask: {task}\n\nAvailable agents:\n- math_agent: Handles mathematical calculations\n- search_agent: Finds information\n- writer_agent: Creates written content\n\nUse the select_[agent]_agent tools to route tasks.\nThe tool will set up the routing, then the agent will be executed.\n\nImportant: After using a select tool, set state.selected_agent and state.agent_task.\n"
@@ -162,7 +178,9 @@ class SupervisorWithAgentNode(ReactAgent):
             state.agent_task = task
         return {"state": state}
 
-    def _check_agent_selection(self, state: SupervisorState) -> Literal["execute", "end"]:
+    def _check_agent_selection(
+        self, state: SupervisorState
+    ) -> Literal["execute", "end"]:
         """Check if an agent was selected."""
         if state.selected_agent:
             return "execute"
@@ -204,7 +222,9 @@ async def demo_agent_node_pattern():
     )
     initial_state.messages = [{"role": "user", "content": "Calculate 7 * 8"}]
     await supervisor.graph.ainvoke(initial_state)
-    initial_state.messages = [{"role": "user", "content": "Find information about Python"}]
+    initial_state.messages = [
+        {"role": "user", "content": "Find information about Python"}
+    ]
     await supervisor.graph.ainvoke(initial_state)
 
 

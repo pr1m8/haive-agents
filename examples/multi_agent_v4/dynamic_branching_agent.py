@@ -351,7 +351,7 @@ class DynamicRouter:
 
         # Format results for synthesis
         formatted_results = []
-        for i, result in enumerate(results):
+        for _i, result in enumerate(results):
             if hasattr(result, "content"):
                 formatted_results.append(result.content)
             elif isinstance(result, dict) and "messages" in result:

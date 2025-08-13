@@ -1,6 +1,6 @@
 # src/haive/agents/reasoning/orchestrator.py
 
-from typing import Any, Dict
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
@@ -117,7 +117,7 @@ class ReasoningSystem(Agent):
         graph.add_edge("extract_premises", "primary_reasoning")
 
         # Conditional edge
-        def should_explore_alternatives(state: Dict[str, Any]):
+        def should_explore_alternatives(state: dict[str, Any]):
             return state.get("explore_alternatives", False)
 
         graph.add_conditional_edges(

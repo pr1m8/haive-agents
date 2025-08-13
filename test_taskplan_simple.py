@@ -1,6 +1,6 @@
 """Simple test to verify TaskPlan works directly."""
 
-from haive.agents.planning_v2.base.models import Plan, Status, Task
+from haive.agents.planning_v2.base.models import Task
 from haive.agents.planning_v2.base.planner.models import TaskPlan
 
 # Test creating TaskPlan directly

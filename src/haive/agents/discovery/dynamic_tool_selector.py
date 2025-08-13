@@ -37,9 +37,6 @@ if TYPE_CHECKING:
         QueryAnalysis,
         SemanticDiscoveryEngine,
     )
-    from haive.agents.discovery.semantic_discovery import (
-        ToolSelectionStrategy as SemanticToolSelectionStrategy,
-    )
 logger = logging.getLogger(__name__)
 
 

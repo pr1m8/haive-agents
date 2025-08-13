@@ -4,7 +4,7 @@ This module provides the base multi-agent class that other multi-agent
 implementations can inherit from or use directly.
 """
 
-from typing import Any, List
+from typing import Any
 
 from haive.core.engine.agent import Agent, AgentConfig
 from pydantic import Field
@@ -16,7 +16,7 @@ from haive.agents.multi.agent import MultiAgent
 class SequentialAgentConfig(AgentConfig):
     """Configuration for sequential multi-agent execution."""
 
-    agents: List[Any] = Field(
+    agents: list[Any] = Field(
         default_factory=list, description="List of agents to run sequentially"
     )
     pass_results: bool = Field(default=True, description="Pass results between agents")

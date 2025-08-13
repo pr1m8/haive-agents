@@ -86,7 +86,7 @@ class VectorStoreConfig(BaseModel):
 
 
 class STORMAgentConfig(SequenceAgentConfig):
-    """Configuration for the STORM agent - an orchestrator that coordinates research,
+    """Configuration for the STORM agent - an orchestrator that coordinates research,.
     interviews, and writing to generate comprehensive Wikipedia-style articles.
 
     STORM follows these stages:

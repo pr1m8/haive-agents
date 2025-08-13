@@ -216,7 +216,6 @@ def create_structured_agent(
 
 
 # Import Agent for model_rebuild
-from haive.agents.base.agent import Agent
 
 # Rebuild model to resolve forward references
 StructuredOutputAgent.model_rebuild()

@@ -6,7 +6,7 @@ token limits, similar to LangMem's approach.
 
 import logging
 from datetime import datetime
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any
 
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.schema import StateSchema
@@ -18,12 +18,11 @@ from pydantic import BaseModel, Field
 
 from haive.agents.memory_reorganized.base.memory_models_standalone import MemoryType
 from haive.agents.memory_reorganized.base.memory_state_original import (
-    EnhancedMemoryItem,
-    ImportanceLevel,
-    MemoryState,
+    MemoryState,  # Import original models for compatibility
 )
 from haive.agents.memory_reorganized.base.memory_state_original import (
-    MemoryType as StateMemoryType,  # Import original models for compatibility
+    EnhancedMemoryItem,
+    ImportanceLevel,
 )
 from haive.agents.memory_reorganized.base.token_state import MemoryStateWithTokens
 from haive.agents.memory_reorganized.core.memory_tools import (
@@ -86,7 +85,7 @@ except ImportError:
     # Create basic fallback models
     class EntityNode(BaseModel):
         name: str = Field(...)
-        id: Optional[str] = Field(default=None)
+        id: str | None = Field(default=None)
         type: str = Field(default="entity")
         properties: dict[str, Any] = Field(default_factory=dict)
 
@@ -95,7 +94,7 @@ except ImportError:
         target: str = Field(...)
         relationship: str = Field(...)
         type: str = Field(default="relationship")
-        confidence_score: Optional[float] = Field(default=None)
+        confidence_score: float | None = Field(default=None)
         supporting_evidence: list[str] = Field(default_factory=list)
         properties: dict[str, Any] = Field(default_factory=dict)
 
@@ -309,7 +308,7 @@ class SimpleMemoryAgent(EnhancedSimpleAgent):
     )
 
     # State tracking
-    running_summary: Optional[str] = Field(
+    running_summary: str | None = Field(
         default=None, description="Running summary of all memories"
     )
 
@@ -318,7 +317,7 @@ class SimpleMemoryAgent(EnhancedSimpleAgent):
     )
 
     # Graph transformation components
-    graph_transformer: Optional[Any] = Field(  # type: ignore
+    graph_transformer: Any | None = Field(  # type: ignore
         default=None, description="Graph transformer for converting content to knowledge graphs"
     )
 
@@ -327,24 +326,24 @@ class SimpleMemoryAgent(EnhancedSimpleAgent):
     )
 
     # Prompts storage (since we can't add to engine)
-    memory_summarization_prompt: Optional[ChatPromptTemplate] = Field(
+    memory_summarization_prompt: ChatPromptTemplate | None = Field(
         default=None, description="Prompt for memory summarization"
     )
 
-    running_summary_prompt: Optional[ChatPromptTemplate] = Field(
+    running_summary_prompt: ChatPromptTemplate | None = Field(
         default=None, description="Prompt for running summary updates"
     )
 
-    memory_rewrite_prompt: Optional[ChatPromptTemplate] = Field(
+    memory_rewrite_prompt: ChatPromptTemplate | None = Field(
         default=None, description="Prompt for memory rewriting/compression"
     )
 
     # Graph prompts
-    entity_extraction_prompt: Optional[ChatPromptTemplate] = Field(
+    entity_extraction_prompt: ChatPromptTemplate | None = Field(
         default=None, description="Prompt for entity extraction"
     )
 
-    relationship_extraction_prompt: Optional[ChatPromptTemplate] = Field(
+    relationship_extraction_prompt: ChatPromptTemplate | None = Field(
         default=None, description="Prompt for relationship extraction"
     )
 
@@ -770,9 +769,7 @@ Focus on relationships that are explicitly mentioned or strongly implied."""
             )
 
             # Ensure content is a string
-            if isinstance(content, (list, tuple)):
-                content = str(content)
-            elif not isinstance(content, str):
+            if isinstance(content, (list, tuple)) or not isinstance(content, str):
                 content = str(content)
 
             # Determine operation type and execute

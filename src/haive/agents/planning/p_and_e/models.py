@@ -180,7 +180,7 @@ class Plan(BaseModel):
         completed_ids = {s.step_id for s in self.completed_steps}
         for step in self.steps:
             if step.status == StepStatus.PENDING:
-                if all((dep_id in completed_ids for dep_id in step.dependencies)):
+                if all(dep_id in completed_ids for dep_id in step.dependencies):
                     return step
         return None
 
@@ -196,13 +196,13 @@ class Plan(BaseModel):
     @property
     def is_complete(self) -> bool:
         """Check if all steps are completed."""
-        return all((s.status == StepStatus.COMPLETED for s in self.steps))
+        return all(s.status == StepStatus.COMPLETED for s in self.steps)
 
     @computed_field
     @property
     def has_failures(self) -> bool:
         """Check if any steps have failed."""
-        return any((s.status == StepStatus.FAILED for s in self.steps))
+        return any(s.status == StepStatus.FAILED for s in self.steps)
 
     def get_step(self, step_id: int) -> PlanStep | None:
         """Get a specific step by ID."""

@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-ReactAgentV3 - Comprehensive Documentation and Examples
+"""ReactAgentV3 - Comprehensive Documentation and Examples
 
 This module provides complete documentation and working examples for ReactAgentV3,
 the enhanced ReAct (Reasoning and Acting) pattern implementation that extends
@@ -28,12 +27,10 @@ observability features.
 
 Author: Claude Code Assistant
 Created: 2025-01-15
-Purpose: Complete ReactAgentV3 documentation for Sphinx AutoAPI
-"""
+Purpose: Complete ReactAgentV3 documentation for Sphinx AutoAPI"""
 
 import logging
 from datetime import datetime
-from typing import Dict, List, Optional
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import DeepSeekLLMConfig
@@ -111,7 +108,7 @@ class ReasoningAnalysis(BaseModel):
         ],
     )
 
-    iteration_steps: List[str] = Field(
+    iteration_steps: list[str] = Field(
         description="Detailed log of each reasoning iteration with thinking process",
         examples=[
             [
@@ -122,12 +119,12 @@ class ReasoningAnalysis(BaseModel):
         ],
     )
 
-    tools_utilized: List[str] = Field(
+    tools_utilized: list[str] = Field(
         description="Names of tools used during the reasoning process",
         examples=[["web_search", "calculator", "database_query"]],
     )
 
-    intermediate_findings: List[str] = Field(
+    intermediate_findings: list[str] = Field(
         description="Key discoveries and insights from each reasoning iteration",
         examples=[
             [
@@ -139,7 +136,9 @@ class ReasoningAnalysis(BaseModel):
 
     final_conclusion: str = Field(
         description="Complete final answer with supporting reasoning and evidence",
-        examples=["Based on 8 iterations of research and analysis, renewable energy shows..."],
+        examples=[
+            "Based on 8 iterations of research and analysis, renewable energy shows..."
+        ],
     )
 
     confidence_score: float = Field(
@@ -155,7 +154,7 @@ class ReasoningAnalysis(BaseModel):
         examples=[6, 8, 12],
     )
 
-    execution_time_seconds: Optional[float] = Field(
+    execution_time_seconds: float | None = Field(
         default=None,
         ge=0.0,
         description="Estimated total execution time for the reasoning process",
@@ -215,35 +214,35 @@ class TechnicalProblemSolution(BaseModel):
         description="Technical category (structural, electrical, software, mechanical, etc.)"
     )
 
-    research_methodology: List[str] = Field(
+    research_methodology: list[str] = Field(
         description="Systematic steps taken to research and understand the problem"
     )
 
-    technical_analysis: List[str] = Field(
+    technical_analysis: list[str] = Field(
         description="Detailed technical findings, calculations, and engineering analysis"
     )
 
-    solution_components: List[str] = Field(
+    solution_components: list[str] = Field(
         description="Individual technical components that make up the complete solution"
     )
 
-    implementation_steps: List[str] = Field(
+    implementation_steps: list[str] = Field(
         description="Ordered, actionable steps for implementing the technical solution"
     )
 
-    technical_requirements: Dict[str, str] = Field(
+    technical_requirements: dict[str, str] = Field(
         description="System requirements, materials, tools, or resources needed"
     )
 
-    risk_assessment: List[str] = Field(
+    risk_assessment: list[str] = Field(
         description="Potential technical risks, failure modes, and mitigation strategies"
     )
 
-    validation_approach: List[str] = Field(
+    validation_approach: list[str] = Field(
         description="Methods for testing and validating the solution effectiveness"
     )
 
-    alternative_solutions: List[str] = Field(
+    alternative_solutions: list[str] = Field(
         description="Other technical approaches considered during the reasoning process"
     )
 
@@ -297,35 +296,35 @@ class ResearchInvestigation(BaseModel):
         description="Defined boundaries, timeframe, and focus areas of the research"
     )
 
-    research_strategy: List[str] = Field(
+    research_strategy: list[str] = Field(
         description="Overall methodology and systematic approach used for investigation"
     )
 
-    source_evaluation: List[str] = Field(
+    source_evaluation: list[str] = Field(
         description="Assessment of information sources for credibility and relevance"
     )
 
-    data_collection_methods: List[str] = Field(
+    data_collection_methods: list[str] = Field(
         description="Specific methods used to gather and verify information"
     )
 
-    key_findings: List[str] = Field(
+    key_findings: list[str] = Field(
         description="Most significant discoveries and insights from the research"
     )
 
-    supporting_evidence: List[str] = Field(
+    supporting_evidence: list[str] = Field(
         description="Specific evidence, data, or citations supporting each key finding"
     )
 
-    contradictory_information: List[str] = Field(
+    contradictory_information: list[str] = Field(
         description="Conflicting data or alternative viewpoints discovered during research"
     )
 
-    research_limitations: List[str] = Field(
+    research_limitations: list[str] = Field(
         description="Acknowledged constraints, gaps, or limitations in the investigation"
     )
 
-    future_research_directions: List[str] = Field(
+    future_research_directions: list[str] = Field(
         description="Suggested areas for additional investigation or follow-up studies"
     )
 
@@ -382,8 +381,7 @@ def advanced_calculator(expression: str) -> str:
         if isinstance(result, float):
             if result.is_integer():
                 return str(int(result))
-            else:
-                return f"{result:.6f}".rstrip("0").rstrip(".")
+            return f"{result:.6f}".rstrip("0").rstrip(".")
 
         return str(result)
 
@@ -392,7 +390,7 @@ def advanced_calculator(expression: str) -> str:
     except ValueError as e:
         return f"Error: Invalid mathematical operation in '{expression}': {e}"
     except Exception as e:
-        return f"Error calculating '{expression}': {str(e)}"
+        return f"Error calculating '{expression}': {e!s}"
 
 
 @tool
@@ -495,7 +493,7 @@ def web_research_simulator(query: str) -> str:
             return result
 
     # Default research simulation
-    return f"""Research Results for: {query}
+    return f"""Research Results for: {query}.
 
 Summary: Comprehensive research completed on the requested topic. Multiple authoritative sources consulted with cross-reference validation.
 
@@ -593,7 +591,7 @@ def data_analyzer(dataset_description: str) -> str:
             return result
 
     # Generic analysis
-    return f"""Data Analysis Report: {dataset_description}
+    return f"""Data Analysis Report: {dataset_description}.
 
 Executive Summary: Comprehensive statistical analysis completed on the provided dataset. Multiple analytical methods applied including descriptive statistics, trend analysis, and correlation studies.
 
@@ -677,7 +675,7 @@ def technical_documentation_lookup(topic: str) -> str:
             result += f"Reference Date: {datetime.now().strftime('%Y-%m-%d')}"
             return result
 
-    return f"""Technical Documentation: {topic}
+    return f"""Technical Documentation: {topic}.
 
 Specification Overview: Technical documentation retrieved for the requested topic. Multiple authoritative sources consulted for accuracy and completeness.
 
@@ -755,7 +753,9 @@ def demonstrate_basic_react_pattern() -> ReactAgentV3:
         debug=True,  # Show reasoning process
     )
 
-    logger.info(f"Created ReactAgentV3 '{agent.name}' with {len(agent.engine.tools)} tools")
+    logger.info(
+        f"Created ReactAgentV3 '{agent.name}' with {len(agent.engine.tools)} tools"
+    )
     logger.info(
         f"Configuration: max_iterations={agent.max_iterations}, temperature={agent.engine.temperature}"
     )
@@ -878,7 +878,9 @@ def demonstrate_technical_problem_solving() -> ReactAgentV3:
         debug=True,
     )
 
-    logger.info(f"Technical agent configured with {len(agent.engine.tools)} specialized tools")
+    logger.info(
+        f"Technical agent configured with {len(agent.engine.tools)} specialized tools"
+    )
     logger.info(f"Max iterations: {agent.max_iterations} for comprehensive analysis")
 
     return agent
@@ -1094,7 +1096,9 @@ def demonstrate_react_vs_simple_comparison():
     )
 
     # Create SimpleAgentV3 for comparison
-    simple_agent = SimpleAgentV3(name="comparison_simple", engine=shared_config, debug=True)
+    simple_agent = SimpleAgentV3(
+        name="comparison_simple", engine=shared_config, debug=True
+    )
 
     # Create ReactAgentV3 with same tools
     react_agent = ReactAgentV3(
@@ -1267,7 +1271,9 @@ def demonstrate_dynamic_tool_addition():
         debug=True,
     )
 
-    logger.info(f"✅ Created adaptive agent with {len(adaptive_agent.engine.tools)} initial tools")
+    logger.info(
+        f"✅ Created adaptive agent with {len(adaptive_agent.engine.tools)} initial tools"
+    )
 
     # Simulate dynamic tool addition scenario
     logger.info("Simulating dynamic tool addition scenario:")
@@ -1285,7 +1291,9 @@ def demonstrate_dynamic_tool_addition():
 
     # Show how tools would be added dynamically
     logger.info("📋 Tools available for dynamic addition:")
-    logger.info(f"   1. {specialized_analyzer.name}: {specialized_analyzer.description}")
+    logger.info(
+        f"   1. {specialized_analyzer.name}: {specialized_analyzer.description}"
+    )
     logger.info(f"   2. {database_connector.name}: {database_connector.description}")
     logger.info("   These tools can be added during execution based on agent needs")
 
@@ -1347,15 +1355,21 @@ def demonstrate_hooks_integration():
 
     def tool_usage_monitor(tool_name: str, tool_result: str, execution_time: float):
         """Monitor tool usage and performance."""
-        result_preview = tool_result[:100] + "..." if len(tool_result) > 100 else tool_result
-        logger.info(f"🔧 Tool '{tool_name}' executed in {execution_time:.2f}s: {result_preview}")
+        result_preview = (
+            tool_result[:100] + "..." if len(tool_result) > 100 else tool_result
+        )
+        logger.info(
+            f"🔧 Tool '{tool_name}' executed in {execution_time:.2f}s: {result_preview}"
+        )
 
-    def reasoning_quality_monitor(reasoning_trace: List[str], confidence: float):
+    def reasoning_quality_monitor(reasoning_trace: list[str], confidence: float):
         """Assess reasoning quality and completeness."""
         if len(reasoning_trace) < 3:
             logger.warning("⚠️  Reasoning may be incomplete - consider more iterations")
         if confidence < 0.7:
-            logger.warning(f"⚠️  Low confidence ({confidence:.2f}) - may need additional analysis")
+            logger.warning(
+                f"⚠️  Low confidence ({confidence:.2f}) - may need additional analysis"
+            )
         logger.info(
             f"📊 Reasoning quality: {len(reasoning_trace)} steps, confidence: {confidence:.2f}"
         )
@@ -1445,7 +1459,9 @@ def run_comprehensive_react_documentation():
         # 4. Factory Functions
         print("\n🏭 4. FACTORY FUNCTIONS DEMONSTRATION")
         print("-" * 50)
-        research_agent, structured_agent, technical_agent = demonstrate_create_react_agent_factory()
+        research_agent, structured_agent, technical_agent = (
+            demonstrate_create_react_agent_factory()
+        )
         print("✅ Factory agents created:")
         print(f"   • Research: {research_agent.name}")
         print(f"   • Structured: {structured_agent.name}")
@@ -1469,7 +1485,9 @@ def run_comprehensive_react_documentation():
         # 7. Performance Optimization
         print("\n⚡ 7. PERFORMANCE OPTIMIZATION DEMONSTRATION")
         print("-" * 50)
-        fast_agent, thorough_agent, production_agent = demonstrate_performance_considerations()
+        fast_agent, thorough_agent, production_agent = (
+            demonstrate_performance_considerations()
+        )
         print("✅ Performance variants created:")
         print(f"   • Fast: {fast_agent.max_iterations} iterations")
         print(f"   • Thorough: {thorough_agent.max_iterations} iterations")
@@ -1546,10 +1564,14 @@ if __name__ == "__main__":
     print()
     print("2. Factory Functions:")
     print("   from haive.agents.react.agent_v3 import create_react_agent")
-    print("   agent = create_react_agent('research_bot', tools=[...], max_iterations=8)")
+    print(
+        "   agent = create_react_agent('research_bot', tools=[...], max_iterations=8)"
+    )
     print()
     print("3. Structured Output:")
-    print("   agent = ReactAgentV3(engine=AugLLMConfig(structured_output_model=YourModel))")
+    print(
+        "   agent = ReactAgentV3(engine=AugLLMConfig(structured_output_model=YourModel))"
+    )
     print("   result = agent.run('Complex analysis task')")
     print("   # result is now an instance of YourModel with full validation")
     print()

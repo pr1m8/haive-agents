@@ -548,15 +548,43 @@ SIMPLE_RAG_ANSWER_AGENT = SimpleRAGAnswerAgent(
 # Module-level exports for compatibility
 documents = conversation_documents
 from_documents = SimpleRAGAgent.from_documents
-generate_answer = lambda query, docs: "Generated answer based on query and documents"
-grade_document = lambda doc: {"relevance": 0.8, "quality": 0.9}
-grade_documents = lambda docs: [grade_document(doc) for doc in docs]
+
+
+def generate_answer(query, docs):
+    return "Generated answer based on query and documents"
+
+
+def grade_document(doc):
+    return {"relevance": 0.8, "quality": 0.9}
+
+
+def grade_documents(docs):
+    return [grade_document(doc) for doc in docs]
+
+
 grading_mode = "binary"
 max_documents = 10
 min_relevance_threshold = 0.5
-retrieve_documents = lambda query: conversation_documents[:3]
-run_generation = lambda state: {"answer": "Generated response"}
-run_grading = lambda state: {"graded_documents": []}
-run_iterative_grading = lambda state: {"final_documents": []}
-run_retrieval = lambda state: {"retrieved_documents": conversation_documents}
+
+
+def retrieve_documents(query):
+    return conversation_documents[:3]
+
+
+def run_generation(state):
+    return {"answer": "Generated response"}
+
+
+def run_grading(state):
+    return {"graded_documents": []}
+
+
+def run_iterative_grading(state):
+    return {"final_documents": []}
+
+
+def run_retrieval(state):
+    return {"retrieved_documents": conversation_documents}
+
+
 use_citations = False

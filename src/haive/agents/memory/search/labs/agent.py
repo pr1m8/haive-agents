@@ -808,7 +808,7 @@ Execute each project with professional standards and comprehensive automation.""
 # Standalone function exports for backward compatibility
 def create_interactive_app(app_type: str, title: str, description: str) -> InteractiveApp:
     """Create an interactive app."""
-    agent = LabsAgent()
+    LabsAgent()
     return InteractiveApp(
         app_id=str(uuid.uuid4()),
         app_type=app_type,

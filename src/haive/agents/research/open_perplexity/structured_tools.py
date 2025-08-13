@@ -679,8 +679,7 @@ class GitHubLoader:
                     },
                 )
                 return [doc]
-            else:
-                return []
+            return []
         except Exception as e:
             import logging
 
@@ -702,7 +701,6 @@ class WebScraper:
             List of Document objects
         """
         try:
-            from langchain_core.documents import Document
 
             # Use the existing EnhancedWebBaseLoader for actual scraping
             loader = EnhancedWebBaseLoader(url)

@@ -1,0 +1,62 @@
+
+:py:mod:`agents.base`
+=====================
+
+.. py:module:: agents.base
+
+Base Agent Module - Core abstractions for Haive agents.
+
+This module provides the base agent class and related utilities for building
+intelligent agents in the Haive framework. It properly exports the Agent class
+from the agent.py module, along with supporting types and utilities.
+
+Key Components:
+    * Classes: Agent (from agent.py), GenericAgent
+    * Mixins: ExecutionMixin, StateMixin, SerializationMixin
+    * Types: AgentInput, AgentOutput, AgentState
+
+.. rubric:: Example
+
+Basic usage::
+
+    from haive.agents.base import Agent
+    from haive.core.graph.state_graph.base_graph2 import BaseGraph
+
+    class MyAgent(Agent):
+        def setup_agent(self):
+            # Custom setup logic
+            pass
+
+        def build_graph(self) -> BaseGraph:
+            # Build and return the agent's workflow graph
+            return my_graph
+
+    # Create agent with configuration
+    agent = MyAgent(
+        name="my_agent",
+        engine=my_llm_engine,
+        config=AgentConfig(
+            persistence=PostgresCheckpointerConfig(),
+            runnable_config={
+                "configurable": {
+                    "recursion_limit": 100
+                }
+            }
+        )
+    )
+
+    result = agent.invoke(input_data)
+
+.. seealso::
+
+   :mod:`haive.agents.base.agent`: Main Agent implementation
+   :mod:`haive.agents.base.generic_agent`: Generic typed agent
+   :mod:`haive.agents.base.mixins`: Agent capability mixins
+
+
+.. autolink-examples:: agents.base
+   :collapse:
+
+
+
+

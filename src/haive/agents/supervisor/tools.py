@@ -5,7 +5,7 @@ workflow coordination.
 """
 
 import logging
-from typing import Any, List, Optional, Set
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.tools import BaseTool, tool
@@ -70,36 +70,35 @@ def create_agent_from_spec(spec: AgentSpec) -> Any:
 
     if agent_type in ["simpleagentv3", "simpleagent", "simple"]:
         return SimpleAgentV3(name=spec.name, **config)
-    elif agent_type in ["reactagent", "react"]:
+    if agent_type in ["reactagent", "react"]:
         return ReactAgent(name=spec.name, **config)
-    else:
-        # Try to instantiate directly if it's a class name
-        try:
-            # Import from haive.agents namespace
-            from haive.agents import react, simple
+    # Try to instantiate directly if it's a class name
+    try:
+        # Import from haive.agents namespace
+        from haive.agents import react, simple
 
-            # Check standard locations
-            if hasattr(simple, spec.agent_type):
-                agent_class = getattr(simple, spec.agent_type)
-            elif hasattr(react, spec.agent_type):
-                agent_class = getattr(react, spec.agent_type)
-            else:
-                raise ValueError(f"Unknown agent type: {spec.agent_type}")
+        # Check standard locations
+        if hasattr(simple, spec.agent_type):
+            agent_class = getattr(simple, spec.agent_type)
+        elif hasattr(react, spec.agent_type):
+            agent_class = getattr(react, spec.agent_type)
+        else:
+            raise ValueError(f"Unknown agent type: {spec.agent_type}")
 
-            return agent_class(name=spec.name, **config)
-        except Exception as e:
-            logger.error(f"Failed to create agent of type '{spec.agent_type}': {e}")
-            # Default to SimpleAgentV3
-            logger.warning(f"Defaulting to SimpleAgentV3 for agent '{spec.name}'")
-            return SimpleAgentV3(name=spec.name, **config)
+        return agent_class(name=spec.name, **config)
+    except Exception as e:
+        logger.error(f"Failed to create agent of type '{spec.agent_type}': {e}")
+        # Default to SimpleAgentV3
+        logger.warning(f"Defaulting to SimpleAgentV3 for agent '{spec.name}'")
+        return SimpleAgentV3(name=spec.name, **config)
 
 
 def find_matching_agent_specs(
     task: str,
-    available_specs: List[AgentSpec],
+    available_specs: list[AgentSpec],
     threshold: float = 0.3,
     max_results: int = 5,
-) -> List[AgentSpec]:
+) -> list[AgentSpec]:
     """Find agent specifications that match a given task.
 
     Uses specialty matching and keyword analysis to find the most suitable
@@ -146,8 +145,8 @@ def find_matching_agent_specs(
 def discover_agents(
     task: str,
     discovery_config: DiscoveryConfig,
-    existing_agents: Optional[Set[str]] = None,
-) -> List[AgentSpec]:
+    existing_agents: set[str] | None = None,
+) -> list[AgentSpec]:
     """Discover new agents based on task requirements.
 
     This function implements various discovery strategies to find or create
@@ -177,25 +176,25 @@ def discover_agents(
         logger.debug("Manual mode - no discovery performed")
         return []
 
-    elif discovery_config.mode == AgentDiscoveryMode.COMPONENT_DISCOVERY:
+    if discovery_config.mode == AgentDiscoveryMode.COMPONENT_DISCOVERY:
         # TODO: Implement component discovery
         # This would scan component_paths for agent implementations
         logger.warning("Component discovery not yet implemented")
         return []
 
-    elif discovery_config.mode == AgentDiscoveryMode.RAG_DISCOVERY:
+    if discovery_config.mode == AgentDiscoveryMode.RAG_DISCOVERY:
         # TODO: Implement RAG-based discovery
         # This would use vector search to find relevant agent code/docs
         logger.warning("RAG discovery not yet implemented")
         return []
 
-    elif discovery_config.mode == AgentDiscoveryMode.MCP_DISCOVERY:
+    if discovery_config.mode == AgentDiscoveryMode.MCP_DISCOVERY:
         # TODO: Implement MCP discovery
         # This would query MCP servers for available agents
         logger.warning("MCP discovery not yet implemented")
         return []
 
-    elif discovery_config.mode == AgentDiscoveryMode.HYBRID:
+    if discovery_config.mode == AgentDiscoveryMode.HYBRID:
         # Combine multiple discovery methods
         for mode in [
             AgentDiscoveryMode.COMPONENT_DISCOVERY,

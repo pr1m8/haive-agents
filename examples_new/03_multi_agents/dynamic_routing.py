@@ -13,15 +13,14 @@ Date: August 7, 2025
 
 import asyncio
 from enum import Enum
-from typing import Any, Dict, List, Set
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
-from langchain_core.messages import AIMessage, HumanMessage
+from langchain_core.messages import HumanMessage
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.tools import tool
 from pydantic import BaseModel, Field
 
-from haive.agents.multi.enhanced_multi_agent_v4 import EnhancedMultiAgentV4
 from haive.agents.react.agent import ReactAgent
 from haive.agents.simple.agent_v3 import SimpleAgentV3
 
@@ -45,13 +44,13 @@ class QueryAnalysis(BaseModel):
     """Detailed analysis of the query."""
 
     complexity: QueryComplexity = Field(description="Complexity level of the query")
-    required_capabilities: List[RequiredCapability] = Field(
+    required_capabilities: list[RequiredCapability] = Field(
         description="List of capabilities needed"
     )
     needs_tools: bool = Field(description="Whether tools are required")
     needs_research: bool = Field(description="Whether research is required")
     needs_synthesis: bool = Field(description="Whether synthesis is required")
-    subtasks: List[str] = Field(
+    subtasks: list[str] = Field(
         default_factory=list, description="Breakdown of subtasks if complex"
     )
 
@@ -71,11 +70,11 @@ class FinalSynthesis(BaseModel):
     """Final synthesized result."""
 
     query_complexity: QueryComplexity
-    agents_used: List[str]
-    execution_path: List[str] = Field(description="Path taken through agents")
+    agents_used: list[str]
+    execution_path: list[str] = Field(description="Path taken through agents")
     synthesis: str = Field(description="Synthesized final answer")
     confidence: float = Field(ge=0.0, le=1.0)
-    key_insights: List[str]
+    key_insights: list[str]
 
 
 # Tools
@@ -92,7 +91,7 @@ def calculator(expression: str) -> str:
 @tool
 def data_analyzer(data: str) -> str:
     """Analyze data patterns."""
-    return f"Data analysis: Found patterns in the data - trend appears to be increasing"
+    return "Data analysis: Found patterns in the data - trend appears to be increasing"
 
 
 @tool
@@ -112,7 +111,6 @@ def planner_tool(task: str) -> str:
 # Agent Creation
 def create_dynamic_agents():
     """Create agents for dynamic branching workflow."""
-
     # Query Analyzer - determines routing
     analyzer = SimpleAgentV3(
         name="query_analyzer",
@@ -222,13 +220,12 @@ Create a final synthesis.""",
 class DynamicRouter:
     """Handles dynamic routing logic."""
 
-    def __init__(self, agents: Dict[str, Any]):
+    def __init__(self, agents: dict[str, Any]):
         self.agents = agents
         self.execution_path = []
 
     async def route_query(self, query: str) -> FinalSynthesis:
         """Route query through appropriate agents."""
-
         print("🔍 Analyzing query...")
 
         # Step 1: Analyze the query
@@ -245,10 +242,9 @@ class DynamicRouter:
         # Step 2: Route based on complexity
         if analysis_result.complexity == QueryComplexity.SIMPLE:
             return await self._handle_simple(query, analysis_result)
-        elif analysis_result.complexity == QueryComplexity.MODERATE:
+        if analysis_result.complexity == QueryComplexity.MODERATE:
             return await self._handle_moderate(query, analysis_result)
-        else:
-            return await self._handle_complex(query, analysis_result)
+        return await self._handle_complex(query, analysis_result)
 
     async def _handle_simple(
         self, query: str, analysis: QueryAnalysis
@@ -347,15 +343,15 @@ class DynamicRouter:
         self,
         query: str,
         analysis: QueryAnalysis,
-        results: List[Any],
-        execution_path: List[str],
+        results: list[Any],
+        execution_path: list[str],
     ) -> FinalSynthesis:
         """Synthesize results from multiple agents."""
         print("\n🎯 Synthesizing final result...")
 
         # Format results for synthesis
         formatted_results = []
-        for i, result in enumerate(results):
+        for _i, result in enumerate(results):
             if hasattr(result, "content"):
                 formatted_results.append(result.content)
             elif isinstance(result, dict) and "messages" in result:
@@ -379,7 +375,6 @@ class DynamicRouter:
 
 async def test_dynamic_branching():
     """Test the dynamic branching system."""
-
     print("🌲 Dynamic Branching Agent System")
     print("=" * 60)
 
@@ -406,13 +401,13 @@ async def test_dynamic_branching():
             result = await router.route_query(query)
 
             if isinstance(result, FinalSynthesis):
-                print(f"\n✅ Final Synthesis:")
+                print("\n✅ Final Synthesis:")
                 print(f"   Complexity: {result.query_complexity}")
                 print(f"   Agents Used: {', '.join(result.agents_used)}")
                 print(f"   Execution Path: {' → '.join(result.execution_path)}")
                 print(f"   Confidence: {result.confidence:.0%}")
                 print(f"\n   Synthesis: {result.synthesis[:200]}...")
-                print(f"\n   Key Insights:")
+                print("\n   Key Insights:")
                 for insight in result.key_insights[:3]:
                     print(f"   • {insight}")
             else:
@@ -424,7 +419,6 @@ async def test_dynamic_branching():
 
 async def main():
     """Run dynamic branching examples."""
-
     await test_dynamic_branching()
 
     print("\n\n✅ Dynamic branching examples completed!")

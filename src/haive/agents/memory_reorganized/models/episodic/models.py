@@ -11,7 +11,7 @@ Functions:
 """
 
 import re
-from typing import Any, Literal, Optional
+from typing import Any, Literal
 
 from pydantic import Field, field_validator, model_validator
 
@@ -55,13 +55,13 @@ class EpisodicMemory(BaseMemoryModel):
     environmental_context: dict[str, Any] = Field(
         default_factory=dict, description="Execution environment"
     )
-    feedback_received: Optional[str] = Field(None, description="User feedback")
+    feedback_received: str | None = Field(None, description="User feedback")
     lessons_learned: list[str] = Field(
         default_factory=list, description="Extracted lessons"
     )
 
     # Similarity and clustering
-    similarity_cluster: Optional[str] = Field(None, description="Similarity cluster ID")
+    similarity_cluster: str | None = Field(None, description="Similarity cluster ID")
     temporal_weight: float = Field(default=1.0, description="Temporal relevance weight")
 
     @field_validator("user_input", "agent_response")

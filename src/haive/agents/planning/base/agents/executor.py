@@ -4,8 +4,6 @@ This module provides the foundational executor agent designed to carry out
 specific steps from plans using available tools, particularly search capabilities.
 """
 
-from typing import Any, List, Optional
-
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.tools.tools.search_tools import (
     tavily_qna,
@@ -213,7 +211,7 @@ Remember: Your role is to be the reliable execution partner who transforms plann
         )
     )
 
-    tools: List = Field(
+    tools: list = Field(
         default_factory=lambda: [tavily_search_tool, tavily_qna, tavily_search_context]
     )
 
@@ -252,7 +250,7 @@ def create_base_executor(
     name: str = "base_executor",
     model: str = "gpt-4o-mini",
     temperature: float = 0.1,
-    additional_tools: Optional[List] = None,
+    additional_tools: list | None = None,
 ) -> BaseExecutorAgent:
     """Create a base executor agent with default configuration.
 

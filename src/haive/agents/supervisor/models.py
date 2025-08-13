@@ -5,7 +5,7 @@ for agent specifications, capabilities, and configuration.
 """
 
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from pydantic import BaseModel, Field, field_validator
 
@@ -59,10 +59,10 @@ class AgentCapability(BaseModel):
     name: str = Field(..., description="Unique agent identifier")
     agent_type: str = Field(..., description="Type of agent implementation")
     description: str = Field(..., description="What this agent can do")
-    specialties: List[str] = Field(
+    specialties: list[str] = Field(
         default_factory=list, description="Areas of expertise (used for matching)"
     )
-    tools: List[str] = Field(
+    tools: list[str] = Field(
         default_factory=list, description="Names of tools available to this agent"
     )
     active: bool = Field(default=True, description="Whether agent is currently active")
@@ -70,16 +70,16 @@ class AgentCapability(BaseModel):
         default=1.0, ge=0.0, le=1.0, description="Historical performance metric"
     )
     usage_count: int = Field(default=0, description="Number of times used")
-    last_used: Optional[str] = Field(
+    last_used: str | None = Field(
         default=None, description="ISO timestamp of last usage"
     )
-    metadata: Dict[str, Any] = Field(
+    metadata: dict[str, Any] = Field(
         default_factory=dict, description="Additional custom metadata"
     )
 
     @field_validator("specialties")
     @classmethod
-    def validate_specialties(cls, v: List[str]) -> List[str]:
+    def validate_specialties(cls, v: list[str]) -> list[str]:
         """Ensure specialties are lowercase for consistent matching."""
         return [s.lower().strip() for s in v if s.strip()]
 
@@ -153,13 +153,13 @@ class AgentSpec(BaseModel):
         default="SimpleAgentV3", description="Type of agent to create"
     )
     description: str = Field(..., description="What this agent does")
-    specialties: List[str] = Field(
+    specialties: list[str] = Field(
         default_factory=list, description="Task domains for matching"
     )
-    tools: List[Any] = Field(
+    tools: list[Any] = Field(
         default_factory=list, description="Tool names or instances"
     )
-    config: Dict[str, Any] = Field(
+    config: dict[str, Any] = Field(
         default_factory=dict, description="Agent initialization config"
     )
     priority: int = Field(
@@ -169,7 +169,7 @@ class AgentSpec(BaseModel):
 
     @field_validator("specialties")
     @classmethod
-    def validate_specialties(cls, v: List[str]) -> List[str]:
+    def validate_specialties(cls, v: list[str]) -> list[str]:
         """Ensure specialties are lowercase for consistent matching."""
         return [s.lower().strip() for s in v if s.strip()]
 
@@ -204,13 +204,13 @@ class DiscoveryConfig(BaseModel):
     mode: AgentDiscoveryMode = Field(
         default=AgentDiscoveryMode.MANUAL, description="Discovery mode to use"
     )
-    component_paths: List[str] = Field(
+    component_paths: list[str] = Field(
         default_factory=list, description="Paths for component discovery"
     )
-    rag_collection: Optional[str] = Field(
+    rag_collection: str | None = Field(
         default=None, description="RAG collection for discovery"
     )
-    mcp_endpoints: List[str] = Field(
+    mcp_endpoints: list[str] = Field(
         default_factory=list, description="MCP endpoints for discovery"
     )
     cache_discoveries: bool = Field(default=True, description="Cache discovered agents")

@@ -8,6 +8,7 @@ import json
 import pickle
 from datetime import datetime
 from typing import Any
+
 from haive.core.schema.state_schema import StateSchema
 from langchain_core.messages import BaseMessage
 from langchain_core.tools import BaseTool
@@ -201,7 +202,9 @@ class DynamicSupervisorState(SupervisorState):
         """Add a template for agent creation."""
         self.agent_templates[name] = template
 
-    def record_agent_creation(self, agent_name: str, template_used: str | None = None) -> None:
+    def record_agent_creation(
+        self, agent_name: str, template_used: str | None = None
+    ) -> None:
         """Record that an agent was created."""
         self.creation_history.append(
             {

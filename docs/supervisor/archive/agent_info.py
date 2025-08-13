@@ -1,6 +1,7 @@
 """AgentInfo class for holding agent metadata and instance."""
 
 from typing import Any
+
 from pydantic import BaseModel, Field, model_validator
 
 
@@ -11,7 +12,9 @@ class AgentInfo(BaseModel):
     name: str = Field(..., description="Agent name")
     description: str = Field(..., description="What the agent is good at or used for")
     active: bool = Field(default=True, description="Whether agent is currently active")
-    agent_metadata: dict = Field(default_factory=dict, description="Serializable agent metadata")
+    agent_metadata: dict = Field(
+        default_factory=dict, description="Serializable agent metadata"
+    )
     model_config = {"arbitrary_types_allowed": True}
 
     @model_validator(mode="after")
@@ -22,8 +25,12 @@ class AgentInfo(BaseModel):
         if not self.description:
             if hasattr(self.agent, "description"):
                 self.description = self.agent.description
-            elif hasattr(self.agent, "engine") and hasattr(self.agent.engine, "system_message"):
-                self.description = self.agent.engine.system_message or "Agent specialist"
+            elif hasattr(self.agent, "engine") and hasattr(
+                self.agent.engine, "system_message"
+            ):
+                self.description = (
+                    self.agent.engine.system_message or "Agent specialist"
+                )
             else:
                 self.description = f"{self.name} specialist"
         return self

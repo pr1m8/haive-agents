@@ -197,7 +197,7 @@ class PlanNode(BaseModel):
         """Check if this node can be executed given completed nodes."""
         if self.status != TaskStatus.PENDING:
             return False
-        return all((dep_id in completed_nodes for dep_id in self.dependencies))
+        return all(dep_id in completed_nodes for dep_id in self.dependencies)
 
     def mark_started(self) -> None:
         """Mark the task as started."""
@@ -305,7 +305,7 @@ class PlanTree(BaseModel):
             for node in self.nodes.values():
                 if node.id in processed:
                     continue
-                deps_ready = all((dep_id in processed for dep_id in node.dependencies))
+                deps_ready = all(dep_id in processed for dep_id in node.dependencies)
                 if deps_ready and node.parallelizable:
                     level_nodes.append(node)
             if not level_nodes:
@@ -314,7 +314,7 @@ class PlanTree(BaseModel):
                         level_nodes.append(node)
                         break
             levels.append(level_nodes)
-            processed.update((node.id for node in level_nodes))
+            processed.update(node.id for node in level_nodes)
         return levels
 
     def mark_node_completed(self, node_id: str, result: Any = None) -> None:
@@ -322,11 +322,7 @@ class PlanTree(BaseModel):
         if node_id in self.nodes:
             self.nodes[node_id].mark_completed(result)
             self.completed_nodes = sum(
-                (
-                    1
-                    for node in self.nodes.values()
-                    if node.status == TaskStatus.COMPLETED
-                )
+                1 for node in self.nodes.values() if node.status == TaskStatus.COMPLETED
             )
 
     def mark_node_failed(self, node_id: str, error: str) -> None:
@@ -334,7 +330,7 @@ class PlanTree(BaseModel):
         if node_id in self.nodes:
             self.nodes[node_id].mark_failed(error)
             self.failed_nodes = sum(
-                (1 for node in self.nodes.values() if node.status == TaskStatus.FAILED)
+                1 for node in self.nodes.values() if node.status == TaskStatus.FAILED
             )
 
     def get_completion_percentage(self) -> float:

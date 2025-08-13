@@ -1,8 +1,8 @@
-"""Plan and Execute Agent v2 using ProperMultiAgent pattern."""
+"""Plan and Execute Agent v2 using MultiAgent pattern."""
 
 from haive.core.engine.aug_llm import AugLLMConfig
 
-from haive.agents.multi.proper_base import ProperMultiAgent
+from haive.agents.multi.agent import MultiAgent
 from haive.agents.planning.plan_and_execute.v2.models import (
     Act,
     ExecutionResult,
@@ -19,7 +19,7 @@ from haive.agents.react.agent import ReactAgent
 from haive.agents.simple.agent import SimpleAgent
 
 
-class PlanAndExecuteAgent(ProperMultiAgent):
+class PlanAndExecuteAgent(MultiAgent):
     """Plan and Execute agent using multi-agent sequential pattern.
 
     Flow: Planner → Executor → Replanner (loop until complete)

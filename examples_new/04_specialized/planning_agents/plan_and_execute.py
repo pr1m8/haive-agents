@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Plan-and-Execute Pattern Example
+"""Plan-and-Execute Pattern Example
 
 This example demonstrates how to create a planning agent that:
 1. Breaks down complex tasks into actionable steps
@@ -9,16 +8,14 @@ This example demonstrates how to create a planning agent that:
 4. Provides progress tracking and error handling
 
 The pattern separates planning from execution, allowing for more robust
-and adaptable task completion.
-"""
+and adaptable task completion."""
 
 import asyncio
 from datetime import datetime
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
-from langchain_core.messages import HumanMessage
 from pydantic import BaseModel, Field
 
 from haive.agents.multi.enhanced_multi_agent_v4 import EnhancedMultiAgentV4
@@ -42,17 +39,17 @@ class PlanStep(BaseModel):
     step_id: str = Field(description="Unique identifier for this step")
     title: str = Field(description="Brief title of the step")
     description: str = Field(description="Detailed description of what to do")
-    prerequisites: List[str] = Field(
+    prerequisites: list[str] = Field(
         default_factory=list, description="Step IDs that must complete first"
     )
-    estimated_duration: Optional[str] = Field(
+    estimated_duration: str | None = Field(
         default=None, description="Estimated time to complete"
     )
     status: StepStatus = Field(default=StepStatus.PENDING, description="Current status")
-    result: Optional[str] = Field(
+    result: str | None = Field(
         default=None, description="Result or output from execution"
     )
-    notes: List[str] = Field(
+    notes: list[str] = Field(
         default_factory=list, description="Execution notes and observations"
     )
 
@@ -63,13 +60,13 @@ class ExecutionPlan(BaseModel):
     plan_id: str = Field(description="Unique plan identifier")
     title: str = Field(description="Plan title")
     description: str = Field(description="Overall plan description")
-    steps: List[PlanStep] = Field(description="Ordered list of execution steps")
+    steps: list[PlanStep] = Field(description="Ordered list of execution steps")
     created_at: datetime = Field(default_factory=datetime.now)
-    estimated_total_duration: Optional[str] = Field(
+    estimated_total_duration: str | None = Field(
         default=None, description="Total estimated time"
     )
 
-    def get_next_steps(self) -> List[PlanStep]:
+    def get_next_steps(self) -> list[PlanStep]:
         """Get steps that are ready to execute (prerequisites met)."""
         completed_steps = {
             step.step_id for step in self.steps if step.status == StepStatus.COMPLETED
@@ -84,7 +81,7 @@ class ExecutionPlan(BaseModel):
 
         return ready_steps
 
-    def get_step(self, step_id: str) -> Optional[PlanStep]:
+    def get_step(self, step_id: str) -> PlanStep | None:
         """Get step by ID."""
         return next((step for step in self.steps if step.step_id == step_id), None)
 
@@ -93,7 +90,7 @@ class ExecutionPlan(BaseModel):
         step_id: str,
         status: StepStatus,
         result: str = None,
-        notes: List[str] = None,
+        notes: list[str] = None,
     ):
         """Update step status and add result/notes."""
         step = self.get_step(step_id)
@@ -141,7 +138,7 @@ Create plans that are thorough but practical, allowing for iterative execution a
 class ExecutorAgent(ReactAgent):
     """Agent that executes individual plan steps with tools and feedback."""
 
-    def __init__(self, name: str = "executor", tools: List = None, **kwargs):
+    def __init__(self, name: str = "executor", tools: list = None, **kwargs):
         # Default tools for common execution tasks
         if tools is None:
             tools = []
@@ -180,7 +177,7 @@ class PlanAndExecuteWorkflow(EnhancedMultiAgentV4):
         self,
         planner_name: str = "planner",
         executor_name: str = "executor",
-        executor_tools: List = None,
+        executor_tools: list = None,
         **kwargs,
     ):
         # Create specialized agents
@@ -193,20 +190,20 @@ class PlanAndExecuteWorkflow(EnhancedMultiAgentV4):
             **kwargs,
         )
 
-        self.current_plan: Optional[ExecutionPlan] = None
-        self.execution_log: List[Dict[str, Any]] = []
+        self.current_plan: ExecutionPlan | None = None
+        self.execution_log: list[dict[str, Any]] = []
 
     async def create_plan(
-        self, task: str, context: Dict[str, Any] = None
+        self, task: str, context: dict[str, Any] = None
     ) -> ExecutionPlan:
         """Create an execution plan for the given task."""
-        planning_prompt = f"""Please create a detailed execution plan for this task:
+        planning_prompt = f"""Please create a detailed execution plan for this task:.
 
 TASK: {task}
 
 """
         if context:
-            planning_prompt += f"CONTEXT:\n"
+            planning_prompt += "CONTEXT:\n"
             for key, value in context.items():
                 planning_prompt += f"- {key}: {value}\n"
             planning_prompt += "\n"
@@ -230,15 +227,14 @@ Focus on practical execution and deliverable outcomes."""
             print(f"📋 Plan created with {len(plan.steps)} steps")
             self._display_plan_summary()
             return plan
-        else:
-            raise ValueError(f"Planner returned unexpected type: {type(plan)}")
+        raise ValueError(f"Planner returned unexpected type: {type(plan)}")
 
     async def execute_plan(
         self,
-        plan: Optional[ExecutionPlan] = None,
+        plan: ExecutionPlan | None = None,
         max_parallel_steps: int = 1,
         interactive: bool = True,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Execute the plan step by step with feedback and adaptation."""
         if plan is None:
             plan = self.current_plan
@@ -263,11 +259,10 @@ Focus on practical execution and deliverable outcomes."""
                 ]
                 if not pending_steps:
                     break  # All done!
-                else:
-                    print(
-                        f"⚠️  No steps ready to execute. Remaining steps have unmet prerequisites."
-                    )
-                    break
+                print(
+                    "⚠️  No steps ready to execute. Remaining steps have unmet prerequisites."
+                )
+                break
 
             # Execute steps (limit parallel execution)
             steps_to_execute = ready_steps[:max_parallel_steps]
@@ -284,7 +279,7 @@ Focus on practical execution and deliverable outcomes."""
                         return self._create_execution_summary(
                             plan, execution_start, completed_steps, failed_steps
                         )
-                    elif proceed == "s":
+                    if proceed == "s":
                         step.status = StepStatus.SKIPPED
                         step.notes.append("Skipped by user request")
                         print(f"⏭️  Skipped step: {step.title}")
@@ -318,7 +313,7 @@ Focus on practical execution and deliverable outcomes."""
             step.status = StepStatus.IN_PROGRESS
 
             # Prepare execution context
-            execution_prompt = f"""Execute this plan step:
+            execution_prompt = f"""Execute this plan step:.
 
 STEP: {step.title}
 DESCRIPTION: {step.description}
@@ -360,10 +355,8 @@ Be specific about outcomes and deliverables."""
 
         except Exception as e:
             step.status = StepStatus.FAILED
-            step.result = f"ERROR: {str(e)}"
-            step.notes.append(
-                f"Failed at {datetime.now().strftime('%H:%M:%S')}: {str(e)}"
-            )
+            step.result = f"ERROR: {e!s}"
+            step.notes.append(f"Failed at {datetime.now().strftime('%H:%M:%S')}: {e!s}")
 
             self.execution_log.append(
                 {
@@ -402,7 +395,7 @@ Be specific about outcomes and deliverables."""
 
     def _create_execution_summary(
         self, plan: ExecutionPlan, start_time: datetime, completed: int, failed: int
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Create execution summary with results and metrics."""
         end_time = datetime.now()
         duration = end_time - start_time
@@ -425,7 +418,7 @@ Be specific about outcomes and deliverables."""
             "final_status": "completed" if pending == 0 and failed == 0 else "partial",
         }
 
-        print(f"\n📊 Execution Summary:")
+        print("\n📊 Execution Summary:")
         print(f"Duration: {duration}")
         print(
             f"Steps - Completed: {completed}, Failed: {failed}, Skipped: {skipped}, Pending: {pending}"
@@ -438,7 +431,6 @@ Be specific about outcomes and deliverables."""
 # Example usage and demonstration
 async def main():
     """Demonstrate the plan-and-execute pattern with a practical example."""
-
     print("=== Plan-and-Execute Pattern Example ===\n")
 
     # Create the workflow
@@ -490,7 +482,7 @@ The package should be professional quality and follow Python best practices."""
                 plan=plan, interactive=True, max_parallel_steps=1
             )
 
-            print(f"\n✅ Plan execution completed!")
+            print("\n✅ Plan execution completed!")
             print(f"Final Status: {execution_summary['final_status']}")
 
     except Exception as e:

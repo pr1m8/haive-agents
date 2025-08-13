@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Structured Output Basics - Get Organized Responses from Your Agent
+"""Structured Output Basics - Get Organized Responses from Your Agent
 
 This example shows how to get structured, predictable output from agents
 using Pydantic models. Instead of free-form text, you get organized data!
@@ -8,15 +7,13 @@ using Pydantic models. Instead of free-form text, you get organized data!
 What you'll learn:
 - How to define structured output models with Pydantic
 - How to configure agents to return structured data
-- Why structured output is useful for building applications
-"""
+- Why structured output is useful for building applications"""
 
 # Suppress logging for a cleaner demo
 import logging
 
 logging.getLogger().setLevel(logging.ERROR)
 
-from typing import List
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from pydantic import BaseModel, Field
@@ -36,8 +33,8 @@ class MovieReview(BaseModel):
     movie_title: str = Field(description="The title of the movie")
     rating: float = Field(ge=0, le=10, description="Rating from 0 to 10")
     summary: str = Field(description="A brief summary of the movie")
-    pros: List[str] = Field(description="List of positive aspects")
-    cons: List[str] = Field(description="List of negative aspects")
+    pros: list[str] = Field(description="List of positive aspects")
+    cons: list[str] = Field(description="List of negative aspects")
     recommended: bool = Field(description="Whether you recommend this movie")
 
 
@@ -71,15 +68,15 @@ review = agent.run(request)
 # ============================================
 # Step 4: Access the Structured Data
 # ============================================
-print(f"\n📊 Structured Movie Review:")
+print("\n📊 Structured Movie Review:")
 print("=" * 50)
 print(f"Title: {review.movie_title}")
 print(f"Rating: {review.rating}/10 {'⭐' * int(review.rating)}")
 print(f"Summary: {review.summary}")
-print(f"\n✅ Pros:")
+print("\n✅ Pros:")
 for pro in review.pros:
     print(f"  - {pro}")
-print(f"\n❌ Cons:")
+print("\n❌ Cons:")
 for con in review.cons:
     print(f"  - {con}")
 print(f"\nRecommended: {'Yes! 👍' if review.recommended else 'No 👎'}")

@@ -294,7 +294,7 @@ Create a concise executive summary with key decisions and next steps.""",
 
     # Execute workflow
     start_time = asyncio.get_event_loop().time()
-    result = await workflow.arun({"messages": [HumanMessage(content=scenario)]})
+    await workflow.arun({"messages": [HumanMessage(content=scenario)]})
     execution_time = asyncio.get_event_loop().time() - start_time
 
     # Display results from each phase

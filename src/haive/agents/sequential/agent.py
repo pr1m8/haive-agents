@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from collections.abc import Sequence
 from typing import Any
 
@@ -14,7 +16,7 @@ class SequentialAgent(Agent):
     """Sequential agent that executes multiple agents in sequence."""
 
     name: str = Field(default="Sequential Agent")
-    agents: Sequence[Agent | Any] = Field(
+    agents: Sequence["Agent | Any"] = Field(
         ..., description="List of agents to execute sequentially"
     )
     state_schema: type[BaseModel] | None = Field(default=None)

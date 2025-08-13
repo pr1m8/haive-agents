@@ -654,7 +654,6 @@ class DocumentProcessingAgent:
     ) -> DocumentProcessingState:
         """Extract knowledge graph from documents."""
         # This would integrate with existing KG extraction agents
-        pass
 
         try:
             ParallelKGTransformer(name=f"{self.name}_kg", engine=self.engine)

@@ -142,8 +142,10 @@ class PrePostAgentMixin:
     """
 
     # Agent configuration
-    pre_agent: Agent | None = Field(default=None, description="Pre-processing agent")
-    post_agent: Agent | None = Field(default=None, description="Post-processing agent")
+    pre_agent: "Agent | None" = Field(default=None, description="Pre-processing agent")
+    post_agent: "Agent | None" = Field(
+        default=None, description="Post-processing agent"
+    )
 
     # Message transformation config
     use_pre_transform: bool = Field(

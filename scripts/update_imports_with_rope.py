@@ -55,7 +55,7 @@ def update_imports_in_project(project_path: str, dry_run: bool = True):
         # Get all Python files
         python_files = []
         src_path = Path(project_path) / "src"
-        for root, dirs, files in os.walk(src_path):
+        for root, _dirs, files in os.walk(src_path):
             for file in files:
                 if file.endswith(".py"):
                     python_files.append(os.path.join(root, file))

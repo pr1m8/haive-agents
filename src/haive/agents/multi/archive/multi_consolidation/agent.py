@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import logging
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from haive.core.engine.agent import Agent, AgentConfig
 from haive.core.schema.state_schema import StateSchema
@@ -32,24 +32,24 @@ class ExecutionMode(str, Enum):
 class MultiAgentState(StateSchema):
     """State schema for multi-agent execution."""
 
-    messages: List[BaseMessage] = Field(
+    messages: list[BaseMessage] = Field(
         default_factory=list, description="Message history"
     )
-    current_agent: Optional[str] = Field(
+    current_agent: str | None = Field(
         default=None, description="Currently executing agent"
     )
-    agent_results: Dict[str, Any] = Field(
+    agent_results: dict[str, Any] = Field(
         default_factory=dict, description="Results from each agent"
     )
-    execution_order: List[str] = Field(
+    execution_order: list[str] = Field(
         default_factory=list, description="Order of agent execution"
     )
     iteration_count: int = Field(default=0, description="Current iteration count")
     max_iterations: int = Field(default=10, description="Maximum iterations allowed")
-    completed_agents: List[str] = Field(
+    completed_agents: list[str] = Field(
         default_factory=list, description="List of completed agents"
     )
-    failed_agents: List[str] = Field(
+    failed_agents: list[str] = Field(
         default_factory=list, description="List of failed agents"
     )
     execution_complete: bool = Field(
@@ -60,24 +60,24 @@ class MultiAgentState(StateSchema):
 class MultiAgentConfig(AgentConfig):
     """Configuration for MultiAgent systems."""
 
-    agents: Dict[str, Agent] = Field(
+    agents: dict[str, Agent] = Field(
         default_factory=dict, description="Dictionary of agents"
     )
     execution_mode: ExecutionMode = Field(
         default=ExecutionMode.SEQUENTIAL, description="Execution mode"
     )
     max_iterations: int = Field(default=10, description="Maximum iterations")
-    timeout: Optional[float] = Field(default=None, description="Timeout for execution")
+    timeout: float | None = Field(default=None, description="Timeout for execution")
     error_handling: str = Field(
         default="continue", description="Error handling strategy"
     )
-    coordination_strategy: Optional[str] = Field(
+    coordination_strategy: str | None = Field(
         default=None, description="Coordination strategy"
     )
 
     @field_validator("agents")
     @classmethod
-    def validate_agents(cls, v: Dict[str, Agent]) -> Dict[str, Agent]:
+    def validate_agents(cls, v: dict[str, Agent]) -> dict[str, Agent]:
         """Validate that all agents have proper names."""
         for name, agent in v.items():
             if not hasattr(agent, "name") or not agent.name:
@@ -190,16 +190,15 @@ class MultiAgent(Agent):
         try:
             if self.execution_mode == ExecutionMode.SEQUENTIAL:
                 return self._execute_sequential(input_data, state, **kwargs)
-            elif self.execution_mode == ExecutionMode.PARALLEL:
+            if self.execution_mode == ExecutionMode.PARALLEL:
                 return self._execute_parallel(input_data, state, **kwargs)
-            elif self.execution_mode == ExecutionMode.CONDITIONAL:
+            if self.execution_mode == ExecutionMode.CONDITIONAL:
                 return self._execute_conditional(input_data, state, **kwargs)
-            elif self.execution_mode == ExecutionMode.ROUND_ROBIN:
+            if self.execution_mode == ExecutionMode.ROUND_ROBIN:
                 return self._execute_round_robin(input_data, state, **kwargs)
-            elif self.execution_mode == ExecutionMode.HIERARCHICAL:
+            if self.execution_mode == ExecutionMode.HIERARCHICAL:
                 return self._execute_hierarchical(input_data, state, **kwargs)
-            else:
-                return self._execute_sequential(input_data, state, **kwargs)
+            return self._execute_sequential(input_data, state, **kwargs)
 
         except Exception as e:
             logger.error(f"Multi-agent execution failed: {e}")
@@ -240,7 +239,7 @@ class MultiAgent(Agent):
                 state.failed_agents.append(agent_name)
                 if self.error_handling == "raise":
                     raise
-                elif self.error_handling == "stop":
+                if self.error_handling == "stop":
                     break
                 # "continue" mode keeps going
 
@@ -266,10 +265,9 @@ class MultiAgent(Agent):
                 if hasattr(agent, "run"):
                     result = agent.run(input_data, **kwargs)
                     return agent_name, result
-                else:
-                    return agent_name, {
-                        "error": f"Agent {agent_name} does not have run method"
-                    }
+                return agent_name, {
+                    "error": f"Agent {agent_name} does not have run method"
+                }
             except Exception as e:
                 return agent_name, {"error": str(e)}
 
@@ -444,7 +442,7 @@ class MultiAgent(Agent):
         self.agents[name] = agent
         logger.info(f"Added agent: {name}")
 
-    def remove_agent(self, name: str) -> Optional[Agent]:
+    def remove_agent(self, name: str) -> Agent | None:
         """Remove an agent from the multi-agent system."""
         if name in self.agents:
             agent = self.agents.pop(name)
@@ -452,11 +450,11 @@ class MultiAgent(Agent):
             return agent
         return None
 
-    def get_agent(self, name: str) -> Optional[Agent]:
+    def get_agent(self, name: str) -> Agent | None:
         """Get an agent by name."""
         return self.agents.get(name)
 
-    def list_agents(self) -> List[str]:
+    def list_agents(self) -> list[str]:
         """List all agent names."""
         return list(self.agents.keys())
 
@@ -465,7 +463,7 @@ class MultiAgent(Agent):
 
 
 def create_sequential_multi_agent(
-    agents: List[Agent], name: str = "sequential_multi_agent"
+    agents: list[Agent], name: str = "sequential_multi_agent"
 ) -> MultiAgent:
     """Create a sequential multi-agent system."""
     agent_dict = {f"agent_{i}": agent for i, agent in enumerate(agents)}
@@ -476,7 +474,7 @@ def create_sequential_multi_agent(
 
 
 def create_parallel_multi_agent(
-    agents: List[Agent], name: str = "parallel_multi_agent"
+    agents: list[Agent], name: str = "parallel_multi_agent"
 ) -> MultiAgent:
     """Create a parallel multi-agent system."""
     agent_dict = {f"agent_{i}": agent for i, agent in enumerate(agents)}
@@ -487,7 +485,7 @@ def create_parallel_multi_agent(
 
 
 def create_hierarchical_multi_agent(
-    supervisor: Agent, subordinates: List[Agent], name: str = "hierarchical_multi_agent"
+    supervisor: Agent, subordinates: list[Agent], name: str = "hierarchical_multi_agent"
 ) -> MultiAgent:
     """Create a hierarchical multi-agent system."""
     agent_dict = {"supervisor": supervisor}
@@ -503,11 +501,11 @@ def create_hierarchical_multi_agent(
 
 # Export main classes and functions
 __all__ = [
+    "ExecutionMode",
     "MultiAgent",
     "MultiAgentConfig",
     "MultiAgentState",
-    "ExecutionMode",
-    "create_sequential_multi_agent",
-    "create_parallel_multi_agent",
     "create_hierarchical_multi_agent",
+    "create_parallel_multi_agent",
+    "create_sequential_multi_agent",
 ]

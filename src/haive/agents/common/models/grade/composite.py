@@ -132,7 +132,7 @@ class CompositeGrade(Grade):
                 raise ValueError(
                     f"Number of weights ({len(self.weights)}) must match number of grades ({len(self.grades)})"
                 )
-            if any((w < 0 for w in self.weights)):
+            if any(w < 0 for w in self.weights):
                 raise ValueError("All weights must be non-negative")
             if sum(self.weights) == 0:
                 raise ValueError("Sum of weights cannot be zero")
@@ -192,11 +192,9 @@ class CompositeGrade(Grade):
             if self.primary_grade_index is not None:
                 primary_score = scores[self.primary_grade_index]
                 avg_others = sum(
-                    (
-                        scores[i]
-                        for i in range(len(scores))
-                        if i != self.primary_grade_index
-                    )
+                    scores[i]
+                    for i in range(len(scores))
+                    if i != self.primary_grade_index
                 ) / (len(scores) - 1)
                 if abs(primary_score - avg_others) <= 0.2:
                     return primary_score
@@ -257,7 +255,7 @@ class CompositeGrade(Grade):
         mean_score = sum(scores) / len(scores)
         if mean_score == 0:
             return True
-        variance = sum(((score - mean_score) ** 2 for score in scores)) / len(scores)
+        variance = sum((score - mean_score) ** 2 for score in scores) / len(scores)
         std_dev = variance**0.5
         cv = std_dev / mean_score
         return cv <= 1.0 - self.consensus_threshold
@@ -272,7 +270,7 @@ class CompositeGrade(Grade):
         if not scores:
             return {}
         mean_score = sum(scores) / len(scores)
-        variance = sum(((score - mean_score) ** 2 for score in scores)) / len(scores)
+        variance = sum((score - mean_score) ** 2 for score in scores) / len(scores)
         std_dev = variance**0.5
         sorted_scores = sorted(scores)
         n = len(sorted_scores)
@@ -387,7 +385,7 @@ class CompositeGrade(Grade):
                 return False
             if len(value) < 2:
                 return False
-            return all((isinstance(item, Grade) for item in value))
+            return all(isinstance(item, Grade) for item in value)
         except Exception:
             return False
 

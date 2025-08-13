@@ -16,8 +16,6 @@ from typing import Any
 class ConversationError(Exception):
     """Placeholder for conversation errors."""
 
-    pass
-
 
 from langchain_core.messages import AIMessage, HumanMessage
 from pydantic import Field

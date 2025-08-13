@@ -576,7 +576,6 @@ def create_react_agent(
 
 def chat() -> None:
     """Module-level chat function."""
-    pass
 
 
 def run(agent, input_data):
@@ -586,7 +585,6 @@ def run(agent, input_data):
 
 def setup_workflow():
     """Module-level setup_workflow function."""
-    pass
 
 
 def should_use_tools(state):

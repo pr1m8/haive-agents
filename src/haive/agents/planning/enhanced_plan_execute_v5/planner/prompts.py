@@ -260,7 +260,7 @@ def get_planning_template(
         ):
             return RESEARCH_PLANNING_TEMPLATE
 
-        elif any(
+        if any(
             keyword in domain_lower
             for keyword in [
                 "creative",
@@ -288,7 +288,7 @@ def get_planning_template(
     ):
         return RESEARCH_PLANNING_TEMPLATE
 
-    elif any(
+    if any(
         keyword in objective_lower
         for keyword in [
             "create",

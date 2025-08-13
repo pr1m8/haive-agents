@@ -5,7 +5,7 @@ structure from haive-core for more flexible and type-safe planning.
 """
 
 from enum import Enum
-from typing import List, Optional, Union
+from typing import Union
 
 from haive.core.common.structures import Leaf, Tree, TreeNode
 from pydantic import BaseModel, Field
@@ -36,9 +36,9 @@ class PlanResult(BaseModel):
     """Result of executing a plan node."""
 
     success: bool = Field(..., description="Whether execution succeeded")
-    output: Optional[str] = Field(None, description="Execution output")
-    error: Optional[str] = Field(None, description="Error message if failed")
-    duration_seconds: Optional[float] = Field(None, description="Execution time")
+    output: str | None = Field(None, description="Execution output")
+    error: str | None = Field(None, description="Error message if failed")
+    duration_seconds: float | None = Field(None, description="Execution time")
     artifacts: dict = Field(default_factory=dict, description="Any artifacts produced")
 
 
@@ -100,7 +100,7 @@ class TaskPlan(PlanTree):
         )
         return self.add_child(subplan)
 
-    def add_parallel_tasks(self, tasks: List[tuple[str, int]]) -> List[PlanLeaf]:
+    def add_parallel_tasks(self, tasks: list[tuple[str, int]]) -> list[PlanLeaf]:
         """Add multiple tasks that can execute in parallel.
 
         Args:
@@ -134,7 +134,7 @@ class TaskPlan(PlanTree):
             return True
         return False
 
-    def get_current_task(self) -> Optional[Union[PlanLeaf, "TaskPlan"]]:
+    def get_current_task(self) -> Union[PlanLeaf, "TaskPlan"] | None:
         """Get the current task to execute (first pending or in-progress)."""
         # Check self first
         if self.content.status == PlanStatus.IN_PROGRESS:
@@ -144,7 +144,7 @@ class TaskPlan(PlanTree):
         for child in self.children:
             if child.content.status == PlanStatus.IN_PROGRESS:
                 return child
-            elif isinstance(child, TaskPlan):
+            if isinstance(child, TaskPlan):
                 current = child.get_current_task()
                 if current:
                     return current
@@ -153,7 +153,7 @@ class TaskPlan(PlanTree):
         for child in self.children:
             if child.content.status == PlanStatus.PENDING:
                 return child
-            elif isinstance(child, TaskPlan):
+            if isinstance(child, TaskPlan):
                 pending = child.get_current_task()
                 if pending:
                     return pending
@@ -162,7 +162,7 @@ class TaskPlan(PlanTree):
 
     def get_tasks_by_priority(
         self, min_priority: int = 1
-    ) -> List[Union[PlanLeaf, "TaskPlan"]]:
+    ) -> list[Union[PlanLeaf, "TaskPlan"]]:
         """Get all tasks with priority >= min_priority."""
         tasks = []
 
@@ -177,7 +177,7 @@ class TaskPlan(PlanTree):
 
         return tasks
 
-    def get_blocked_tasks(self) -> List[Union[PlanLeaf, "TaskPlan"]]:
+    def get_blocked_tasks(self) -> list[Union[PlanLeaf, "TaskPlan"]]:
         """Get all tasks that are blocked."""
         blocked = []
 
@@ -238,7 +238,7 @@ class TaskPlan(PlanTree):
 
 
 # Convenience functions
-def create_simple_plan(objective: str, tasks: List[str]) -> TaskPlan:
+def create_simple_plan(objective: str, tasks: list[str]) -> TaskPlan:
     """Create a simple linear plan from a list of task names."""
     plan = TaskPlan(content=PlanContent(objective=objective))
     for task in tasks:
@@ -246,7 +246,7 @@ def create_simple_plan(objective: str, tasks: List[str]) -> TaskPlan:
     return plan
 
 
-def create_phased_plan(objective: str, phases: dict[str, List[str]]) -> TaskPlan:
+def create_phased_plan(objective: str, phases: dict[str, list[str]]) -> TaskPlan:
     """Create a plan with phases (sub-plans).
 
     Args:

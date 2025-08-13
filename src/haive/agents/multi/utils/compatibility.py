@@ -11,7 +11,6 @@ New code should use:
 """
 
 from enum import Enum
-from typing import Literal
 
 # Import the current MultiAgent implementation
 from haive.agents.multi.agent import MultiAgent
@@ -46,11 +45,11 @@ BranchAgent = MultiAgent
 
 
 __all__ = [
-    "MultiAgent",
     "BaseMultiAgent",
-    "ExecutionMode",
-    "SequentialAgent",
-    "ParallelAgent",
-    "ConditionalAgent",
     "BranchAgent",
+    "ConditionalAgent",
+    "ExecutionMode",
+    "MultiAgent",
+    "ParallelAgent",
+    "SequentialAgent",
 ]

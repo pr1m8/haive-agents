@@ -5,7 +5,7 @@ for managing multi-agent systems.
 """
 
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from pydantic import BaseModel, Field
 
@@ -16,13 +16,13 @@ class AgentMetadata(BaseModel):
     name: str = Field(..., description="Agent name/identifier")
     description: str = Field(..., description="Description of agent capabilities")
     agent_type: str = Field(..., description="Type/class of the agent")
-    capabilities: List[str] = Field(
+    capabilities: list[str] = Field(
         default_factory=list, description="List of agent capabilities"
     )
     created_at: str = Field(..., description="Creation timestamp")
-    last_used: Optional[str] = Field(None, description="Last usage timestamp")
+    last_used: str | None = Field(None, description="Last usage timestamp")
     is_active: bool = Field(default=True, description="Whether agent is active")
-    metadata: Dict[str, Any] = Field(
+    metadata: dict[str, Any] = Field(
         default_factory=dict, description="Additional metadata"
     )
 
@@ -32,9 +32,9 @@ class SerializedAgent(BaseModel):
 
     name: str = Field(..., description="Agent name")
     agent_class: str = Field(..., description="Agent class name")
-    config: Dict[str, Any] = Field(..., description="Agent configuration")
-    state: Dict[str, Any] = Field(default_factory=dict, description="Agent state")
-    tools: List[str] = Field(default_factory=list, description="Available tools")
+    config: dict[str, Any] = Field(..., description="Agent configuration")
+    state: dict[str, Any] = Field(default_factory=dict, description="Agent state")
+    tools: list[str] = Field(default_factory=list, description="Available tools")
 
 
 class ToolMapping(BaseModel):
@@ -43,7 +43,7 @@ class ToolMapping(BaseModel):
     tool_name: str = Field(..., description="Tool identifier")
     agent_name: str = Field(..., description="Agent that provides this tool")
     description: str = Field(..., description="Tool description")
-    parameters: Dict[str, Any] = Field(
+    parameters: dict[str, Any] = Field(
         default_factory=dict, description="Tool parameters schema"
     )
 
@@ -54,38 +54,38 @@ class ExecutionContext(BaseModel):
     task_id: str = Field(..., description="Unique task identifier")
     requester: str = Field(..., description="Who requested the task")
     priority: int = Field(default=5, ge=1, le=10, description="Task priority (1-10)")
-    context: Dict[str, Any] = Field(
+    context: dict[str, Any] = Field(
         default_factory=dict, description="Execution context"
     )
     started_at: str = Field(..., description="Task start timestamp")
-    completed_at: Optional[str] = Field(None, description="Task completion timestamp")
+    completed_at: str | None = Field(None, description="Task completion timestamp")
     status: str = Field(default="pending", description="Task status")
-    result: Optional[str] = Field(None, description="Task result")
-    error: Optional[str] = Field(None, description="Error message if failed")
+    result: str | None = Field(None, description="Task result")
+    error: str | None = Field(None, description="Error message if failed")
 
 
 class SupervisorState(BaseModel):
     """State model for supervisor agents."""
 
-    agents: Dict[str, AgentMetadata] = Field(
+    agents: dict[str, AgentMetadata] = Field(
         default_factory=dict, description="Registered agents"
     )
-    current_context: Dict[str, Any] = Field(
+    current_context: dict[str, Any] = Field(
         default_factory=dict, description="Current execution context"
     )
-    execution_history: List[ExecutionContext] = Field(
+    execution_history: list[ExecutionContext] = Field(
         default_factory=list, description="Execution history"
     )
-    active_agent: Optional[str] = Field(None, description="Currently active agent")
-    tool_mappings: List[ToolMapping] = Field(
+    active_agent: str | None = Field(None, description="Currently active agent")
+    tool_mappings: list[ToolMapping] = Field(
         default_factory=list, description="Tool to agent mappings"
     )
-    supervisor_config: Dict[str, Any] = Field(
+    supervisor_config: dict[str, Any] = Field(
         default_factory=dict, description="Supervisor configuration"
     )
 
     def add_execution(
-        self, agent_name: str, task: str, task_id: Optional[str] = None
+        self, agent_name: str, task: str, task_id: str | None = None
     ) -> ExecutionContext:
         """Add a new execution context.
 
@@ -112,7 +112,7 @@ class SupervisorState(BaseModel):
         return execution
 
     def complete_execution(
-        self, task_id: str, result: str, error: Optional[str] = None
+        self, task_id: str, result: str, error: str | None = None
     ) -> bool:
         """Complete an execution context.
 
@@ -133,7 +133,7 @@ class SupervisorState(BaseModel):
                 return True
         return False
 
-    def get_recent_executions(self, limit: int = 10) -> List[ExecutionContext]:
+    def get_recent_executions(self, limit: int = 10) -> list[ExecutionContext]:
         """Get recent executions.
 
         Args:
@@ -144,7 +144,7 @@ class SupervisorState(BaseModel):
         """
         return self.execution_history[-limit:] if self.execution_history else []
 
-    def get_agent_statistics(self) -> Dict[str, Any]:
+    def get_agent_statistics(self) -> dict[str, Any]:
         """Get statistics about agents and executions.
 
         Returns:
@@ -188,17 +188,17 @@ class DynamicSupervisorState(SupervisorState):
     agent_creation_enabled: bool = Field(
         default=False, description="Whether dynamic agent creation is enabled"
     )
-    agent_templates: Dict[str, Dict[str, Any]] = Field(
+    agent_templates: dict[str, dict[str, Any]] = Field(
         default_factory=dict, description="Templates for creating new agents"
     )
-    created_agents: List[str] = Field(
+    created_agents: list[str] = Field(
         default_factory=list, description="List of dynamically created agent names"
     )
-    creation_history: List[Dict[str, Any]] = Field(
+    creation_history: list[dict[str, Any]] = Field(
         default_factory=list, description="History of agent creation attempts"
     )
 
-    def add_agent_template(self, name: str, template: Dict[str, Any]) -> None:
+    def add_agent_template(self, name: str, template: dict[str, Any]) -> None:
         """Add a template for agent creation.
 
         Args:
@@ -208,7 +208,7 @@ class DynamicSupervisorState(SupervisorState):
         self.agent_templates[name] = template
 
     def record_agent_creation(
-        self, agent_name: str, success: bool, error: Optional[str] = None
+        self, agent_name: str, success: bool, error: str | None = None
     ) -> None:
         """Record an agent creation attempt.
 
@@ -228,7 +228,7 @@ class DynamicSupervisorState(SupervisorState):
         if success:
             self.created_agents.append(agent_name)
 
-    def get_creation_statistics(self) -> Dict[str, Any]:
+    def get_creation_statistics(self) -> dict[str, Any]:
         """Get statistics about agent creation.
 
         Returns:

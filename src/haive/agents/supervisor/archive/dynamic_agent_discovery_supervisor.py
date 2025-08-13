@@ -329,9 +329,9 @@ class DynamicAgentDiscoverySupervisor(ReactAgent):
                     "complex",
                     "professional",
                 ]
-                if any((keyword in task_content for keyword in specialist_keywords)):
+                if any(keyword in task_content for keyword in specialist_keywords):
                     has_specialist = any(
-                        (cap.specialties for cap in self.agent_capabilities.values())
+                        cap.specialties for cap in self.agent_capabilities.values()
                     )
                     if not has_specialist and len(self.discovered_agents) < 10:
                         return SupervisorDecision(

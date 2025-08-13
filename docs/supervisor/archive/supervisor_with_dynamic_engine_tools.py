@@ -7,10 +7,12 @@ so we just need to update the engine's tools and they'll be used automatically!
 import asyncio
 from datetime import datetime
 from typing import Any
+
 from haive.core.common.models.dynamic_choice_model import DynamicChoiceModel
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.tools import BaseTool, tool
 from pydantic import Field, model_validator
+
 from haive.agents.react.agent import ReactAgent
 from haive.agents.simple.agent import SimpleAgent
 
@@ -25,7 +27,10 @@ class AgentRegistry:
     def register(self, name: str, agent: Any, description: str):
         """Register an agent."""
         self.agents[name] = agent
-        self.metadata[name] = {"description": description, "registered_at": datetime.now()}
+        self.metadata[name] = {
+            "description": description,
+            "registered_at": datetime.now(),
+        }
 
     def get_agent(self, name: str) -> Any | None:
         """Get an agent by name."""
@@ -64,7 +69,9 @@ class DynamicToolSupervisor(ReactAgent):
                 return ["No agents registered"]
             agents = []
             for name, _agent in self.agent_registry.agents.items():
-                desc = self.agent_registry.metadata[name].get("description", "No description")
+                desc = self.agent_registry.metadata[name].get(
+                    "description", "No description"
+                )
                 agents.append(f"{name}: {desc}")
             return agents
 
@@ -122,7 +129,9 @@ class DynamicToolSupervisor(ReactAgent):
         agent_names = self.agent_registry.list_agents()
         if agent_names:
             self.agent_choice_model = DynamicChoiceModel.from_choices(
-                agent_names, name="AgentSelection", description="Available agents to execute"
+                agent_names,
+                name="AgentSelection",
+                description="Available agents to execute",
             )
 
     def register_agent(self, name: str, agent: Any, description: str):
@@ -146,7 +155,9 @@ async def test_dynamic_engine_tools():
         tools=[],
         system_message="You are a task supervisor that manages other agents.\n\nAvailable tools:\n- list_available_agents: See what agents are registered\n- check_agent_capability: Check what a specific agent can do\n- execute_[agent_name]: Execute a specific agent (tools added dynamically)\n\nAlways check available agents before trying to execute tasks.",
     ).create()
-    supervisor = DynamicToolSupervisor(name="dynamic_supervisor", engine=supervisor_engine)
+    supervisor = DynamicToolSupervisor(
+        name="dynamic_supervisor", engine=supervisor_engine
+    )
     await supervisor.arun("What agents are available?")
 
     @tool
@@ -174,7 +185,9 @@ async def test_dynamic_engine_tools():
         system_message="You are a search assistant. Simulate searching for information and return relevant results.",
     ).create()
     search_agent = SimpleAgent(name="search_agent", engine=search_engine)
-    supervisor.register_agent("search_agent", search_agent, "Information search and research")
+    supervisor.register_agent(
+        "search_agent", search_agent, "Information search and research"
+    )
     await supervisor.arun(
         "Search for the height of Mount Everest in meters, then calculate how many feet that is (1 meter = 3.28084 feet)"
     )

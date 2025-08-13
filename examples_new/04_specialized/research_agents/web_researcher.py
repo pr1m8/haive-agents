@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Comprehensive Web Research Agent Example
+"""Comprehensive Web Research Agent Example
 
 This example demonstrates a sophisticated research agent that:
 - Conducts multi-source research with web search capabilities
@@ -14,15 +13,12 @@ Features:
 - Source credibility scoring system
 - Structured research output models
 - Information synthesis and fact-checking
-- Citation management and source tracking
-"""
+- Citation management and source tracking"""
 
 import asyncio
 from datetime import datetime
-from typing import Any, Dict, List, Optional
 
 from haive.core.engine.aug_llm import AugLLMConfig
-from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.tools import tool
 from pydantic import BaseModel, Field
 
@@ -40,17 +36,17 @@ class SourceCitation(BaseModel):
     credibility_score: float = Field(
         ge=0.0, le=10.0, description="Credibility score 0-10 (10 = most credible)"
     )
-    publication_date: Optional[str] = Field(
+    publication_date: str | None = Field(
         default=None, description="Publication date if available"
     )
-    author: Optional[str] = Field(default=None, description="Author if available")
+    author: str | None = Field(default=None, description="Author if available")
     source_type: str = Field(
         description="Type: academic, news, government, commercial, blog, wiki"
     )
     relevance_score: float = Field(
         ge=0.0, le=10.0, description="Relevance to research query (0-10)"
     )
-    key_points: List[str] = Field(
+    key_points: list[str] = Field(
         description="Key information extracted from this source"
     )
 
@@ -60,10 +56,10 @@ class ResearchFinding(BaseModel):
 
     claim: str = Field(description="The finding or claim")
     evidence_strength: str = Field(description="strong, moderate, weak, conflicting")
-    supporting_sources: List[str] = Field(
+    supporting_sources: list[str] = Field(
         description="URLs of sources supporting this finding"
     )
-    contradicting_sources: List[str] = Field(
+    contradicting_sources: list[str] = Field(
         default_factory=list, description="URLs of sources contradicting this finding"
     )
     confidence_level: float = Field(
@@ -79,13 +75,13 @@ class ResearchSynthesis(BaseModel):
     executive_summary: str = Field(
         max_length=500, description="Brief executive summary of findings"
     )
-    key_findings: List[ResearchFinding] = Field(
+    key_findings: list[ResearchFinding] = Field(
         description="Main research findings with evidence"
     )
-    sources: List[SourceCitation] = Field(
+    sources: list[SourceCitation] = Field(
         description="All sources used with credibility assessment"
     )
-    research_gaps: List[str] = Field(description="Areas needing further research")
+    research_gaps: list[str] = Field(description="Areas needing further research")
     methodology_notes: str = Field(
         description="Notes on research approach and limitations"
     )
@@ -102,16 +98,14 @@ class ResearchSynthesis(BaseModel):
 
 @tool
 def web_search(query: str, num_results: int = 10) -> str:
-    """
-    Search the web for information on a given query.
+    """Search the web for information on a given query.
 
     Args:
         query: Search query string
         num_results: Number of results to return (default: 10)
 
     Returns:
-        JSON string with search results including titles, URLs, and snippets
-    """
+        JSON string with search results including titles, URLs, and snippets"""
     # In a real implementation, this would use an actual search API
     # like Google Custom Search, Bing Search API, or SerpAPI
 
@@ -161,8 +155,7 @@ def web_search(query: str, num_results: int = 10) -> str:
 
 @tool
 def assess_source_credibility(url: str, domain: str, source_type: str) -> str:
-    """
-    Assess the credibility of a source based on various factors.
+    """Assess the credibility of a source based on various factors.
 
     Args:
         url: Source URL
@@ -170,8 +163,7 @@ def assess_source_credibility(url: str, domain: str, source_type: str) -> str:
         source_type: Type of source (academic, news, government, etc.)
 
     Returns:
-        JSON string with credibility assessment
-    """
+        JSON string with credibility assessment"""
     # Mock credibility assessment based on source characteristics
     # In real implementation, this might check domain authority,
     # publication reputation, author credentials, etc.
@@ -227,8 +219,7 @@ def assess_source_credibility(url: str, domain: str, source_type: str) -> str:
 
 @tool
 def extract_key_information(url: str, content_snippet: str, query: str) -> str:
-    """
-    Extract key information relevant to the research query from content.
+    """Extract key information relevant to the research query from content.
 
     Args:
         url: Source URL
@@ -236,8 +227,7 @@ def extract_key_information(url: str, content_snippet: str, query: str) -> str:
         query: Original research query
 
     Returns:
-        JSON string with extracted key points and relevance score
-    """
+        JSON string with extracted key points and relevance score"""
     # Mock information extraction
     # In real implementation, this might use NLP techniques,
     # summarization models, or content analysis APIs
@@ -281,16 +271,14 @@ def extract_key_information(url: str, content_snippet: str, query: str) -> str:
 
 @tool
 def cross_reference_information(claim: str, sources_data: str) -> str:
-    """
-    Cross-reference a claim against multiple sources to assess consistency.
+    """Cross-reference a claim against multiple sources to assess consistency.
 
     Args:
         claim: The claim or finding to verify
         sources_data: JSON string containing multiple source data
 
     Returns:
-        JSON string with cross-reference analysis
-    """
+        JSON string with cross-reference analysis"""
     # Mock cross-referencing logic
     # In real implementation, this would analyze consistency across sources,
     # detect contradictions, and assess evidence strength
@@ -317,8 +305,7 @@ def cross_reference_information(claim: str, sources_data: str) -> str:
 
 
 class WebResearchAgent(ReactAgent):
-    """
-    Advanced web research agent with multi-source analysis and credibility assessment.
+    """Advanced web research agent with multi-source analysis and credibility assessment.
 
     This agent conducts comprehensive research by:
     1. Performing targeted web searches
@@ -332,8 +319,7 @@ class WebResearchAgent(ReactAgent):
     - Automated credibility assessment
     - Information synthesis and fact-checking
     - Structured output with citations
-    - Follow-up research capabilities
-    """
+    - Follow-up research capabilities"""
 
     def __init__(self, name: str = "web_researcher"):
         # Configure for research-focused prompting
@@ -385,7 +371,7 @@ async def example_comprehensive_research():
     researcher = WebResearchAgent(name="comprehensive_researcher")
 
     # Research query
-    query = """Conduct comprehensive research on the current state of AI in healthcare, 
+    query = """Conduct comprehensive research on the current state of AI in healthcare,.
     focusing on diagnostic applications, regulatory approval status, and market projections. 
     Assess the credibility of all sources and provide a structured analysis."""
 
@@ -422,7 +408,7 @@ async def example_source_credibility_analysis():
 
     researcher = WebResearchAgent(name="credibility_analyst")
 
-    query = """Research the safety and efficacy of a new medical treatment, paying special 
+    query = """Research the safety and efficacy of a new medical treatment, paying special.
     attention to source credibility. Prioritize peer-reviewed studies, government health 
     agencies, and established medical institutions. Flag any questionable sources."""
 
@@ -443,10 +429,10 @@ async def example_follow_up_research():
     initial_query = "What are the main challenges facing AI adoption in healthcare?"
     print(f"Initial research: {initial_query}")
 
-    initial_result = await researcher.arun(initial_query)
+    await researcher.arun(initial_query)
 
     # Follow-up based on findings
-    follow_up_query = """Based on the challenges identified, research specific solutions 
+    follow_up_query = """Based on the challenges identified, research specific solutions.
     and best practices that healthcare organizations are implementing to overcome 
     these AI adoption barriers. Focus on real-world case studies and success stories."""
 
@@ -463,7 +449,7 @@ async def example_comparative_analysis():
 
     researcher = WebResearchAgent(name="comparative_analyst")
 
-    query = """Compare AI adoption rates and success factors across different healthcare 
+    query = """Compare AI adoption rates and success factors across different healthcare.
     sectors (hospitals, diagnostics labs, pharmaceutical companies, telemedicine). 
     Analyze similarities, differences, and sector-specific challenges."""
 

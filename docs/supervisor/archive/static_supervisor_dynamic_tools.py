@@ -7,11 +7,13 @@ using model validators to sync after changes.
 import asyncio
 from datetime import datetime
 from typing import Any
+
 from haive.core.common.models.dynamic_choice_model import DynamicChoiceModel
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.schema import StateSchema
 from langchain_core.tools import BaseTool, tool
 from pydantic import Field, model_validator
+
 from haive.agents.react.agent import ReactAgent
 from haive.agents.simple.agent import SimpleAgent
 
@@ -26,7 +28,10 @@ class AgentRegistry:
     def register(self, name: str, agent: Any, description: str):
         """Register an agent."""
         self.agents[name] = agent
-        self.metadata[name] = {"description": description, "registered_at": datetime.now()}
+        self.metadata[name] = {
+            "description": description,
+            "registered_at": datetime.now(),
+        }
 
     def unregister(self, name: str):
         """Remove an agent."""
@@ -123,6 +128,7 @@ class StaticSupervisorWithDynamicTools(ReactAgent):
             f"Execute {agent_name}: {description}"
             try:
                 import asyncio
+
                 import nest_asyncio
 
                 nest_asyncio.apply()
@@ -140,7 +146,9 @@ class StaticSupervisorWithDynamicTools(ReactAgent):
         agent_names = self.agent_registry.list_agents()
         if agent_names:
             self.agent_choice_model = DynamicChoiceModel.from_choices(
-                agent_names, name="AvailableAgents", description="Currently available agents"
+                agent_names,
+                name="AvailableAgents",
+                description="Currently available agents",
             )
 
     def register_agent(self, name: str, agent: Any, description: str):
@@ -166,7 +174,9 @@ async def demo_static_dynamic_tools():
         tools=[],
         system_message="You are a task supervisor.\nUse list_available_agents to see what agents are available.\nUse execute_[agent_name] tools to delegate tasks to specific agents.\nAlways check available agents before trying to execute.",
     ).create()
-    supervisor = StaticSupervisorWithDynamicTools(name="supervisor", engine=supervisor_engine)
+    supervisor = StaticSupervisorWithDynamicTools(
+        name="supervisor", engine=supervisor_engine
+    )
     await supervisor.arun("What agents are available?")
 
     @tool
@@ -181,7 +191,9 @@ async def demo_static_dynamic_tools():
         system_message="You are a math helper. Use the add tool for calculations.",
     ).create()
     math_agent = SimpleAgent(name="math_agent", engine=math_engine)
-    supervisor.register_agent("math_agent", math_agent, "Handles mathematical calculations")
+    supervisor.register_agent(
+        "math_agent", math_agent, "Handles mathematical calculations"
+    )
     await supervisor.arun("What agents are available now?")
     await supervisor.arun("Calculate 15 + 27")
     search_engine = AugLLMConfig(

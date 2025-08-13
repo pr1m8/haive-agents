@@ -27,7 +27,7 @@ def fix_imports(dry_run: bool = True):
 
     # Find all Python files
     python_files = []
-    for root, dirs, files in os.walk(src_dir):
+    for root, _dirs, files in os.walk(src_dir):
         # Skip archive directories
         if "archive" in root:
             continue

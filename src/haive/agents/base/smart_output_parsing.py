@@ -5,14 +5,11 @@ to handle specific output parsing in a smart, flexible manner.
 """
 
 import logging
-from typing import Any, Callable, Generic, Optional, TypeVar, Union
+from collections.abc import Callable
+from typing import Any, TypeVar
 
 from haive.core.graph.node.callable_node import CallableNodeConfig
 from haive.core.graph.node.engine_node_generic import GenericEngineNodeConfig
-from haive.core.graph.node.output_parsing_v2 import (
-    PydanticParserNodeConfig,
-    create_pydantic_parser_node,
-)
 from langchain_core.messages import BaseMessage
 from langchain_core.output_parsers.base import BaseOutputParser
 from pydantic import BaseModel, Field
@@ -58,7 +55,7 @@ class SmartOutputParsingMixin:
                 context.metadata["parsed_output"] = parsed_result
                 context.metadata["parsing_strategy"] = parsing_strategy
 
-    def _detect_parsing_strategy(self, context: HookContext) -> Optional[str]:
+    def _detect_parsing_strategy(self, context: HookContext) -> str | None:
         """Detect what parsing strategy should be applied."""
         result = context.result
 
@@ -72,9 +69,9 @@ class SmartOutputParsingMixin:
             if isinstance(content, str):
                 if content.strip().startswith("{") and content.strip().endswith("}"):
                     return "json"
-                elif content.strip().startswith("[") and content.strip().endswith("]"):
+                if content.strip().startswith("[") and content.strip().endswith("]"):
                     return "list"
-                elif "```json" in content:
+                if "```json" in content:
                     return "json_markdown"
 
         # Check if agent has structured output model
@@ -88,13 +85,13 @@ class SmartOutputParsingMixin:
         try:
             if strategy == "tool_calls":
                 return self._parse_tool_calls(context.result)
-            elif strategy == "json":
+            if strategy == "json":
                 return self._parse_json_content(context.result)
-            elif strategy == "json_markdown":
+            if strategy == "json_markdown":
                 return self._parse_json_markdown(context.result)
-            elif strategy == "list":
+            if strategy == "list":
                 return self._parse_list_content(context.result)
-            elif strategy == "pydantic":
+            if strategy == "pydantic":
                 return self._parse_pydantic_content(context.result)
         except Exception as e:
             logger.warning(f"Smart parsing failed with strategy {strategy}: {e}")
@@ -250,15 +247,15 @@ class SmartGenericEngineNode(GenericEngineNodeConfig[TInput, TOutput]):
         """Apply a specific parsing strategy."""
         if strategy == "tool_calls":
             return self._parse_tool_calls(message)
-        elif strategy == "json":
+        if strategy == "json":
             return self._parse_json_content(message)
-        elif strategy == "pydantic":
+        if strategy == "pydantic":
             return self._parse_pydantic_content(message, state)
-        elif strategy == "list":
+        if strategy == "list":
             return self._parse_list_content(message)
         return None
 
-    def _parse_tool_calls(self, message: Any) -> Optional[list]:
+    def _parse_tool_calls(self, message: Any) -> list | None:
         """Parse tool calls from message."""
         if hasattr(message, "tool_calls") and message.tool_calls:
             return [
@@ -293,7 +290,7 @@ class SmartGenericEngineNode(GenericEngineNodeConfig[TInput, TOutput]):
                     return None
         return None
 
-    def _parse_list_content(self, message: Any) -> Optional[list]:
+    def _parse_list_content(self, message: Any) -> list | None:
         """Parse list from message content."""
         import json
 
@@ -311,13 +308,11 @@ class SmartGenericEngineNode(GenericEngineNodeConfig[TInput, TOutput]):
                 return items
         return None
 
-    def _extract_content(self, message: Any) -> Optional[str]:
+    def _extract_content(self, message: Any) -> str | None:
         """Extract content from message."""
-        if isinstance(message, BaseMessage):
+        if isinstance(message, BaseMessage) or hasattr(message, "content"):
             return message.content
-        elif hasattr(message, "content"):
-            return message.content
-        elif isinstance(message, str):
+        if isinstance(message, str):
             return message
         return None
 
@@ -329,7 +324,7 @@ class SmartCallableOutputParser(CallableNodeConfig):
         default_factory=dict, description="Content type to parsing function mapping"
     )
 
-    detection_function: Optional[Callable] = Field(
+    detection_function: Callable | None = Field(
         default=None, description="Function to detect content type for routing"
     )
 
@@ -361,9 +356,9 @@ class SmartCallableOutputParser(CallableNodeConfig):
 def create_smart_engine_node(
     engine,
     name: str,
-    input_schema: Optional[type[BaseModel]] = None,
-    output_schema: Optional[type[BaseModel]] = None,
-    parsing_strategies: Optional[list[str]] = None,
+    input_schema: type[BaseModel] | None = None,
+    output_schema: type[BaseModel] | None = None,
+    parsing_strategies: list[str] | None = None,
     **kwargs,
 ) -> SmartGenericEngineNode:
     """Create a smart generic engine node with output parsing."""
@@ -405,12 +400,11 @@ def detect_content_type(state) -> str:
 
         if hasattr(last_message, "tool_calls") and last_message.tool_calls:
             return "structured"
-        elif content.strip().startswith("{"):
+        if content.strip().startswith("{"):
             return "json"
-        elif content.strip().startswith("["):
+        if content.strip().startswith("["):
             return "list"
-        else:
-            return "text"
+        return "text"
     return "empty"
 
 

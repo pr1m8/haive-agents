@@ -15,7 +15,7 @@ for agent collections.
 """
 
 import logging
-from typing import Any, Generic, List, Literal, TypedDict, TypeVar
+from typing import Any, Generic, Literal, TypedDict, TypeVar
 
 from haive.core.graph.node.agent_node_v3 import AgentNodeV3Config
 from haive.core.graph.node.engine_node import EngineNodeConfig

@@ -11,8 +11,7 @@ import asyncio
 import logging
 import os
 import time
-from datetime import datetime
-from typing import Any, Dict, List
+from typing import Any
 
 # Suppress debug logging
 logging.getLogger().setLevel(logging.WARNING)
@@ -34,8 +33,8 @@ class MarketAnalysis(BaseModel):
 
     market_size: str = Field(description="Current market size")
     growth_rate: float = Field(description="Annual growth rate percentage")
-    key_players: List[str] = Field(description="Major market players")
-    opportunities: List[str] = Field(description="Market opportunities")
+    key_players: list[str] = Field(description="Major market players")
+    opportunities: list[str] = Field(description="Market opportunities")
     market_score: float = Field(ge=0.0, le=10.0)
 
 
@@ -44,8 +43,8 @@ class TechnicalAnalysis(BaseModel):
 
     feasibility_score: float = Field(ge=0.0, le=10.0)
     implementation_time: str = Field(description="Estimated implementation time")
-    technical_challenges: List[str] = Field(description="Key technical challenges")
-    required_resources: List[str] = Field(description="Required technical resources")
+    technical_challenges: list[str] = Field(description="Key technical challenges")
+    required_resources: list[str] = Field(description="Required technical resources")
     innovation_level: str = Field(description="Level of innovation required")
 
 
@@ -55,7 +54,7 @@ class FinancialAnalysis(BaseModel):
     initial_investment: str = Field(description="Required initial investment")
     roi_timeline: str = Field(description="Expected ROI timeline")
     revenue_potential: str = Field(description="Revenue potential")
-    cost_breakdown: Dict[str, str] = Field(description="Major cost categories")
+    cost_breakdown: dict[str, str] = Field(description="Major cost categories")
     financial_score: float = Field(ge=0.0, le=10.0)
 
 
@@ -63,9 +62,9 @@ class RiskAnalysis(BaseModel):
     """Risk assessment results."""
 
     risk_level: str = Field(description="Overall risk level")
-    major_risks: List[str] = Field(description="Major identified risks")
-    mitigation_strategies: List[str] = Field(description="Risk mitigation strategies")
-    compliance_issues: List[str] = Field(description="Compliance considerations")
+    major_risks: list[str] = Field(description="Major identified risks")
+    mitigation_strategies: list[str] = Field(description="Risk mitigation strategies")
+    compliance_issues: list[str] = Field(description="Compliance considerations")
     risk_score: float = Field(ge=0.0, le=10.0)
 
 
@@ -75,8 +74,8 @@ class ComprehensiveReport(BaseModel):
     executive_summary: str = Field(description="Executive summary")
     overall_recommendation: str = Field(description="Go/No-go recommendation")
     combined_score: float = Field(ge=0.0, le=10.0)
-    key_highlights: List[str] = Field(description="Key highlights from all analyses")
-    action_items: List[str] = Field(description="Recommended action items")
+    key_highlights: list[str] = Field(description="Key highlights from all analyses")
+    action_items: list[str] = Field(description="Recommended action items")
     timeline: str = Field(description="Recommended implementation timeline")
 
 
@@ -96,7 +95,7 @@ def technical_specs_tool(requirement: str) -> str:
 @tool
 def financial_calculator(calculation: str) -> str:
     """Perform financial calculations."""
-    return f"Financial calculation: Initial cost $2.5M, Break-even 18 months, 5-year NPV $12M"
+    return "Financial calculation: Initial cost $2.5M, Break-even 18 months, 5-year NPV $12M"
 
 
 @tool
@@ -105,7 +104,7 @@ def risk_database(category: str) -> str:
     return f"Risk assessment for '{category}': Medium risk, 3 major factors, compliance required"
 
 
-async def run_parallel_analysis(project: str, agents: Dict[str, Any]) -> Dict[str, Any]:
+async def run_parallel_analysis(project: str, agents: dict[str, Any]) -> dict[str, Any]:
     """Run all analysis agents in parallel."""
     start_time = time.time()
 
@@ -126,7 +125,7 @@ async def run_parallel_analysis(project: str, agents: Dict[str, Any]) -> Dict[st
     results = await asyncio.gather(*tasks.values())
 
     # Map results back to agent names
-    named_results = dict(zip(tasks.keys(), results))
+    named_results = dict(zip(tasks.keys(), results, strict=False))
 
     elapsed = time.time() - start_time
     print(f"✅ All analyses completed in {elapsed:.2f} seconds")
@@ -136,7 +135,6 @@ async def run_parallel_analysis(project: str, agents: Dict[str, Any]) -> Dict[st
 
 async def main():
     """Run parallel workflow example."""
-
     print("🔄 Parallel Multi-Agent Workflow Example")
     print("=" * 60)
     print("\nScenario: Comprehensive business analysis with 4 parallel agents")
@@ -301,16 +299,16 @@ Risk Analysis:
     # Generate comprehensive report
     report = await aggregator.arun({"analyses": analyses_summary})
 
-    print(f"\n✅ Comprehensive Report Generated:")
+    print("\n✅ Comprehensive Report Generated:")
     print(f"   Recommendation: {report.overall_recommendation}")
     print(f"   Combined Score: {report.combined_score}/10")
     print(f"   Timeline: {report.timeline}")
-    print(f"\n   Executive Summary:")
+    print("\n   Executive Summary:")
     print(f"   {report.executive_summary[:200]}...")
-    print(f"\n   Key Highlights:")
+    print("\n   Key Highlights:")
     for highlight in report.key_highlights[:3]:
         print(f"   • {highlight}")
-    print(f"\n   Action Items:")
+    print("\n   Action Items:")
     for i, action in enumerate(report.action_items[:3], 1):
         print(f"   {i}. {action}")
 
@@ -353,11 +351,11 @@ Risk Analysis:
         + financial.financial_score
         + risk.risk_score
     ) / 4
-    print(f"\n📈 Performance Summary:")
+    print("\n📈 Performance Summary:")
     print(f"   Average Individual Score: {avg_score:.1f}/10")
     print(f"   Combined Score: {report.combined_score}/10")
-    print(f"   Analyses Run in Parallel: 4")
-    print(f"   Time Saved vs Sequential: ~75%")
+    print("   Analyses Run in Parallel: 4")
+    print("   Time Saved vs Sequential: ~75%")
 
 
 if __name__ == "__main__":

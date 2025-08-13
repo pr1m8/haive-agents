@@ -30,7 +30,7 @@ logger = logging.getLogger(__name__)
 
 
 class RetrievalStrategy(BaseModel):
-    """Represents a retrieval strategy with its configuration and performance
+    """Represents a retrieval strategy with its configuration and performance.
     characteristics.
 
     A retrieval strategy defines how to retrieve memories for specific types of queries,
@@ -95,7 +95,7 @@ class RetrievalStrategy(BaseModel):
 
 
 class AgenticRAGResult(BaseModel):
-    """Comprehensive result from agentic RAG coordinator with performance metrics and
+    """Comprehensive result from agentic RAG coordinator with performance metrics and.
     analysis.
 
     This class encapsulates all information from an agentic RAG retrieval operation,
@@ -336,7 +336,7 @@ class AgenticRAGCoordinatorConfig(BaseModel):
 
 
 class AgenticRAGCoordinator(SimpleAgent):
-    """Intelligent coordinator that selects and combines retrieval strategies for optimal
+    """Intelligent coordinator that selects and combines retrieval strategies for optimal.
     memory retrieval.
 
     The AgenticRAGCoordinator is an advanced memory retrieval agent that analyzes incoming
@@ -1347,7 +1347,7 @@ Fuse and rank results now:""",
         return None
 
     async def run(self, user_input: str) -> str:
-        """Main execution method for the Agentic RAG Coordinator with comprehensive
+        """Main execution method for the Agentic RAG Coordinator with comprehensive.
         reporting.
 
         This method serves as the primary interface for the coordinator, accepting natural

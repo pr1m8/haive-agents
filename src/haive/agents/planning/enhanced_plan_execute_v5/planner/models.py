@@ -4,7 +4,7 @@ This module defines the structured output models used by the planner agent
 for creating comprehensive, actionable task plans.
 """
 
-from typing import Any, Literal, Optional
+from typing import Literal
 
 from pydantic import BaseModel, Field
 
@@ -58,7 +58,7 @@ class TaskStep(BaseModel):
     priority: Literal["high", "medium", "low"] = Field(
         default="medium", description="Priority level for execution"
     )
-    estimated_time: Optional[str] = Field(
+    estimated_time: str | None = Field(
         default=None, description="Estimated time to complete (e.g., '5 minutes')"
     )
     dependencies: list[str] = Field(
@@ -112,7 +112,7 @@ class TaskPlan(BaseModel):
     success_criteria: str = Field(
         ..., description="How we'll know the objective has been achieved"
     )
-    estimated_total_time: Optional[str] = Field(
+    estimated_total_time: str | None = Field(
         default=None, description="Estimated total time for all steps"
     )
     plan_type: Literal[
@@ -163,13 +163,13 @@ class PlanningContext(BaseModel):
     available_tools: list[str] = Field(
         default_factory=list, description="Tools that can be used during execution"
     )
-    time_constraints: Optional[str] = Field(
+    time_constraints: str | None = Field(
         default=None, description="Any time limitations to consider"
     )
     complexity_level: Literal["simple", "moderate", "detailed", "comprehensive"] = (
         Field(default="moderate", description="Desired complexity level for the plan")
     )
-    domain_focus: Optional[str] = Field(
+    domain_focus: str | None = Field(
         default=None, description="Specific domain or area of focus"
     )
     previous_attempts: list[str] = Field(

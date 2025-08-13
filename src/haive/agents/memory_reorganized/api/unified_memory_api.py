@@ -8,7 +8,7 @@ knowledge graph generation, and multi-agent coordination.
 import asyncio
 import logging
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.persistence.store.types import StoreType
@@ -228,15 +228,13 @@ class MemorySystemResult(BaseModel):
     success: bool = Field(..., description="Operation success status")
     operation: str = Field(..., description="Operation type")
     result: Any = Field(default=None, description="Operation result")
-    error: Optional[str] = Field(default=None, description="Error message if failed")
+    error: str | None = Field(default=None, description="Error message if failed")
 
     # Performance metrics
     execution_time_ms: float = Field(
         default=0.0, description="Execution time in milliseconds"
     )
-    agent_used: Optional[str] = Field(
-        default=None, description="Agent used for operation"
-    )
+    agent_used: str | None = Field(default=None, description="Agent used for operation")
 
     # Quality metrics
     confidence_score: float = Field(default=0.0, description="Confidence in result")
@@ -569,8 +567,8 @@ class UnifiedMemorySystem:
         self,
         content: str,
         namespace: tuple[str, ...] | None = None,
-        memory_type: Optional[MemoryType] = None,
-        importance: Optional[float] = None,
+        memory_type: MemoryType | None = None,
+        importance: float | None = None,
         metadata: dict[str, Any] | None = None,
     ) -> MemorySystemResult:
         """Store a memory in the system.

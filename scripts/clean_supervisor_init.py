@@ -25,7 +25,6 @@ def clean_supervisor_init():
 
     # Track what we're keeping
     cleaned_lines = []
-    skip_mode = False
     imports_seen = set()
 
     # Define what files were archived

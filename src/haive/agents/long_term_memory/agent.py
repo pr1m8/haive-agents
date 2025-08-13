@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any
 
 import tiktoken
 from haive.core.engine.aug_llm import AugLLMConfig
@@ -32,8 +32,8 @@ class LongTermMemoryAgent(ReactAgent):
         super().__init__(config)
 
     def load_memories(
-        self, state: Dict[str, Any], config: RunnableConfig
-    ) -> Dict[str, Any]:
+        self, state: dict[str, Any], config: RunnableConfig
+    ) -> dict[str, Any]:
         """Load memories for the current conversation.
 
         Args:

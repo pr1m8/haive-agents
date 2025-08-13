@@ -273,7 +273,7 @@ class SolvabilityAssessment(BaseModel):
             SolvabilityBarrier.SAFETY_RISK,
             SolvabilityBarrier.ETHICAL_CONCERN,
         }
-        return any((barrier in showstoppers for barrier in self.primary_barriers))
+        return any(barrier in showstoppers for barrier in self.primary_barriers)
 
     def get_addressable_barriers(self) -> list[SolvabilityBarrier]:
         """Get barriers that could potentially be addressed.
@@ -318,25 +318,22 @@ class SolvabilityAssessment(BaseModel):
         for requirement in self.breakthrough_requirements:
             req_lower = requirement.lower()
             if any(
-                (word in req_lower for word in ["algorithm", "software", "computing"])
+                word in req_lower for word in ["algorithm", "software", "computing"]
             ):
                 estimate = breakthrough_estimates["algorithmic"]
                 category = "algorithmic"
             elif any(
-                (word in req_lower for word in ["technology", "engineering", "tool"])
+                word in req_lower for word in ["technology", "engineering", "tool"]
             ):
                 estimate = breakthrough_estimates["technological"]
                 category = "technological"
             elif any(
-                (
-                    word in req_lower
-                    for word in ["understanding", "mechanism", "biology"]
-                )
+                word in req_lower for word in ["understanding", "mechanism", "biology"]
             ):
                 estimate = breakthrough_estimates["scientific"]
                 category = "scientific"
             elif any(
-                (word in req_lower for word in ["fundamental", "theory", "unified"])
+                word in req_lower for word in ["fundamental", "theory", "unified"]
             ):
                 estimate = breakthrough_estimates["fundamental"]
                 category = "fundamental"

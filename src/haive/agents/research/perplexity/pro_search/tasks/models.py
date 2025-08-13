@@ -352,7 +352,7 @@ class PlanningState(BaseModel):
         return (
             failure_rate > 0.3
             or len(self.failed_tasks) > 5
-            or any((task_id in self.failed_tasks for task_id in self.critical_path))
+            or any(task_id in self.failed_tasks for task_id in self.critical_path)
         )
 
     @computed_field
@@ -434,7 +434,7 @@ class ExecutionPlan(BaseModel):
     def can_parallelize(self) -> bool:
         """Check if any parallelization is possible."""
         return len(self.parallel_groups) > 1 or any(
-            (len(g) > 1 for g in self.parallel_groups)
+            len(g) > 1 for g in self.parallel_groups
         )
 
 

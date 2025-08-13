@@ -31,7 +31,7 @@ class AgenticRAGState(RAGState):
 
 
 class GraphRAGAgent(MultiAgent):
-    """Graph RAG - uses knowledge graph construction and traversal
+    """Graph RAG - uses knowledge graph construction and traversal.
     for contextually rich retrieval and reasoning.
     """
 
@@ -118,7 +118,7 @@ class GraphRAGAgent(MultiAgent):
 
 
 class AgenticGraphRAGAgent(MultiAgent):
-    """Agentic Graph RAG - combines graph reasoning with agentic routing
+    """Agentic Graph RAG - combines graph reasoning with agentic routing.
     and dynamic planning for complex multi-step reasoning.
     """
 
@@ -194,7 +194,7 @@ class AgenticGraphRAGAgent(MultiAgent):
 
 
 class AgenticRAGRouterAgent(MultiAgent):
-    """Agentic RAG Router - intelligently routes queries to different RAG strategies
+    """Agentic RAG Router - intelligently routes queries to different RAG strategies.
     based on query type, complexity, and domain.
     """
 
@@ -269,7 +269,7 @@ class AgenticRAGRouterAgent(MultiAgent):
 
 
 class QueryPlanningAgenticRAGAgent(MultiAgent):
-    """Query Planning Agentic RAG - creates detailed execution plans
+    """Query Planning Agentic RAG - creates detailed execution plans.
     for complex queries requiring multiple reasoning steps.
     """
 
@@ -329,7 +329,7 @@ class QueryPlanningAgenticRAGAgent(MultiAgent):
 
 
 class SelfReflectiveAgenticRAGAgent(MultiAgent):
-    """Self-Reflective Agentic RAG - continuously reflects on and improves
+    """Self-Reflective Agentic RAG - continuously reflects on and improves.
     its own reasoning and retrieval processes.
     """
 
@@ -407,7 +407,7 @@ class SelfReflectiveAgenticRAGAgent(MultiAgent):
 
 
 class SpeculativeRAGAgent(MultiAgent):
-    """Speculative RAG - generates multiple possible answer hypotheses
+    """Speculative RAG - generates multiple possible answer hypotheses.
     in parallel and validates them against retrieved evidence.
     """
 
@@ -482,7 +482,7 @@ class SpeculativeRAGAgent(MultiAgent):
 
 
 class SelfRouteRAGAgent(MultiAgent):
-    """Self-Route RAG - dynamically routes itself to different reasoning
+    """Self-Route RAG - dynamically routes itself to different reasoning.
     strategies based on intermediate results and confidence levels.
     """
 

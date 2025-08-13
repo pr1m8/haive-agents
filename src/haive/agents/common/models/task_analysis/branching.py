@@ -419,7 +419,7 @@ class TaskDecomposition(BaseModel):
                 raise ValueError(
                     f"Bottleneck branch '{branch_id}' not found in branches"
                 )
-        calculated_effort = sum((branch.estimated_effort for branch in self.branches))
+        calculated_effort = sum(branch.estimated_effort for branch in self.branches)
         if abs(calculated_effort - self.total_estimated_effort) > 1:
             raise ValueError(
                 f"Total effort {self.total_estimated_effort} doesn't match sum of branches {calculated_effort}"
@@ -495,18 +495,18 @@ class TaskDecomposition(BaseModel):
             "parallelizable_groups": len(self.parallelization_opportunities),
             "bottleneck_count": len(self.bottlenecks),
             "max_branch_effort": max(
-                (branch.estimated_effort for branch in self.branches)
+                branch.estimated_effort for branch in self.branches
             ),
             "dependency_density": sum(
-                (len(branch.prerequisites) for branch in self.branches)
+                len(branch.prerequisites) for branch in self.branches
             )
             / len(self.branches),
             "parallelization_speedup": self.calculate_parallelization_speedup(),
             "high_risk_branches": sum(
-                (1 for branch in self.branches if branch.is_high_risk())
+                1 for branch in self.branches if branch.is_high_risk()
             ),
             "low_success_probability": sum(
-                (1 for branch in self.branches if not branch.is_likely_to_succeed())
+                1 for branch in self.branches if not branch.is_likely_to_succeed()
             ),
         }
 

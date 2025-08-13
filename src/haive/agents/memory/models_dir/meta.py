@@ -5,7 +5,7 @@ from pydantic._internal._model_construction import ModelMetaclass
 
 
 class MemoryValidationMeta(ModelMetaclass):
-    """Advanced metaclass for memory models with automatic validation registration
+    """Advanced metaclass for memory models with automatic validation registration.
     and cross-model consistency checking.
     """
 

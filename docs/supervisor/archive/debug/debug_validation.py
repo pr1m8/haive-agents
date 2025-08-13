@@ -41,7 +41,9 @@ def test_step_by_step():
 
     try:
         # Try with dict first
-        StateWithAgentInfo(agents={"test": {"agent": agent, "name": "test", "description": "Test"}})
+        StateWithAgentInfo(
+            agents={"test": {"agent": agent, "name": "test", "description": "Test"}}
+        )
     except Exception:
         pass
 

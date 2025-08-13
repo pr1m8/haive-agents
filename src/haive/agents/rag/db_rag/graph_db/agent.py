@@ -889,7 +889,7 @@ def generate_query(natural_language_query: str) -> str:
 
 def setup_workflow():
     """Set up the graph DB RAG workflow."""
-    pass  # Placeholder implementation
+    # Placeholder implementation
 
 
 def validate_query(query: str, schema: dict = None) -> dict:

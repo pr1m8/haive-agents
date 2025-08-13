@@ -1,6 +1,6 @@
 # examples/storm_agent_example.py
 
-"""Example demonstrating how to use the STORM agent to generate
+"""Example demonstrating how to use the STORM agent to generate.
 a comprehensive Wikipedia-style article on a given topic.
 """
 

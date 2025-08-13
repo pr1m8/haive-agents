@@ -58,7 +58,7 @@ class ExecutionPlan(BaseModel):
     @property
     def has_dependencies(self) -> bool:
         """Whether any step has dependencies."""
-        return any((step.has_dependencies for step in self.steps))
+        return any(step.has_dependencies for step in self.steps)
 
     @computed_field
     @property
@@ -74,7 +74,7 @@ class ExecutionPlan(BaseModel):
             for step in self.steps:
                 if step.id in processed:
                     continue
-                deps_ready = all((dep in processed for dep in step.depends_on))
+                deps_ready = all(dep in processed for dep in step.depends_on)
                 if deps_ready:
                     level_steps.append(step.id)
             if not level_steps:
@@ -91,7 +91,7 @@ class ExecutionPlan(BaseModel):
     def max_parallelism(self) -> int:
         """Maximum number of steps that can run in parallel."""
         return (
-            max((len(level) for level in self.execution_levels))
+            max(len(level) for level in self.execution_levels)
             if self.execution_levels
             else 0
         )

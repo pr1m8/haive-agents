@@ -96,7 +96,9 @@ def debug_streaming_values():
         # Check if agent is properly compiled
 
         # Try to get state schema
-        if hasattr(agent, "state_schema") and hasattr(agent.state_schema, "model_fields"):
+        if hasattr(agent, "state_schema") and hasattr(
+            agent.state_schema, "model_fields"
+        ):
             pass
 
         # Check if graph is built

@@ -1,5 +1,4 @@
-"""
-Agentic RAG Example - Advanced RAG with Document Grading and Query Rewriting
+"""Agentic RAG Example - Advanced RAG with Document Grading and Query Rewriting
 ===========================================================================
 
 This example demonstrates an advanced RAG system with:
@@ -9,11 +8,10 @@ This example demonstrates an advanced RAG system with:
 - Source citation and confidence scoring
 
 This represents a more sophisticated approach to RAG that can handle
-complex queries and provide more accurate, well-sourced answers.
-"""
+complex queries and provide more accurate, well-sourced answers."""
 
 import asyncio
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from haive.core.embeddings import HuggingFaceEmbeddings
 from haive.core.engine.aug_llm import AugLLMConfig
@@ -24,7 +22,6 @@ from langchain_core.tools import tool
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from pydantic import BaseModel, Field
 
-from haive.agents.multi.enhanced_multi_agent_v4 import EnhancedMultiAgentV4
 from haive.agents.react.agent import ReactAgent
 from haive.agents.simple.agent_v3 import SimpleAgentV3
 
@@ -37,7 +34,7 @@ class QueryAnalysis(BaseModel):
     query_type: str = Field(
         description="Type: factual, analytical, comparative, or exploratory"
     )
-    key_concepts: List[str] = Field(description="Main concepts to search for")
+    key_concepts: list[str] = Field(description="Main concepts to search for")
     rewritten_query: str = Field(description="Optimized query for better retrieval")
     search_strategy: str = Field(description="Strategy: exact, semantic, or hybrid")
 
@@ -56,12 +53,12 @@ class AnswerWithSources(BaseModel):
 
     answer: str = Field(description="The complete answer to the user's question")
     confidence: float = Field(ge=0.0, le=1.0, description="Confidence in the answer")
-    sources: List[str] = Field(description="Source documents used")
-    key_facts: List[str] = Field(description="Key facts extracted from sources")
+    sources: list[str] = Field(description="Source documents used")
+    key_facts: list[str] = Field(description="Key facts extracted from sources")
     needs_clarification: bool = Field(
         description="Whether the query needs clarification"
     )
-    clarification_questions: Optional[List[str]] = Field(default=None)
+    clarification_questions: list[str] | None = Field(default=None)
 
 
 class AgenticRAG:
@@ -80,7 +77,7 @@ class AgenticRAG:
             engine=AugLLMConfig(
                 temperature=0.3,
                 structured_output_model=QueryAnalysis,
-                system_message="""You are a query analysis expert. Analyze user queries to:
+                system_message="""You are a query analysis expert. Analyze user queries to:.
                 1. Identify the query type and intent
                 2. Extract key concepts for search
                 3. Rewrite queries for better retrieval
@@ -100,7 +97,7 @@ class AgenticRAG:
             engine=AugLLMConfig(
                 temperature=0.2,
                 structured_output_model=DocumentRelevance,
-                system_message="""You are a document relevance expert. Grade documents based on:
+                system_message="""You are a document relevance expert. Grade documents based on:.
                 1. Direct relevance to the query
                 2. Information quality and completeness
                 3. Factual accuracy
@@ -111,7 +108,7 @@ class AgenticRAG:
                     ("system", "{system_message}"),
                     (
                         "human",
-                        """Query: {query}
+                        """Query: {query}.
                 
 Document to grade:
 {document}
@@ -139,7 +136,7 @@ Assess the relevance of this document to the query.""",
                     ("system", "{system_message}"),
                     (
                         "human",
-                        """Query: {query}
+                        """Query: {query}.
 
 Relevant Documents:
 {context}
@@ -152,7 +149,7 @@ Generate a comprehensive answer with sources and confidence assessment.""",
 
         # Create retrieval tool
         @tool
-        def search_documents(query: str, k: int = 5) -> List[Dict[str, Any]]:
+        def search_documents(query: str, k: int = 5) -> list[dict[str, Any]]:
             """Search for relevant documents in the knowledge base."""
             # Note: In real implementation, this would be async
             # For now, using sync for simplicity
@@ -167,7 +164,7 @@ Generate a comprehensive answer with sources and confidence assessment.""",
             name="rag_reasoner",
             engine=AugLLMConfig(
                 temperature=0.5,
-                system_message="""You are a RAG orchestrator. Your job is to:
+                system_message="""You are a RAG orchestrator. Your job is to:.
                 1. Use the search tool to find relevant documents
                 2. Reason about whether you have enough information
                 3. Search again with different queries if needed
@@ -176,7 +173,7 @@ Generate a comprehensive answer with sources and confidence assessment.""",
             tools=[search_documents],
         )
 
-    async def add_documents(self, documents: List[Document]):
+    async def add_documents(self, documents: list[Document]):
         """Add documents to the vector store."""
         # Split documents into chunks
         text_splitter = RecursiveCharacterTextSplitter(
@@ -204,14 +201,14 @@ Generate a comprehensive answer with sources and confidence assessment.""",
 
         # Step 2: Use reasoning agent to search iteratively
         print("\n2️⃣ Searching for relevant documents...")
-        search_prompt = f"""Find relevant documents for this query: {analysis.rewritten_query}
+        search_prompt = f"""Find relevant documents for this query: {analysis.rewritten_query}.
         
 Focus on these concepts: {', '.join(analysis.key_concepts)}
 Search strategy: {analysis.search_strategy}
 
 If initial results aren't sufficient, try alternative search terms."""
 
-        reasoning_result = await self.reasoning_agent.arun(search_prompt)
+        await self.reasoning_agent.arun(search_prompt)
 
         # Step 3: Extract documents from reasoning (in real implementation)
         # For this example, we'll do a direct search
@@ -274,14 +271,12 @@ async def main():
     # Create comprehensive documents about machine learning
     documents = [
         Document(
-            page_content="""
-            Machine learning is a subset of artificial intelligence that enables
+            page_content="""Machine learning is a subset of artificial intelligence that enables
             systems to learn and improve from experience without being explicitly
             programmed. It focuses on developing algorithms that can access data
             and use it to learn for themselves. The process involves feeding data
             to algorithms and allowing them to identify patterns and make decisions
-            with minimal human intervention.
-            """,
+            with minimal human intervention.""",
             metadata={
                 "source": "ml_intro.txt",
                 "topic": "introduction",
@@ -289,16 +284,14 @@ async def main():
             },
         ),
         Document(
-            page_content="""
-            There are three main types of machine learning:
+            page_content="""There are three main types of machine learning:
             1. Supervised Learning: Uses labeled data to train models. The algorithm
                learns from input-output pairs. Common applications include classification
                and regression tasks.
             2. Unsupervised Learning: Works with unlabeled data to discover hidden
                patterns. Includes clustering and dimensionality reduction.
             3. Reinforcement Learning: Learns through interaction with an environment
-               using rewards and penalties. Used in game playing and robotics.
-            """,
+               using rewards and penalties. Used in game playing and robotics.""",
             metadata={
                 "source": "ml_types.txt",
                 "topic": "types",
@@ -306,16 +299,14 @@ async def main():
             },
         ),
         Document(
-            page_content="""
-            Neural networks are computing systems inspired by biological neural
+            page_content="""Neural networks are computing systems inspired by biological neural
             networks in animal brains. They consist of interconnected nodes (neurons)
             organized in layers. Deep learning uses neural networks with multiple
             hidden layers. Key architectures include:
             - Convolutional Neural Networks (CNNs) for image processing
             - Recurrent Neural Networks (RNNs) for sequential data
             - Transformers for natural language processing
-            - Generative Adversarial Networks (GANs) for content generation
-            """,
+            - Generative Adversarial Networks (GANs) for content generation""",
             metadata={
                 "source": "neural_networks.txt",
                 "topic": "deep_learning",
@@ -323,8 +314,7 @@ async def main():
             },
         ),
         Document(
-            page_content="""
-            Common machine learning algorithms include:
+            page_content="""Common machine learning algorithms include:
             - Linear Regression: Predicts continuous values
             - Logistic Regression: Binary classification
             - Decision Trees: Tree-like model of decisions
@@ -332,8 +322,7 @@ async def main():
             - Support Vector Machines (SVM): Classification with hyperplanes
             - K-Means Clustering: Unsupervised grouping
             - Principal Component Analysis (PCA): Dimensionality reduction
-            Each algorithm has specific use cases and performance characteristics.
-            """,
+            Each algorithm has specific use cases and performance characteristics.""",
             metadata={
                 "source": "ml_algorithms.txt",
                 "topic": "algorithms",
@@ -341,15 +330,13 @@ async def main():
             },
         ),
         Document(
-            page_content="""
-            Machine learning applications are transforming industries:
+            page_content="""Machine learning applications are transforming industries:
             - Healthcare: Disease diagnosis, drug discovery, personalized treatment
             - Finance: Fraud detection, algorithmic trading, credit scoring
             - Retail: Recommendation systems, demand forecasting, customer segmentation
             - Transportation: Autonomous vehicles, route optimization, traffic prediction
             - Manufacturing: Quality control, predictive maintenance, supply chain optimization
-            The impact continues to grow as models become more sophisticated.
-            """,
+            The impact continues to grow as models become more sophisticated.""",
             metadata={
                 "source": "ml_applications.txt",
                 "topic": "applications",

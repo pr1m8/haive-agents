@@ -5,7 +5,7 @@ including candidate solutions and structured output models.
 """
 
 import operator
-from typing import Any, Generic, List, Literal, Optional, TypeVar, Union
+from typing import Any, Generic, Literal, TypeVar, Union
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -45,7 +45,7 @@ class Score(BaseModel):
     """
 
     value: float = Field(description="Numerical score between 0 and 1", ge=0, le=1)
-    feedback: Optional[str] = Field(
+    feedback: str | None = Field(
         default=None, description="Feedback explaining the score"
     )
 
@@ -87,7 +87,7 @@ class ScoredCandidate(BaseModel, Generic[T]):
         return self.score.value
 
     @property
-    def feedback(self) -> Optional[str]:
+    def feedback(self) -> str | None:
         """Get the feedback if any."""
         return self.score.feedback
 
@@ -101,8 +101,8 @@ class ScoredCandidate(BaseModel, Generic[T]):
 
 
 def update_candidates(
-    existing: Optional[List[Any]] = None,
-    updates: Optional[Union[List[Any], str]] = None,
+    existing: list[Any] | None = None,
+    updates: list[Any] | str | None = None,
 ) -> list[Any]:
     """Update candidate list, handling special cases like clearing.
 
@@ -122,8 +122,7 @@ def update_candidates(
     # Concatenate the lists (ensure updates is a list)
     if isinstance(updates, list):
         return existing + updates
-    else:
-        return existing
+    return existing
 
 
 # ======================================================
@@ -261,7 +260,7 @@ class EquationGeneration(BaseModel):
         description="List of equation solutions", min_items=1
     )
 
-    explanations: Optional[List[str]] = Field(
+    explanations: list[str] | None = Field(
         default=None, description="Optional explanations for each equation"
     )
 

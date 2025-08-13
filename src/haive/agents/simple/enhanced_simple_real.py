@@ -47,7 +47,6 @@ class EnhancedAgentBase:
 
     def run(self, input_data: Any) -> Any:
         """Sync run method."""
-
         return asyncio.run(self.arun(input_data))
 
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Example script that demonstrates running the open_perplexity research agent
+"""Example script that demonstrates running the open_perplexity research agent.
 from typing import Any
 with a research question loaded from a text file.
 """

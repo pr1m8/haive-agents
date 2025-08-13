@@ -66,7 +66,7 @@ class ReflexionAgent(Agent[ReflexionConfig]):
         self.answer_writer.prompt_template = prompt
         aug_llm = self.answer_writer.create_runnable()
         # Handle both dict and model cases
-        if hasattr(state, "model_dump") and callable(getattr(state, "model_dump")):
+        if hasattr(state, "model_dump") and callable(state.model_dump):
             conversation_data = state.model_dump()  # type: ignore
         elif isinstance(state, dict):
             conversation_data = state

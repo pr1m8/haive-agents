@@ -13,7 +13,7 @@ from pydantic import Field, computed_field, field_validator, model_validator
 
 
 class DocumentModifierState(StateSchema):
-    """Base state schema for document modification agents.
+    r"""Base state schema for document modification agents.
 
     This class provides the core state management for all document processing
     operations. It handles document collections, provides computed properties
@@ -97,7 +97,7 @@ class DocumentModifierState(StateSchema):
     @computed_field
     @property
     def documents_text(self) -> str:
-        """Get the combined text content of all documents.
+        r"""Get the combined text content of all documents.
 
         This property concatenates the page_content of all documents
         in the collection, separated by newlines. Useful for operations

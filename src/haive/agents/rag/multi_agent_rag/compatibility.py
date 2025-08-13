@@ -572,7 +572,6 @@ class SafeCompatibilityTester:
 
     def _get_timestamp(self) -> str:
         """Get current timestamp for reports."""
-
         return datetime.now().isoformat()
 
 

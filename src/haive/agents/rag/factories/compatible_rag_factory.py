@@ -27,7 +27,6 @@ from langchain_core.prompts import ChatPromptTemplate
 from haive.agents.base.agent import Agent
 
 # from haive.agents.multi.base import ConditionalAgent, ParallelAgent, SequentialAgent  # TODO: Fix imports
-from haive.agents.multi.agent import MultiAgent
 from haive.agents.rag.adaptive.agent import (
     QUERY_ANALYZER_PROMPT,
     AdaptiveRAGAgent,
@@ -597,7 +596,6 @@ class CompatibleRAGFactory:
 
     def _build_query_expansion(self, **kwargs) -> SimpleAgent:
         """Build query expansion agent."""
-        pass
 
         return SimpleAgent(
             engine=AugLLMConfig(
@@ -611,7 +609,6 @@ class CompatibleRAGFactory:
 
     def _build_query_analysis(self, **kwargs) -> SimpleAgent:
         """Build query analysis agent."""
-
         return SimpleAgent(
             engine=AugLLMConfig(
                 llm_config=self.llm_config,
@@ -727,7 +724,6 @@ class CompatibleRAGFactory:
 
     def _build_answer_generation(self, **kwargs) -> SimpleAgent:
         """Build answer generation agent."""
-
         return SimpleAgent(
             engine=AugLLMConfig(
                 llm_config=self.llm_config, prompt_template=RAG_ANSWER_STANDARD
@@ -1442,7 +1438,6 @@ def example_modular_rag_usage() -> Dict[str, Any]:
 
     This demonstrates the plug-and-play nature of the system.
     """
-
     # Sample documents
     docs = [Document(page_content="AI is transformative technology")]
 

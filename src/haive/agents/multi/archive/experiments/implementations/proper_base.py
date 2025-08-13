@@ -1,6 +1,6 @@
 """Proper multi-agent base following exact engines dict pattern."""
 
-from typing import Any, Dict
+from typing import Any
 
 from haive.core.graph.node import agent_node_v3
 from haive.core.graph.node.agent_node_v3 import AgentNodeV3Config, create_agent_node_v3

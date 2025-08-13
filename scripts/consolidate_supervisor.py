@@ -188,7 +188,7 @@ def update_supervisor_imports(dry_run: bool = True) -> None:
     src_path = PACKAGE_ROOT / "src"
     changes_made = 0
 
-    for root, dirs, files in os.walk(src_path):
+    for root, _dirs, files in os.walk(src_path):
         # Skip archive directories
         if "archive" in root:
             continue

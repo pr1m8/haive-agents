@@ -2,7 +2,7 @@
 
 import logging
 from collections import defaultdict
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from haive.core.graph.dynamic_graph_builder import DynamicGraph
 from langchain_core.messages import AIMessage
@@ -109,7 +109,7 @@ class MCTSAgent(Agent):
         self.reflection_chain = reflection_chain
 
         # Expansion chain
-        def generate_candidates(messages: List[Dict[str, Any]], config: RunnableConfig):
+        def generate_candidates(messages: list[dict[str, Any]], config: RunnableConfig):
             configurable = config.get("configurable", {})
             n = configurable.get("N", self.config.candidates_per_rollout)
             bound_kwargs = llm_with_tools.kwargs

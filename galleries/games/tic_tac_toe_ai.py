@@ -58,7 +58,9 @@ class TicTacToeGame:
         return [i + 1 for i, spot in enumerate(self.board) if spot == " "]
 
 
-async def create_game_agent(name: str, symbol: str, strategy: str = "smart") -> SimpleAgent:
+async def create_game_agent(
+    name: str, symbol: str, strategy: str = "smart"
+) -> SimpleAgent:
     """Create a game-playing agent."""
     if strategy == "smart":
         system_message = f"""You are an expert Tic-Tac-Toe player using symbol '{symbol}'.

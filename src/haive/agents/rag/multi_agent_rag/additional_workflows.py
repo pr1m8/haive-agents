@@ -38,7 +38,7 @@ class SelfRAGState(RAGState):
 
 
 class SimpleRAGWithMemoryAgent(MultiAgent):
-    """Simple RAG with Memory - incorporates conversation history and previous queries
+    """Simple RAG with Memory - incorporates conversation history and previous queries.
     to provide contextually aware responses.
     """
 
@@ -102,7 +102,7 @@ class SimpleRAGWithMemoryAgent(MultiAgent):
 
 
 class SelfRAGAgent(MultiAgent):
-    """Self-RAG with reflection tokens - determines whether retrieval is needed
+    """Self-RAG with reflection tokens - determines whether retrieval is needed.
     and reflects on the quality of generated answers.
     """
 
@@ -171,7 +171,7 @@ class SelfRAGAgent(MultiAgent):
 
 
 class MultiQueryRAGAgent(MultiAgent):
-    """Multi-Query RAG - generates multiple diverse queries and retrieves documents
+    """Multi-Query RAG - generates multiple diverse queries and retrieves documents.
     for each, then synthesizes results.
     """
 
@@ -237,7 +237,7 @@ class MultiQueryRAGAgent(MultiAgent):
 
 
 class RAGFusionAgent(MultiAgent):
-    """RAG Fusion - combines multiple retrieval strategies and fuses results
+    """RAG Fusion - combines multiple retrieval strategies and fuses results.
     using reciprocal rank fusion and other techniques.
     """
 
@@ -309,7 +309,7 @@ class RAGFusionAgent(MultiAgent):
 
 
 class StepBackPromptingRAGAgent(MultiAgent):
-    """Step-Back Prompting RAG - asks broader conceptual questions before
+    """Step-Back Prompting RAG - asks broader conceptual questions before.
     specific retrieval to get better context.
     """
 
@@ -379,7 +379,7 @@ class StepBackPromptingRAGAgent(MultiAgent):
 
 
 class QueryDecompositionRAGAgent(MultiAgent):
-    """Query Decomposition RAG - breaks complex queries into simpler sub-questions,
+    """Query Decomposition RAG - breaks complex queries into simpler sub-questions,.
     retrieves for each, then composes the final answer.
     """
 
