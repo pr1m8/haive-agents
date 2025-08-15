@@ -1,8 +1,15 @@
-
-:py:mod:`agents.rag.llm_rag.agent`
-==================================
+agents.rag.llm_rag.agent
+========================
 
 .. py:module:: agents.rag.llm_rag.agent
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.rag.llm_rag.agent.logger
 
 
 Classes
@@ -13,31 +20,6 @@ Classes
    agents.rag.llm_rag.agent.LLMRAGAgent
 
 
-Module Contents
----------------
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for LLMRAGAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_LLMRAGAgent {
-        node [shape=record];
-        "LLMRAGAgent" [label="LLMRAGAgent"];
-        "haive.agents.rag.base.agent.BaseRAGAgent" -> "LLMRAGAgent";
-      }
-
-.. autoclass:: agents.rag.llm_rag.agent.LLMRAGAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
 Functions
 ---------
 
@@ -46,6 +28,39 @@ Functions
    agents.rag.llm_rag.agent.extract_answer
    agents.rag.llm_rag.agent.format_documents
    agents.rag.llm_rag.agent.parse_relevance_result
+
+
+Module Contents
+---------------
+
+.. py:class:: LLMRAGAgent
+
+   Bases: :py:obj:`haive.agents.rag.base.agent.BaseRAGAgent`
+
+
+   LLM-enhanced RAG agent that retrieves documents and generates answers.
+
+   This agent extends the base RAG workflow:
+   1. Receive a query
+   2. Retrieve relevant documents (handled by BaseRAGAgent)
+   3. Check if the documents are relevant to the query
+   4. Generate an answer based on the documents if relevant
+
+
+   .. autolink-examples:: LLMRAGAgent
+      :collapse:
+
+   .. py:method:: setup_workflow() -> None
+
+      Set up the dynamic workflow for the LLM RAG agent.
+
+      Creates a graph that extends the base RAG workflow with additional
+      functionality for checking relevance and generating answers.
+
+
+      .. autolink-examples:: setup_workflow
+         :collapse:
+
 
 .. py:function:: extract_answer(result: Any) -> str
 
@@ -72,11 +87,5 @@ Functions
    .. autolink-examples:: parse_relevance_result
       :collapse:
 
+.. py:data:: logger
 
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.rag.llm_rag.agent
-   :collapse:
-   
-.. autolink-skip:: next

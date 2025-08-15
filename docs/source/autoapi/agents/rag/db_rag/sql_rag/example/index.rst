@@ -1,47 +1,57 @@
-
-:py:mod:`agents.rag.db_rag.sql_rag.example`
-===========================================
+agents.rag.db_rag.sql_rag.example
+=================================
 
 .. py:module:: agents.rag.db_rag.sql_rag.example
 
-Example usage of SQL RAG Agent.
+.. autoapi-nested-parse::
 
-from typing import Union
-This module demonstrates various usage patterns for the SQL RAG Agent,
-from basic queries to advanced configurations. It includes examples for
-different database types, error handling, and customization options.
+   Example usage of SQL RAG Agent.
 
-Running the Examples:
-    Basic example::
+   from typing import Union
+   This module demonstrates various usage patterns for the SQL RAG Agent,
+   from basic queries to advanced configurations. It includes examples for
+   different database types, error handling, and customization options.
 
-        $ python example.py
+   Running the Examples:
+       Basic example::
 
-    With specific database::
+           $ python example.py
 
-        $ SQL_DB_TYPE=mysql SQL_DB_NAME=mydb python example.py
+       With specific database::
 
-    With custom query::
+           $ SQL_DB_TYPE=mysql SQL_DB_NAME=mydb python example.py
 
-        $ python example.py --query "Show me top products by revenue"
+       With custom query::
 
-Examples Included:
-    1. Basic usage with default configuration
-    2. PostgreSQL with specific tables
-    3. SQLite with local file
-    4. MySQL with authentication
-    5. Complex queries with joins
-    6. Error handling and validation
-    7. Custom LLM engines
-    8. Batch processing
+           $ python example.py --query "Show me top products by revenue"
 
-.. note::
+   Examples Included:
+       1. Basic usage with default configuration
+       2. PostgreSQL with specific tables
+       3. SQLite with local file
+       4. MySQL with authentication
+       5. Complex queries with joins
+       6. Error handling and validation
+       7. Custom LLM engines
+       8. Batch processing
 
-   Ensure you have proper database credentials configured either
-   through environment variables or in the code before running.
+   .. note::
+
+      Ensure you have proper database credentials configured either
+      through environment variables or in the code before running.
 
 
-.. autolink-examples:: agents.rag.db_rag.sql_rag.example
-   :collapse:
+   .. autolink-examples:: agents.rag.db_rag.sql_rag.example
+      :collapse:
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.rag.db_rag.sql_rag.example.SQLDatabaseAgent
+   agents.rag.db_rag.sql_rag.example.logger
 
 
 Functions
@@ -58,6 +68,10 @@ Functions
    agents.rag.db_rag.sql_rag.example.mysql_example
    agents.rag.db_rag.sql_rag.example.postgresql_example
    agents.rag.db_rag.sql_rag.example.sqlite_example
+
+
+Module Contents
+---------------
 
 .. py:function:: basic_example() -> dict[str, Any]
 
@@ -268,11 +282,7 @@ Functions
    .. autolink-examples:: sqlite_example
       :collapse:
 
+.. py:data:: SQLDatabaseAgent
 
+.. py:data:: logger
 
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.rag.db_rag.sql_rag.example
-   :collapse:
-   
-.. autolink-skip:: next

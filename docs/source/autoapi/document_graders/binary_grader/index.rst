@@ -1,27 +1,35 @@
-
-:py:mod:`document_graders.binary_grader`
-========================================
+document_graders.binary_grader
+==============================
 
 .. py:module:: document_graders.binary_grader
 
-Binary Grader - TODO: Add brief description.
+.. autoapi-nested-parse::
 
-TODO: Add detailed description of module functionality
+   Binary Grader - TODO: Add brief description.
 
-
-
-.. rubric:: Example
-
-Basic usage::
-
-    from haive.binary_grader import module_function
-
-    # TODO: Add example
+   TODO: Add detailed description of module functionality
 
 
-.. autolink-examples:: document_graders.binary_grader
-   :collapse:
+
+   .. rubric:: Example
+
+   Basic usage::
+
+       from haive.binary_grader import module_function
+
+       # TODO: Add example
 
 
+   .. autolink-examples:: document_graders.binary_grader
+      :collapse:
+
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/document_graders/binary_grader/prompt/index
 
 

@@ -1,8 +1,15 @@
-
-:py:mod:`agents.reasoning_and_critique.tot.modular.agent`
-=========================================================
+agents.reasoning_and_critique.tot.modular.agent
+===============================================
 
 .. py:module:: agents.reasoning_and_critique.tot.modular.agent
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.reasoning_and_critique.tot.modular.agent.logger
 
 
 Classes
@@ -16,33 +23,28 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: ToTAgent
+
+   Bases: :py:obj:`haive.core.engine.agent.agent.Agent`\ [\ :py:obj:`haive.agents.tot.modular.config.ToTAgentConfig`\ ]
 
 
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ToTAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ToTAgent {
-        node [shape=record];
-        "ToTAgent" [label="ToTAgent"];
-        "haive.core.engine.agent.agent.Agent[haive.agents.tot.modular.config.ToTAgentConfig]" -> "ToTAgent";
-      }
-
-.. autoclass:: agents.reasoning_and_critique.tot.modular.agent.ToTAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. py:method:: _create_expand_node(state)
 
 
+   .. py:method:: _create_prune_node(state)
 
 
-.. rubric:: Related Links
+   .. py:method:: _create_score_node(state)
 
-.. autolink-examples:: agents.reasoning_and_critique.tot.modular.agent
-   :collapse:
-   
-.. autolink-skip:: next
+
+   .. py:method:: get_state_value(state: dict | pydantic.BaseModel, key: str, default=None)
+
+
+   .. py:method:: run(input_data: str | dict[str, Any], **kwargs) -> dict[str, Any]
+
+
+   .. py:method:: setup_workflow() -> None
+
+
+.. py:data:: logger
+

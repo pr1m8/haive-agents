@@ -1,16 +1,18 @@
-
-:py:mod:`agents.rag.agentic_router.agent_chain`
-===============================================
+agents.rag.agentic_router.agent_chain
+=====================================
 
 .. py:module:: agents.rag.agentic_router.agent_chain
 
-Agentic RAG Router using ChainAgent.
+.. autoapi-nested-parse::
 
-Simplified version using the new ChainAgent approach.
+   Agentic RAG Router using ChainAgent.
+
+   Simplified version using the new ChainAgent approach.
 
 
-.. autolink-examples:: agents.rag.agentic_router.agent_chain
-   :collapse:
+   .. autolink-examples:: agents.rag.agentic_router.agent_chain
+      :collapse:
+
 
 Classes
 -------
@@ -19,66 +21,6 @@ Classes
 
    agents.rag.agentic_router.agent_chain.RAGStrategy
    agents.rag.agentic_router.agent_chain.StrategyDecision
-
-
-Module Contents
----------------
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for RAGStrategy:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_RAGStrategy {
-        node [shape=record];
-        "RAGStrategy" [label="RAGStrategy"];
-        "str" -> "RAGStrategy";
-        "enum.Enum" -> "RAGStrategy";
-      }
-
-.. autoclass:: agents.rag.agentic_router.agent_chain.RAGStrategy
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-   .. note::
-
-      **RAGStrategy** is an Enum defined in ``agents.rag.agentic_router.agent_chain``.
-
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for StrategyDecision:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_StrategyDecision {
-        node [shape=record];
-        "StrategyDecision" [label="StrategyDecision"];
-        "pydantic.BaseModel" -> "StrategyDecision";
-      }
-
-.. autopydantic_model:: agents.rag.agentic_router.agent_chain.StrategyDecision
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
-
 
 
 Functions
@@ -90,6 +32,92 @@ Functions
    agents.rag.agentic_router.agent_chain.create_agentic_router_multi_agent
    agents.rag.agentic_router.agent_chain.create_simple_rag_router_chain
    agents.rag.agentic_router.agent_chain.get_agentic_router_chain_io_schema
+
+
+Module Contents
+---------------
+
+.. py:class:: RAGStrategy
+
+   Bases: :py:obj:`str`, :py:obj:`enum.Enum`
+
+
+   Available RAG strategies.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: RAGStrategy
+      :collapse:
+
+   .. py:attribute:: FLARE
+      :value: 'flare'
+
+
+
+   .. py:attribute:: FUSION
+      :value: 'fusion'
+
+
+
+   .. py:attribute:: HYDE
+      :value: 'hyde'
+
+
+
+   .. py:attribute:: MULTI_QUERY
+      :value: 'multi_query'
+
+
+
+   .. py:attribute:: SIMPLE
+      :value: 'simple'
+
+
+
+.. py:class:: StrategyDecision(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Strategy selection result.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: StrategyDecision
+      :collapse:
+
+   .. py:attribute:: confidence
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: reasoning
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: strategy
+      :type:  RAGStrategy
+      :value: None
+
+
 
 .. py:function:: create_agentic_rag_router_chain(documents: list[langchain_core.documents.Document], llm_config: haive.core.models.llm.base.LLMConfig | None = None, name: str = 'Agentic RAG Router') -> haive.agents.chain.ChainAgent
 
@@ -125,11 +153,3 @@ Functions
    .. autolink-examples:: get_agentic_router_chain_io_schema
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.rag.agentic_router.agent_chain
-   :collapse:
-   
-.. autolink-skip:: next

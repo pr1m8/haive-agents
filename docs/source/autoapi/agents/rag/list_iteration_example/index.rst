@@ -1,17 +1,18 @@
-
-:py:mod:`agents.rag.list_iteration_example`
-===========================================
+agents.rag.list_iteration_example
+=================================
 
 .. py:module:: agents.rag.list_iteration_example
 
-Example of using ListIterationNode with RAG agents.
+.. autoapi-nested-parse::
 
-Shows how to use the list iteration pattern for processing multiple queries
-or documents through RAG agents.
+   Example of using ListIterationNode with RAG agents.
+
+   Shows how to use the list iteration pattern for processing multiple queries
+   or documents through RAG agents.
 
 
-.. autolink-examples:: agents.rag.list_iteration_example
-   :collapse:
+   .. autolink-examples:: agents.rag.list_iteration_example
+      :collapse:
 
 
 Functions
@@ -24,6 +25,10 @@ Functions
    agents.rag.list_iteration_example.create_multi_query_processor
    agents.rag.list_iteration_example.create_parallel_document_grader
    agents.rag.list_iteration_example.example_graph_usage
+
+
+Module Contents
+---------------
 
 .. py:function:: create_document_summarizer() -> Any
 
@@ -65,11 +70,3 @@ Functions
    .. autolink-examples:: example_graph_usage
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.rag.list_iteration_example
-   :collapse:
-   
-.. autolink-skip:: next

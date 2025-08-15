@@ -1,17 +1,19 @@
-
-:py:mod:`agents.multi.simple.agent`
-===================================
+agents.multi.simple.agent
+=========================
 
 .. py:module:: agents.multi.simple.agent
 
-Simple Multi-Agent implementation for basic multi-agent coordination.
+.. autoapi-nested-parse::
 
-This module provides a simplified multi-agent system that focuses on ease of use
-and straightforward coordination patterns without complex orchestration.
+   Simple Multi-Agent implementation for basic multi-agent coordination.
+
+   This module provides a simplified multi-agent system that focuses on ease of use
+   and straightforward coordination patterns without complex orchestration.
 
 
-.. autolink-examples:: agents.multi.simple.agent
-   :collapse:
+   .. autolink-examples:: agents.multi.simple.agent
+      :collapse:
+
 
 Classes
 -------
@@ -19,31 +21,6 @@ Classes
 .. autoapisummary::
 
    agents.multi.simple.agent.SimpleMultiAgent
-
-
-Module Contents
----------------
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for SimpleMultiAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_SimpleMultiAgent {
-        node [shape=record];
-        "SimpleMultiAgent" [label="SimpleMultiAgent"];
-        "haive.agents.multi.agent.MultiAgent" -> "SimpleMultiAgent";
-      }
-
-.. autoclass:: agents.multi.simple.agent.SimpleMultiAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
 
 Functions
@@ -54,6 +31,83 @@ Functions
    agents.multi.simple.agent.create_simple_conditional
    agents.multi.simple.agent.create_simple_parallel
    agents.multi.simple.agent.create_simple_sequential
+
+
+Module Contents
+---------------
+
+.. py:class:: SimpleMultiAgent
+
+   Bases: :py:obj:`haive.agents.multi.agent.MultiAgent`
+
+
+   Simplified multi-agent system using MultiAgent.
+
+   This class provides a simplified interface to MultiAgent with
+   common defaults and simplified configuration. Perfect for simple workflows
+   and quick prototyping using the enhanced base agent pattern.
+
+   .. rubric:: Examples
+
+   Basic sequential execution::
+
+       from haive.agents.simple.agent import SimpleAgent
+       from haive.agents.react.agent import ReactAgent
+
+       agents = [
+           ReactAgent(name="analyzer", tools=[...]),
+           SimpleAgent(name="formatter")
+       ]
+
+       simple_multi = SimpleMultiAgent(
+           name="simple_workflow",
+           agents=agents,
+           execution_mode="sequential"
+       )
+
+       result = await simple_multi.arun("Process this input")
+
+   Parallel execution::
+
+       simple_multi = SimpleMultiAgent(
+           name="parallel_workflow",
+           agents=agents,
+           execution_mode="parallel"
+       )
+
+
+   .. autolink-examples:: SimpleMultiAgent
+      :collapse:
+
+   .. py:method:: model_post_init(__context: Any) -> None
+
+      Initialize with simplified defaults.
+
+
+      .. autolink-examples:: model_post_init
+         :collapse:
+
+
+   .. py:method:: setup_simple_workflow() -> None
+
+      Set up the simple multi-agent workflow with enhanced features.
+
+
+      .. autolink-examples:: setup_simple_workflow
+         :collapse:
+
+
+   .. py:attribute:: build_mode
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: execution_mode
+      :type:  str
+      :value: None
+
+
 
 .. py:function:: create_simple_conditional(*agents: haive.core.engine.agent.Agent, name: str = 'simple_conditional') -> SimpleMultiAgent
 
@@ -79,11 +133,3 @@ Functions
    .. autolink-examples:: create_simple_sequential
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.multi.simple.agent
-   :collapse:
-   
-.. autolink-skip:: next

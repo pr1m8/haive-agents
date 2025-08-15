@@ -1,14 +1,24 @@
-
-:py:mod:`agents.experiments.dynamic_supervisor_enhanced`
-========================================================
+agents.experiments.dynamic_supervisor_enhanced
+==============================================
 
 .. py:module:: agents.experiments.dynamic_supervisor_enhanced
 
-Enhanced Dynamic Supervisor with self-modification capabilities.
+.. autoapi-nested-parse::
+
+   Enhanced Dynamic Supervisor with self-modification capabilities.
 
 
-.. autolink-examples:: agents.experiments.dynamic_supervisor_enhanced
-   :collapse:
+   .. autolink-examples:: agents.experiments.dynamic_supervisor_enhanced
+      :collapse:
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.experiments.dynamic_supervisor_enhanced.logger
+
 
 Classes
 -------
@@ -18,31 +28,6 @@ Classes
    agents.experiments.dynamic_supervisor_enhanced.SelfModifyingSupervisor
 
 
-Module Contents
----------------
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for SelfModifyingSupervisor:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_SelfModifyingSupervisor {
-        node [shape=record];
-        "SelfModifyingSupervisor" [label="SelfModifyingSupervisor"];
-        "haive.agents.experiments.dynamic_supervisor.DynamicSupervisorAgent" -> "SelfModifyingSupervisor";
-      }
-
-.. autoclass:: agents.experiments.dynamic_supervisor_enhanced.SelfModifyingSupervisor
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
 Functions
 ---------
 
@@ -50,6 +35,41 @@ Functions
 
    agents.experiments.dynamic_supervisor_enhanced.create_agent_management_tools
    agents.experiments.dynamic_supervisor_enhanced.demo_self_modifying_supervisor
+
+
+Module Contents
+---------------
+
+.. py:class:: SelfModifyingSupervisor(*args, enable_self_modification: bool = True, **kwargs)
+
+   Bases: :py:obj:`haive.agents.experiments.dynamic_supervisor.DynamicSupervisorAgent`
+
+
+   A supervisor that can modify its own agent registry based on task requirements.
+
+   Initialize with self-modification capabilities.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: SelfModifyingSupervisor
+      :collapse:
+
+   .. py:method:: _create_dynamic_tools() -> list
+
+      Create tools including self-modification capabilities.
+
+
+      .. autolink-examples:: _create_dynamic_tools
+         :collapse:
+
+
+   .. py:attribute:: _enable_self_modification
+      :value: True
+
+
 
 .. py:function:: create_agent_management_tools(supervisor_instance) -> Any
 
@@ -63,11 +83,5 @@ Functions
    :async:
 
 
+.. py:data:: logger
 
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.experiments.dynamic_supervisor_enhanced
-   :collapse:
-   
-.. autolink-skip:: next

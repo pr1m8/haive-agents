@@ -1,16 +1,26 @@
-
-:py:mod:`agents.chain.multi_integration`
-========================================
+agents.chain.multi_integration
+==============================
 
 .. py:module:: agents.chain.multi_integration
 
-Integration of ChainAgent with Multi-Agent Base.
+.. autoapi-nested-parse::
 
-Makes ChainAgent work seamlessly with the multi-agent framework.
+   Integration of ChainAgent with Multi-Agent Base.
+
+   Makes ChainAgent work seamlessly with the multi-agent framework.
 
 
-.. autolink-examples:: agents.chain.multi_integration
-   :collapse:
+   .. autolink-examples:: agents.chain.multi_integration
+      :collapse:
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.chain.multi_integration.logger
+
 
 Classes
 -------
@@ -20,79 +30,6 @@ Classes
    agents.chain.multi_integration.ChainMultiAgent
    agents.chain.multi_integration.ChainNodeWrapper
    agents.chain.multi_integration.ExtendedExecutionMode
-
-
-Module Contents
----------------
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ChainMultiAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ChainMultiAgent {
-        node [shape=record];
-        "ChainMultiAgent" [label="ChainMultiAgent"];
-        "haive.agents.multi.base.MultiAgent" -> "ChainMultiAgent";
-      }
-
-.. autoclass:: agents.chain.multi_integration.ChainMultiAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ChainNodeWrapper:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ChainNodeWrapper {
-        node [shape=record];
-        "ChainNodeWrapper" [label="ChainNodeWrapper"];
-        "haive.agents.base.agent.Agent" -> "ChainNodeWrapper";
-      }
-
-.. autoclass:: agents.chain.multi_integration.ChainNodeWrapper
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ExtendedExecutionMode:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ExtendedExecutionMode {
-        node [shape=record];
-        "ExtendedExecutionMode" [label="ExtendedExecutionMode"];
-        "str" -> "ExtendedExecutionMode";
-        "enum.Enum" -> "ExtendedExecutionMode";
-      }
-
-.. autoclass:: agents.chain.multi_integration.ExtendedExecutionMode
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-   .. note::
-
-      **ExtendedExecutionMode** is an Enum defined in ``agents.chain.multi_integration``.
-
 
 
 Functions
@@ -110,6 +47,136 @@ Functions
    agents.chain.multi_integration.multi_to_chain
    agents.chain.multi_integration.multi_to_chain
    agents.chain.multi_integration.sequential_multi
+
+
+Module Contents
+---------------
+
+.. py:class:: ChainMultiAgent
+
+   Bases: :py:obj:`haive.agents.multi.base.MultiAgent`
+
+
+   ChainAgent that works with the multi-agent framework.
+
+   Combines the simplicity of ChainAgent with the power of MultiAgent.
+
+
+   .. autolink-examples:: ChainMultiAgent
+      :collapse:
+
+   .. py:method:: from_chain(chain: haive.agents.chain.chain_agent_simple.ChainAgent, name: str | None = None, **kwargs) -> ChainMultiAgent
+      :classmethod:
+
+
+      Create a MultiAgent from a ChainAgent.
+
+
+      .. autolink-examples:: from_chain
+         :collapse:
+
+
+   .. py:method:: from_nodes(nodes: list[haive.agents.chain.chain_agent_simple.NodeLike], edges: list | None = None, name: str = 'Chain Multi Agent', **kwargs) -> ChainMultiAgent
+      :classmethod:
+
+
+      Create directly from nodes and edges.
+
+
+      .. autolink-examples:: from_nodes
+         :collapse:
+
+
+   .. py:attribute:: chain_config
+      :type:  dict[str, Any] | None
+      :value: None
+
+
+
+   .. py:attribute:: execution_mode
+      :type:  haive.agents.multi.utils.compatibility.ExecutionMode
+      :value: None
+
+
+
+.. py:class:: ChainNodeWrapper
+
+   Bases: :py:obj:`haive.agents.base.agent.Agent`
+
+
+   Wrapper to make non-agent nodes work in multi-agent framework.
+
+
+   .. autolink-examples:: ChainNodeWrapper
+      :collapse:
+
+   .. py:method:: build_graph() -> haive.core.graph.state_graph.base_graph2.BaseGraph
+
+      Build a simple graph with just this node.
+
+
+      .. autolink-examples:: build_graph
+         :collapse:
+
+
+   .. py:attribute:: name
+      :type:  str
+      :value: 'Chain Node Wrapper'
+
+
+
+   .. py:attribute:: node
+      :type:  haive.agents.chain.chain_agent_simple.NodeLike
+      :value: None
+
+
+
+.. py:class:: ExtendedExecutionMode
+
+   Bases: :py:obj:`str`, :py:obj:`enum.Enum`
+
+
+   Extended execution modes including chain-based.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: ExtendedExecutionMode
+      :collapse:
+
+   .. py:attribute:: BRANCH
+      :value: 'branch'
+
+
+
+   .. py:attribute:: CHAIN
+      :value: 'chain'
+
+
+
+   .. py:attribute:: CONDITIONAL
+      :value: 'conditional'
+
+
+
+   .. py:attribute:: INFER
+      :value: 'infer'
+
+
+
+   .. py:attribute:: PARALLEL
+      :value: 'parallel'
+
+
+
+   .. py:attribute:: SEQUENTIAL
+      :value: 'sequential'
+
+
 
 .. py:function:: build_graph(*args, **kwargs)
 
@@ -191,11 +258,5 @@ Functions
    .. autolink-examples:: sequential_multi
       :collapse:
 
+.. py:data:: logger
 
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.chain.multi_integration
-   :collapse:
-   
-.. autolink-skip:: next

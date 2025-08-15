@@ -1,16 +1,17 @@
-
-:py:mod:`agents.rag.agentic.query_rewriter`
-===========================================
+agents.rag.agentic.query_rewriter
+=================================
 
 .. py:module:: agents.rag.agentic.query_rewriter
 
-Query Rewriting Agent for Agentic RAG.
+.. autoapi-nested-parse::
 
-This agent rewrites queries to improve retrieval using existing models from common.
+   Query Rewriting Agent for Agentic RAG.
+
+   This agent rewrites queries to improve retrieval using existing models from common.
 
 
-.. autolink-examples:: agents.rag.agentic.query_rewriter
-   :collapse:
+   .. autolink-examples:: agents.rag.agentic.query_rewriter
+      :collapse:
 
 
 Functions
@@ -20,6 +21,10 @@ Functions
 
    agents.rag.agentic.query_rewriter.create_query_rewriter_agent
    agents.rag.agentic.query_rewriter.rewrite_query
+
+
+Module Contents
+---------------
 
 .. py:function:: create_query_rewriter_agent(name: str = 'query_rewriter', temperature: float = 0.7, **kwargs) -> haive.agents.simple.SimpleAgent
 
@@ -72,11 +77,3 @@ Functions
    .. autolink-examples:: rewrite_query
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.rag.agentic.query_rewriter
-   :collapse:
-   
-.. autolink-skip:: next

@@ -1,16 +1,27 @@
-
-:py:mod:`agents.rag.agentic_router.agent_v2`
-============================================
+agents.rag.agentic_router.agent_v2
+==================================
 
 .. py:module:: agents.rag.agentic_router.agent_v2
 
-Agentic RAG Router with Proper Conditional Routing.
+.. autoapi-nested-parse::
 
-Implementation using conditional edges for routing between strategies.
+   Agentic RAG Router with Proper Conditional Routing.
+
+   Implementation using conditional edges for routing between strategies.
 
 
-.. autolink-examples:: agents.rag.agentic_router.agent_v2
-   :collapse:
+   .. autolink-examples:: agents.rag.agentic_router.agent_v2
+      :collapse:
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.rag.agentic_router.agent_v2.STRATEGY_SELECTION_PROMPT
+   agents.rag.agentic_router.agent_v2.logger
+
 
 Classes
 -------
@@ -25,89 +36,127 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: AgenticRAGRouterV2
+
+   Bases: :py:obj:`haive.agents.base.agent.Agent`
+
+
+   Agentic RAG Router using proper conditional routing.
+
+
+   .. autolink-examples:: AgenticRAGRouterV2
+      :collapse:
+
+   .. py:method:: build_graph() -> haive.core.graph.state_graph.base_graph2.BaseGraph
+
+      Build graph with conditional routing between strategies.
+
+
+      .. autolink-examples:: build_graph
+         :collapse:
+
+
+   .. py:attribute:: documents
+      :type:  list[langchain_core.documents.Document]
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for AgenticRAGRouterV2:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_AgenticRAGRouterV2 {
-        node [shape=record];
-        "AgenticRAGRouterV2" [label="AgenticRAGRouterV2"];
-        "haive.agents.base.agent.Agent" -> "AgenticRAGRouterV2";
-      }
-
-.. autoclass:: agents.rag.agentic_router.agent_v2.AgenticRAGRouterV2
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. py:attribute:: llm_config
+      :type:  haive.core.models.llm.base.LLMConfig
+      :value: None
 
 
 
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for RAGStrategy:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_RAGStrategy {
-        node [shape=record];
-        "RAGStrategy" [label="RAGStrategy"];
-        "str" -> "RAGStrategy";
-        "enum.Enum" -> "RAGStrategy";
-      }
-
-.. autoclass:: agents.rag.agentic_router.agent_v2.RAGStrategy
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-   .. note::
-
-      **RAGStrategy** is an Enum defined in ``agents.rag.agentic_router.agent_v2``.
+   .. py:attribute:: name
+      :type:  str
+      :value: 'Agentic RAG Router V2'
 
 
 
+.. py:class:: RAGStrategy
+
+   Bases: :py:obj:`str`, :py:obj:`enum.Enum`
 
 
-.. toggle:: Show Inheritance Diagram
+   Available RAG strategies for routing.
 
-   Inheritance diagram for StrategyDecision:
+   Initialize self.  See help(type(self)) for accurate signature.
 
-   .. graphviz::
-      :align: center
 
-      digraph inheritance_StrategyDecision {
-        node [shape=record];
-        "StrategyDecision" [label="StrategyDecision"];
-        "pydantic.BaseModel" -> "StrategyDecision";
-      }
+   .. autolink-examples:: __init__
+      :collapse:
 
-.. autopydantic_model:: agents.rag.agentic_router.agent_v2.StrategyDecision
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+
+   .. autolink-examples:: RAGStrategy
+      :collapse:
+
+   .. py:attribute:: FLARE
+      :value: 'flare'
 
 
 
+   .. py:attribute:: FUSION
+      :value: 'fusion'
 
 
-.. rubric:: Related Links
 
-.. autolink-examples:: agents.rag.agentic_router.agent_v2
-   :collapse:
-   
-.. autolink-skip:: next
+   .. py:attribute:: HYDE
+      :value: 'hyde'
+
+
+
+   .. py:attribute:: MULTI_QUERY
+      :value: 'multi_query'
+
+
+
+   .. py:attribute:: SIMPLE
+      :value: 'simple'
+
+
+
+.. py:class:: StrategyDecision(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Strategy selection decision.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: StrategyDecision
+      :collapse:
+
+   .. py:attribute:: confidence
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: reasoning
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: strategy
+      :type:  RAGStrategy
+      :value: None
+
+
+
+.. py:data:: STRATEGY_SELECTION_PROMPT
+
+.. py:data:: logger
+

@@ -1,17 +1,30 @@
-
-:py:mod:`agents.structured.prompts`
-===================================
+agents.structured.prompts
+=========================
 
 .. py:module:: agents.structured.prompts
 
-Prompt templates for structured output agents.
+.. autoapi-nested-parse::
 
-This module provides prompt templates used by structured agents
-to guide the conversion of unstructured text into structured formats.
+   Prompt templates for structured output agents.
+
+   This module provides prompt templates used by structured agents
+   to guide the conversion of unstructured text into structured formats.
 
 
-.. autolink-examples:: agents.structured.prompts
-   :collapse:
+   .. autolink-examples:: agents.structured.prompts
+      :collapse:
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.structured.prompts.ANALYSIS_PROMPT
+   agents.structured.prompts.DECISION_PROMPT
+   agents.structured.prompts.PROMPT_MAPPING
+   agents.structured.prompts.STRUCTURED_OUTPUT_PROMPT
+   agents.structured.prompts.TASK_PROMPT
 
 
 Functions
@@ -21,6 +34,10 @@ Functions
 
    agents.structured.prompts.create_contextual_prompt
    agents.structured.prompts.get_prompt_for_model
+
+
+Module Contents
+---------------
 
 .. py:function:: create_contextual_prompt(additional_context: str) -> langchain_core.prompts.ChatPromptTemplate
 
@@ -47,11 +64,13 @@ Functions
    .. autolink-examples:: get_prompt_for_model
       :collapse:
 
+.. py:data:: ANALYSIS_PROMPT
 
+.. py:data:: DECISION_PROMPT
 
-.. rubric:: Related Links
+.. py:data:: PROMPT_MAPPING
 
-.. autolink-examples:: agents.structured.prompts
-   :collapse:
-   
-.. autolink-skip:: next
+.. py:data:: STRUCTURED_OUTPUT_PROMPT
+
+.. py:data:: TASK_PROMPT
+

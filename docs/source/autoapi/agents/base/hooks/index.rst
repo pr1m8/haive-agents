@@ -1,67 +1,78 @@
-
-:py:mod:`agents.base.hooks`
-===========================
+agents.base.hooks
+=================
 
 .. py:module:: agents.base.hooks
 
-Hook system for agent lifecycle events.
+.. autoapi-nested-parse::
 
-This module provides a flexible hook system that allows users to inject
-custom logic at various points in agent execution.
+   Hook system for agent lifecycle events.
 
-The hook system supports the following event types:
-- Lifecycle: setup, graph building
-- Execution: before/after run and arun
-- Node execution: before/after individual nodes
-- Error handling: errors and retries
-- State management: state updates
+   This module provides a flexible hook system that allows users to inject
+   custom logic at various points in agent execution.
 
-.. rubric:: Examples
+   The hook system supports the following event types:
+   - Lifecycle: setup, graph building
+   - Execution: before/after run and arun
+   - Node execution: before/after individual nodes
+   - Error handling: errors and retries
+   - State management: state updates
 
-Basic hook usage::
+   .. rubric:: Examples
 
-    from haive.agents.simple import SimpleAgent
-    from haive.agents.base.hooks import HookEvent, logging_hook
+   Basic hook usage::
 
-    agent = SimpleAgent(name="my_agent")
+       from haive.agents.simple import SimpleAgent
+       from haive.agents.base.hooks import HookEvent, logging_hook
 
-    # Add logging hook
-    agent.add_hook(HookEvent.BEFORE_RUN, logging_hook)
+       agent = SimpleAgent(name="my_agent")
 
-    # Add custom hook
-    def my_hook(context):
-        print(f"Starting {context.agent_name}")
+       # Add logging hook
+       agent.add_hook(HookEvent.BEFORE_RUN, logging_hook)
 
-    agent.add_hook(HookEvent.BEFORE_RUN, my_hook)
+       # Add custom hook
+       def my_hook(context):
+           print(f"Starting {context.agent_name}")
 
-Using decorators::
+       agent.add_hook(HookEvent.BEFORE_RUN, my_hook)
 
-    agent = SimpleAgent(name="my_agent")
+   Using decorators::
 
-    @agent.before_run
-    def log_start(context):
-        print(f"Starting execution of {context.agent_name}")
+       agent = SimpleAgent(name="my_agent")
 
-    @agent.after_run
-    def log_end(context):
-        print(f"Completed: {context.output_data}")
+       @agent.before_run
+       def log_start(context):
+           print(f"Starting execution of {context.agent_name}")
 
-Error handling::
+       @agent.after_run
+       def log_end(context):
+           print(f"Completed: {context.output_data}")
 
-    @agent.on_error
-    def handle_error(context):
-        logger.error(f"Error in {context.agent_name}: {context.error}")
-        # Could send alerts, retry, etc.
+   Error handling::
 
-.. note::
+       @agent.on_error
+       def handle_error(context):
+           logger.error(f"Error in {context.agent_name}: {context.error}")
+           # Could send alerts, retry, etc.
 
-   Hooks are executed in the order they were added. Hook errors are caught
-   and logged but don't interrupt agent execution. Use hooks for monitoring,
-   logging, metrics, validation, and other cross-cutting concerns.
+   .. note::
+
+      Hooks are executed in the order they were added. Hook errors are caught
+      and logged but don't interrupt agent execution. Use hooks for monitoring,
+      logging, metrics, validation, and other cross-cutting concerns.
 
 
-.. autolink-examples:: agents.base.hooks
-   :collapse:
+   .. autolink-examples:: agents.base.hooks
+      :collapse:
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.base.hooks.HookFunction
+   agents.base.hooks.logger
+
 
 Classes
 -------
@@ -71,86 +82,6 @@ Classes
    agents.base.hooks.HookContext
    agents.base.hooks.HookEvent
    agents.base.hooks.HooksMixin
-
-
-Module Contents
----------------
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for HookContext:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_HookContext {
-        node [shape=record];
-        "HookContext" [label="HookContext"];
-        "pydantic.BaseModel" -> "HookContext";
-      }
-
-.. autopydantic_model:: agents.base.hooks.HookContext
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
-
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for HookEvent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_HookEvent {
-        node [shape=record];
-        "HookEvent" [label="HookEvent"];
-        "str" -> "HookEvent";
-        "enum.Enum" -> "HookEvent";
-      }
-
-.. autoclass:: agents.base.hooks.HookEvent
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-   .. note::
-
-      **HookEvent** is an Enum defined in ``agents.base.hooks``.
-
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for HooksMixin:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_HooksMixin {
-        node [shape=record];
-        "HooksMixin" [label="HooksMixin"];
-      }
-
-.. autoclass:: agents.base.hooks.HooksMixin
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
 
 Functions
@@ -169,6 +100,485 @@ Functions
    agents.base.hooks.state_validation_hook
    agents.base.hooks.structured_output_hook
    agents.base.hooks.timing_hook
+
+
+Module Contents
+---------------
+
+.. py:class:: HookContext(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Context passed to hook functions.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: HookContext
+      :collapse:
+
+   .. py:attribute:: agent_name
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: agent_type
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: error
+      :type:  Exception | None
+      :value: None
+
+
+
+   .. py:attribute:: event
+      :type:  HookEvent
+      :value: None
+
+
+
+   .. py:attribute:: grade_data
+      :type:  dict[str, Any] | None
+      :value: None
+
+
+
+   .. py:attribute:: input_data
+      :type:  Any | None
+      :value: None
+
+
+
+   .. py:attribute:: messages
+      :type:  list[Any] | None
+      :value: None
+
+
+
+   .. py:attribute:: metadata
+      :type:  dict[str, Any]
+      :value: None
+
+
+
+   .. py:attribute:: model_config
+
+      Configuration for the model, should be a dictionary conforming to [`ConfigDict`][pydantic.config.ConfigDict].
+
+      .. autolink-examples:: model_config
+         :collapse:
+
+
+   .. py:attribute:: node_name
+      :type:  str | None
+      :value: None
+
+
+
+   .. py:attribute:: original_messages
+      :type:  list[Any] | None
+      :value: None
+
+
+
+   .. py:attribute:: output_data
+      :type:  Any | None
+      :value: None
+
+
+
+   .. py:attribute:: post_agent_result
+      :type:  Any | None
+      :value: None
+
+
+
+   .. py:attribute:: pre_agent_result
+      :type:  Any | None
+      :value: None
+
+
+
+   .. py:attribute:: reflection_data
+      :type:  dict[str, Any] | None
+      :value: None
+
+
+
+   .. py:attribute:: state
+      :type:  dict[str, Any] | None
+      :value: None
+
+
+
+   .. py:attribute:: structured_data
+      :type:  Any | None
+      :value: None
+
+
+
+   .. py:attribute:: transformation_type
+      :type:  str | None
+      :value: None
+
+
+
+   .. py:attribute:: transformed_messages
+      :type:  list[Any] | None
+      :value: None
+
+
+
+.. py:class:: HookEvent
+
+   Bases: :py:obj:`str`, :py:obj:`enum.Enum`
+
+
+   Events where hooks can be attached.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: HookEvent
+      :collapse:
+
+   .. py:attribute:: AFTER_ARUN
+      :value: 'after_arun'
+
+
+
+   .. py:attribute:: AFTER_BUILD_GRAPH
+      :value: 'after_build_graph'
+
+
+
+   .. py:attribute:: AFTER_GRADING
+      :value: 'after_grading'
+
+
+
+   .. py:attribute:: AFTER_MESSAGE_TRANSFORM
+      :value: 'after_message_transform'
+
+
+
+   .. py:attribute:: AFTER_NODE
+      :value: 'after_node'
+
+
+
+   .. py:attribute:: AFTER_REFLECTION
+      :value: 'after_reflection'
+
+
+
+   .. py:attribute:: AFTER_RUN
+      :value: 'after_run'
+
+
+
+   .. py:attribute:: AFTER_SETUP
+      :value: 'after_setup'
+
+
+
+   .. py:attribute:: AFTER_STATE_UPDATE
+      :value: 'after_state_update'
+
+
+
+   .. py:attribute:: AFTER_STRUCTURED_OUTPUT
+      :value: 'after_structured_output'
+
+
+
+   .. py:attribute:: BEFORE_ARUN
+      :value: 'before_arun'
+
+
+
+   .. py:attribute:: BEFORE_BUILD_GRAPH
+      :value: 'before_build_graph'
+
+
+
+   .. py:attribute:: BEFORE_GRADING
+      :value: 'before_grading'
+
+
+
+   .. py:attribute:: BEFORE_MESSAGE_TRANSFORM
+      :value: 'before_message_transform'
+
+
+
+   .. py:attribute:: BEFORE_NODE
+      :value: 'before_node'
+
+
+
+   .. py:attribute:: BEFORE_REFLECTION
+      :value: 'before_reflection'
+
+
+
+   .. py:attribute:: BEFORE_RUN
+      :value: 'before_run'
+
+
+
+   .. py:attribute:: BEFORE_SETUP
+      :value: 'before_setup'
+
+
+
+   .. py:attribute:: BEFORE_STATE_UPDATE
+      :value: 'before_state_update'
+
+
+
+   .. py:attribute:: BEFORE_STRUCTURED_OUTPUT
+      :value: 'before_structured_output'
+
+
+
+   .. py:attribute:: ON_ERROR
+      :value: 'on_error'
+
+
+
+   .. py:attribute:: ON_RETRY
+      :value: 'on_retry'
+
+
+
+   .. py:attribute:: POST_PROCESS
+      :value: 'post_process'
+
+
+
+   .. py:attribute:: PRE_PROCESS
+      :value: 'pre_process'
+
+
+
+.. py:class:: HooksMixin(*args, **kwargs)
+
+   Mixin that adds hook functionality to agents.
+
+
+   .. autolink-examples:: HooksMixin
+      :collapse:
+
+   .. py:method:: _execute_hooks(event: HookEvent, **context_kwargs) -> list[Any]
+
+      Execute all hooks for an event.
+
+      :param event: The event to execute hooks for
+      :param \*\*context_kwargs: Additional context to pass to hooks
+
+      :returns: List of results from hook functions
+
+
+      .. autolink-examples:: _execute_hooks
+         :collapse:
+
+
+   .. py:method:: add_hook(event: HookEvent, hook: HookFunction) -> None
+
+      Add a hook function for an event.
+
+      :param event: The event to hook into
+      :param hook: The function to call on the event
+
+      .. rubric:: Example
+
+      agent.add_hook(HookEvent.BEFORE_RUN, lambda ctx: print(f"Running {ctx.agent_name}"))
+
+
+      .. autolink-examples:: add_hook
+         :collapse:
+
+
+   .. py:method:: after_grading(func: HookFunction) -> HookFunction
+
+      Decorator to add an after_grading hook.
+
+
+      .. autolink-examples:: after_grading
+         :collapse:
+
+
+   .. py:method:: after_message_transform(func: HookFunction) -> HookFunction
+
+      Decorator to add an after_message_transform hook.
+
+
+      .. autolink-examples:: after_message_transform
+         :collapse:
+
+
+   .. py:method:: after_reflection(func: HookFunction) -> HookFunction
+
+      Decorator to add an after_reflection hook.
+
+
+      .. autolink-examples:: after_reflection
+         :collapse:
+
+
+   .. py:method:: after_run(func: HookFunction) -> HookFunction
+
+      Decorator to add an after_run hook.
+
+
+      .. autolink-examples:: after_run
+         :collapse:
+
+
+   .. py:method:: after_setup(func: HookFunction) -> HookFunction
+
+      Decorator to add an after_setup hook.
+
+
+      .. autolink-examples:: after_setup
+         :collapse:
+
+
+   .. py:method:: after_structured_output(func: HookFunction) -> HookFunction
+
+      Decorator to add an after_structured_output hook.
+
+
+      .. autolink-examples:: after_structured_output
+         :collapse:
+
+
+   .. py:method:: before_grading(func: HookFunction) -> HookFunction
+
+      Decorator to add a before_grading hook.
+
+
+      .. autolink-examples:: before_grading
+         :collapse:
+
+
+   .. py:method:: before_message_transform(func: HookFunction) -> HookFunction
+
+      Decorator to add a before_message_transform hook.
+
+
+      .. autolink-examples:: before_message_transform
+         :collapse:
+
+
+   .. py:method:: before_reflection(func: HookFunction) -> HookFunction
+
+      Decorator to add a before_reflection hook.
+
+
+      .. autolink-examples:: before_reflection
+         :collapse:
+
+
+   .. py:method:: before_run(func: HookFunction) -> HookFunction
+
+      Decorator to add a before_run hook.
+
+
+      .. autolink-examples:: before_run
+         :collapse:
+
+
+   .. py:method:: before_setup(func: HookFunction) -> HookFunction
+
+      Decorator to add a before_setup hook.
+
+
+      .. autolink-examples:: before_setup
+         :collapse:
+
+
+   .. py:method:: before_structured_output(func: HookFunction) -> HookFunction
+
+      Decorator to add a before_structured_output hook.
+
+
+      .. autolink-examples:: before_structured_output
+         :collapse:
+
+
+   .. py:method:: clear_hooks(event: HookEvent | None = None) -> None
+
+      Clear hooks for an event or all events.
+
+      :param event: Specific event to clear hooks for, or None for all events
+
+
+      .. autolink-examples:: clear_hooks
+         :collapse:
+
+
+   .. py:method:: on_error(func: HookFunction) -> HookFunction
+
+      Decorator to add an on_error hook.
+
+
+      .. autolink-examples:: on_error
+         :collapse:
+
+
+   .. py:method:: post_process(func: HookFunction) -> HookFunction
+
+      Decorator to add a post_process hook.
+
+
+      .. autolink-examples:: post_process
+         :collapse:
+
+
+   .. py:method:: pre_process(func: HookFunction) -> HookFunction
+
+      Decorator to add a pre_process hook.
+
+
+      .. autolink-examples:: pre_process
+         :collapse:
+
+
+   .. py:method:: remove_hook(event: HookEvent, hook: HookFunction) -> None
+
+      Remove a hook function.
+
+      :param event: The event to remove the hook from
+      :param hook: The hook function to remove
+
+
+      .. autolink-examples:: remove_hook
+         :collapse:
+
+
+   .. py:attribute:: _hooks
+      :type:  dict[HookEvent, list[HookFunction]]
+
 
 .. py:function:: comprehensive_workflow_hook(context: HookContext) -> None
 
@@ -326,11 +736,7 @@ Functions
    .. autolink-examples:: timing_hook
       :collapse:
 
+.. py:data:: HookFunction
 
+.. py:data:: logger
 
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.base.hooks
-   :collapse:
-   
-.. autolink-skip:: next

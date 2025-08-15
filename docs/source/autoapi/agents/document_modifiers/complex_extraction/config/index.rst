@@ -1,6 +1,5 @@
-
-:py:mod:`agents.document_modifiers.complex_extraction.config`
-=============================================================
+agents.document_modifiers.complex_extraction.config
+===================================================
 
 .. py:module:: agents.document_modifiers.complex_extraction.config
 
@@ -16,33 +15,83 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: ComplexExtractionAgentConfig
+
+   Bases: :py:obj:`haive.core.engine.agent.agent.AgentConfig`
+
+
+   Configuration for the complex extraction agent.
+
+   This agent handles the extraction of complex structured data from text
+   using a validation and retry mechanism with optional JSONPatch corrections.
+
+
+   .. autolink-examples:: ComplexExtractionAgentConfig
+      :collapse:
+
+   .. py:attribute:: extraction_model
+      :type:  type[pydantic.BaseModel] | None
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ComplexExtractionAgentConfig:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ComplexExtractionAgentConfig {
-        node [shape=record];
-        "ComplexExtractionAgentConfig" [label="ComplexExtractionAgentConfig"];
-        "haive.core.engine.agent.agent.AgentConfig" -> "ComplexExtractionAgentConfig";
-      }
-
-.. autoclass:: agents.document_modifiers.complex_extraction.config.ComplexExtractionAgentConfig
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. py:attribute:: force_tool_choice
+      :type:  bool
+      :value: None
 
 
 
+   .. py:attribute:: input_schema
+      :type:  type[pydantic.BaseModel]
+      :value: None
 
-.. rubric:: Related Links
 
-.. autolink-examples:: agents.document_modifiers.complex_extraction.config
-   :collapse:
-   
-.. autolink-skip:: next
+
+   .. py:attribute:: llm_config
+      :type:  haive.core.engine.aug_llm.AugLLMConfig | None
+      :value: None
+
+
+
+   .. py:attribute:: max_retries
+      :type:  int
+      :value: None
+
+
+
+   .. py:attribute:: output_schema
+      :type:  type[pydantic.BaseModel]
+      :value: None
+
+
+
+   .. py:attribute:: parse_pydantic
+      :type:  bool
+      :value: None
+
+
+
+   .. py:attribute:: runnable_config
+      :type:  haive.core.engine.agent.agent.RunnableConfig
+      :value: None
+
+
+
+   .. py:attribute:: state_schema
+      :type:  type[pydantic.BaseModel]
+      :value: None
+
+
+
+   .. py:attribute:: system_prompt
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: use_jsonpatch
+      :type:  bool
+      :value: None
+
+
+

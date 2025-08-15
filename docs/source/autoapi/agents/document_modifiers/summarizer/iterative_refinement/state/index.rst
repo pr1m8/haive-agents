@@ -1,6 +1,5 @@
-
-:py:mod:`agents.document_modifiers.summarizer.iterative_refinement.state`
-=========================================================================
+agents.document_modifiers.summarizer.iterative_refinement.state
+===============================================================
 
 .. py:module:: agents.document_modifiers.summarizer.iterative_refinement.state
 
@@ -18,92 +17,101 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: IterativeSummarizerInput(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Input for the summarizer – supports string, Document, message, or dict content.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: IterativeSummarizerInput
+      :collapse:
+
+   .. py:method:: normalize_contents(value: str)
+      :classmethod:
+
+
+      Ensure all items are string representations.
+
+
+      .. autolink-examples:: normalize_contents
+         :collapse:
+
+
+   .. py:attribute:: contents
+      :type:  list[str | langchain_core.documents.Document | langchain_core.messages.BaseMessage | dict[str, Any]]
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
+.. py:class:: IterativeSummarizerOutput(/, **data: Any)
 
-   Inheritance diagram for IterativeSummarizerInput:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_IterativeSummarizerInput {
-        node [shape=record];
-        "IterativeSummarizerInput" [label="IterativeSummarizerInput"];
-        "pydantic.BaseModel" -> "IterativeSummarizerInput";
-      }
-
-.. autopydantic_model:: agents.document_modifiers.summarizer.iterative_refinement.state.IterativeSummarizerInput
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   Bases: :py:obj:`pydantic.BaseModel`
 
 
+   Output for the summarizer – stores the final summary result.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
 
 
+   .. autolink-examples:: __init__
+      :collapse:
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for IterativeSummarizerOutput:
+   .. autolink-examples:: IterativeSummarizerOutput
+      :collapse:
 
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_IterativeSummarizerOutput {
-        node [shape=record];
-        "IterativeSummarizerOutput" [label="IterativeSummarizerOutput"];
-        "pydantic.BaseModel" -> "IterativeSummarizerOutput";
-      }
-
-.. autopydantic_model:: agents.document_modifiers.summarizer.iterative_refinement.state.IterativeSummarizerOutput
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: summary
+      :type:  str
+      :value: None
 
 
 
+.. py:class:: IterativeSummarizerState(/, **data: Any)
+
+   Bases: :py:obj:`IterativeSummarizerInput`, :py:obj:`IterativeSummarizerOutput`
 
 
-.. toggle:: Show Inheritance Diagram
+   Full state for the iterative summarizer agent – tracks progress and summary.
 
-   Inheritance diagram for IterativeSummarizerState:
+   Create a new model by parsing and validating input data from keyword arguments.
 
-   .. graphviz::
-      :align: center
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
 
-      digraph inheritance_IterativeSummarizerState {
-        node [shape=record];
-        "IterativeSummarizerState" [label="IterativeSummarizerState"];
-        "IterativeSummarizerInput" -> "IterativeSummarizerState";
-        "IterativeSummarizerOutput" -> "IterativeSummarizerState";
-      }
-
-.. autoclass:: agents.document_modifiers.summarizer.iterative_refinement.state.IterativeSummarizerState
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   `self` is explicitly positional-only to allow `self` as a field name.
 
 
+   .. autolink-examples:: __init__
+      :collapse:
 
 
-.. rubric:: Related Links
+   .. autolink-examples:: IterativeSummarizerState
+      :collapse:
 
-.. autolink-examples:: agents.document_modifiers.summarizer.iterative_refinement.state
-   :collapse:
-   
-.. autolink-skip:: next
+   .. py:method:: should_refine() -> Literal['refine_summary', '__end__']
+
+
+   .. py:attribute:: index
+      :type:  int
+      :value: None
+
+
+

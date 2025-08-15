@@ -1,23 +1,25 @@
-
-:py:mod:`agents.patterns.sequential_workflow_agent`
-===================================================
+agents.patterns.sequential_workflow_agent
+=========================================
 
 .. py:module:: agents.patterns.sequential_workflow_agent
 
-Sequential Workflow Agent - Using MultiAgent with SimpleAgentV3 patterns.
+.. autoapi-nested-parse::
 
-This module demonstrates creating sequential multi-agent workflows using the
-MultiAgent as a base, with SimpleAgentV3 agents as components.
+   Sequential Workflow Agent - Using MultiAgent with SimpleAgentV3 patterns.
 
-Shows various sequential patterns:
-1. Simple linear workflows
-2. Conditional branching workflows
-3. Iterative refinement workflows
-4. Pipeline-style processing
+   This module demonstrates creating sequential multi-agent workflows using the
+   MultiAgent as a base, with SimpleAgentV3 agents as components.
+
+   Shows various sequential patterns:
+   1. Simple linear workflows
+   2. Conditional branching workflows
+   3. Iterative refinement workflows
+   4. Pipeline-style processing
 
 
-.. autolink-examples:: agents.patterns.sequential_workflow_agent
-   :collapse:
+   .. autolink-examples:: agents.patterns.sequential_workflow_agent
+      :collapse:
+
 
 Classes
 -------
@@ -34,210 +36,6 @@ Classes
    agents.patterns.sequential_workflow_agent.SequentialWorkflowAgent
 
 
-Module Contents
----------------
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ConditionalWorkflowAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ConditionalWorkflowAgent {
-        node [shape=record];
-        "ConditionalWorkflowAgent" [label="ConditionalWorkflowAgent"];
-        "SequentialWorkflowAgent" -> "ConditionalWorkflowAgent";
-      }
-
-.. autoclass:: agents.patterns.sequential_workflow_agent.ConditionalWorkflowAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for FinalReport:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_FinalReport {
-        node [shape=record];
-        "FinalReport" [label="FinalReport"];
-        "pydantic.BaseModel" -> "FinalReport";
-      }
-
-.. autopydantic_model:: agents.patterns.sequential_workflow_agent.FinalReport
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
-
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for IterativeRefinementAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_IterativeRefinementAgent {
-        node [shape=record];
-        "IterativeRefinementAgent" [label="IterativeRefinementAgent"];
-        "haive.agents.multi.agent.MultiAgent" -> "IterativeRefinementAgent";
-      }
-
-.. autoclass:: agents.patterns.sequential_workflow_agent.IterativeRefinementAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for PipelineAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_PipelineAgent {
-        node [shape=record];
-        "PipelineAgent" [label="PipelineAgent"];
-        "haive.agents.multi.agent.MultiAgent" -> "PipelineAgent";
-      }
-
-.. autoclass:: agents.patterns.sequential_workflow_agent.PipelineAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for QualityAssessment:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_QualityAssessment {
-        node [shape=record];
-        "QualityAssessment" [label="QualityAssessment"];
-        "pydantic.BaseModel" -> "QualityAssessment";
-      }
-
-.. autopydantic_model:: agents.patterns.sequential_workflow_agent.QualityAssessment
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
-
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ResearchBrief:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ResearchBrief {
-        node [shape=record];
-        "ResearchBrief" [label="ResearchBrief"];
-        "pydantic.BaseModel" -> "ResearchBrief";
-      }
-
-.. autopydantic_model:: agents.patterns.sequential_workflow_agent.ResearchBrief
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
-
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ResearchFindings:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ResearchFindings {
-        node [shape=record];
-        "ResearchFindings" [label="ResearchFindings"];
-        "pydantic.BaseModel" -> "ResearchFindings";
-      }
-
-.. autopydantic_model:: agents.patterns.sequential_workflow_agent.ResearchFindings
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
-
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for SequentialWorkflowAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_SequentialWorkflowAgent {
-        node [shape=record];
-        "SequentialWorkflowAgent" [label="SequentialWorkflowAgent"];
-        "haive.agents.multi.agent.MultiAgent" -> "SequentialWorkflowAgent";
-      }
-
-.. autoclass:: agents.patterns.sequential_workflow_agent.SequentialWorkflowAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
 Functions
 ---------
 
@@ -251,6 +49,332 @@ Functions
    agents.patterns.sequential_workflow_agent.example_iterative_refinement
    agents.patterns.sequential_workflow_agent.example_pipeline
    agents.patterns.sequential_workflow_agent.example_research_workflow
+
+
+Module Contents
+---------------
+
+.. py:class:: ConditionalWorkflowAgent
+
+   Bases: :py:obj:`SequentialWorkflowAgent`
+
+
+   Conditional workflow with branching logic.
+
+   This variant adds conditional routing between stages based on
+   intermediate results.
+
+
+   .. autolink-examples:: ConditionalWorkflowAgent
+      :collapse:
+
+   .. py:method:: setup_agent() -> None
+
+      Setup conditional workflow with routing.
+
+
+      .. autolink-examples:: setup_agent
+         :collapse:
+
+
+   .. py:attribute:: routing_conditions
+      :type:  dict[str, callable]
+      :value: None
+
+
+
+.. py:class:: FinalReport(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Final formatted report.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: FinalReport
+      :collapse:
+
+   .. py:attribute:: conclusions
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: executive_summary
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: recommendations
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: sections
+      :type:  list[dict[str, str]]
+      :value: None
+
+
+
+   .. py:attribute:: title
+      :type:  str
+      :value: None
+
+
+
+.. py:class:: IterativeRefinementAgent(**kwargs)
+
+   Bases: :py:obj:`haive.agents.multi.agent.MultiAgent`
+
+
+   Iterative refinement workflow with feedback loops.
+
+   This pattern implements iterative improvement through multiple passes.
+
+
+   .. autolink-examples:: IterativeRefinementAgent
+      :collapse:
+
+   .. py:attribute:: max_iterations
+      :type:  int
+      :value: None
+
+
+
+   .. py:attribute:: quality_threshold
+      :type:  float
+      :value: None
+
+
+
+.. py:class:: PipelineAgent(**kwargs)
+
+   Bases: :py:obj:`haive.agents.multi.agent.MultiAgent`
+
+
+   Pipeline-style agent for data transformation workflows.
+
+   Each stage transforms data for the next stage in a pipeline pattern.
+
+
+   .. autolink-examples:: PipelineAgent
+      :collapse:
+
+   .. py:method:: _create_pipeline_stages() -> list[haive.agents.simple.agent.SimpleAgent]
+
+      Create standard pipeline stages.
+
+
+      .. autolink-examples:: _create_pipeline_stages
+         :collapse:
+
+
+.. py:class:: QualityAssessment(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Quality assessment for iterative refinement.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: QualityAssessment
+      :collapse:
+
+   .. py:attribute:: meets_threshold
+      :type:  bool
+      :value: None
+
+
+
+   .. py:attribute:: quality_score
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: specific_feedback
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: strengths
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: weaknesses
+      :type:  list[str]
+      :value: None
+
+
+
+.. py:class:: ResearchBrief(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Research brief from analyzer.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: ResearchBrief
+      :collapse:
+
+   .. py:attribute:: key_questions
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: priority_areas
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: scope
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: topic
+      :type:  str
+      :value: None
+
+
+
+.. py:class:: ResearchFindings(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Detailed research findings.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: ResearchFindings
+      :collapse:
+
+   .. py:attribute:: confidence_scores
+      :type:  dict[str, float]
+      :value: None
+
+
+
+   .. py:attribute:: evidence
+      :type:  dict[str, list[str]]
+      :value: None
+
+
+
+   .. py:attribute:: gaps
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: main_findings
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: topic
+      :type:  str
+      :value: None
+
+
+
+.. py:class:: SequentialWorkflowAgent
+
+   Bases: :py:obj:`haive.agents.multi.agent.MultiAgent`
+
+
+   Sequential workflow agent for multi-stage processing.
+
+   This agent orchestrates a sequence of SimpleAgentV3 agents to
+   accomplish complex tasks through staged processing.
+
+   .. rubric:: Example
+
+   >>> workflow = SequentialWorkflowAgent(
+   ...     name="research_pipeline",
+   ...     stages=["analyze", "research", "synthesize", "format"],
+   ...     debug=True
+   ... )
+   >>> report = await workflow.arun("Research AI ethics implications")
+
+
+   .. autolink-examples:: SequentialWorkflowAgent
+      :collapse:
+
+   .. py:method:: setup_agent() -> None
+
+      Setup workflow stages as SimpleAgentV3 instances.
+
+
+      .. autolink-examples:: setup_agent
+         :collapse:
+
+
+   .. py:attribute:: stage_configs
+      :type:  dict[str, dict[str, Any]]
+      :value: None
+
+
+
+   .. py:attribute:: stages
+      :type:  list[str]
+      :value: None
+
+
 
 .. py:function:: create_conditional_workflow(name: str = 'conditional_workflow', routing_conditions: dict[str, callable] | None = None, debug: bool = True) -> ConditionalWorkflowAgent
 
@@ -324,11 +448,3 @@ Functions
    .. autolink-examples:: example_research_workflow
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.patterns.sequential_workflow_agent
-   :collapse:
-   
-.. autolink-skip:: next

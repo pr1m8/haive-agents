@@ -1,9 +1,7 @@
-
-:py:mod:`agents.reasoning_and_critique.reflexion.utils`
-=======================================================
+agents.reasoning_and_critique.reflexion.utils
+=============================================
 
 .. py:module:: agents.reasoning_and_critique.reflexion.utils
-
 
 
 Functions
@@ -13,6 +11,10 @@ Functions
 
    agents.reasoning_and_critique.reflexion.utils._get_num_iterations
 
+
+Module Contents
+---------------
+
 .. py:function:: _get_num_iterations(state: pydantic.BaseModel) -> int
 
    Counts consecutive 'tool' or 'ai' message types from the end of the list.
@@ -21,11 +23,3 @@ Functions
    .. autolink-examples:: _get_num_iterations
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.reasoning_and_critique.reflexion.utils
-   :collapse:
-   
-.. autolink-skip:: next

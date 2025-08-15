@@ -1,14 +1,15 @@
-
-:py:mod:`agents.planning_v2.examples.tree_planning_example`
-===========================================================
+agents.planning_v2.examples.tree_planning_example
+=================================================
 
 .. py:module:: agents.planning_v2.examples.tree_planning_example
 
-Example of using tree-based planning with the new tree_leaf structure.
+.. autoapi-nested-parse::
+
+   Example of using tree-based planning with the new tree_leaf structure.
 
 
-.. autolink-examples:: agents.planning_v2.examples.tree_planning_example
-   :collapse:
+   .. autolink-examples:: agents.planning_v2.examples.tree_planning_example
+      :collapse:
 
 
 Functions
@@ -23,6 +24,10 @@ Functions
    agents.planning_v2.examples.tree_planning_example.example_priority_filtering
    agents.planning_v2.examples.tree_planning_example.example_simple_plan
    agents.planning_v2.examples.tree_planning_example.example_tree_navigation
+
+
+Module Contents
+---------------
 
 .. py:function:: example_hierarchical_plan()
 
@@ -80,11 +85,3 @@ Functions
    .. autolink-examples:: example_tree_navigation
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.planning_v2.examples.tree_planning_example
-   :collapse:
-   
-.. autolink-skip:: next

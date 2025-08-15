@@ -1,14 +1,16 @@
-
-:py:mod:`agents.memory.search.pro_search.models`
-================================================
+agents.memory.search.pro_search.models
+======================================
 
 .. py:module:: agents.memory.search.pro_search.models
 
-Data models for Pro Search Agent.
+.. autoapi-nested-parse::
+
+   Data models for Pro Search Agent.
 
 
-.. autolink-examples:: agents.memory.search.pro_search.models
-   :collapse:
+   .. autolink-examples:: agents.memory.search.pro_search.models
+      :collapse:
+
 
 Classes
 -------
@@ -25,149 +27,266 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: Config(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Configuration for Pro Search Agent.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: Config
+      :collapse:
+
+   .. py:attribute:: depth_level
+      :type:  int
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for Config:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_Config {
-        node [shape=record];
-        "Config" [label="Config"];
-        "pydantic.BaseModel" -> "Config";
-      }
-
-.. autopydantic_model:: agents.memory.search.pro_search.models.Config
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: generate_follow_ups
+      :type:  bool
+      :value: None
 
 
 
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ContextualInsight:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ContextualInsight {
-        node [shape=record];
-        "ContextualInsight" [label="ContextualInsight"];
-        "pydantic.BaseModel" -> "ContextualInsight";
-      }
-
-.. autopydantic_model:: agents.memory.search.pro_search.models.ContextualInsight
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: include_reasoning
+      :type:  bool
+      :value: None
 
 
 
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ProSearchRequest:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ProSearchRequest {
-        node [shape=record];
-        "ProSearchRequest" [label="ProSearchRequest"];
-        "pydantic.BaseModel" -> "ProSearchRequest";
-      }
-
-.. autopydantic_model:: agents.memory.search.pro_search.models.ProSearchRequest
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: use_preferences
+      :type:  bool
+      :value: None
 
 
 
+.. py:class:: ContextualInsight(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
 
 
-.. toggle:: Show Inheritance Diagram
+   Model for contextual insights from search.
 
-   Inheritance diagram for ProSearchResponse:
+   Create a new model by parsing and validating input data from keyword arguments.
 
-   .. graphviz::
-      :align: center
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
 
-      digraph inheritance_ProSearchResponse {
-        node [shape=record];
-        "ProSearchResponse" [label="ProSearchResponse"];
-        "haive.agents.memory.search.base.SearchResponse" -> "ProSearchResponse";
-      }
-
-.. autoclass:: agents.memory.search.pro_search.models.ProSearchResponse
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   `self` is explicitly positional-only to allow `self` as a field name.
 
 
+   .. autolink-examples:: __init__
+      :collapse:
 
 
-.. toggle:: Show Inheritance Diagram
+   .. autolink-examples:: ContextualInsight
+      :collapse:
 
-   Inheritance diagram for SearchRefinement:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_SearchRefinement {
-        node [shape=record];
-        "SearchRefinement" [label="SearchRefinement"];
-        "pydantic.BaseModel" -> "SearchRefinement";
-      }
-
-.. autopydantic_model:: agents.memory.search.pro_search.models.SearchRefinement
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: insight
+      :type:  str
+      :value: None
 
 
 
+   .. py:attribute:: relevance_score
+      :type:  float
+      :value: None
 
 
-.. rubric:: Related Links
 
-.. autolink-examples:: agents.memory.search.pro_search.models
-   :collapse:
-   
-.. autolink-skip:: next
+   .. py:attribute:: source_type
+      :type:  str
+      :value: None
+
+
+
+.. py:class:: ProSearchRequest(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Request model for pro search operations.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: ProSearchRequest
+      :collapse:
+
+   .. py:class:: Config
+
+      Pydantic configuration.
+
+
+      .. autolink-examples:: Config
+         :collapse:
+
+      .. py:attribute:: json_schema_extra
+
+
+
+   .. py:attribute:: context
+      :type:  dict[str, Any] | None
+      :value: None
+
+
+
+   .. py:attribute:: depth_level
+      :type:  int
+      :value: None
+
+
+
+   .. py:attribute:: generate_follow_ups
+      :type:  bool
+      :value: None
+
+
+
+   .. py:attribute:: include_reasoning
+      :type:  bool
+      :value: None
+
+
+
+   .. py:attribute:: query
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: use_preferences
+      :type:  bool
+      :value: None
+
+
+
+.. py:class:: ProSearchResponse
+
+   Bases: :py:obj:`haive.agents.memory.search.base.SearchResponse`
+
+
+   Response model for pro search operations.
+
+   Extends the base SearchResponse with pro search specific fields.
+
+
+   .. autolink-examples:: ProSearchResponse
+      :collapse:
+
+   .. py:class:: Config
+
+      Pydantic configuration.
+
+
+      .. autolink-examples:: Config
+         :collapse:
+
+      .. py:attribute:: json_schema_extra
+
+
+
+   .. py:attribute:: contextual_insights
+      :type:  list[ContextualInsight]
+      :value: None
+
+
+
+   .. py:attribute:: depth_level
+      :type:  int
+      :value: None
+
+
+
+   .. py:attribute:: follow_up_questions
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: reasoning_steps
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: refinements
+      :type:  list[SearchRefinement]
+      :value: None
+
+
+
+   .. py:attribute:: search_type
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: user_preferences_applied
+      :type:  dict[str, Any]
+      :value: None
+
+
+
+.. py:class:: SearchRefinement(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Model for search query refinements.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: SearchRefinement
+      :collapse:
+
+   .. py:attribute:: original_query
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: refined_query
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: refinement_reason
+      :type:  str
+      :value: None
+
+
+

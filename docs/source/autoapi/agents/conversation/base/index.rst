@@ -1,15 +1,26 @@
-
-:py:mod:`agents.conversation.base`
-==================================
+agents.conversation.base
+========================
 
 .. py:module:: agents.conversation.base
 
-Module exports.
+.. autoapi-nested-parse::
+
+   Module exports.
 
 
-.. autolink-examples:: agents.conversation.base
-   :collapse:
+   .. autolink-examples:: agents.conversation.base
+      :collapse:
 
 
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/agents/conversation/base/agent/index
+   /autoapi/agents/conversation/base/example/index
+   /autoapi/agents/conversation/base/examples/index
+   /autoapi/agents/conversation/base/state/index
 
 

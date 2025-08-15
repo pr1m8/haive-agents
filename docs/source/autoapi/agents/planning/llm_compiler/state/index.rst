@@ -1,6 +1,5 @@
-
-:py:mod:`agents.planning.llm_compiler.state`
-============================================
+agents.planning.llm_compiler.state
+==================================
 
 .. py:module:: agents.planning.llm_compiler.state
 
@@ -10,93 +9,103 @@ Classes
 
 .. autoapisummary::
 
-   agents.planning.llm_compiler.state.CompilerPlan
    agents.planning.llm_compiler.state.CompilerState
-   agents.planning.llm_compiler.state.CompilerStep
 
 
 Module Contents
 ---------------
 
-:orphan:
+.. py:class:: CompilerState(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   State model for the LLM Compiler agent.
+
+   Tracks:
+   - The user's query
+   - The current plan
+   - Results from executed steps
+   - Conversation history
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: CompilerState
+      :collapse:
+
+   .. py:method:: all_steps_complete() -> bool
+
+      Check if all steps in the plan are complete.
+
+
+      .. autolink-examples:: all_steps_complete
+         :collapse:
+
+
+   .. py:method:: get_executable_steps() -> list[agents.planning.llm_compiler.models.CompilerStep]
+
+      Get steps that can be executed right now.
+
+
+      .. autolink-examples:: get_executable_steps
+         :collapse:
+
+
+   .. py:method:: get_highest_step_id() -> int
+
+      Get the highest step ID in the current plan.
+
+
+      .. autolink-examples:: get_highest_step_id
+         :collapse:
+
+
+   .. py:method:: has_join_result() -> bool
+
+      Check if the join step has been executed.
+
+
+      .. autolink-examples:: has_join_result
+         :collapse:
+
+
+   .. py:attribute:: messages
+      :type:  list[langchain_core.messages.BaseMessage]
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for CompilerPlan:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_CompilerPlan {
-        node [shape=record];
-        "CompilerPlan" [label="CompilerPlan"];
-        "haive.agents.planning.plan_and_execute.models.Plan" -> "CompilerPlan";
-      }
-
-.. autoclass:: agents.planning.llm_compiler.state.CompilerPlan
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. py:attribute:: plan
+      :type:  agents.planning.llm_compiler.models.CompilerPlan | None
+      :value: None
 
 
 
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for CompilerState:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_CompilerState {
-        node [shape=record];
-        "CompilerState" [label="CompilerState"];
-        "pydantic.BaseModel" -> "CompilerState";
-      }
-
-.. autopydantic_model:: agents.planning.llm_compiler.state.CompilerState
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
-
-
-:orphan:
+   .. py:attribute:: query
+      :type:  str
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for CompilerStep:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_CompilerStep {
-        node [shape=record];
-        "CompilerStep" [label="CompilerStep"];
-        "haive.agents.planning.plan_and_execute.models.Step" -> "CompilerStep";
-      }
-
-.. autoclass:: agents.planning.llm_compiler.state.CompilerStep
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. py:attribute:: replan_count
+      :type:  int
+      :value: None
 
 
 
+   .. py:attribute:: results
+      :type:  dict[int, Any]
+      :value: None
 
-.. rubric:: Related Links
 
-.. autolink-examples:: agents.planning.llm_compiler.state
-   :collapse:
-   
-.. autolink-skip:: next
+

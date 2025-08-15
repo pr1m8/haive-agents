@@ -1,46 +1,48 @@
-
-:py:mod:`agents.rag.simple.simple_rag_state`
-============================================
+agents.rag.simple.simple_rag_state
+==================================
 
 .. py:module:: agents.rag.simple.simple_rag_state
 
-SimpleRAG - Proper MultiAgentState Implementation.
+.. autoapi-nested-parse::
 
-This is the CORRECT SimpleRAG implementation following the working pattern from the guides:
-- Use MultiAgentState (not MultiAgent class inheritance)
-- Use create_agent_node_v3() for execution
-- Direct field updates through structured outputs
-- Sequential execution: retriever → generator
+   SimpleRAG - Proper MultiAgentState Implementation.
 
-Architecture:
-    SimpleRAGState extends MultiAgentState
-    agents = [BaseRAGAgent, SimpleAgent]
-    Sequential execution via nodes: retriever_node → generator_node
-    Direct field access: state.documents, state.answer
+   This is the CORRECT SimpleRAG implementation following the working pattern from the guides:
+   - Use MultiAgentState (not MultiAgent class inheritance)
+   - Use create_agent_node_v3() for execution
+   - Direct field updates through structured outputs
+   - Sequential execution: retriever → generator
 
-.. rubric:: Examples
+   Architecture:
+       SimpleRAGState extends MultiAgentState
+       agents = [BaseRAGAgent, SimpleAgent]
+       Sequential execution via nodes: retriever_node → generator_node
+       Direct field access: state.documents, state.answer
 
-Basic usage::
+   .. rubric:: Examples
 
-    from haive.agents.rag.simple.simple_rag_state import SimpleRAGState, create_simple_rag_workflow
+   Basic usage::
 
-    # Create the complete workflow
-    state = create_simple_rag_workflow(
-        query="What is machine learning?",
-        vector_store=your_vector_store,
-        top_k=5
-    )
+       from haive.agents.rag.simple.simple_rag_state import SimpleRAGState, create_simple_rag_workflow
 
-    # Execute sequential workflow
-    result = await execute_simple_rag(state)
+       # Create the complete workflow
+       state = create_simple_rag_workflow(
+           query="What is machine learning?",
+           vector_store=your_vector_store,
+           top_k=5
+       )
 
-    # Access results directly
-    print(f"Answer: {result.answer}")
-    print(f"Sources: {result.sources}")
+       # Execute sequential workflow
+       result = await execute_simple_rag(state)
+
+       # Access results directly
+       print(f"Answer: {result.answer}")
+       print(f"Sources: {result.sources}")
 
 
-.. autolink-examples:: agents.rag.simple.simple_rag_state
-   :collapse:
+   .. autolink-examples:: agents.rag.simple.simple_rag_state
+      :collapse:
+
 
 Classes
 -------
@@ -52,89 +54,6 @@ Classes
    agents.rag.simple.simple_rag_state.SimpleRAGState
 
 
-Module Contents
----------------
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for AnswerGeneration:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_AnswerGeneration {
-        node [shape=record];
-        "AnswerGeneration" [label="AnswerGeneration"];
-        "pydantic.BaseModel" -> "AnswerGeneration";
-      }
-
-.. autopydantic_model:: agents.rag.simple.simple_rag_state.AnswerGeneration
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
-
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for DocumentRetrieval:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_DocumentRetrieval {
-        node [shape=record];
-        "DocumentRetrieval" [label="DocumentRetrieval"];
-        "pydantic.BaseModel" -> "DocumentRetrieval";
-      }
-
-.. autopydantic_model:: agents.rag.simple.simple_rag_state.DocumentRetrieval
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
-
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for SimpleRAGState:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_SimpleRAGState {
-        node [shape=record];
-        "SimpleRAGState" [label="SimpleRAGState"];
-        "haive.core.schema.prebuilt.multi_agent_state.MultiAgentState" -> "SimpleRAGState";
-      }
-
-.. autoclass:: agents.rag.simple.simple_rag_state.SimpleRAGState
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
 Functions
 ---------
 
@@ -142,11 +61,171 @@ Functions
 
    agents.rag.simple.simple_rag_state.create_rag_agents
    agents.rag.simple.simple_rag_state.create_simple_rag_workflow
-   agents.rag.simple.simple_rag_state.demo
    agents.rag.simple.simple_rag_state.display_rag_results
    agents.rag.simple.simple_rag_state.execute_simple_rag
    agents.rag.simple.simple_rag_state.get_rag_summary
    agents.rag.simple.simple_rag_state.run_simple_rag
+
+
+Module Contents
+---------------
+
+.. py:class:: AnswerGeneration(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Output from the answer generation agent.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: AnswerGeneration
+      :collapse:
+
+   .. py:attribute:: answer
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: confidence
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: sources
+      :type:  list[str]
+      :value: None
+
+
+
+.. py:class:: DocumentRetrieval(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Output from the document retrieval agent.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: DocumentRetrieval
+      :collapse:
+
+   .. py:attribute:: documents
+      :type:  list[langchain_core.documents.Document]
+      :value: None
+
+
+
+   .. py:attribute:: query_processed
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: retrieved_count
+      :type:  int
+      :value: None
+
+
+
+.. py:class:: SimpleRAGState
+
+   Bases: :py:obj:`haive.core.schema.prebuilt.multi_agent_state.MultiAgentState`
+
+
+   State schema for SimpleRAG workflow using MultiAgentState pattern.
+
+   This follows the working pattern from the guides:
+   - Extends MultiAgentState for proper agent management
+   - Contains all input and output fields as direct attributes
+   - Agents update fields directly through structured outputs
+   - No complex nested structures - just clean, direct field access
+
+   Flow:
+       1. Input: query, configuration
+       2. Retriever updates: documents, retrieved_count, query_processed
+       3. Generator updates: answer, sources, confidence
+       4. Direct access: state.answer, state.sources, etc.
+
+
+   .. autolink-examples:: SimpleRAGState
+      :collapse:
+
+   .. py:attribute:: answer
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: confidence
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: documents
+      :type:  list[langchain_core.documents.Document]
+      :value: None
+
+
+
+   .. py:attribute:: query
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: query_processed
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: rag_workflow_id
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: retrieved_count
+      :type:  int
+      :value: None
+
+
+
+   .. py:attribute:: sources
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: top_k
+      :type:  int
+      :value: None
+
+
 
 .. py:function:: create_rag_agents(vector_store_config: haive.core.engine.vectorstore.VectorStoreConfig, llm_config: haive.core.engine.aug_llm.AugLLMConfig, structured_output_model: type[pydantic.BaseModel] | None = None) -> tuple[haive.agents.rag.base.agent.BaseRAGAgent, haive.agents.simple.agent.SimpleAgent]
 
@@ -178,7 +257,6 @@ Functions
 
    .. autolink-examples:: create_simple_rag_workflow
       :collapse:
-
 
 .. py:function:: display_rag_results(state: SimpleRAGState) -> None
 
@@ -238,11 +316,3 @@ Functions
    .. autolink-examples:: run_simple_rag
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.rag.simple.simple_rag_state
-   :collapse:
-   
-.. autolink-skip:: next

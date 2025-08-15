@@ -1,14 +1,16 @@
-
-:py:mod:`agents.reflection.state`
-=================================
+agents.reflection.state
+=======================
 
 .. py:module:: agents.reflection.state
 
-State schema for Reflection Agent.
+.. autoapi-nested-parse::
+
+   State schema for Reflection Agent.
 
 
-.. autolink-examples:: agents.reflection.state
-   :collapse:
+   .. autolink-examples:: agents.reflection.state
+      :collapse:
+
 
 Classes
 -------
@@ -16,31 +18,6 @@ Classes
 .. autoapisummary::
 
    agents.reflection.state.ReflectionState
-
-
-Module Contents
----------------
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ReflectionState:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ReflectionState {
-        node [shape=record];
-        "ReflectionState" [label="ReflectionState"];
-        "haive.core.schema.prebuilt.multi_agent_state.MultiAgentState" -> "ReflectionState";
-      }
-
-.. autoclass:: agents.reflection.state.ReflectionState
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
 
 Functions
@@ -51,6 +28,96 @@ Functions
    agents.reflection.state.add_improvement
    agents.reflection.state.finalize
    agents.reflection.state.should_continue
+
+
+Module Contents
+---------------
+
+.. py:class:: ReflectionState
+
+   Bases: :py:obj:`haive.core.schema.prebuilt.multi_agent_state.MultiAgentState`
+
+
+   State for Reflection Agent.
+
+
+   .. autolink-examples:: ReflectionState
+      :collapse:
+
+   .. py:method:: add_improvement(improvement: haive.agents.reflection.models.Improvement) -> None
+
+      Add improvement and update current content.
+
+
+      .. autolink-examples:: add_improvement
+         :collapse:
+
+
+   .. py:method:: finalize() -> str
+
+      Finalize the reflection process.
+
+
+      .. autolink-examples:: finalize
+         :collapse:
+
+
+   .. py:method:: should_continue() -> bool
+
+      Check if reflection should continue.
+
+
+      .. autolink-examples:: should_continue
+         :collapse:
+
+
+   .. py:attribute:: critique
+      :type:  haive.agents.reflection.models.Critique | None
+      :value: None
+
+
+
+   .. py:attribute:: current_content
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: final_content
+      :type:  str | None
+      :value: None
+
+
+
+   .. py:attribute:: improvements
+      :type:  list[haive.agents.reflection.models.Improvement]
+      :value: None
+
+
+
+   .. py:attribute:: input
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: iteration_count
+      :type:  int
+      :value: None
+
+
+
+   .. py:attribute:: max_iterations
+      :type:  int
+      :value: None
+
+
+
+   .. py:attribute:: quality_threshold
+      :type:  float
+      :value: None
+
+
 
 .. py:function:: add_improvement(state: ReflectionState, improvement: haive.agents.reflection.models.Improvement) -> None
 
@@ -76,11 +143,3 @@ Functions
    .. autolink-examples:: should_continue
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.reflection.state
-   :collapse:
-   
-.. autolink-skip:: next

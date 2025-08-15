@@ -1,6 +1,5 @@
-
-:py:mod:`agents.rag.self_corr.config`
-=====================================
+agents.rag.self_corr.config
+===========================
 
 .. py:module:: agents.rag.self_corr.config
 
@@ -16,33 +15,61 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: SelfCorrectiveRAGConfig
+
+   Bases: :py:obj:`haive.agents.rag.base.config.BaseRAGConfig`
+
+
+   Configuration for self-corrective RAG agents that can evaluate and improve their answers.
+
+   This RAG implementation extends the base RAG with:
+   1. Answer evaluation to detect hallucinations
+   2. Answer correction to fix identified issues
+   3. Iterative improvement until quality threshold is met
+
+
+   .. autolink-examples:: SelfCorrectiveRAGConfig
+      :collapse:
+
+   .. py:attribute:: answer_corrector_config
+      :type:  haive.core.engine.aug_llm.AugLLMConfig | None
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for SelfCorrectiveRAGConfig:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_SelfCorrectiveRAGConfig {
-        node [shape=record];
-        "SelfCorrectiveRAGConfig" [label="SelfCorrectiveRAGConfig"];
-        "haive.agents.rag.base.config.BaseRAGConfig" -> "SelfCorrectiveRAGConfig";
-      }
-
-.. autoclass:: agents.rag.self_corr.config.SelfCorrectiveRAGConfig
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. py:attribute:: answer_evaluator_config
+      :type:  haive.core.engine.aug_llm.AugLLMConfig | None
+      :value: None
 
 
 
+   .. py:attribute:: document_filter_config
+      :type:  haive.core.engine.aug_llm.AugLLMConfig | None
+      :value: None
 
-.. rubric:: Related Links
 
-.. autolink-examples:: agents.rag.self_corr.config
-   :collapse:
-   
-.. autolink-skip:: next
+
+   .. py:attribute:: max_correction_iterations
+      :type:  int
+      :value: None
+
+
+
+   .. py:attribute:: minimum_answer_score
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: relevance_threshold
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: state_schema
+      :type:  type
+      :value: None
+
+
+

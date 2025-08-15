@@ -1,9 +1,15 @@
-
-:py:mod:`agents.reasoning_and_critique.reflexion.tools`
-=======================================================
+agents.reasoning_and_critique.reflexion.tools
+=============================================
 
 .. py:module:: agents.reasoning_and_critique.reflexion.tools
 
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.reasoning_and_critique.reflexion.tools.tavily_tool
 
 
 Functions
@@ -12,6 +18,10 @@ Functions
 .. autoapisummary::
 
    agents.reasoning_and_critique.reflexion.tools.run_queries
+
+
+Module Contents
+---------------
 
 .. py:function:: run_queries(search_queries: list[str], **kwargs)
 
@@ -25,11 +35,5 @@ Functions
    .. autolink-examples:: run_queries
       :collapse:
 
+.. py:data:: tavily_tool
 
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.reasoning_and_critique.reflexion.tools
-   :collapse:
-   
-.. autolink-skip:: next

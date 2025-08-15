@@ -1,8 +1,15 @@
-
-:py:mod:`agents.rag.dynamic.agent`
-==================================
+agents.rag.dynamic.agent
+========================
 
 .. py:module:: agents.rag.dynamic.agent
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.rag.dynamic.agent.logger
 
 
 Classes
@@ -16,33 +23,79 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: DynamicRAGAgent(config: haive.agents.rag.dynamic.config.DynamicRAGConfig)
+
+   Bases: :py:obj:`haive.agents.rag.base.agent.BaseRAGAgent`
 
 
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for DynamicRAGAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_DynamicRAGAgent {
-        node [shape=record];
-        "DynamicRAGAgent" [label="DynamicRAGAgent"];
-        "haive.agents.rag.base.agent.BaseRAGAgent" -> "DynamicRAGAgent";
-      }
-
-.. autoclass:: agents.rag.dynamic.agent.DynamicRAGAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   Implements a dynamic RAG pipeline that routes queries to appropriate data sources.
 
 
+   .. autolink-examples:: DynamicRAGAgent
+      :collapse:
+
+   .. py:method:: _init_data_sources()
+
+      Initialize all configured data sources.
 
 
-.. rubric:: Related Links
+      .. autolink-examples:: _init_data_sources
+         :collapse:
 
-.. autolink-examples:: agents.rag.dynamic.agent
-   :collapse:
-   
-.. autolink-skip:: next
+
+   .. py:method:: _init_merger()
+
+      Initialize the result merger.
+
+
+      .. autolink-examples:: _init_merger
+         :collapse:
+
+
+   .. py:method:: _init_router()
+
+      Initialize the query router.
+
+
+      .. autolink-examples:: _init_router
+         :collapse:
+
+
+   .. py:method:: merge_results(state: dict[str, Any])
+
+      Merge results from multiple sources.
+
+
+      .. autolink-examples:: merge_results
+         :collapse:
+
+
+   .. py:method:: retrieve_from_sources(state: dict[str, Any])
+
+      Retrieve documents from selected sources.
+
+
+      .. autolink-examples:: retrieve_from_sources
+         :collapse:
+
+
+   .. py:method:: route_query(state: dict[str, Any])
+
+      Route the query to appropriate data sources.
+
+
+      .. autolink-examples:: route_query
+         :collapse:
+
+
+   .. py:method:: setup_workflow() -> None
+
+      Set up the Dynamic RAG workflow.
+
+
+      .. autolink-examples:: setup_workflow
+         :collapse:
+
+
+.. py:data:: logger
+

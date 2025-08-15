@@ -1,9 +1,15 @@
-
-:py:mod:`agents.react_class.react_agent2.example`
-=================================================
+agents.react_class.react_agent2.example
+=======================================
 
 .. py:module:: agents.react_class.react_agent2.example
 
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.react_class.react_agent2.example.logger
 
 
 Functions
@@ -18,6 +24,10 @@ Functions
    agents.react_class.react_agent2.example.run_custom_tool_routing_example
    agents.react_class.react_agent2.example.search_db
    agents.react_class.react_agent2.example.search_web
+
+
+Module Contents
+---------------
 
 .. py:function:: action_executor_processor(state: dict[str, Any]) -> dict[str, Any]
 
@@ -75,11 +85,5 @@ Functions
    .. autolink-examples:: search_web
       :collapse:
 
+.. py:data:: logger
 
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.react_class.react_agent2.example
-   :collapse:
-   
-.. autolink-skip:: next

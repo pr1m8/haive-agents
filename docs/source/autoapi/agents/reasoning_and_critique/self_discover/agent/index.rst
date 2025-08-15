@@ -1,14 +1,23 @@
-
-:py:mod:`agents.reasoning_and_critique.self_discover.agent`
-===========================================================
+agents.reasoning_and_critique.self_discover.agent
+=================================================
 
 .. py:module:: agents.reasoning_and_critique.self_discover.agent
 
-Self-Discover MultiAgent implementation.
+.. autoapi-nested-parse::
+
+   Self-Discover MultiAgent implementation.
 
 
-.. autolink-examples:: agents.reasoning_and_critique.self_discover.agent
-   :collapse:
+   .. autolink-examples:: agents.reasoning_and_critique.self_discover.agent
+      :collapse:
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.reasoning_and_critique.self_discover.agent.SelfDiscoverAgent
 
 
 Functions
@@ -19,6 +28,10 @@ Functions
    agents.reasoning_and_critique.self_discover.agent.create_self_discover_agent
    agents.reasoning_and_critique.self_discover.agent.get_default_modules
    agents.reasoning_and_critique.self_discover.agent.main
+
+
+Module Contents
+---------------
 
 .. py:function:: create_self_discover_agent(name: str = 'self_discover') -> haive.agents.multi.agent.MultiAgent
 
@@ -50,11 +63,5 @@ Functions
    .. autolink-examples:: main
       :collapse:
 
+.. py:data:: SelfDiscoverAgent
 
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.reasoning_and_critique.self_discover.agent
-   :collapse:
-   
-.. autolink-skip:: next

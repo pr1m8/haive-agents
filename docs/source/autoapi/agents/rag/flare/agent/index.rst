@@ -1,18 +1,30 @@
-
-:py:mod:`agents.rag.flare.agent`
-================================
+agents.rag.flare.agent
+======================
 
 .. py:module:: agents.rag.flare.agent
 
-FLARE (Forward-Looking Active REtrieval) RAG Agents.
+.. autoapi-nested-parse::
 
-from typing import Any
-Implementation of FLARE RAG with forward-looking retrieval and iterative generation.
-Uses structured output models for planning and managing active retrieval decisions.
+   FLARE (Forward-Looking Active REtrieval) RAG Agents.
+
+   from typing import Any
+   Implementation of FLARE RAG with forward-looking retrieval and iterative generation.
+   Uses structured output models for planning and managing active retrieval decisions.
 
 
-.. autolink-examples:: agents.rag.flare.agent
-   :collapse:
+   .. autolink-examples:: agents.rag.flare.agent
+      :collapse:
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.rag.flare.agent.FLARE_GENERATION_PROMPT
+   agents.rag.flare.agent.FLARE_PLANNING_PROMPT
+   agents.rag.flare.agent.logger
+
 
 Classes
 -------
@@ -28,185 +40,6 @@ Classes
    agents.rag.flare.agent.RetrievalDecision
 
 
-Module Contents
----------------
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ActiveRetrievalAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ActiveRetrievalAgent {
-        node [shape=record];
-        "ActiveRetrievalAgent" [label="ActiveRetrievalAgent"];
-        "haive.agents.base.agent.Agent" -> "ActiveRetrievalAgent";
-      }
-
-.. autoclass:: agents.rag.flare.agent.ActiveRetrievalAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ConfidenceLevel:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ConfidenceLevel {
-        node [shape=record];
-        "ConfidenceLevel" [label="ConfidenceLevel"];
-        "str" -> "ConfidenceLevel";
-        "enum.Enum" -> "ConfidenceLevel";
-      }
-
-.. autoclass:: agents.rag.flare.agent.ConfidenceLevel
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-   .. note::
-
-      **ConfidenceLevel** is an Enum defined in ``agents.rag.flare.agent``.
-
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for FLAREPlan:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_FLAREPlan {
-        node [shape=record];
-        "FLAREPlan" [label="FLAREPlan"];
-        "pydantic.BaseModel" -> "FLAREPlan";
-      }
-
-.. autopydantic_model:: agents.rag.flare.agent.FLAREPlan
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
-
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for FLAREPlannerAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_FLAREPlannerAgent {
-        node [shape=record];
-        "FLAREPlannerAgent" [label="FLAREPlannerAgent"];
-        "haive.agents.base.agent.Agent" -> "FLAREPlannerAgent";
-      }
-
-.. autoclass:: agents.rag.flare.agent.FLAREPlannerAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for FLARERAGAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_FLARERAGAgent {
-        node [shape=record];
-        "FLARERAGAgent" [label="FLARERAGAgent"];
-        "haive.agents.multi.base.SequentialAgent" -> "FLARERAGAgent";
-      }
-
-.. autoclass:: agents.rag.flare.agent.FLARERAGAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for FLAREResult:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_FLAREResult {
-        node [shape=record];
-        "FLAREResult" [label="FLAREResult"];
-        "pydantic.BaseModel" -> "FLAREResult";
-      }
-
-.. autopydantic_model:: agents.rag.flare.agent.FLAREResult
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
-
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for RetrievalDecision:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_RetrievalDecision {
-        node [shape=record];
-        "RetrievalDecision" [label="RetrievalDecision"];
-        "str" -> "RetrievalDecision";
-        "enum.Enum" -> "RetrievalDecision";
-      }
-
-.. autoclass:: agents.rag.flare.agent.RetrievalDecision
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-   .. note::
-
-      **RetrievalDecision** is an Enum defined in ``agents.rag.flare.agent``.
-
-
-
 Functions
 ---------
 
@@ -216,6 +49,391 @@ Functions
    agents.rag.flare.agent.create_flare_planner_callable
    agents.rag.flare.agent.create_flare_rag_agent
    agents.rag.flare.agent.get_flare_rag_io_schema
+
+
+Module Contents
+---------------
+
+.. py:class:: ActiveRetrievalAgent
+
+   Bases: :py:obj:`haive.agents.base.agent.Agent`
+
+
+   Agent that performs active retrieval based on FLARE plans.
+
+
+   .. autolink-examples:: ActiveRetrievalAgent
+      :collapse:
+
+   .. py:method:: build_graph() -> haive.core.graph.state_graph.base_graph2.BaseGraph
+
+      Build active retrieval graph.
+
+
+      .. autolink-examples:: build_graph
+         :collapse:
+
+
+   .. py:attribute:: documents
+      :type:  list[langchain_core.documents.Document]
+      :value: None
+
+
+
+   .. py:attribute:: embedding_model
+      :type:  str | None
+      :value: None
+
+
+
+   .. py:attribute:: name
+      :type:  str
+      :value: 'Active Retrieval'
+
+
+
+.. py:class:: ConfidenceLevel
+
+   Bases: :py:obj:`str`, :py:obj:`enum.Enum`
+
+
+   Confidence levels for generation.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: ConfidenceLevel
+      :collapse:
+
+   .. py:attribute:: HIGH
+      :value: 'high'
+
+
+
+   .. py:attribute:: LOW
+      :value: 'low'
+
+
+
+   .. py:attribute:: MEDIUM
+      :value: 'medium'
+
+
+
+   .. py:attribute:: VERY_HIGH
+      :value: 'very_high'
+
+
+
+.. py:class:: FLAREPlan(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Forward-looking plan for active retrieval.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: FLAREPlan
+      :collapse:
+
+   .. py:attribute:: completion_criteria
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: confidence_in_current
+      :type:  ConfidenceLevel
+      :value: None
+
+
+
+   .. py:attribute:: current_query
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: evidence_sufficiency
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: expected_length
+      :type:  int
+      :value: None
+
+
+
+   .. py:attribute:: generation_so_far
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: hallucination_risk
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: next_generation_focus
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: next_sentences_needed
+      :type:  int
+      :value: None
+
+
+
+   .. py:attribute:: planning_metadata
+      :type:  dict[str, Any]
+      :value: None
+
+
+
+   .. py:attribute:: retrieval_decision
+      :type:  RetrievalDecision
+      :value: None
+
+
+
+   .. py:attribute:: retrieval_justification
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: retrieval_queries
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: uncertainty_tokens
+      :type:  list[str]
+      :value: None
+
+
+
+.. py:class:: FLAREPlannerAgent
+
+   Bases: :py:obj:`haive.agents.base.agent.Agent`
+
+
+   Agent that creates FLARE plans for iterative generation and active retrieval.
+
+
+   .. autolink-examples:: FLAREPlannerAgent
+      :collapse:
+
+   .. py:method:: build_graph() -> haive.core.graph.state_graph.base_graph2.BaseGraph
+
+      Build FLARE planning graph.
+
+
+      .. autolink-examples:: build_graph
+         :collapse:
+
+
+   .. py:attribute:: llm_config
+      :type:  haive.core.models.llm.base.LLMConfig
+      :value: None
+
+
+
+   .. py:attribute:: name
+      :type:  str
+      :value: 'FLARE Planner'
+
+
+
+.. py:class:: FLARERAGAgent
+
+   Bases: :py:obj:`haive.agents.multi.base.SequentialAgent`
+
+
+   Complete FLARE RAG agent with forward-looking active retrieval.
+
+
+   .. autolink-examples:: FLARERAGAgent
+      :collapse:
+
+   .. py:method:: from_documents(documents: list[langchain_core.documents.Document], llm_config: haive.core.models.llm.base.LLMConfig | None = None, max_iterations: int = 5, confidence_threshold: float = 0.7, **kwargs)
+      :classmethod:
+
+
+      Create FLARE RAG agent from documents.
+
+      :param documents: Documents to index
+      :param llm_config: LLM configuration
+      :param max_iterations: Maximum FLARE iterations
+      :param confidence_threshold: Confidence threshold for retrieval
+      :param \*\*kwargs: Additional arguments
+
+      :returns: FLARERAGAgent instance
+
+
+      .. autolink-examples:: from_documents
+         :collapse:
+
+
+.. py:class:: FLAREResult(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Results from FLARE processing.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: FLAREResult
+      :collapse:
+
+   .. py:attribute:: documents_retrieved
+      :type:  int
+      :value: None
+
+
+
+   .. py:attribute:: evidence_coverage
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: factual_grounding
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: final_response
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: generation_confidence
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: iteration_history
+      :type:  list[dict[str, Any]]
+      :value: None
+
+
+
+   .. py:attribute:: original_query
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: processing_metadata
+      :type:  dict[str, Any]
+      :value: None
+
+
+
+   .. py:attribute:: retrieval_decisions
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: retrieval_efficiency
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: retrieval_queries_used
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: retrieval_rounds
+      :type:  int
+      :value: None
+
+
+
+   .. py:attribute:: total_iterations
+      :type:  int
+      :value: None
+
+
+
+   .. py:attribute:: uncertainty_reduction
+      :type:  float
+      :value: None
+
+
+
+.. py:class:: RetrievalDecision
+
+   Bases: :py:obj:`str`, :py:obj:`enum.Enum`
+
+
+   Decisions for active retrieval.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: RetrievalDecision
+      :collapse:
+
+   .. py:attribute:: COMPLETE
+      :value: 'complete'
+
+
+
+   .. py:attribute:: CONTINUE
+      :value: 'continue'
+
+
+
+   .. py:attribute:: RETRIEVE
+      :value: 'retrieve'
+
+
 
 .. py:function:: create_active_retrieval_callable(documents: list[langchain_core.documents.Document], embedding_model: str | None = None)
 
@@ -256,11 +474,9 @@ Functions
    .. autolink-examples:: get_flare_rag_io_schema
       :collapse:
 
+.. py:data:: FLARE_GENERATION_PROMPT
 
+.. py:data:: FLARE_PLANNING_PROMPT
 
-.. rubric:: Related Links
+.. py:data:: logger
 
-.. autolink-examples:: agents.rag.flare.agent
-   :collapse:
-   
-.. autolink-skip:: next

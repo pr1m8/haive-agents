@@ -1,6 +1,5 @@
-
-:py:mod:`agents.document_modifiers.summarizer.map_branch.config`
-================================================================
+agents.document_modifiers.summarizer.map_branch.config
+======================================================
 
 .. py:module:: agents.document_modifiers.summarizer.map_branch.config
 
@@ -16,33 +15,59 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: SummarizerAgentConfig
+
+   Bases: :py:obj:`haive.core.engine.agent.agent.AgentConfig`
+
+
+   .. py:method:: build_agent() -> Any
+
+
+   .. py:attribute:: checkpoint_mode
+      :type:  str
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for SummarizerAgentConfig:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_SummarizerAgentConfig {
-        node [shape=record];
-        "SummarizerAgentConfig" [label="SummarizerAgentConfig"];
-        "haive.core.engine.agent.agent.AgentConfig" -> "SummarizerAgentConfig";
-      }
-
-.. autoclass:: agents.document_modifiers.summarizer.map_branch.config.SummarizerAgentConfig
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. py:attribute:: engines
+      :type:  dict[str, haive.core.engine.aug_llm.AugLLMConfig]
+      :value: None
 
 
 
+   .. py:attribute:: input_schema
+      :type:  haive.agents.document_modifiers.summarizer.map_branch.state.InputState
+      :value: None
 
-.. rubric:: Related Links
 
-.. autolink-examples:: agents.document_modifiers.summarizer.map_branch.config
-   :collapse:
-   
-.. autolink-skip:: next
+
+   .. py:attribute:: name
+      :type:  str
+      :value: 'map_reduce_summarizer_agent'
+
+
+
+   .. py:attribute:: output_schema
+      :type:  haive.agents.document_modifiers.summarizer.map_branch.state.OutputState
+      :value: None
+
+
+
+   .. py:attribute:: state_schema
+      :type:  haive.agents.document_modifiers.summarizer.map_branch.state.SummaryState
+      :value: None
+
+
+
+   .. py:attribute:: token_max
+      :type:  int
+      :value: None
+
+
+
+   .. py:attribute:: visualize
+      :type:  bool
+      :value: True
+
+
+

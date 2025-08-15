@@ -1,27 +1,38 @@
-
-:py:mod:`agents.task_analysis.decomposer`
-=========================================
+agents.task_analysis.decomposer
+===============================
 
 .. py:module:: agents.task_analysis.decomposer
 
-Decomposer - TODO: Add brief description.
+.. autoapi-nested-parse::
 
-TODO: Add detailed description of module functionality
+   Decomposer - TODO: Add brief description.
 
-
-
-.. rubric:: Example
-
-Basic usage::
-
-    from haive.decomposer import module_function
-
-    # TODO: Add example
+   TODO: Add detailed description of module functionality
 
 
-.. autolink-examples:: agents.task_analysis.decomposer
-   :collapse:
+
+   .. rubric:: Example
+
+   Basic usage::
+
+       from haive.decomposer import module_function
+
+       # TODO: Add example
 
 
+   .. autolink-examples:: agents.task_analysis.decomposer
+      :collapse:
+
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/agents/task_analysis/decomposer/engines/index
+   /autoapi/agents/task_analysis/decomposer/models/index
+   /autoapi/agents/task_analysis/decomposer/prompt/index
+   /autoapi/agents/task_analysis/decomposer/prompts/index
 
 

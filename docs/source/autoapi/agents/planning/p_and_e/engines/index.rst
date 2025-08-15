@@ -1,17 +1,28 @@
-
-:py:mod:`agents.planning.p_and_e.engines`
-=========================================
+agents.planning.p_and_e.engines
+===============================
 
 .. py:module:: agents.planning.p_and_e.engines
 
-AugLLM configurations for Plan and Execute Agent System.
+.. autoapi-nested-parse::
 
-This module defines the AugLLM configurations for planning, execution,
-and replanning agents.
+   AugLLM configurations for Plan and Execute Agent System.
+
+   This module defines the AugLLM configurations for planning, execution,
+   and replanning agents.
 
 
-.. autolink-examples:: agents.planning.p_and_e.engines
-   :collapse:
+   .. autolink-examples:: agents.planning.p_and_e.engines
+      :collapse:
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.planning.p_and_e.engines.executor_aug_llm_config
+   agents.planning.p_and_e.engines.planner_aug_llm_config
+   agents.planning.p_and_e.engines.replan_aug_llm_config
 
 
 Functions
@@ -22,6 +33,10 @@ Functions
    agents.planning.p_and_e.engines.create_executor_aug_llm_config
    agents.planning.p_and_e.engines.create_planner_aug_llm_config
    agents.planning.p_and_e.engines.create_replan_aug_llm_config
+
+
+Module Contents
+---------------
 
 .. py:function:: create_executor_aug_llm_config(model_name: str = 'gpt-4o', tools: list[langchain_core.tools.BaseTool] | None = None, force_tool_use: bool = False) -> haive.core.engine.aug_llm.AugLLMConfig
 
@@ -66,11 +81,9 @@ Functions
    .. autolink-examples:: create_replan_aug_llm_config
       :collapse:
 
+.. py:data:: executor_aug_llm_config
 
+.. py:data:: planner_aug_llm_config
 
-.. rubric:: Related Links
+.. py:data:: replan_aug_llm_config
 
-.. autolink-examples:: agents.planning.p_and_e.engines
-   :collapse:
-   
-.. autolink-skip:: next

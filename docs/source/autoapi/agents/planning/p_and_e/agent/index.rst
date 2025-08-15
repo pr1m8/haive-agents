@@ -1,8 +1,15 @@
-
-:py:mod:`agents.planning.p_and_e.agent`
-=======================================
+agents.planning.p_and_e.agent
+=============================
 
 .. py:module:: agents.planning.p_and_e.agent
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.planning.p_and_e.agent.logger
 
 
 Classes
@@ -13,31 +20,6 @@ Classes
    agents.planning.p_and_e.agent.PlanAndExecuteAgent
 
 
-Module Contents
----------------
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for PlanAndExecuteAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_PlanAndExecuteAgent {
-        node [shape=record];
-        "PlanAndExecuteAgent" [label="PlanAndExecuteAgent"];
-        "haive.agents.base.agent.Agent" -> "PlanAndExecuteAgent";
-      }
-
-.. autoclass:: agents.planning.p_and_e.agent.PlanAndExecuteAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
 Functions
 ---------
 
@@ -45,6 +27,57 @@ Functions
 
    agents.planning.p_and_e.agent.check_plan_complete
    agents.planning.p_and_e.agent.route_after_evaluation
+
+
+Module Contents
+---------------
+
+.. py:class:: PlanAndExecuteAgent
+
+   Bases: :py:obj:`haive.agents.base.agent.Agent`
+
+
+   Plan and Execute agent that orchestrates planning, execution, and replanning.
+
+
+   .. autolink-examples:: PlanAndExecuteAgent
+      :collapse:
+
+   .. py:method:: build_graph() -> haive.core.graph.state_graph.base_graph2.BaseGraph
+
+      Build the plan-execute-replan graph.
+
+
+      .. autolink-examples:: build_graph
+         :collapse:
+
+
+   .. py:method:: setup_agent() -> None
+
+      Set up the three engines required for plan-execute-replan workflow.
+
+
+      .. autolink-examples:: setup_agent
+         :collapse:
+
+
+   .. py:attribute:: state_schema
+      :type:  type
+      :value: None
+
+
+
+   .. py:attribute:: tools
+      :type:  list[langchain_core.tools.BaseTool]
+      :value: None
+
+
+
+   .. py:attribute:: use_prebuilt_base
+      :type:  bool
+      :value: None
+
+
 
 .. py:function:: check_plan_complete(state: haive.agents.planning.p_and_e.state.PlanExecuteState) -> str
 
@@ -62,11 +95,5 @@ Functions
    .. autolink-examples:: route_after_evaluation
       :collapse:
 
+.. py:data:: logger
 
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.planning.p_and_e.agent
-   :collapse:
-   
-.. autolink-skip:: next

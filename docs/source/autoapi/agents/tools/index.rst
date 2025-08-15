@@ -1,9 +1,15 @@
-
-:py:mod:`agents.tools`
-======================
+agents.tools
+============
 
 .. py:module:: agents.tools
 
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.tools.logger
 
 
 Functions
@@ -17,6 +23,10 @@ Functions
    agents.tools.to_google
    agents.tools.type_text
    agents.tools.wait
+
+
+Module Contents
+---------------
 
 .. py:function:: click(state: dict[str, Any]) -> dict[str, Any]
    :async:
@@ -78,11 +88,5 @@ Functions
    .. autolink-examples:: wait
       :collapse:
 
+.. py:data:: logger
 
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.tools
-   :collapse:
-   
-.. autolink-skip:: next

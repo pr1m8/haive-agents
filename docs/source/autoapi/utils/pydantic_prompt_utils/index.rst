@@ -1,24 +1,26 @@
-
-:py:mod:`utils.pydantic_prompt_utils`
-=====================================
+utils.pydantic_prompt_utils
+===========================
 
 .. py:module:: utils.pydantic_prompt_utils
 
-Utilities for converting Pydantic models to prompt templates.
+.. autoapi-nested-parse::
 
-This module provides utilities to create prompt templates from Pydantic models,
-supporting the structured output pattern where prompts focus on generation
-and parsers handle the structured parsing separately.
+   Utilities for converting Pydantic models to prompt templates.
 
-Key features:
-- Generate prompts that guide LLMs to create content parseable by Pydantic models
-- Support for different prompt styles (descriptive, example-based, schema-based)
-- Field-specific guidance and constraints
-- Optional examples and formatting hints
+   This module provides utilities to create prompt templates from Pydantic models,
+   supporting the structured output pattern where prompts focus on generation
+   and parsers handle the structured parsing separately.
+
+   Key features:
+   - Generate prompts that guide LLMs to create content parseable by Pydantic models
+   - Support for different prompt styles (descriptive, example-based, schema-based)
+   - Field-specific guidance and constraints
+   - Optional examples and formatting hints
 
 
-.. autolink-examples:: utils.pydantic_prompt_utils
-   :collapse:
+   .. autolink-examples:: utils.pydantic_prompt_utils
+      :collapse:
+
 
 Classes
 -------
@@ -27,66 +29,6 @@ Classes
 
    utils.pydantic_prompt_utils.PromptStyle
    utils.pydantic_prompt_utils.PydanticPromptConfig
-
-
-Module Contents
----------------
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for PromptStyle:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_PromptStyle {
-        node [shape=record];
-        "PromptStyle" [label="PromptStyle"];
-        "str" -> "PromptStyle";
-        "enum.Enum" -> "PromptStyle";
-      }
-
-.. autoclass:: utils.pydantic_prompt_utils.PromptStyle
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-   .. note::
-
-      **PromptStyle** is an Enum defined in ``utils.pydantic_prompt_utils``.
-
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for PydanticPromptConfig:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_PydanticPromptConfig {
-        node [shape=record];
-        "PydanticPromptConfig" [label="PydanticPromptConfig"];
-        "pydantic.BaseModel" -> "PydanticPromptConfig";
-      }
-
-.. autopydantic_model:: utils.pydantic_prompt_utils.PydanticPromptConfig
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
-
 
 
 Functions
@@ -102,6 +44,116 @@ Functions
    utils.pydantic_prompt_utils.create_pydantic_prompt
    utils.pydantic_prompt_utils.generate_field_description
    utils.pydantic_prompt_utils.quick_pydantic_prompt
+
+
+Module Contents
+---------------
+
+.. py:class:: PromptStyle
+
+   Bases: :py:obj:`str`, :py:obj:`enum.Enum`
+
+
+   Different styles for generating prompts from Pydantic models.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: PromptStyle
+      :collapse:
+
+   .. py:attribute:: DESCRIPTIVE
+      :value: 'descriptive'
+
+
+
+   .. py:attribute:: EXAMPLE_BASED
+      :value: 'example_based'
+
+
+
+   .. py:attribute:: NATURAL
+      :value: 'natural'
+
+
+
+   .. py:attribute:: SCHEMA_BASED
+      :value: 'schema_based'
+
+
+
+   .. py:attribute:: STRUCTURED
+      :value: 'structured'
+
+
+
+.. py:class:: PydanticPromptConfig(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Configuration for Pydantic model to prompt conversion.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: PydanticPromptConfig
+      :collapse:
+
+   .. py:attribute:: custom_instructions
+      :type:  str | None
+      :value: None
+
+
+
+   .. py:attribute:: field_priorities
+      :type:  dict[str, int] | None
+      :value: None
+
+
+
+   .. py:attribute:: include_constraints
+      :type:  bool
+      :value: None
+
+
+
+   .. py:attribute:: include_examples
+      :type:  bool
+      :value: None
+
+
+
+   .. py:attribute:: include_field_types
+      :type:  bool
+      :value: None
+
+
+
+   .. py:attribute:: style
+      :type:  PromptStyle
+      :value: None
+
+
+
+   .. py:attribute:: use_json_format
+      :type:  bool
+      :value: None
+
+
 
 .. py:function:: analyze_pydantic_field(field_info: Any, field_name: str) -> dict[str, Any]
 
@@ -215,11 +267,3 @@ Functions
    .. autolink-examples:: quick_pydantic_prompt
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: utils.pydantic_prompt_utils
-   :collapse:
-   
-.. autolink-skip:: next

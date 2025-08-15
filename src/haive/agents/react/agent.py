@@ -93,7 +93,6 @@ from langchain_core.tools import BaseTool, tool
 from langgraph.graph import END
 from pydantic import BaseModel, Field, field_validator
 
-from haive.agents.base.agent import Agent
 from haive.agents.simple.agent import SimpleAgent
 
 logger = logging.getLogger(__name__)

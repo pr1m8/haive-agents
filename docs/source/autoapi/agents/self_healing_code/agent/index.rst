@@ -1,6 +1,5 @@
-
-:py:mod:`agents.self_healing_code.agent`
-========================================
+agents.self_healing_code.agent
+==============================
 
 .. py:module:: agents.self_healing_code.agent
 
@@ -17,54 +16,94 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: SelfHealingCodeAgent
+
+   Bases: :py:obj:`AgentArchitecture`
 
 
+   .. py:method:: bug_report_node()
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for SelfHealingCodeAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_SelfHealingCodeAgent {
-        node [shape=record];
-        "SelfHealingCodeAgent" [label="SelfHealingCodeAgent"];
-        "AgentArchitecture" -> "SelfHealingCodeAgent";
-      }
-
-.. autoclass:: agents.self_healing_code.agent.SelfHealingCodeAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
+      Generate Bug Report.
 
 
+      .. autolink-examples:: bug_report_node
+         :collapse:
 
 
-.. toggle:: Show Inheritance Diagram
+   .. py:method:: code_execution_node()
 
-   Inheritance diagram for SelfHealingCodeAgentConfig:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_SelfHealingCodeAgentConfig {
-        node [shape=record];
-        "SelfHealingCodeAgentConfig" [label="SelfHealingCodeAgentConfig"];
-        "AgentArchitectureConfig" -> "SelfHealingCodeAgentConfig";
-      }
-
-.. autoclass:: agents.self_healing_code.agent.SelfHealingCodeAgentConfig
-   :members:
-   :undoc-members:
-   :show-inheritance:
+      Run Arbitrary Code.
 
 
+      .. autolink-examples:: code_execution_node
+         :collapse:
 
 
-.. rubric:: Related Links
+   .. py:method:: code_patching_node()
 
-.. autolink-examples:: agents.self_healing_code.agent
-   :collapse:
-   
-.. autolink-skip:: next
+      Fix Arbitrary Code.
+
+
+      .. autolink-examples:: code_patching_node
+         :collapse:
+
+
+   .. py:method:: code_update_node()
+
+      Update Arbitratry Code.
+
+
+      .. autolink-examples:: code_update_node
+         :collapse:
+
+
+   .. py:method:: memory_filter_node()
+
+
+   .. py:method:: memory_generation_node()
+
+      Generate relevant memories based on new bug report.
+
+
+      .. autolink-examples:: memory_generation_node
+         :collapse:
+
+
+   .. py:method:: memory_modification_node()
+
+      Modify relevant memories based on new interaction.
+
+
+      .. autolink-examples:: memory_modification_node
+         :collapse:
+
+
+   .. py:method:: memory_search_node()
+
+      Find memories relevant to the current bug report.
+
+
+      .. autolink-examples:: memory_search_node
+         :collapse:
+
+
+   .. py:method:: setup_workflow() -> None
+
+
+   .. py:attribute:: config
+      :type:  SelfHealingCodeAgentConfig
+
+
+   .. py:attribute:: state
+      :type:  SelfHealingCodeState
+
+
+.. py:class:: SelfHealingCodeAgentConfig
+
+   Bases: :py:obj:`AgentArchitectureConfig`
+
+
+   .. py:attribute:: state_schema
+      :type:  SelfHealingCodeState
+
+

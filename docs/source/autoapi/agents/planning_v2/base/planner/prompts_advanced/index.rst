@@ -1,14 +1,24 @@
-
-:py:mod:`agents.planning_v2.base.planner.prompts_advanced`
-==========================================================
+agents.planning_v2.base.planner.prompts_advanced
+================================================
 
 .. py:module:: agents.planning_v2.base.planner.prompts_advanced
 
-Advanced prompt patterns for the planner using MessagesPlaceholder.
+.. autoapi-nested-parse::
+
+   Advanced prompt patterns for the planner using MessagesPlaceholder.
 
 
-.. autolink-examples:: agents.planning_v2.base.planner.prompts_advanced
-   :collapse:
+   .. autolink-examples:: agents.planning_v2.base.planner.prompts_advanced
+      :collapse:
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.planning_v2.base.planner.prompts_advanced.planner_prompt_dynamic
+   agents.planning_v2.base.planner.prompts_advanced.planner_prompt_with_placeholder
 
 
 Functions
@@ -18,6 +28,10 @@ Functions
 
    agents.planning_v2.base.planner.prompts_advanced.get_environment_context
    agents.planning_v2.base.planner.prompts_advanced.plan_with_context_messages
+
+
+Module Contents
+---------------
 
 .. py:function:: get_environment_context()
 
@@ -42,11 +56,7 @@ Functions
    .. autolink-examples:: plan_with_context_messages
       :collapse:
 
+.. py:data:: planner_prompt_dynamic
 
+.. py:data:: planner_prompt_with_placeholder
 
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.planning_v2.base.planner.prompts_advanced
-   :collapse:
-   
-.. autolink-skip:: next

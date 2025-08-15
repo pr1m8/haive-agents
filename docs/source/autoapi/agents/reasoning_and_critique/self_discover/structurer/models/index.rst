@@ -1,14 +1,16 @@
-
-:py:mod:`agents.reasoning_and_critique.self_discover.structurer.models`
-=======================================================================
+agents.reasoning_and_critique.self_discover.structurer.models
+=============================================================
 
 .. py:module:: agents.reasoning_and_critique.self_discover.structurer.models
 
-Models for the Self-Discover Structurer Agent.
+.. autoapi-nested-parse::
+
+   Models for the Self-Discover Structurer Agent.
 
 
-.. autolink-examples:: agents.reasoning_and_critique.self_discover.structurer.models
-   :collapse:
+   .. autolink-examples:: agents.reasoning_and_critique.self_discover.structurer.models
+      :collapse:
+
 
 Classes
 -------
@@ -22,70 +24,107 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: ReasoningStep(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   A single step in the structured reasoning process.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: ReasoningStep
+      :collapse:
+
+   .. py:attribute:: dependencies
+      :type:  list[str]
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ReasoningStep:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ReasoningStep {
-        node [shape=record];
-        "ReasoningStep" [label="ReasoningStep"];
-        "pydantic.BaseModel" -> "ReasoningStep";
-      }
-
-.. autopydantic_model:: agents.reasoning_and_critique.self_discover.structurer.models.ReasoningStep
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: expected_output
+      :type:  str
+      :value: None
 
 
 
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ReasoningStructure:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ReasoningStructure {
-        node [shape=record];
-        "ReasoningStructure" [label="ReasoningStructure"];
-        "pydantic.BaseModel" -> "ReasoningStructure";
-      }
-
-.. autopydantic_model:: agents.reasoning_and_critique.self_discover.structurer.models.ReasoningStructure
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: guiding_questions
+      :type:  list[str]
+      :value: None
 
 
 
+   .. py:attribute:: step_name
+      :type:  str
+      :value: None
 
 
-.. rubric:: Related Links
 
-.. autolink-examples:: agents.reasoning_and_critique.self_discover.structurer.models
-   :collapse:
-   
-.. autolink-skip:: next
+   .. py:attribute:: step_number
+      :type:  int
+      :value: None
+
+
+
+.. py:class:: ReasoningStructure(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   The complete structured reasoning plan.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: ReasoningStructure
+      :collapse:
+
+   .. py:attribute:: execution_notes
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: integration_approach
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: reasoning_steps
+      :type:  list[ReasoningStep]
+      :value: None
+
+
+
+   .. py:attribute:: success_criteria
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: task_context
+      :type:  str
+      :value: None
+
+
+

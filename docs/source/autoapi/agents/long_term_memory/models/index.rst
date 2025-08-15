@@ -1,6 +1,5 @@
-
-:py:mod:`agents.long_term_memory.models`
-========================================
+agents.long_term_memory.models
+==============================
 
 .. py:module:: agents.long_term_memory.models
 
@@ -16,41 +15,43 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: KnowledgeTriple(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   A knowledge triple is a tuple of (subject, predicate, object).
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: KnowledgeTriple
+      :collapse:
+
+   .. py:attribute:: object_
+      :type:  str
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for KnowledgeTriple:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_KnowledgeTriple {
-        node [shape=record];
-        "KnowledgeTriple" [label="KnowledgeTriple"];
-        "pydantic.BaseModel" -> "KnowledgeTriple";
-      }
-
-.. autopydantic_model:: agents.long_term_memory.models.KnowledgeTriple
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: predicate
+      :type:  str
+      :value: None
 
 
 
+   .. py:attribute:: subject
+      :type:  str
+      :value: None
 
 
-.. rubric:: Related Links
 
-.. autolink-examples:: agents.long_term_memory.models
-   :collapse:
-   
-.. autolink-skip:: next

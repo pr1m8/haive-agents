@@ -1,17 +1,18 @@
-
-:py:mod:`agents.document_loader.examples.usage_examples`
-========================================================
+agents.document_loader.examples.usage_examples
+==============================================
 
 .. py:module:: agents.document_loader.examples.usage_examples
 
-Document Loader Agent Usage Examples.
+.. autoapi-nested-parse::
 
-from typing import Any
-This module demonstrates how to use the document loader agents in various scenarios.
+   Document Loader Agent Usage Examples.
+
+   from typing import Any
+   This module demonstrates how to use the document loader agents in various scenarios.
 
 
-.. autolink-examples:: agents.document_loader.examples.usage_examples
-   :collapse:
+   .. autolink-examples:: agents.document_loader.examples.usage_examples
+      :collapse:
 
 
 Functions
@@ -25,6 +26,10 @@ Functions
    agents.document_loader.examples.usage_examples.example_file_loader
    agents.document_loader.examples.usage_examples.example_rag_integration
    agents.document_loader.examples.usage_examples.example_web_loader
+
+
+Module Contents
+---------------
 
 .. py:function:: example_async_loading()
    :async:
@@ -76,11 +81,3 @@ Functions
    .. autolink-examples:: example_web_loader
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.document_loader.examples.usage_examples
-   :collapse:
-   
-.. autolink-skip:: next

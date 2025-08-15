@@ -1,82 +1,92 @@
-
-:py:mod:`agents.planning.clean_plan_execute`
-============================================
+agents.planning.clean_plan_execute
+==================================
 
 .. py:module:: agents.planning.clean_plan_execute
 
-Clean Plan and Execute Implementation following LangGraph patterns.
+.. autoapi-nested-parse::
 
-This module provides the **recommended** implementation for simple sequential planning tasks.
-It follows the standard LangGraph Plan and Execute pattern with minimal complexity and
-clear, understandable routing logic.
+   Clean Plan and Execute Implementation following LangGraph patterns.
 
-## Key Features
+   This module provides the **recommended** implementation for simple sequential planning tasks.
+   It follows the standard LangGraph Plan and Execute pattern with minimal complexity and
+   clear, understandable routing logic.
 
-- **Simple Models**: Clean Plan and Act models without overcomplication
-- **MultiAgentBase**: Leverages multi-agent orchestration for clean separation
-- **React Agent**: Uses ReactAgent for tool-based step execution
-- **Simple Agent**: Uses SimpleAgent for planning and replanning
-- **Clean Routing**: Straightforward routing logic with clear decision points
+   ## Key Features
 
-## Architecture
+   - **Simple Models**: Clean Plan and Act models without overcomplication
+   - **MultiAgentBase**: Leverages multi-agent orchestration for clean separation
+   - **React Agent**: Uses ReactAgent for tool-based step execution
+   - **Simple Agent**: Uses SimpleAgent for planning and replanning
+   - **Clean Routing**: Straightforward routing logic with clear decision points
 
-```
-Planner (SimpleAgent)
-    ↓
-Executor (ReactAgent) ←─┐
-    ↓                   │
-Route Decision ─────────┘
-    ↓
-Replanner (SimpleAgent)
-    ↓
-END or back to Executor
-```
+   ## Architecture
 
-## Usage
+   ```
+   Planner (SimpleAgent)
+       ↓
+   Executor (ReactAgent) ←─┐
+       ↓                   │
+   Route Decision ─────────┘
+       ↓
+   Replanner (SimpleAgent)
+       ↓
+   END or back to Executor
+   ```
 
-### Basic Example
-```python
-from haive.agents.planning import create_simple_plan_execute
-from haive.tools import calculator_tool
+   ## Usage
 
-agent = create_simple_plan_execute(tools=[calculator_tool])
-result = agent.run("Calculate the compound interest on $1000 at 5% for 10 years")
-```
+   ### Basic Example
+   ```python
+   from haive.agents.planning import create_simple_plan_execute
+   from haive.tools import calculator_tool
 
-### Advanced Example
-```python
-from haive.agents.planning import create_clean_plan_execute_agent
+   agent = create_simple_plan_execute(tools=[calculator_tool])
+   result = agent.run("Calculate the compound interest on $1000 at 5% for 10 years")
+   ```
 
-agent = create_clean_plan_execute_agent(
-    name="MyPlanner",
-    planner_model="gpt-4",
-    executor_model="gpt-3.5-turbo",
-    tools=[web_search, calculator, file_reader]
-)
+   ### Advanced Example
+   ```python
+   from haive.agents.planning import create_clean_plan_execute_agent
 
-result = agent.run("Research tech stocks and calculate potential returns")
-```
+   agent = create_clean_plan_execute_agent(
+       name="MyPlanner",
+       planner_model="gpt-4",
+       executor_model="gpt-3.5-turbo",
+       tools=[web_search, calculator, file_reader]
+   )
 
-## When to Use
+   result = agent.run("Research tech stocks and calculate potential returns")
+   ```
 
-✅ **Use this implementation when**:
-- You need simple, sequential planning
-- Tasks have clear step-by-step execution
-- You want minimal complexity
-- You're starting with planning agents
+   ## When to Use
 
-❌ **Consider alternatives when**:
-- You need parallel execution (use ReWOO)
-- You need complex replanning logic (use proper_plan_execute)
-- You need DAG-based planning (use llm_compiler)
+   ✅ **Use this implementation when**:
+   - You need simple, sequential planning
+   - Tasks have clear step-by-step execution
+   - You want minimal complexity
+   - You're starting with planning agents
 
-## Status: Recommended for Simple Planning Tasks
+   ❌ **Consider alternatives when**:
+   - You need parallel execution (use ReWOO)
+   - You need complex replanning logic (use proper_plan_execute)
+   - You need DAG-based planning (use llm_compiler)
 
-This is the go-to implementation for straightforward planning needs.
+   ## Status: Recommended for Simple Planning Tasks
+
+   This is the go-to implementation for straightforward planning needs.
 
 
-.. autolink-examples:: agents.planning.clean_plan_execute
-   :collapse:
+   .. autolink-examples:: agents.planning.clean_plan_execute
+      :collapse:
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.planning.clean_plan_execute.agent
+
 
 Classes
 -------
@@ -88,89 +98,6 @@ Classes
    agents.planning.clean_plan_execute.PlanExecuteState
 
 
-Module Contents
----------------
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for Act:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_Act {
-        node [shape=record];
-        "Act" [label="Act"];
-        "pydantic.BaseModel" -> "Act";
-      }
-
-.. autopydantic_model:: agents.planning.clean_plan_execute.Act
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
-
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for Plan:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_Plan {
-        node [shape=record];
-        "Plan" [label="Plan"];
-        "pydantic.BaseModel" -> "Plan";
-      }
-
-.. autopydantic_model:: agents.planning.clean_plan_execute.Plan
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
-
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for PlanExecuteState:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_PlanExecuteState {
-        node [shape=record];
-        "PlanExecuteState" [label="PlanExecuteState"];
-        "haive.core.schema.prebuilt.messages.messages_state.MessagesState" -> "PlanExecuteState";
-      }
-
-.. autoclass:: agents.planning.clean_plan_execute.PlanExecuteState
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
 Functions
 ---------
 
@@ -180,6 +107,101 @@ Functions
    agents.planning.clean_plan_execute.create_simple_plan_execute
    agents.planning.clean_plan_execute.route_after_replan
    agents.planning.clean_plan_execute.should_continue
+
+
+Module Contents
+---------------
+
+.. py:class:: Act(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Action to take - either respond or replan.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: Act
+      :collapse:
+
+   .. py:attribute:: action
+      :type:  Literal['response', 'continue']
+      :value: None
+
+
+
+   .. py:attribute:: response
+      :type:  str
+      :value: None
+
+
+
+.. py:class:: Plan(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   A simple plan with list of steps.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: Plan
+      :collapse:
+
+   .. py:attribute:: steps
+      :type:  list[str]
+      :value: None
+
+
+
+.. py:class:: PlanExecuteState
+
+   Bases: :py:obj:`haive.core.schema.prebuilt.messages.messages_state.MessagesState`
+
+
+   Clean state schema for Plan and Execute.
+
+
+   .. autolink-examples:: PlanExecuteState
+      :collapse:
+
+   .. py:attribute:: past_steps
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: plan
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: response
+      :type:  str
+      :value: None
+
+
 
 .. py:function:: create_clean_plan_execute_agent(name: str = 'PlanExecute', planner_model: str = 'gpt-4o-mini', executor_model: str = 'gpt-4o-mini', tools: list | None = None) -> haive.agents.multi.archive.enhanced_base.MultiAgentBase
 
@@ -221,11 +243,5 @@ Functions
    .. autolink-examples:: should_continue
       :collapse:
 
+.. py:data:: agent
 
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.planning.clean_plan_execute
-   :collapse:
-   
-.. autolink-skip:: next

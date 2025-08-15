@@ -1,9 +1,15 @@
-
-:py:mod:`agents.reasoning_and_critique.logic.example`
-=====================================================
+agents.reasoning_and_critique.logic.example
+===========================================
 
 .. py:module:: agents.reasoning_and_critique.logic.example
 
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.reasoning_and_critique.logic.example.business_result
 
 
 Functions
@@ -13,6 +19,10 @@ Functions
 
    agents.reasoning_and_critique.logic.example.example_business_decision
    agents.reasoning_and_critique.logic.example.example_quick_reasoning
+
+
+Module Contents
+---------------
 
 .. py:function:: example_business_decision() -> Any
 
@@ -30,11 +40,5 @@ Functions
    .. autolink-examples:: example_quick_reasoning
       :collapse:
 
+.. py:data:: business_result
 
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.reasoning_and_critique.logic.example
-   :collapse:
-   
-.. autolink-skip:: next

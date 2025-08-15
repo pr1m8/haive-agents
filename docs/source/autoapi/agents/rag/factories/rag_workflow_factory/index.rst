@@ -1,18 +1,20 @@
-
-:py:mod:`agents.rag.factories.rag_workflow_factory`
-===================================================
+agents.rag.factories.rag_workflow_factory
+=========================================
 
 .. py:module:: agents.rag.factories.rag_workflow_factory
 
-RAG Workflow Factory.
+.. autoapi-nested-parse::
 
-Generic factory for creating RAG workflows by composing callable functions
-into different agent patterns. This provides a clean, modular approach to
-building complex RAG systems.
+   RAG Workflow Factory.
+
+   Generic factory for creating RAG workflows by composing callable functions
+   into different agent patterns. This provides a clean, modular approach to
+   building complex RAG systems.
 
 
-.. autolink-examples:: agents.rag.factories.rag_workflow_factory
-   :collapse:
+   .. autolink-examples:: agents.rag.factories.rag_workflow_factory
+      :collapse:
+
 
 Classes
 -------
@@ -21,52 +23,6 @@ Classes
 
    agents.rag.factories.rag_workflow_factory.ConditionalCallableAgent
    agents.rag.factories.rag_workflow_factory.GenericCallableAgent
-
-
-Module Contents
----------------
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ConditionalCallableAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ConditionalCallableAgent {
-        node [shape=record];
-        "ConditionalCallableAgent" [label="ConditionalCallableAgent"];
-        "haive.agents.base.agent.Agent" -> "ConditionalCallableAgent";
-      }
-
-.. autoclass:: agents.rag.factories.rag_workflow_factory.ConditionalCallableAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for GenericCallableAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_GenericCallableAgent {
-        node [shape=record];
-        "GenericCallableAgent" [label="GenericCallableAgent"];
-        "haive.agents.base.agent.Agent" -> "GenericCallableAgent";
-      }
-
-.. autoclass:: agents.rag.factories.rag_workflow_factory.GenericCallableAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
 
 Functions
@@ -81,6 +37,59 @@ Functions
    agents.rag.factories.rag_workflow_factory.create_rag_workflow
    agents.rag.factories.rag_workflow_factory.create_self_rag_agent
    agents.rag.factories.rag_workflow_factory.create_step_back_rag_agent
+
+
+Module Contents
+---------------
+
+.. py:class:: ConditionalCallableAgent(router_callable: collections.abc.Callable, action_callables: dict[str, collections.abc.Callable], name: str = 'Conditional Callable Agent', **kwargs)
+
+   Bases: :py:obj:`haive.agents.base.agent.Agent`
+
+
+   Agent with conditional routing based on callable results.
+
+
+   .. autolink-examples:: ConditionalCallableAgent
+      :collapse:
+
+   .. py:method:: build_graph() -> haive.core.graph.state_graph.base_graph2.BaseGraph
+
+      Build graph with conditional routing.
+
+
+      .. autolink-examples:: build_graph
+         :collapse:
+
+
+   .. py:attribute:: action_callables
+
+
+   .. py:attribute:: router_callable
+
+
+.. py:class:: GenericCallableAgent(callables: list[collections.abc.Callable], name: str = 'Generic Callable Agent', **kwargs)
+
+   Bases: :py:obj:`haive.agents.base.agent.Agent`
+
+
+   Generic agent that executes a sequence of callable functions.
+
+
+   .. autolink-examples:: GenericCallableAgent
+      :collapse:
+
+   .. py:method:: build_graph() -> haive.core.graph.state_graph.base_graph2.BaseGraph
+
+      Build graph with callable sequence.
+
+
+      .. autolink-examples:: build_graph
+         :collapse:
+
+
+   .. py:attribute:: callables
+
 
 .. py:function:: create_adaptive_rag_agent(documents: list[langchain_core.documents.Document] | None = None, name: str = 'Adaptive RAG Agent') -> haive.agents.base.agent.Agent
 
@@ -154,11 +163,3 @@ Functions
    .. autolink-examples:: create_step_back_rag_agent
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.rag.factories.rag_workflow_factory
-   :collapse:
-   
-.. autolink-skip:: next

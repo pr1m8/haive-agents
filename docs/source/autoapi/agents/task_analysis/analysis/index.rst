@@ -1,27 +1,37 @@
-
-:py:mod:`agents.task_analysis.analysis`
-=======================================
+agents.task_analysis.analysis
+=============================
 
 .. py:module:: agents.task_analysis.analysis
 
-Analysis - TODO: Add brief description.
+.. autoapi-nested-parse::
 
-TODO: Add detailed description of module functionality
+   Analysis - TODO: Add brief description.
 
-
-
-.. rubric:: Example
-
-Basic usage::
-
-    from haive.analysis import module_function
-
-    # TODO: Add example
+   TODO: Add detailed description of module functionality
 
 
-.. autolink-examples:: agents.task_analysis.analysis
-   :collapse:
+
+   .. rubric:: Example
+
+   Basic usage::
+
+       from haive.analysis import module_function
+
+       # TODO: Add example
 
 
+   .. autolink-examples:: agents.task_analysis.analysis
+      :collapse:
+
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/agents/task_analysis/analysis/engines/index
+   /autoapi/agents/task_analysis/analysis/models/index
+   /autoapi/agents/task_analysis/analysis/prompts/index
 
 

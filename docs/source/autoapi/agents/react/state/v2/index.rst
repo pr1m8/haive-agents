@@ -1,15 +1,14 @@
-
-:py:mod:`agents.react.state.v2`
-===============================
+agents.react.state.v2
+=====================
 
 .. py:module:: agents.react.state.v2
 
-State.V2 module.
+.. autoapi-nested-parse::
+
+   State.V2 module.
 
 
-.. autolink-examples:: agents.react.state.v2
-   :collapse:
-
-
+   .. autolink-examples:: agents.react.state.v2
+      :collapse:
 
 

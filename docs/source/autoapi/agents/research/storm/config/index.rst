@@ -1,6 +1,5 @@
-
-:py:mod:`agents.research.storm.config`
-======================================
+agents.research.storm.config
+============================
 
 .. py:module:: agents.research.storm.config
 
@@ -14,8 +13,8 @@ Classes
    agents.research.storm.config.BaseRetrieverConfig
    agents.research.storm.config.InterviewAgentConfig
    agents.research.storm.config.ResearchAgentConfig
-   agents.research.storm.config.SequenceAgentConfig
    agents.research.storm.config.STORMAgentConfig
+   agents.research.storm.config.SequenceAgentConfig
    agents.research.storm.config.VectorStoreConfig
    agents.research.storm.config.VectorStoreRetrieverConfig
    agents.research.storm.config.WritingAgentConfig
@@ -24,257 +23,479 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: AzureLLMConfig(/, **data: Any)
 
+   Bases: :py:obj:`pydantic.BaseModel`
 
 
-.. toggle:: Show Inheritance Diagram
+   Placeholder for AzureLLMConfig.
 
-   Inheritance diagram for AzureLLMConfig:
+   Create a new model by parsing and validating input data from keyword arguments.
 
-   .. graphviz::
-      :align: center
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
 
-      digraph inheritance_AzureLLMConfig {
-        node [shape=record];
-        "AzureLLMConfig" [label="AzureLLMConfig"];
-        "pydantic.BaseModel" -> "AzureLLMConfig";
-      }
+   `self` is explicitly positional-only to allow `self` as a field name.
 
-.. autopydantic_model:: agents.research.storm.config.AzureLLMConfig
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
 
+   .. autolink-examples:: __init__
+      :collapse:
 
 
+   .. autolink-examples:: AzureLLMConfig
+      :collapse:
 
+   .. py:attribute:: model
+      :type:  str
+      :value: 'gpt-4o'
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for BaseRetrieverConfig:
 
-   .. graphviz::
-      :align: center
+.. py:class:: BaseRetrieverConfig(/, **data: Any)
 
-      digraph inheritance_BaseRetrieverConfig {
-        node [shape=record];
-        "BaseRetrieverConfig" [label="BaseRetrieverConfig"];
-        "pydantic.BaseModel" -> "BaseRetrieverConfig";
-      }
+   Bases: :py:obj:`pydantic.BaseModel`
 
-.. autopydantic_model:: agents.research.storm.config.BaseRetrieverConfig
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
 
+   Placeholder for BaseRetrieverConfig.
 
+   Create a new model by parsing and validating input data from keyword arguments.
 
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
 
+   `self` is explicitly positional-only to allow `self` as a field name.
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for InterviewAgentConfig:
+   .. autolink-examples:: __init__
+      :collapse:
 
-   .. graphviz::
-      :align: center
 
-      digraph inheritance_InterviewAgentConfig {
-        node [shape=record];
-        "InterviewAgentConfig" [label="InterviewAgentConfig"];
-        "pydantic.BaseModel" -> "InterviewAgentConfig";
-      }
+   .. autolink-examples:: BaseRetrieverConfig
+      :collapse:
 
-.. autopydantic_model:: agents.research.storm.config.InterviewAgentConfig
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: name
+      :type:  str
+      :value: 'retriever'
 
 
 
+.. py:class:: InterviewAgentConfig(/, **data: Any)
 
+   Bases: :py:obj:`pydantic.BaseModel`
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for ResearchAgentConfig:
+   Placeholder for InterviewAgentConfig.
 
-   .. graphviz::
-      :align: center
+   Create a new model by parsing and validating input data from keyword arguments.
 
-      digraph inheritance_ResearchAgentConfig {
-        node [shape=record];
-        "ResearchAgentConfig" [label="ResearchAgentConfig"];
-        "pydantic.BaseModel" -> "ResearchAgentConfig";
-      }
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
 
-.. autopydantic_model:: agents.research.storm.config.ResearchAgentConfig
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   `self` is explicitly positional-only to allow `self` as a field name.
 
 
+   .. autolink-examples:: __init__
+      :collapse:
 
 
+   .. autolink-examples:: InterviewAgentConfig
+      :collapse:
 
-.. toggle:: Show Inheritance Diagram
+   .. py:method:: build_agent() -> Any
 
-   Inheritance diagram for STORMAgentConfig:
+      Placeholder build method.
 
-   .. graphviz::
-      :align: center
 
-      digraph inheritance_STORMAgentConfig {
-        node [shape=record];
-        "STORMAgentConfig" [label="STORMAgentConfig"];
-        "SequenceAgentConfig" -> "STORMAgentConfig";
-      }
+      .. autolink-examples:: build_agent
+         :collapse:
 
-.. autoclass:: agents.research.storm.config.STORMAgentConfig
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
+   .. py:attribute:: llm_config
+      :type:  Any | None
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
+   .. py:attribute:: max_turns
+      :type:  int
+      :value: 5
 
-   Inheritance diagram for SequenceAgentConfig:
 
-   .. graphviz::
-      :align: center
 
-      digraph inheritance_SequenceAgentConfig {
-        node [shape=record];
-        "SequenceAgentConfig" [label="SequenceAgentConfig"];
-        "pydantic.BaseModel" -> "SequenceAgentConfig";
-      }
+   .. py:attribute:: name
+      :type:  str
+      :value: 'interview_agent'
 
-.. autopydantic_model:: agents.research.storm.config.SequenceAgentConfig
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
 
 
+   .. py:attribute:: num_perspectives
+      :type:  int
+      :value: 3
 
 
 
-.. toggle:: Show Inheritance Diagram
+.. py:class:: ResearchAgentConfig(/, **data: Any)
 
-   Inheritance diagram for VectorStoreConfig:
+   Bases: :py:obj:`pydantic.BaseModel`
 
-   .. graphviz::
-      :align: center
 
-      digraph inheritance_VectorStoreConfig {
-        node [shape=record];
-        "VectorStoreConfig" [label="VectorStoreConfig"];
-        "pydantic.BaseModel" -> "VectorStoreConfig";
-      }
+   Placeholder for ResearchAgentConfig.
 
-.. autopydantic_model:: agents.research.storm.config.VectorStoreConfig
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   Create a new model by parsing and validating input data from keyword arguments.
 
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
 
+   `self` is explicitly positional-only to allow `self` as a field name.
 
 
+   .. autolink-examples:: __init__
+      :collapse:
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for VectorStoreRetrieverConfig:
+   .. autolink-examples:: ResearchAgentConfig
+      :collapse:
 
-   .. graphviz::
-      :align: center
+   .. py:method:: build_agent() -> Any
 
-      digraph inheritance_VectorStoreRetrieverConfig {
-        node [shape=record];
-        "VectorStoreRetrieverConfig" [label="VectorStoreRetrieverConfig"];
-        "BaseRetrieverConfig" -> "VectorStoreRetrieverConfig";
-      }
+      Placeholder build method.
 
-.. autoclass:: agents.research.storm.config.VectorStoreRetrieverConfig
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
+      .. autolink-examples:: build_agent
+         :collapse:
 
 
+   .. py:attribute:: llm_config
+      :type:  Any | None
+      :value: None
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for WritingAgentConfig:
 
-   .. graphviz::
-      :align: center
+   .. py:attribute:: name
+      :type:  str
+      :value: 'research_agent'
 
-      digraph inheritance_WritingAgentConfig {
-        node [shape=record];
-        "WritingAgentConfig" [label="WritingAgentConfig"];
-        "pydantic.BaseModel" -> "WritingAgentConfig";
-      }
 
-.. autopydantic_model:: agents.research.storm.config.WritingAgentConfig
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
 
+   .. py:attribute:: topic
+      :type:  str
+      :value: ''
 
 
 
+.. py:class:: STORMAgentConfig(**data)
 
-.. rubric:: Related Links
+   Bases: :py:obj:`SequenceAgentConfig`
 
-.. autolink-examples:: agents.research.storm.config
-   :collapse:
-   
-.. autolink-skip:: next
+
+   Configuration for the STORM agent - an orchestrator that coordinates research,.
+   interviews, and writing to generate comprehensive Wikipedia-style articles.
+
+   STORM follows these stages:
+   1. Research: Generate initial outline and identify perspectives
+   2. Interview: Conduct expert interviews for diverse insights
+   3. Writing: Refine outline, write sections, and assemble final article
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: STORMAgentConfig
+      :collapse:
+
+   .. py:method:: _create_default_retriever_config()
+
+      Create the default retriever configuration.
+
+
+      .. autolink-examples:: _create_default_retriever_config
+         :collapse:
+
+
+   .. py:method:: _create_default_vector_store_config()
+
+      Create the default vector store configuration.
+
+
+      .. autolink-examples:: _create_default_vector_store_config
+         :collapse:
+
+
+   .. py:method:: _create_interview_agent_config()
+
+      Create the interview agent configuration.
+
+
+      .. autolink-examples:: _create_interview_agent_config
+         :collapse:
+
+
+   .. py:method:: _create_research_agent_config()
+
+      Create the research agent configuration.
+
+
+      .. autolink-examples:: _create_research_agent_config
+         :collapse:
+
+
+   .. py:method:: _create_storm_agent_sequence()
+
+      Create the sequence of agents for the STORM workflow.
+
+
+      .. autolink-examples:: _create_storm_agent_sequence
+         :collapse:
+
+
+   .. py:method:: _create_writing_agent_config()
+
+      Create the writing agent configuration.
+
+
+      .. autolink-examples:: _create_writing_agent_config
+         :collapse:
+
+
+   .. py:attribute:: default_agent_configs
+      :value: False
+
+
+
+   .. py:attribute:: fast_llm_config
+      :type:  AzureLLMConfig
+      :value: None
+
+
+
+   .. py:attribute:: interview_agent_config
+      :type:  InterviewAgentConfig
+      :value: None
+
+
+
+   .. py:attribute:: long_context_llm_config
+      :type:  AzureLLMConfig
+      :value: None
+
+
+
+   .. py:attribute:: max_interview_turns
+      :type:  int
+      :value: None
+
+
+
+   .. py:attribute:: num_perspectives
+      :type:  int
+      :value: None
+
+
+
+   .. py:attribute:: research_agent_config
+      :type:  ResearchAgentConfig
+      :value: None
+
+
+
+   .. py:attribute:: retriever_config
+      :type:  BaseRetrieverConfig
+      :value: None
+
+
+
+   .. py:attribute:: topic
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: vector_store_config
+      :type:  VectorStoreConfig
+      :value: None
+
+
+
+   .. py:attribute:: writing_agent_config
+      :type:  WritingAgentConfig
+      :value: None
+
+
+
+.. py:class:: SequenceAgentConfig(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Placeholder for SequenceAgentConfig.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: SequenceAgentConfig
+      :collapse:
+
+   .. py:attribute:: agent_configs
+      :type:  list
+      :value: None
+
+
+
+   .. py:attribute:: default_agent_configs
+      :type:  bool
+      :value: True
+
+
+
+   .. py:attribute:: name
+      :type:  str
+      :value: 'sequence_agent'
+
+
+
+.. py:class:: VectorStoreConfig(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Placeholder for VectorStoreConfig.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: VectorStoreConfig
+      :collapse:
+
+   .. py:attribute:: embedding_model
+      :type:  Any | None
+      :value: None
+
+
+
+   .. py:attribute:: name
+      :type:  str
+      :value: 'vector_store'
+
+
+
+   .. py:attribute:: vector_store_provider
+      :type:  str
+      :value: 'InMemory'
+
+
+
+.. py:class:: VectorStoreRetrieverConfig(/, **data: Any)
+
+   Bases: :py:obj:`BaseRetrieverConfig`
+
+
+   Placeholder for VectorStoreRetrieverConfig.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: VectorStoreRetrieverConfig
+      :collapse:
+
+   .. py:attribute:: k
+      :type:  int
+      :value: 4
+
+
+
+   .. py:attribute:: search_type
+      :type:  str
+      :value: 'similarity'
+
+
+
+   .. py:attribute:: vector_store_config
+      :type:  Any | None
+      :value: None
+
+
+
+.. py:class:: WritingAgentConfig(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Placeholder for WritingAgentConfig.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: WritingAgentConfig
+      :collapse:
+
+   .. py:method:: build_agent() -> Any
+
+      Placeholder build method.
+
+
+      .. autolink-examples:: build_agent
+         :collapse:
+
+
+   .. py:attribute:: llm_config
+      :type:  Any | None
+      :value: None
+
+
+
+   .. py:attribute:: name
+      :type:  str
+      :value: 'writing_agent'
+
+
+
+   .. py:attribute:: retriever_config
+      :type:  Any | None
+      :value: None
+
+
+

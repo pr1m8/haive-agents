@@ -1,9 +1,15 @@
-
-:py:mod:`agents.tool_utils`
-===========================
+agents.tool_utils
+=================
 
 .. py:module:: agents.tool_utils
 
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.tool_utils.logger
 
 
 Functions
@@ -17,6 +23,10 @@ Functions
    agents.tool_utils.prepare_tools
    agents.tool_utils.tools_router
    agents.tool_utils.tools_router_v2
+
+
+Module Contents
+---------------
 
 .. py:function:: check_iteration_limit(state: dict[str, Any]) -> str | Literal['END']
 
@@ -91,11 +101,5 @@ Functions
    .. autolink-examples:: tools_router_v2
       :collapse:
 
+.. py:data:: logger
 
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.tool_utils
-   :collapse:
-   
-.. autolink-skip:: next

@@ -1,9 +1,15 @@
-
-:py:mod:`agents.memory.memory_utils`
-====================================
+agents.memory.memory_utils
+==========================
 
 .. py:module:: agents.memory.memory_utils
 
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.memory.memory_utils.logger
 
 
 Functions
@@ -17,6 +23,10 @@ Functions
    agents.memory.memory_utils.retrieve_memories
    agents.memory.memory_utils.save_structured_memories
    agents.memory.memory_utils.save_unstructured_memories
+
+
+Module Contents
+---------------
 
 .. py:function:: create_memory_tools(vector_store: langchain_core.vectorstores.VectorStore)
 
@@ -98,11 +108,5 @@ Functions
    .. autolink-examples:: save_unstructured_memories
       :collapse:
 
+.. py:data:: logger
 
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.memory.memory_utils
-   :collapse:
-   
-.. autolink-skip:: next

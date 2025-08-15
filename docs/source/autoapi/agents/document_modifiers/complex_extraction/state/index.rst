@@ -1,6 +1,5 @@
-
-:py:mod:`agents.document_modifiers.complex_extraction.state`
-============================================================
+agents.document_modifiers.complex_extraction.state
+==================================================
 
 .. py:module:: agents.document_modifiers.complex_extraction.state
 
@@ -18,92 +17,99 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: ComplexExtractionInput(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   The input for the complex extraction agent.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: ComplexExtractionInput
+      :collapse:
+
+   .. py:attribute:: messages
+      :type:  Annotated[list, haive.agents.document_modifiers.complex_extraction.utils.add_or_overwrite_messages]
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
+.. py:class:: ComplexExtractionOutput(/, **data: Any)
 
-   Inheritance diagram for ComplexExtractionInput:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ComplexExtractionInput {
-        node [shape=record];
-        "ComplexExtractionInput" [label="ComplexExtractionInput"];
-        "pydantic.BaseModel" -> "ComplexExtractionInput";
-      }
-
-.. autopydantic_model:: agents.document_modifiers.complex_extraction.state.ComplexExtractionInput
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   Bases: :py:obj:`pydantic.BaseModel`
 
 
+   The output for the complex extraction agent.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
 
 
+   .. autolink-examples:: __init__
+      :collapse:
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for ComplexExtractionOutput:
+   .. autolink-examples:: ComplexExtractionOutput
+      :collapse:
 
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ComplexExtractionOutput {
-        node [shape=record];
-        "ComplexExtractionOutput" [label="ComplexExtractionOutput"];
-        "pydantic.BaseModel" -> "ComplexExtractionOutput";
-      }
-
-.. autopydantic_model:: agents.document_modifiers.complex_extraction.state.ComplexExtractionOutput
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: extracted_data
+      :type:  list[langchain_core.messages.AnyMessage] | None
+      :value: None
 
 
 
+.. py:class:: ComplexExtractionState(/, **data: Any)
+
+   Bases: :py:obj:`ComplexExtractionInput`, :py:obj:`ComplexExtractionOutput`
 
 
-.. toggle:: Show Inheritance Diagram
+   State for complex extraction.
 
-   Inheritance diagram for ComplexExtractionState:
+   Create a new model by parsing and validating input data from keyword arguments.
 
-   .. graphviz::
-      :align: center
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
 
-      digraph inheritance_ComplexExtractionState {
-        node [shape=record];
-        "ComplexExtractionState" [label="ComplexExtractionState"];
-        "ComplexExtractionInput" -> "ComplexExtractionState";
-        "ComplexExtractionOutput" -> "ComplexExtractionState";
-      }
-
-.. autoclass:: agents.document_modifiers.complex_extraction.state.ComplexExtractionState
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   `self` is explicitly positional-only to allow `self` as a field name.
 
 
+   .. autolink-examples:: __init__
+      :collapse:
 
 
-.. rubric:: Related Links
+   .. autolink-examples:: ComplexExtractionState
+      :collapse:
 
-.. autolink-examples:: agents.document_modifiers.complex_extraction.state
-   :collapse:
-   
-.. autolink-skip:: next
+   .. py:attribute:: attempt_number
+      :type:  Annotated[int, operator.add]
+      :value: None
+
+
+
+   .. py:attribute:: initial_num_messages
+      :type:  int | None
+      :value: None
+
+
+
+   .. py:attribute:: input_format
+      :type:  Literal['list', 'dict']
+      :value: None
+
+
+

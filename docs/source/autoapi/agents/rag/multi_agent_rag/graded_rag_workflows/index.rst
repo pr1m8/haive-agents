@@ -1,18 +1,20 @@
-
-:py:mod:`agents.rag.multi_agent_rag.graded_rag_workflows`
-=========================================================
+agents.rag.multi_agent_rag.graded_rag_workflows
+===============================================
 
 .. py:module:: agents.rag.multi_agent_rag.graded_rag_workflows
 
-Graded RAG Workflows - RAG with comprehensive grading and evaluation.
+.. autoapi-nested-parse::
 
-from typing import Any
-This module implements RAG workflows with integrated document grading,
-answer quality assessment, and hallucination detection.
+   Graded RAG Workflows - RAG with comprehensive grading and evaluation.
+
+   from typing import Any
+   This module implements RAG workflows with integrated document grading,
+   answer quality assessment, and hallucination detection.
 
 
-.. autolink-examples:: agents.rag.multi_agent_rag.graded_rag_workflows
-   :collapse:
+   .. autolink-examples:: agents.rag.multi_agent_rag.graded_rag_workflows
+      :collapse:
+
 
 Classes
 -------
@@ -26,121 +28,180 @@ Classes
    agents.rag.multi_agent_rag.graded_rag_workflows.ReflexiveGradedRAGAgent
 
 
-Module Contents
----------------
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for AdaptiveGradedRAGAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_AdaptiveGradedRAGAgent {
-        node [shape=record];
-        "AdaptiveGradedRAGAgent" [label="AdaptiveGradedRAGAgent"];
-        "haive.agents.multi.base.MultiAgent" -> "AdaptiveGradedRAGAgent";
-      }
-
-.. autoclass:: agents.rag.multi_agent_rag.graded_rag_workflows.AdaptiveGradedRAGAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for FullyGradedRAGAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_FullyGradedRAGAgent {
-        node [shape=record];
-        "FullyGradedRAGAgent" [label="FullyGradedRAGAgent"];
-        "haive.agents.multi.base.MultiAgent" -> "FullyGradedRAGAgent";
-      }
-
-.. autoclass:: agents.rag.multi_agent_rag.graded_rag_workflows.FullyGradedRAGAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for GradedRAGState:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_GradedRAGState {
-        node [shape=record];
-        "GradedRAGState" [label="GradedRAGState"];
-        "haive.core.schema.prebuilt.rag_state.RAGState" -> "GradedRAGState";
-      }
-
-.. autoclass:: agents.rag.multi_agent_rag.graded_rag_workflows.GradedRAGState
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for MultiCriteriaGradedRAGAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_MultiCriteriaGradedRAGAgent {
-        node [shape=record];
-        "MultiCriteriaGradedRAGAgent" [label="MultiCriteriaGradedRAGAgent"];
-        "haive.agents.multi.base.MultiAgent" -> "MultiCriteriaGradedRAGAgent";
-      }
-
-.. autoclass:: agents.rag.multi_agent_rag.graded_rag_workflows.MultiCriteriaGradedRAGAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ReflexiveGradedRAGAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ReflexiveGradedRAGAgent {
-        node [shape=record];
-        "ReflexiveGradedRAGAgent" [label="ReflexiveGradedRAGAgent"];
-        "haive.agents.multi.base.MultiAgent" -> "ReflexiveGradedRAGAgent";
-      }
-
-.. autoclass:: agents.rag.multi_agent_rag.graded_rag_workflows.ReflexiveGradedRAGAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
 Functions
 ---------
 
 .. autoapisummary::
 
    agents.rag.multi_agent_rag.graded_rag_workflows.build_custom_graph
+
+
+Module Contents
+---------------
+
+.. py:class:: AdaptiveGradedRAGAgent(**kwargs)
+
+   Bases: :py:obj:`haive.agents.multi.base.MultiAgent`
+
+
+   Adaptive Graded RAG - adjusts grading thresholds based on query complexity.
+   and document availability.
+
+
+   .. autolink-examples:: AdaptiveGradedRAGAgent
+      :collapse:
+
+   .. py:method:: build_custom_graph() -> Any
+
+      Build the custom graph for adaptive graded RAG.
+
+
+      .. autolink-examples:: build_custom_graph
+         :collapse:
+
+
+.. py:class:: FullyGradedRAGAgent(relevance_threshold: float = 0.5, **kwargs)
+
+   Bases: :py:obj:`haive.agents.multi.base.MultiAgent`
+
+
+   Fully Graded RAG - comprehensive grading at every step of the RAG pipeline.
+   Includes query analysis, document grading, prioritization, answer quality,
+   and hallucination detection.
+
+
+   .. autolink-examples:: FullyGradedRAGAgent
+      :collapse:
+
+   .. py:method:: build_custom_graph() -> Any
+
+      Build the custom graph for graded RAG workflow.
+
+
+      .. autolink-examples:: build_custom_graph
+         :collapse:
+
+
+   .. py:attribute:: _relevance_threshold
+      :value: 0.5
+
+
+
+.. py:class:: GradedRAGState
+
+   Bases: :py:obj:`haive.core.schema.prebuilt.rag_state.RAGState`
+
+
+   RAG state with grading information.
+
+
+   .. autolink-examples:: GradedRAGState
+      :collapse:
+
+   .. py:attribute:: answer_grade
+      :type:  haive.agents.rag.multi_agent_rag.grading_components.AnswerGrade | None
+      :value: None
+
+
+
+   .. py:attribute:: document_grades
+      :type:  list[haive.agents.rag.multi_agent_rag.grading_components.DocumentGrade]
+      :value: []
+
+
+
+   .. py:attribute:: filtered_documents
+      :type:  list[str]
+      :value: []
+
+
+
+   .. py:attribute:: hallucination_grade
+      :type:  haive.agents.rag.multi_agent_rag.grading_components.HallucinationGrade | None
+      :value: None
+
+
+
+   .. py:attribute:: improvement_suggestions
+      :type:  list[str]
+      :value: []
+
+
+
+   .. py:attribute:: key_entities
+      :type:  list[str]
+      :value: []
+
+
+
+   .. py:attribute:: overall_score
+      :type:  float
+      :value: 0.0
+
+
+
+   .. py:attribute:: priority_ranking
+      :type:  dict[str, float]
+
+
+   .. py:attribute:: query_complexity
+      :type:  str
+      :value: ''
+
+
+
+   .. py:attribute:: query_type
+      :type:  str
+      :value: ''
+
+
+
+.. py:class:: MultiCriteriaGradedRAGAgent(grading_criteria: list[str] | None = None, **kwargs)
+
+   Bases: :py:obj:`haive.agents.multi.base.MultiAgent`
+
+
+   Multi-Criteria Graded RAG - uses multiple grading criteria and perspectives.
+   to evaluate documents and answers.
+
+
+   .. autolink-examples:: MultiCriteriaGradedRAGAgent
+      :collapse:
+
+   .. py:method:: build_custom_graph() -> Any
+
+      Build the custom graph for multi-criteria graded RAG.
+
+
+      .. autolink-examples:: build_custom_graph
+         :collapse:
+
+
+   .. py:attribute:: _grading_criteria
+      :value: None
+
+
+
+.. py:class:: ReflexiveGradedRAGAgent(**kwargs)
+
+   Bases: :py:obj:`haive.agents.multi.base.MultiAgent`
+
+
+   Reflexive Graded RAG - uses grading feedback to improve its own performance.
+   through self-reflection and strategy adjustment.
+
+
+   .. autolink-examples:: ReflexiveGradedRAGAgent
+      :collapse:
+
+   .. py:method:: build_custom_graph() -> Any
+
+      Build the custom graph for reflexive graded RAG.
+
+
+      .. autolink-examples:: build_custom_graph
+         :collapse:
+
 
 .. py:function:: build_custom_graph() -> Any
 
@@ -155,11 +216,3 @@ Functions
    .. autolink-examples:: build_custom_graph
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.rag.multi_agent_rag.graded_rag_workflows
-   :collapse:
-   
-.. autolink-skip:: next

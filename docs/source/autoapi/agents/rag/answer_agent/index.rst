@@ -1,14 +1,16 @@
-
-:py:mod:`agents.rag.answer_agent`
-=================================
+agents.rag.answer_agent
+=======================
 
 .. py:module:: agents.rag.answer_agent
 
-Answer Agent for RAG - SimpleAgentV3 with document context prompt.
+.. autoapi-nested-parse::
+
+   Answer Agent for RAG - SimpleAgentV3 with document context prompt.
 
 
-.. autolink-examples:: agents.rag.answer_agent
-   :collapse:
+   .. autolink-examples:: agents.rag.answer_agent
+      :collapse:
+
 
 Classes
 -------
@@ -21,33 +23,26 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: AnswerAgent
+
+   Bases: :py:obj:`SimpleAgentV3`
+
+
+   SimpleAgentV3 configured for answering questions based on retrieved documents.
+
+
+   .. autolink-examples:: AnswerAgent
+      :collapse:
+
+   .. py:attribute:: engine
+      :type:  haive.core.engine.aug_llm.AugLLMConfig
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for AnswerAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_AnswerAgent {
-        node [shape=record];
-        "AnswerAgent" [label="AnswerAgent"];
-        "SimpleAgentV3" -> "AnswerAgent";
-      }
-
-.. autoclass:: agents.rag.answer_agent.AnswerAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. py:attribute:: prompt_template
+      :type:  langchain_core.prompts.ChatPromptTemplate
+      :value: None
 
 
 
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.rag.answer_agent
-   :collapse:
-   
-.. autolink-skip:: next

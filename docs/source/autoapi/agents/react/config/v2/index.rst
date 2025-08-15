@@ -1,19 +1,21 @@
-
-:py:mod:`agents.react.config.v2`
-================================
+agents.react.config.v2
+======================
 
 .. py:module:: agents.react.config.v2
 
-Config configuration module.
+.. autoapi-nested-parse::
 
-This module provides config functionality for the Haive framework.
+   Config configuration module.
 
-Classes:
-    ReactAgentConfig: ReactAgentConfig implementation.
+   This module provides config functionality for the Haive framework.
+
+   Classes:
+       ReactAgentConfig: ReactAgentConfig implementation.
 
 
-.. autolink-examples:: agents.react.config.v2
-   :collapse:
+   .. autolink-examples:: agents.react.config.v2
+      :collapse:
+
 
 Classes
 -------
@@ -26,33 +28,38 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: ReactAgentConfig
+
+   Bases: :py:obj:`haive.agents.simple.config.SimpleAgentConfig`
+
+
+   Configuration for the React Agent.
+
+
+   .. autolink-examples:: ReactAgentConfig
+      :collapse:
+
+   .. py:attribute:: continuation_branch
+      :type:  haive.core.graph.branches.branch.Branch
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ReactAgentConfig:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ReactAgentConfig {
-        node [shape=record];
-        "ReactAgentConfig" [label="ReactAgentConfig"];
-        "haive.agents.simple.config.SimpleAgentConfig" -> "ReactAgentConfig";
-      }
-
-.. autoclass:: agents.react.config.v2.ReactAgentConfig
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. py:attribute:: max_iterations
+      :type:  int
+      :value: None
 
 
 
+   .. py:attribute:: retry_policy
+      :type:  langgraph.types.RetryPolicy
+      :value: None
 
-.. rubric:: Related Links
 
-.. autolink-examples:: agents.react.config.v2
-   :collapse:
-   
-.. autolink-skip:: next
+
+   .. py:attribute:: tools
+      :type:  list[haive.core.types.Tool_Type]
+      :value: None
+
+
+

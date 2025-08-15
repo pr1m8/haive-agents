@@ -1,50 +1,60 @@
-
-:py:mod:`agents.experiments.supervisor`
-=======================================
+agents.experiments.supervisor
+=============================
 
 .. py:module:: agents.experiments.supervisor
 
-Supervisor module for managing multi-agent systems.
+.. autoapi-nested-parse::
 
-This module provides a complete supervisor implementation that can manage
-multiple agents, handle tool synchronization, and support dynamic agent creation.
+   Supervisor module for managing multi-agent systems.
 
-Key Components:
-    - BaseSupervisor: Core supervisor using ReactAgent
-    - DynamicSupervisor: Extended supervisor with agent creation
-    - SupervisorState: State model with agent registry
-    - DynamicSupervisorState: Extended state for dynamic capabilities
+   This module provides a complete supervisor implementation that can manage
+   multiple agents, handle tool synchronization, and support dynamic agent creation.
 
-Example Usage:
-    Basic supervisor::
+   Key Components:
+       - BaseSupervisor: Core supervisor using ReactAgent
+       - DynamicSupervisor: Extended supervisor with agent creation
+       - SupervisorState: State model with agent registry
+       - DynamicSupervisorState: Extended state for dynamic capabilities
 
-        from haive.agents.experiments.supervisor import BaseSupervisor
-        from haive.agents.simple.agent import SimpleAgent
+   Example Usage:
+       Basic supervisor::
 
-        # Create supervisor
-        supervisor = BaseSupervisor(name="my_supervisor", engine=my_engine)
+           from haive.agents.experiments.supervisor import BaseSupervisor
+           from haive.agents.simple.agent import SimpleAgent
 
-        # Register agents
-        research_agent = SimpleAgent(name="researcher", engine=research_engine)
-        supervisor.register_agent("research", "Research specialist", research_agent)
+           # Create supervisor
+           supervisor = BaseSupervisor(name="my_supervisor", engine=my_engine)
 
-        # Use supervisor
-        result = supervisor.invoke("Research quantum computing trends")
+           # Register agents
+           research_agent = SimpleAgent(name="researcher", engine=research_engine)
+           supervisor.register_agent("research", "Research specialist", research_agent)
 
-    Dynamic supervisor::
+           # Use supervisor
+           result = supervisor.invoke("Research quantum computing trends")
 
-        from haive.agents.experiments.supervisor import DynamicSupervisor
+       Dynamic supervisor::
 
-        supervisor = DynamicSupervisor(name="dynamic_super", engine=my_engine)
-        supervisor.enable_agent_creation()
+           from haive.agents.experiments.supervisor import DynamicSupervisor
 
-        # Can create agents on the fly via tool calls
-        result = supervisor.invoke("Create a coding agent and write Python code")
+           supervisor = DynamicSupervisor(name="dynamic_super", engine=my_engine)
+           supervisor.enable_agent_creation()
 
-
-.. autolink-examples:: agents.experiments.supervisor
-   :collapse:
+           # Can create agents on the fly via tool calls
+           result = supervisor.invoke("Create a coding agent and write Python code")
 
 
+   .. autolink-examples:: agents.experiments.supervisor
+      :collapse:
+
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/agents/experiments/supervisor/base_supervisor/index
+   /autoapi/agents/experiments/supervisor/state_models/index
+   /autoapi/agents/experiments/supervisor/tools/index
 
 

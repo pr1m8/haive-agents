@@ -1,17 +1,19 @@
-
-:py:mod:`agents.rag.branched_chain`
-===================================
+agents.rag.branched_chain
+=========================
 
 .. py:module:: agents.rag.branched_chain
 
-Branched RAG using ChainAgent.
+.. autoapi-nested-parse::
 
-RAG system that branches into multiple specialized retrieval paths based on query type,
-then merges results for comprehensive answers.
+   Branched RAG using ChainAgent.
+
+   RAG system that branches into multiple specialized retrieval paths based on query type,
+   then merges results for comprehensive answers.
 
 
-.. autolink-examples:: agents.rag.branched_chain
-   :collapse:
+   .. autolink-examples:: agents.rag.branched_chain
+      :collapse:
+
 
 Classes
 -------
@@ -24,124 +26,6 @@ Classes
    agents.rag.branched_chain.QueryType
 
 
-Module Contents
----------------
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for BranchResult:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_BranchResult {
-        node [shape=record];
-        "BranchResult" [label="BranchResult"];
-        "pydantic.BaseModel" -> "BranchResult";
-      }
-
-.. autopydantic_model:: agents.rag.branched_chain.BranchResult
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
-
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for MergedResult:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_MergedResult {
-        node [shape=record];
-        "MergedResult" [label="MergedResult"];
-        "pydantic.BaseModel" -> "MergedResult";
-      }
-
-.. autopydantic_model:: agents.rag.branched_chain.MergedResult
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
-
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for QueryClassification:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_QueryClassification {
-        node [shape=record];
-        "QueryClassification" [label="QueryClassification"];
-        "pydantic.BaseModel" -> "QueryClassification";
-      }
-
-.. autopydantic_model:: agents.rag.branched_chain.QueryClassification
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
-
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for QueryType:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_QueryType {
-        node [shape=record];
-        "QueryType" [label="QueryType"];
-        "str" -> "QueryType";
-        "enum.Enum" -> "QueryType";
-      }
-
-.. autoclass:: agents.rag.branched_chain.QueryType
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-   .. note::
-
-      **QueryType** is an Enum defined in ``agents.rag.branched_chain``.
-
-
-
 Functions
 ---------
 
@@ -151,6 +35,185 @@ Functions
    agents.rag.branched_chain.create_branched_rag_chain
    agents.rag.branched_chain.create_parallel_branched_rag
    agents.rag.branched_chain.get_branched_rag_io_schema
+
+
+Module Contents
+---------------
+
+.. py:class:: BranchResult(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Result from a retrieval branch.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: BranchResult
+      :collapse:
+
+   .. py:attribute:: branch_answer
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: branch_type
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: relevance_score
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: retrieved_docs
+      :type:  list[str]
+      :value: None
+
+
+
+.. py:class:: MergedResult(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Final merged result.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: MergedResult
+      :collapse:
+
+   .. py:attribute:: confidence_score
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: primary_answer
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: sources_used
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: supporting_evidence
+      :type:  list[str]
+      :value: None
+
+
+
+.. py:class:: QueryClassification(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Query classification result.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: QueryClassification
+      :collapse:
+
+   .. py:attribute:: complexity
+      :type:  Literal['simple', 'medium', 'complex']
+      :value: None
+
+
+
+   .. py:attribute:: confidence
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: primary_type
+      :type:  QueryType
+      :value: None
+
+
+
+   .. py:attribute:: secondary_type
+      :type:  QueryType | None
+      :value: None
+
+
+
+.. py:class:: QueryType
+
+   Bases: :py:obj:`str`, :py:obj:`enum.Enum`
+
+
+   Types of queries for branching.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: QueryType
+      :collapse:
+
+   .. py:attribute:: ANALYTICAL
+      :value: 'analytical'
+
+
+
+   .. py:attribute:: CREATIVE
+      :value: 'creative'
+
+
+
+   .. py:attribute:: FACTUAL
+      :value: 'factual'
+
+
+
+   .. py:attribute:: PROCEDURAL
+      :value: 'procedural'
+
+
 
 .. py:function:: create_adaptive_branched_rag(documents: list[langchain_core.documents.Document], llm_config: haive.core.models.llm.base.LLMConfig | None = None) -> haive.agents.chain.ChainAgent
 
@@ -184,11 +247,3 @@ Functions
    .. autolink-examples:: get_branched_rag_io_schema
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.rag.branched_chain
-   :collapse:
-   
-.. autolink-skip:: next

@@ -1,9 +1,15 @@
-
-:py:mod:`agents.long_term_memory.nodes`
-=======================================
+agents.long_term_memory.nodes
+=============================
 
 .. py:module:: agents.long_term_memory.nodes
 
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.long_term_memory.nodes.tokenizer
 
 
 Functions
@@ -12,6 +18,10 @@ Functions
 .. autoapisummary::
 
    agents.long_term_memory.nodes.load_memories
+
+
+Module Contents
+---------------
 
 .. py:function:: load_memories(state: haive.agents.long_term_memory.state.LongTermMemoryState, config: langchain_core.runnables.RunnableConfig) -> haive.agents.long_term_memory.state.LongTermMemoryState
 
@@ -29,11 +39,5 @@ Functions
    .. autolink-examples:: load_memories
       :collapse:
 
+.. py:data:: tokenizer
 
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.long_term_memory.nodes
-   :collapse:
-   
-.. autolink-skip:: next

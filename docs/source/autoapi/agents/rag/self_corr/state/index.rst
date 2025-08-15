@@ -1,6 +1,5 @@
-
-:py:mod:`agents.rag.self_corr.state`
-====================================
+agents.rag.self_corr.state
+==========================
 
 .. py:module:: agents.rag.self_corr.state
 
@@ -16,33 +15,59 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: SelfCorrectiveRAGState
+
+   Bases: :py:obj:`haive.agents.rag.base.config.BaseRAGState`
+
+
+   State schema for self-corrective RAG agents.
+
+   Extends the base RAG state with fields for tracking answer quality,
+   correction iterations, and assessment of hallucinations.
+
+
+   .. autolink-examples:: SelfCorrectiveRAGState
+      :collapse:
+
+   .. py:attribute:: answer_score
+      :type:  float
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for SelfCorrectiveRAGState:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_SelfCorrectiveRAGState {
-        node [shape=record];
-        "SelfCorrectiveRAGState" [label="SelfCorrectiveRAGState"];
-        "haive.agents.rag.base.config.BaseRAGState" -> "SelfCorrectiveRAGState";
-      }
-
-.. autoclass:: agents.rag.self_corr.state.SelfCorrectiveRAGState
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. py:attribute:: correction_iterations
+      :type:  int
+      :value: None
 
 
 
+   .. py:attribute:: filtered_documents
+      :type:  list[langchain_core.documents.Document]
+      :value: None
 
-.. rubric:: Related Links
 
-.. autolink-examples:: agents.rag.self_corr.state
-   :collapse:
-   
-.. autolink-skip:: next
+
+   .. py:attribute:: final_answer
+      :type:  bool
+      :value: None
+
+
+
+   .. py:attribute:: final_confidence
+      :type:  float | None
+      :value: None
+
+
+
+   .. py:attribute:: hallucination_assessment
+      :type:  dict[str, Any]
+      :value: None
+
+
+
+   .. py:attribute:: relevance_scores
+      :type:  dict[str, float]
+      :value: None
+
+
+

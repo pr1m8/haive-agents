@@ -1,84 +1,70 @@
-
-:py:mod:`agents.reasoning_and_critique.self_discover.structurer.agent`
-======================================================================
+agents.reasoning_and_critique.self_discover.structurer.agent
+============================================================
 
 .. py:module:: agents.reasoning_and_critique.self_discover.structurer.agent
 
-Self-Discover Structurer Agent implementation.
+.. autoapi-nested-parse::
+
+   Self-Discover Structurer Agent implementation.
 
 
-.. autolink-examples:: agents.reasoning_and_critique.self_discover.structurer.agent
-   :collapse:
+   .. autolink-examples:: agents.reasoning_and_critique.self_discover.structurer.agent
+      :collapse:
+
 
 Classes
 -------
 
 .. autoapisummary::
 
-   agents.reasoning_and_critique.self_discover.structurer.agent.ReasoningStructure
    agents.reasoning_and_critique.self_discover.structurer.agent.StructurerAgent
 
 
 Module Contents
 ---------------
 
-:orphan:
+.. py:class:: StructurerAgent(name: str = 'structurer', engine: haive.core.engine.aug_llm.AugLLMConfig = None, **kwargs)
+
+   Bases: :py:obj:`haive.agents.simple.SimpleAgent`
 
 
+   Agent that creates structured reasoning plans from adapted modules.
 
-.. toggle:: Show Inheritance Diagram
+   The Structurer Agent is the third stage in the Self-Discover workflow.
+   It takes the adapted reasoning modules and organizes them into a coherent,
+   step-by-step plan for solving the specific task.
 
-   Inheritance diagram for ReasoningStructure:
+   .. attribute:: name
 
-   .. graphviz::
-      :align: center
+      Agent identifier (default: "structurer")
 
-      digraph inheritance_ReasoningStructure {
-        node [shape=record];
-        "ReasoningStructure" [label="ReasoningStructure"];
-        "pydantic.BaseModel" -> "ReasoningStructure";
-      }
+   .. attribute:: engine
 
-.. autopydantic_model:: agents.reasoning_and_critique.self_discover.structurer.agent.ReasoningStructure
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+      LLM configuration for the agent
 
+   .. rubric:: Example
 
+   >>> from haive.core.engine.aug_llm import AugLLMConfig
+   >>>
+   >>> config = AugLLMConfig(temperature=0.2)
+   >>> structurer = StructurerAgent(engine=config)
+   >>>
+   >>> result = await structurer.arun({
+   ...     "adapted_modules": "1. Critical analysis: Look for biases...",
+   ...     "task_description": "Design a recommendation system"
+   ... })
 
+   Initialize the Structurer Agent.
 
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for StructurerAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_StructurerAgent {
-        node [shape=record];
-        "StructurerAgent" [label="StructurerAgent"];
-        "haive.agents.simple.SimpleAgent" -> "StructurerAgent";
-      }
-
-.. autoclass:: agents.reasoning_and_critique.self_discover.structurer.agent.StructurerAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   :param name: Name for the agent
+   :param engine: LLM configuration (if not provided, creates default)
+   :param \*\*kwargs: Additional arguments passed to SimpleAgent
 
 
+   .. autolink-examples:: __init__
+      :collapse:
 
 
-.. rubric:: Related Links
+   .. autolink-examples:: StructurerAgent
+      :collapse:
 
-.. autolink-examples:: agents.reasoning_and_critique.self_discover.structurer.agent
-   :collapse:
-   
-.. autolink-skip:: next

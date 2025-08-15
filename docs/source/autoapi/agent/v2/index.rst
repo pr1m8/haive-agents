@@ -1,22 +1,24 @@
-
-:py:mod:`agent.v2`
-==================
+agent.v2
+========
 
 .. py:module:: agent.v2
 
-Agent core module.
+.. autoapi-nested-parse::
 
-This module provides agent functionality for the Haive framework.
+   Agent core module.
 
-Classes:
-    ReactAgent: ReactAgent implementation.
+   This module provides agent functionality for the Haive framework.
 
-Functions:
-    build_graph: Build Graph functionality.
+   Classes:
+       ReactAgent: ReactAgent implementation.
+
+   Functions:
+       build_graph: Build Graph functionality.
 
 
-.. autolink-examples:: agent.v2
-   :collapse:
+   .. autolink-examples:: agent.v2
+      :collapse:
+
 
 Classes
 -------
@@ -29,33 +31,23 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: ReactAgent
+
+   Bases: :py:obj:`haive.agents.simple.SimpleAgent`
 
 
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ReactAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ReactAgent {
-        node [shape=record];
-        "ReactAgent" [label="ReactAgent"];
-        "haive.agents.simple.SimpleAgent" -> "ReactAgent";
-      }
-
-.. autoclass:: agent.v2.ReactAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   ReAct agent with looping behavior.
 
 
+   .. autolink-examples:: ReactAgent
+      :collapse:
+
+   .. py:method:: build_graph() -> haive.core.graph.state_graph.base_graph2.BaseGraph
+
+      Build ReAct graph with proper looping.
 
 
-.. rubric:: Related Links
+      .. autolink-examples:: build_graph
+         :collapse:
 
-.. autolink-examples:: agent.v2
-   :collapse:
-   
-.. autolink-skip:: next
+

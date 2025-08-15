@@ -1,6 +1,5 @@
-
-:py:mod:`agents.rag.base.models`
-================================
+agents.rag.base.models
+======================
 
 .. py:module:: agents.rag.base.models
 
@@ -18,99 +17,165 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: GradeAnswer(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Binary score to assess answer addresses question.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: GradeAnswer
+      :collapse:
+
+   .. py:attribute:: binary_score
+      :type:  str
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
+.. py:class:: GradeHallucinations(/, **data: Any)
 
-   Inheritance diagram for GradeAnswer:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_GradeAnswer {
-        node [shape=record];
-        "GradeAnswer" [label="GradeAnswer"];
-        "pydantic.BaseModel" -> "GradeAnswer";
-      }
-
-.. autopydantic_model:: agents.rag.base.models.GradeAnswer
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   Bases: :py:obj:`pydantic.BaseModel`
 
 
+   Binary score for hallucination present in generation answer.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
 
 
+   .. autolink-examples:: __init__
+      :collapse:
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for GradeHallucinations:
+   .. autolink-examples:: GradeHallucinations
+      :collapse:
 
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_GradeHallucinations {
-        node [shape=record];
-        "GradeHallucinations" [label="GradeHallucinations"];
-        "pydantic.BaseModel" -> "GradeHallucinations";
-      }
-
-.. autopydantic_model:: agents.rag.base.models.GradeHallucinations
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: binary_score
+      :type:  str
+      :value: None
 
 
 
+.. py:class:: Query(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
 
 
-.. toggle:: Show Inheritance Diagram
+   !!! abstract "Usage Documentation"
+       [Models](../concepts/models.md)
 
-   Inheritance diagram for Query:
+   A base class for creating Pydantic models.
 
-   .. graphviz::
-      :align: center
+   .. attribute:: __class_vars__
 
-      digraph inheritance_Query {
-        node [shape=record];
-        "Query" [label="Query"];
-        "pydantic.BaseModel" -> "Query";
-      }
+      The names of the class variables defined on the model.
 
-.. autopydantic_model:: agents.rag.base.models.Query
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. attribute:: __private_attributes__
+
+      Metadata about the private attributes of the model.
+
+   .. attribute:: __signature__
+
+      The synthesized `__init__` [`Signature`][inspect.Signature] of the model.
+
+   .. attribute:: __pydantic_complete__
+
+      Whether model building is completed, or if there are still undefined fields.
+
+   .. attribute:: __pydantic_core_schema__
+
+      The core schema of the model.
+
+   .. attribute:: __pydantic_custom_init__
+
+      Whether the model has a custom `__init__` function.
+
+   .. attribute:: __pydantic_decorators__
+
+      Metadata containing the decorators defined on the model.
+      This replaces `Model.__validators__` and `Model.__root_validators__` from Pydantic V1.
+
+   .. attribute:: __pydantic_generic_metadata__
+
+      Metadata for generic models; contains data used for a similar purpose to
+      __args__, __origin__, __parameters__ in typing-module generics. May eventually be replaced by these.
+
+   .. attribute:: __pydantic_parent_namespace__
+
+      Parent namespace of the model, used for automatic rebuilding of models.
+
+   .. attribute:: __pydantic_post_init__
+
+      The name of the post-init method for the model, if defined.
+
+   .. attribute:: __pydantic_root_model__
+
+      Whether the model is a [`RootModel`][pydantic.root_model.RootModel].
+
+   .. attribute:: __pydantic_serializer__
+
+      The `pydantic-core` `SchemaSerializer` used to dump instances of the model.
+
+   .. attribute:: __pydantic_validator__
+
+      The `pydantic-core` `SchemaValidator` used to validate instances of the model.
+
+   .. attribute:: __pydantic_fields__
+
+      A dictionary of field names and their corresponding [`FieldInfo`][pydantic.fields.FieldInfo] objects.
+
+   .. attribute:: __pydantic_computed_fields__
+
+      A dictionary of computed field names and their corresponding [`ComputedFieldInfo`][pydantic.fields.ComputedFieldInfo] objects.
+
+   .. attribute:: __pydantic_extra__
+
+      A dictionary containing extra values, if [`extra`][pydantic.config.ConfigDict.extra]
+      is set to `'allow'`.
+
+   .. attribute:: __pydantic_fields_set__
+
+      The names of fields explicitly set during instantiation.
+
+   .. attribute:: __pydantic_private__
+
+      Values of private attributes set on the model instance.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: Query
+      :collapse:
+
+   .. py:attribute:: question
+      :type:  str
+      :value: None
 
 
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.rag.base.models
-   :collapse:
-   
-.. autolink-skip:: next

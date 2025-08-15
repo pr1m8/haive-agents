@@ -1,9 +1,16 @@
-
-:py:mod:`agents.reasoning_and_critique.mcts.example`
-====================================================
+agents.reasoning_and_critique.mcts.example
+==========================================
 
 .. py:module:: agents.reasoning_and_critique.mcts.example
 
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.reasoning_and_critique.mcts.example.logger
+   agents.reasoning_and_critique.mcts.example.question
 
 
 Functions
@@ -13,6 +20,10 @@ Functions
 
    agents.reasoning_and_critique.mcts.example.run_mcts_agent_example
    agents.reasoning_and_critique.mcts.example.setup_tavily_tool
+
+
+Module Contents
+---------------
 
 .. py:function:: run_mcts_agent_example(question: str, tools: list[langchain_core.tools.BaseTool] | None = None) -> dict[str, Any]
 
@@ -35,11 +46,9 @@ Functions
    .. autolink-examples:: setup_tavily_tool
       :collapse:
 
+.. py:data:: logger
+
+.. py:data:: question
+   :value: 'Generate a table with the average size and weight, as well as the oldest recorded instance for...
 
 
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.reasoning_and_critique.mcts.example
-   :collapse:
-   
-.. autolink-skip:: next

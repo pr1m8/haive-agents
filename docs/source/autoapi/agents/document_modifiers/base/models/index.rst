@@ -1,27 +1,26 @@
-
-:py:mod:`agents.document_modifiers.base.models`
-===============================================
+agents.document_modifiers.base.models
+=====================================
 
 .. py:module:: agents.document_modifiers.base.models
 
-Models - TODO: Add brief description.
+.. autoapi-nested-parse::
 
-TODO: Add detailed description of module functionality
+   Models - TODO: Add brief description.
 
-
-
-.. rubric:: Example
-
-Basic usage::
-
-    from haive.models import module_function
-
-    # TODO: Add example
+   TODO: Add detailed description of module functionality
 
 
-.. autolink-examples:: agents.document_modifiers.base.models
-   :collapse:
+
+   .. rubric:: Example
+
+   Basic usage::
+
+       from haive.models import module_function
+
+       # TODO: Add example
 
 
+   .. autolink-examples:: agents.document_modifiers.base.models
+      :collapse:
 
 

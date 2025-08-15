@@ -1,10 +1,6 @@
-
-:py:mod:`agents.config`
-=======================
+agents.config
+=============
 
 .. py:module:: agents.config
-
-
-
 
 

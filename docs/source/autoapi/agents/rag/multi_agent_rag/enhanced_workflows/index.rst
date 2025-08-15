@@ -1,17 +1,19 @@
-
-:py:mod:`agents.rag.multi_agent_rag.enhanced_workflows`
-=======================================================
+agents.rag.multi_agent_rag.enhanced_workflows
+=============================================
 
 .. py:module:: agents.rag.multi_agent_rag.enhanced_workflows
 
-Enhanced Multi-Agent RAG Workflows.
+.. autoapi-nested-parse::
 
-Implements advanced RAG patterns like CRAG, Self-RAG, HYDE, and grading workflows
-using the new multi-agent base with compatibility and enhanced state management.
+   Enhanced Multi-Agent RAG Workflows.
+
+   Implements advanced RAG patterns like CRAG, Self-RAG, HYDE, and grading workflows
+   using the new multi-agent base with compatibility and enhanced state management.
 
 
-.. autolink-examples:: agents.rag.multi_agent_rag.enhanced_workflows
-   :collapse:
+   .. autolink-examples:: agents.rag.multi_agent_rag.enhanced_workflows
+      :collapse:
+
 
 Classes
 -------
@@ -25,121 +27,165 @@ Classes
    agents.rag.multi_agent_rag.enhanced_workflows.SelfRAGAgent
 
 
-Module Contents
----------------
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for CorrectiveRAGAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_CorrectiveRAGAgent {
-        node [shape=record];
-        "CorrectiveRAGAgent" [label="CorrectiveRAGAgent"];
-        "haive.agents.multi.base.ConditionalAgent" -> "CorrectiveRAGAgent";
-      }
-
-.. autoclass:: agents.rag.multi_agent_rag.enhanced_workflows.CorrectiveRAGAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for DocumentGradingAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_DocumentGradingAgent {
-        node [shape=record];
-        "DocumentGradingAgent" [label="DocumentGradingAgent"];
-        "haive.agents.base.agent.Agent" -> "DocumentGradingAgent";
-      }
-
-.. autoclass:: agents.rag.multi_agent_rag.enhanced_workflows.DocumentGradingAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for HYDERAGAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_HYDERAGAgent {
-        node [shape=record];
-        "HYDERAGAgent" [label="HYDERAGAgent"];
-        "haive.agents.multi.base.SequentialAgent" -> "HYDERAGAgent";
-      }
-
-.. autoclass:: agents.rag.multi_agent_rag.enhanced_workflows.HYDERAGAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for RequeryDecisionAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_RequeryDecisionAgent {
-        node [shape=record];
-        "RequeryDecisionAgent" [label="RequeryDecisionAgent"];
-        "haive.agents.base.agent.Agent" -> "RequeryDecisionAgent";
-      }
-
-.. autoclass:: agents.rag.multi_agent_rag.enhanced_workflows.RequeryDecisionAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for SelfRAGAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_SelfRAGAgent {
-        node [shape=record];
-        "SelfRAGAgent" [label="SelfRAGAgent"];
-        "haive.agents.multi.base.ConditionalAgent" -> "SelfRAGAgent";
-      }
-
-.. autoclass:: agents.rag.multi_agent_rag.enhanced_workflows.SelfRAGAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
 Functions
 ---------
 
 .. autoapisummary::
 
    agents.rag.multi_agent_rag.enhanced_workflows.create_enhanced_rag_workflow
+
+
+Module Contents
+---------------
+
+.. py:class:: CorrectiveRAGAgent(retrieval_agent: haive.agents.rag.base.agent.SimpleRAGAgent | None = None, grading_agent: DocumentGradingAgent | None = None, requery_agent: RequeryDecisionAgent | None = None, answer_agent: haive.agents.simple.agent.SimpleAgent | None = None, documents: list[langchain_core.documents.Document] | None = None, **kwargs)
+
+   Bases: :py:obj:`haive.agents.multi.base.ConditionalAgent`
+
+
+   Corrective RAG (CRAG) with automatic requerying and web search fallback.
+
+   Flow:
+   1. Initial retrieval
+   2. Grade documents
+   3. If quality is poor -> requery or web search
+   4. Generate answer with best available docs
+
+
+   .. autolink-examples:: CorrectiveRAGAgent
+      :collapse:
+
+   .. py:method:: _setup_crag_routing()
+
+      Set up CRAG conditional routing logic.
+
+
+      .. autolink-examples:: _setup_crag_routing
+         :collapse:
+
+
+   .. py:attribute:: answer_agent
+      :value: None
+
+
+
+   .. py:attribute:: grading_agent
+      :value: None
+
+
+
+   .. py:attribute:: requery_agent
+      :value: None
+
+
+
+   .. py:attribute:: retrieval_agent
+      :value: None
+
+
+
+.. py:class:: DocumentGradingAgent
+
+   Bases: :py:obj:`haive.agents.base.agent.Agent`
+
+
+   Agent that grades retrieved documents for relevance.
+
+
+   .. autolink-examples:: DocumentGradingAgent
+      :collapse:
+
+   .. py:method:: build_graph() -> haive.core.graph.state_graph.base_graph2.BaseGraph
+
+      Build graph that grades each retrieved document.
+
+
+      .. autolink-examples:: build_graph
+         :collapse:
+
+
+   .. py:attribute:: name
+      :type:  str
+      :value: 'Document Grading Agent'
+
+
+
+.. py:class:: HYDERAGAgent(hypothesis_agent: haive.agents.simple.agent.SimpleAgent | None = None, retrieval_agent: haive.agents.rag.base.agent.SimpleRAGAgent | None = None, answer_agent: haive.agents.simple.agent.SimpleAgent | None = None, documents: list[langchain_core.documents.Document] | None = None, **kwargs)
+
+   Bases: :py:obj:`haive.agents.multi.base.SequentialAgent`
+
+
+   HYDE RAG agent that generates hypothetical documents before retrieval.
+
+
+   .. autolink-examples:: HYDERAGAgent
+      :collapse:
+
+.. py:class:: RequeryDecisionAgent
+
+   Bases: :py:obj:`haive.agents.base.agent.Agent`
+
+
+   Agent that decides if requerying is needed based on document grades.
+
+
+   .. autolink-examples:: RequeryDecisionAgent
+      :collapse:
+
+   .. py:method:: build_graph() -> haive.core.graph.state_graph.base_graph2.BaseGraph
+
+      Build graph that analyzes grades and decides on requerying.
+
+
+      .. autolink-examples:: build_graph
+         :collapse:
+
+
+   .. py:attribute:: name
+      :type:  str
+      :value: 'Requery Decision Agent'
+
+
+
+.. py:class:: SelfRAGAgent(retrieval_decision_agent: haive.agents.simple.agent.SimpleAgent | None = None, retrieval_agent: haive.agents.rag.base.agent.SimpleRAGAgent | None = None, relevance_agent: haive.agents.simple.agent.SimpleAgent | None = None, generation_agent: haive.agents.simple.agent.SimpleAgent | None = None, documents: list[langchain_core.documents.Document] | None = None, **kwargs)
+
+   Bases: :py:obj:`haive.agents.multi.base.ConditionalAgent`
+
+
+   Self-RAG agent with reflection tokens and adaptive retrieval.
+
+
+   .. autolink-examples:: SelfRAGAgent
+      :collapse:
+
+   .. py:method:: _setup_self_rag_routing()
+
+      Set up Self-RAG routing with reflection tokens.
+
+
+      .. autolink-examples:: _setup_self_rag_routing
+         :collapse:
+
+
+   .. py:attribute:: generation_agent
+      :value: None
+
+
+
+   .. py:attribute:: relevance_agent
+      :value: None
+
+
+
+   .. py:attribute:: retrieval_agent
+      :value: None
+
+
+
+   .. py:attribute:: retrieval_decision_agent
+      :value: None
+
+
 
 .. py:function:: create_enhanced_rag_workflow(workflow_type: str = 'crag', documents: list[langchain_core.documents.Document] | None = None, **kwargs) -> haive.agents.base.agent.Agent
 
@@ -155,11 +201,3 @@ Functions
    .. autolink-examples:: create_enhanced_rag_workflow
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.rag.multi_agent_rag.enhanced_workflows
-   :collapse:
-   
-.. autolink-skip:: next

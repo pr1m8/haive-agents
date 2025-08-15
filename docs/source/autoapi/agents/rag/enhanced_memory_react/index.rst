@@ -1,17 +1,19 @@
-
-:py:mod:`agents.rag.enhanced_memory_react`
-==========================================
+agents.rag.enhanced_memory_react
+================================
 
 .. py:module:: agents.rag.enhanced_memory_react
 
-Enhanced Memory RAG with ReAct Pattern.
+.. autoapi-nested-parse::
 
-RAG system that maintains conversation memory and uses ReAct (Reasoning + Acting)
-pattern for complex multi-step queries requiring reasoning and tool use.
+   Enhanced Memory RAG with ReAct Pattern.
+
+   RAG system that maintains conversation memory and uses ReAct (Reasoning + Acting)
+   pattern for complex multi-step queries requiring reasoning and tool use.
 
 
-.. autolink-examples:: agents.rag.enhanced_memory_react
-   :collapse:
+   .. autolink-examples:: agents.rag.enhanced_memory_react
+      :collapse:
+
 
 Classes
 -------
@@ -26,180 +28,6 @@ Classes
    agents.rag.enhanced_memory_react.ReActStepResult
 
 
-Module Contents
----------------
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for EnhancedResponse:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_EnhancedResponse {
-        node [shape=record];
-        "EnhancedResponse" [label="EnhancedResponse"];
-        "pydantic.BaseModel" -> "EnhancedResponse";
-      }
-
-.. autopydantic_model:: agents.rag.enhanced_memory_react.EnhancedResponse
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
-
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for MemoryAnalysis:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_MemoryAnalysis {
-        node [shape=record];
-        "MemoryAnalysis" [label="MemoryAnalysis"];
-        "pydantic.BaseModel" -> "MemoryAnalysis";
-      }
-
-.. autopydantic_model:: agents.rag.enhanced_memory_react.MemoryAnalysis
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
-
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for MemoryEntry:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_MemoryEntry {
-        node [shape=record];
-        "MemoryEntry" [label="MemoryEntry"];
-        "pydantic.BaseModel" -> "MemoryEntry";
-      }
-
-.. autopydantic_model:: agents.rag.enhanced_memory_react.MemoryEntry
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
-
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for MemoryType:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_MemoryType {
-        node [shape=record];
-        "MemoryType" [label="MemoryType"];
-        "str" -> "MemoryType";
-        "enum.Enum" -> "MemoryType";
-      }
-
-.. autoclass:: agents.rag.enhanced_memory_react.MemoryType
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-   .. note::
-
-      **MemoryType** is an Enum defined in ``agents.rag.enhanced_memory_react``.
-
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ReActStep:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ReActStep {
-        node [shape=record];
-        "ReActStep" [label="ReActStep"];
-        "str" -> "ReActStep";
-        "enum.Enum" -> "ReActStep";
-      }
-
-.. autoclass:: agents.rag.enhanced_memory_react.ReActStep
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-   .. note::
-
-      **ReActStep** is an Enum defined in ``agents.rag.enhanced_memory_react``.
-
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ReActStepResult:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ReActStepResult {
-        node [shape=record];
-        "ReActStepResult" [label="ReActStepResult"];
-        "pydantic.BaseModel" -> "ReActStepResult";
-      }
-
-.. autopydantic_model:: agents.rag.enhanced_memory_react.ReActStepResult
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
-
-
-
 Functions
 ---------
 
@@ -209,6 +37,280 @@ Functions
    agents.rag.enhanced_memory_react.create_memory_react_with_tools
    agents.rag.enhanced_memory_react.create_simple_memory_react_rag
    agents.rag.enhanced_memory_react.get_enhanced_memory_react_io_schema
+
+
+Module Contents
+---------------
+
+.. py:class:: EnhancedResponse(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Enhanced response with memory integration.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: EnhancedResponse
+      :collapse:
+
+   .. py:attribute:: answer
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: confidence
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: memory_used
+      :type:  list[MemoryEntry]
+      :value: None
+
+
+
+   .. py:attribute:: new_memories
+      :type:  list[MemoryEntry]
+      :value: None
+
+
+
+   .. py:attribute:: reasoning_chain
+      :type:  list[ReActStepResult]
+      :value: None
+
+
+
+.. py:class:: MemoryAnalysis(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Memory analysis result.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: MemoryAnalysis
+      :collapse:
+
+   .. py:attribute:: confidence
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: memory_gaps
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: relevant_memories
+      :type:  list[MemoryEntry]
+      :value: None
+
+
+
+   .. py:attribute:: temporal_context
+      :type:  str
+      :value: None
+
+
+
+.. py:class:: MemoryEntry(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Memory entry structure.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: MemoryEntry
+      :collapse:
+
+   .. py:attribute:: content
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: context_tags
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: memory_type
+      :type:  MemoryType
+      :value: None
+
+
+
+   .. py:attribute:: relevance_score
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: timestamp
+      :type:  str
+      :value: None
+
+
+
+.. py:class:: MemoryType
+
+   Bases: :py:obj:`str`, :py:obj:`enum.Enum`
+
+
+   Types of memory.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: MemoryType
+      :collapse:
+
+   .. py:attribute:: EPISODIC
+      :value: 'episodic'
+
+
+
+   .. py:attribute:: LONG_TERM
+      :value: 'long_term'
+
+
+
+   .. py:attribute:: SEMANTIC
+      :value: 'semantic'
+
+
+
+   .. py:attribute:: SHORT_TERM
+      :value: 'short_term'
+
+
+
+.. py:class:: ReActStep
+
+   Bases: :py:obj:`str`, :py:obj:`enum.Enum`
+
+
+   ReAct pattern steps.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: ReActStep
+      :collapse:
+
+   .. py:attribute:: ACTION
+      :value: 'action'
+
+
+
+   .. py:attribute:: OBSERVATION
+      :value: 'observation'
+
+
+
+   .. py:attribute:: REFLECTION
+      :value: 'reflection'
+
+
+
+   .. py:attribute:: THOUGHT
+      :value: 'thought'
+
+
+
+.. py:class:: ReActStepResult(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Result from a ReAct step.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: ReActStepResult
+      :collapse:
+
+   .. py:attribute:: confidence
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: content
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: next_action
+      :type:  str | None
+      :value: None
+
+
+
+   .. py:attribute:: step_type
+      :type:  ReActStep
+      :value: None
+
+
 
 .. py:function:: create_enhanced_memory_react_rag(documents: list[langchain_core.documents.Document], llm_config: haive.core.models.llm.base.LLMConfig | None = None, name: str = 'Enhanced Memory ReAct RAG') -> haive.agents.chain.ChainAgent
 
@@ -242,11 +344,3 @@ Functions
    .. autolink-examples:: get_enhanced_memory_react_io_schema
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.rag.enhanced_memory_react
-   :collapse:
-   
-.. autolink-skip:: next

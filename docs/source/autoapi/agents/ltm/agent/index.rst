@@ -1,17 +1,27 @@
-
-:py:mod:`agents.ltm.agent`
-==========================
+agents.ltm.agent
+================
 
 .. py:module:: agents.ltm.agent
 
-Long-Term Memory Agent implementation following Haive patterns.
+.. autoapi-nested-parse::
 
-This agent integrates LangMem functionality within the Haive framework,
-providing memory extraction, processing, and tool-based memory management.
+   Long-Term Memory Agent implementation following Haive patterns.
+
+   This agent integrates LangMem functionality within the Haive framework,
+   providing memory extraction, processing, and tool-based memory management.
 
 
-.. autolink-examples:: agents.ltm.agent
-   :collapse:
+   .. autolink-examples:: agents.ltm.agent
+      :collapse:
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.ltm.agent.logger
+
 
 Classes
 -------
@@ -20,60 +30,6 @@ Classes
 
    agents.ltm.agent.LTMAgent
    agents.ltm.agent.LTMState
-
-
-Module Contents
----------------
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for LTMAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_LTMAgent {
-        node [shape=record];
-        "LTMAgent" [label="LTMAgent"];
-        "haive.agents.base.agent.Agent" -> "LTMAgent";
-      }
-
-.. autoclass:: agents.ltm.agent.LTMAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for LTMState:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_LTMState {
-        node [shape=record];
-        "LTMState" [label="LTMState"];
-        "pydantic.BaseModel" -> "LTMState";
-      }
-
-.. autopydantic_model:: agents.ltm.agent.LTMState
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
-
 
 
 Functions
@@ -88,6 +44,277 @@ Functions
    agents.ltm.agent.needs_kg_processing
    agents.ltm.agent.needs_tool_activation
    agents.ltm.agent.processing_complete
+
+
+Module Contents
+---------------
+
+.. py:class:: LTMAgent(name: str = 'LTM Agent', llm_config: haive.core.models.llm.base.LLMConfig | None = None, enable_kg_processing: bool = True, enable_categorization: bool = True, enable_consolidation: bool = True, enable_reflection: bool = True, **kwargs)
+
+   Bases: :py:obj:`haive.agents.base.agent.Agent`
+
+
+   Long-Term Memory Agent with LangMem integration.
+
+   This agent provides comprehensive memory management capabilities including:
+   - Memory extraction from conversations using LangMem
+   - Knowledge graph processing using Haive KG extraction
+   - Memory categorization using TNT taxonomy
+   - Memory consolidation and quality improvement
+   - Tool-based memory management interface
+   - Background reflection processing
+
+   The agent follows Haive patterns with proper conditional edges and state management.
+
+   Initialize LTM agent.
+
+   :param name: Agent name
+   :param llm_config: LLM configuration for memory processing
+   :param enable_kg_processing: Enable knowledge graph extraction
+   :param enable_categorization: Enable memory categorization
+   :param enable_consolidation: Enable memory consolidation
+   :param enable_reflection: Enable background reflection
+   :param \*\*kwargs: Additional Agent arguments
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: LTMAgent
+      :collapse:
+
+   .. py:method:: __repr__() -> str
+
+
+   .. py:method:: _calculate_extraction_quality(memories: list[dict], messages: list) -> float
+
+      Calculate quality score for extracted memories.
+
+
+      .. autolink-examples:: _calculate_extraction_quality
+         :collapse:
+
+
+   .. py:method:: build_graph() -> haive.core.graph.state_graph.base_graph2.BaseGraph
+
+      Build LTM graph with proper conditional edges.
+
+      This is the FIRST PHASE - just memory extraction and basic routing.
+      We'll add more nodes incrementally.
+
+
+      .. autolink-examples:: build_graph
+         :collapse:
+
+
+   .. py:method:: complete_processing_node(state: LTMState) -> dict[str, Any]
+
+      Complete processing (Phase 1 implementation).
+
+
+      .. autolink-examples:: complete_processing_node
+         :collapse:
+
+
+   .. py:method:: extract_memories_node(state: LTMState) -> dict[str, Any]
+
+      Extract memories using LangMem memory manager (Phase 2 implementation).
+
+
+      .. autolink-examples:: extract_memories_node
+         :collapse:
+
+
+   .. py:method:: get_processing_summary(state: LTMState) -> dict[str, Any]
+
+      Get summary of processing results.
+
+
+      .. autolink-examples:: get_processing_summary
+         :collapse:
+
+
+   .. py:method:: handle_errors_node(state: LTMState) -> dict[str, Any]
+
+      Handle processing errors.
+
+
+      .. autolink-examples:: handle_errors_node
+         :collapse:
+
+
+   .. py:method:: setup_agent() -> None
+
+      Setup LTM agent engines and components.
+
+
+      .. autolink-examples:: setup_agent
+         :collapse:
+
+
+   .. py:attribute:: enable_categorization
+      :type:  bool
+      :value: None
+
+
+
+   .. py:attribute:: enable_consolidation
+      :type:  bool
+      :value: None
+
+
+
+   .. py:attribute:: enable_kg_processing
+      :type:  bool
+      :value: None
+
+
+
+   .. py:attribute:: enable_reflection
+      :type:  bool
+      :value: None
+
+
+
+   .. py:attribute:: ltm_llm_config
+      :type:  haive.core.models.llm.base.LLMConfig | None
+      :value: None
+
+
+
+.. py:class:: LTMState(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   LTM Agent State following Haive patterns.
+
+   This state schema tracks the progression through memory processing stages
+   and maintains all necessary data for the LTM workflow.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: LTMState
+      :collapse:
+
+   .. py:attribute:: categories
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: consolidated_memories
+      :type:  list[dict[str, Any]]
+      :value: None
+
+
+
+   .. py:attribute:: enable_categorization
+      :type:  bool
+      :value: None
+
+
+
+   .. py:attribute:: enable_consolidation
+      :type:  bool
+      :value: None
+
+
+
+   .. py:attribute:: enable_kg_processing
+      :type:  bool
+      :value: None
+
+
+
+   .. py:attribute:: enable_reflection
+      :type:  bool
+      :value: None
+
+
+
+   .. py:attribute:: extracted_memories
+      :type:  list[dict[str, Any]]
+      :value: None
+
+
+
+   .. py:attribute:: extraction_quality
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: knowledge_graph
+      :type:  dict[str, Any] | None
+      :value: None
+
+
+
+   .. py:attribute:: messages
+      :type:  list[langchain_core.messages.AnyMessage]
+      :value: None
+
+
+
+   .. py:attribute:: processing_complete
+      :type:  bool
+      :value: None
+
+
+
+   .. py:attribute:: processing_completed_at
+      :type:  datetime.datetime | None
+      :value: None
+
+
+
+   .. py:attribute:: processing_errors
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: processing_quality
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: processing_stage
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: processing_started_at
+      :type:  datetime.datetime | None
+      :value: None
+
+
+
+   .. py:attribute:: reflection_scheduled
+      :type:  bool
+      :value: None
+
+
+
+   .. py:attribute:: tool_calls_needed
+      :type:  bool
+      :value: None
+
+
 
 .. py:function:: extraction_succeeded(state: LTMState) -> bool
 
@@ -145,11 +372,5 @@ Functions
    .. autolink-examples:: processing_complete
       :collapse:
 
+.. py:data:: logger
 
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.ltm.agent
-   :collapse:
-   
-.. autolink-skip:: next

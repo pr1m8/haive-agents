@@ -1,27 +1,35 @@
-
-:py:mod:`agents.rag.adaptive_rag`
-=================================
+agents.rag.adaptive_rag
+=======================
 
 .. py:module:: agents.rag.adaptive_rag
 
-Adaptive Rag - TODO: Add brief description.
+.. autoapi-nested-parse::
 
-TODO: Add detailed description of module functionality
+   Adaptive Rag - TODO: Add brief description.
 
-
-
-.. rubric:: Example
-
-Basic usage::
-
-    from haive.adaptive_rag import module_function
-
-    # TODO: Add example
+   TODO: Add detailed description of module functionality
 
 
-.. autolink-examples:: agents.rag.adaptive_rag
-   :collapse:
+
+   .. rubric:: Example
+
+   Basic usage::
+
+       from haive.adaptive_rag import module_function
+
+       # TODO: Add example
 
 
+   .. autolink-examples:: agents.rag.adaptive_rag
+      :collapse:
+
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/agents/rag/adaptive_rag/agent/index
 
 

@@ -1,14 +1,16 @@
-
-:py:mod:`agents.reasoning_and_critique.self_discover.selector.models`
-=====================================================================
+agents.reasoning_and_critique.self_discover.selector.models
+===========================================================
 
 .. py:module:: agents.reasoning_and_critique.self_discover.selector.models
 
-Models for the Self-Discover Selector Agent.
+.. autoapi-nested-parse::
+
+   Models for the Self-Discover Selector Agent.
 
 
-.. autolink-examples:: agents.reasoning_and_critique.self_discover.selector.models
-   :collapse:
+   .. autolink-examples:: agents.reasoning_and_critique.self_discover.selector.models
+      :collapse:
+
 
 Classes
 -------
@@ -22,70 +24,89 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: ModuleSelection(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   The complete module selection for a task.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: ModuleSelection
+      :collapse:
+
+   .. py:attribute:: selected_modules
+      :type:  list[SelectedModule]
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ModuleSelection:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ModuleSelection {
-        node [shape=record];
-        "ModuleSelection" [label="ModuleSelection"];
-        "pydantic.BaseModel" -> "ModuleSelection";
-      }
-
-.. autopydantic_model:: agents.reasoning_and_critique.self_discover.selector.models.ModuleSelection
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: selection_rationale
+      :type:  str
+      :value: None
 
 
 
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for SelectedModule:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_SelectedModule {
-        node [shape=record];
-        "SelectedModule" [label="SelectedModule"];
-        "pydantic.BaseModel" -> "SelectedModule";
-      }
-
-.. autopydantic_model:: agents.reasoning_and_critique.self_discover.selector.models.SelectedModule
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: task_summary
+      :type:  str
+      :value: None
 
 
 
+.. py:class:: SelectedModule(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
 
 
-.. rubric:: Related Links
+   A reasoning module selected for the task.
 
-.. autolink-examples:: agents.reasoning_and_critique.self_discover.selector.models
-   :collapse:
-   
-.. autolink-skip:: next
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: SelectedModule
+      :collapse:
+
+   .. py:attribute:: contribution
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: module_name
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: module_number
+      :type:  int
+      :value: None
+
+
+
+   .. py:attribute:: relevance_explanation
+      :type:  str
+      :value: None
+
+
+

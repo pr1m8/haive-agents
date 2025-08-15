@@ -1,20 +1,29 @@
-
-:py:mod:`example_dynamic_supervisor`
-====================================
+example_dynamic_supervisor
+==========================
 
 .. py:module:: example_dynamic_supervisor
 
-Example of using DynamicMultiAgent with real haive agents.
+.. autoapi-nested-parse::
 
-This example shows how to create a dynamic supervisor system that can:
-1. Start with a few agents
-2. Add specialized agents on demand
-3. Route requests intelligently
-4. Track performance
+   Example of using DynamicMultiAgent with real haive agents.
+
+   This example shows how to create a dynamic supervisor system that can:
+   1. Start with a few agents
+   2. Add specialized agents on demand
+   3. Route requests intelligently
+   4. Track performance
 
 
-.. autolink-examples:: example_dynamic_supervisor
-   :collapse:
+   .. autolink-examples:: example_dynamic_supervisor
+      :collapse:
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   example_dynamic_supervisor.logger
 
 
 Functions
@@ -27,6 +36,10 @@ Functions
    example_dynamic_supervisor.demonstrate_dynamic_capabilities
    example_dynamic_supervisor.demonstrate_react_agent_integration
    example_dynamic_supervisor.main
+
+
+Module Contents
+---------------
 
 .. py:function:: create_dynamic_supervisor_system()
    :async:
@@ -78,11 +91,5 @@ Functions
    .. autolink-examples:: main
       :collapse:
 
+.. py:data:: logger
 
-
-.. rubric:: Related Links
-
-.. autolink-examples:: example_dynamic_supervisor
-   :collapse:
-   
-.. autolink-skip:: next

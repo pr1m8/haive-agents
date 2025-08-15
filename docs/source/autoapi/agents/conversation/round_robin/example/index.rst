@@ -1,14 +1,15 @@
-
-:py:mod:`agents.conversation.round_robin.example`
-=================================================
+agents.conversation.round_robin.example
+=======================================
 
 .. py:module:: agents.conversation.round_robin.example
 
-Examples for round-robin conversation patterns.
+.. autoapi-nested-parse::
+
+   Examples for round-robin conversation patterns.
 
 
-.. autolink-examples:: agents.conversation.round_robin.example
-   :collapse:
+   .. autolink-examples:: agents.conversation.round_robin.example
+      :collapse:
 
 
 Functions
@@ -19,6 +20,10 @@ Functions
    agents.conversation.round_robin.example.example_custom_round_robin
    agents.conversation.round_robin.example.example_panel_discussion
    agents.conversation.round_robin.example.example_simple_round_robin
+
+
+Module Contents
+---------------
 
 .. py:function:: example_custom_round_robin() -> None
 
@@ -44,11 +49,3 @@ Functions
    .. autolink-examples:: example_simple_round_robin
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.conversation.round_robin.example
-   :collapse:
-   
-.. autolink-skip:: next

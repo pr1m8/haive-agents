@@ -1,15 +1,23 @@
-
-:py:mod:`agents.planning.models`
-================================
+agents.planning.models
+======================
 
 .. py:module:: agents.planning.models
 
-Module exports.
+.. autoapi-nested-parse::
+
+   Module exports.
 
 
-.. autolink-examples:: agents.planning.models
-   :collapse:
+   .. autolink-examples:: agents.planning.models
+      :collapse:
 
 
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/agents/planning/models/base/index
 
 

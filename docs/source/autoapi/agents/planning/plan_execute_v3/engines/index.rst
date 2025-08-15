@@ -1,17 +1,19 @@
-
-:py:mod:`agents.planning.plan_execute_v3.engines`
-=================================================
+agents.planning.plan_execute_v3.engines
+=======================================
 
 .. py:module:: agents.planning.plan_execute_v3.engines
 
-Engines for Plan-and-Execute V3 Agent.
+.. autoapi-nested-parse::
 
-This module contains the specialized engines used by the Plan-and-Execute V3 agent
-for planning, validation, execution, and monitoring.
+   Engines for Plan-and-Execute V3 Agent.
+
+   This module contains the specialized engines used by the Plan-and-Execute V3 agent
+   for planning, validation, execution, and monitoring.
 
 
-.. autolink-examples:: agents.planning.plan_execute_v3.engines
-   :collapse:
+   .. autolink-examples:: agents.planning.plan_execute_v3.engines
+      :collapse:
+
 
 Classes
 -------
@@ -20,180 +22,285 @@ Classes
 
    agents.planning.plan_execute_v3.engines.ExecutorEngine
    agents.planning.plan_execute_v3.engines.MonitorEngine
-   agents.planning.plan_execute_v3.engines.Plan
    agents.planning.plan_execute_v3.engines.PlannerEngine
    agents.planning.plan_execute_v3.engines.ReplannerEngine
-   agents.planning.plan_execute_v3.engines.StepStatus
    agents.planning.plan_execute_v3.engines.ValidatorEngine
 
 
 Module Contents
 ---------------
 
+.. py:class:: ExecutorEngine(llm_config: haive.core.engine.aug_llm.AugLLMConfig, tools: list[langchain_core.tools.BaseTool])
 
+   Engine for executing individual plan steps.
 
+   Initialize executor engine.
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for ExecutorEngine:
+   .. autolink-examples:: __init__
+      :collapse:
 
-   .. graphviz::
-      :align: center
 
-      digraph inheritance_ExecutorEngine {
-        node [shape=record];
-        "ExecutorEngine" [label="ExecutorEngine"];
-      }
+   .. autolink-examples:: ExecutorEngine
+      :collapse:
 
-.. autoclass:: agents.planning.plan_execute_v3.engines.ExecutorEngine
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. py:method:: execute_step(step: agents.planning.plan_execute_v3.models.Step, context: dict[str, Any], previous_results: dict[str, Any]) -> tuple[Any, str | None]
+      :async:
 
 
+      Execute a single plan step.
 
+      :param step: The step to execute
+      :param context: Shared execution context
+      :param previous_results: Results from previous steps
 
-.. toggle:: Show Inheritance Diagram
+      :returns: Tuple of (result, error_message)
 
-   Inheritance diagram for MonitorEngine:
 
-   .. graphviz::
-      :align: center
+      .. autolink-examples:: execute_step
+         :collapse:
 
-      digraph inheritance_MonitorEngine {
-        node [shape=record];
-        "MonitorEngine" [label="MonitorEngine"];
-      }
 
-.. autoclass:: agents.planning.plan_execute_v3.engines.MonitorEngine
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. py:attribute:: llm
 
-:orphan:
 
+   .. py:attribute:: tools
 
 
-.. toggle:: Show Inheritance Diagram
+.. py:class:: MonitorEngine(llm_config: haive.core.engine.aug_llm.AugLLMConfig)
 
-   Inheritance diagram for Plan:
+   Engine for monitoring plan execution.
 
-   .. graphviz::
-      :align: center
+   Initialize monitor engine.
 
-      digraph inheritance_Plan {
-        node [shape=record];
-        "Plan" [label="Plan"];
-        "pydantic.BaseModel" -> "Plan";
-      }
 
-.. autopydantic_model:: agents.planning.plan_execute_v3.engines.Plan
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. autolink-examples:: __init__
+      :collapse:
 
 
+   .. autolink-examples:: MonitorEngine
+      :collapse:
 
+   .. py:method:: _format_execution_state(plan: agents.planning.plan_execute_v3.models.Plan) -> str
 
+      Format execution state for monitoring.
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for PlannerEngine:
+      .. autolink-examples:: _format_execution_state
+         :collapse:
 
-   .. graphviz::
-      :align: center
 
-      digraph inheritance_PlannerEngine {
-        node [shape=record];
-        "PlannerEngine" [label="PlannerEngine"];
-      }
+   .. py:method:: analyze_execution(plan: agents.planning.plan_execute_v3.models.Plan) -> dict[str, Any]
+      :async:
 
-.. autoclass:: agents.planning.plan_execute_v3.engines.PlannerEngine
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
+      Analyze plan execution progress.
 
+      :param plan: The plan being executed
 
+      :returns: Analysis results with metrics and suggestions
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for ReplannerEngine:
+      .. autolink-examples:: analyze_execution
+         :collapse:
 
-   .. graphviz::
-      :align: center
 
-      digraph inheritance_ReplannerEngine {
-        node [shape=record];
-        "ReplannerEngine" [label="ReplannerEngine"];
-      }
+   .. py:attribute:: llm
 
-.. autoclass:: agents.planning.plan_execute_v3.engines.ReplannerEngine
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
-:orphan:
+.. py:class:: PlannerEngine(llm_config: haive.core.engine.aug_llm.AugLLMConfig, tools: list[langchain_core.tools.BaseTool])
 
+   Engine for generating execution plans.
 
+   Initialize planner engine.
 
-.. toggle:: Show Inheritance Diagram
+   :param llm_config: LLM configuration
+   :param tools: Available tools for planning
 
-   Inheritance diagram for StepStatus:
 
-   .. graphviz::
-      :align: center
+   .. autolink-examples:: __init__
+      :collapse:
 
-      digraph inheritance_StepStatus {
-        node [shape=record];
-        "StepStatus" [label="StepStatus"];
-        "str" -> "StepStatus";
-        "enum.Enum" -> "StepStatus";
-      }
 
-.. autoclass:: agents.planning.plan_execute_v3.engines.StepStatus
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. autolink-examples:: PlannerEngine
+      :collapse:
 
-   .. note::
+   .. py:method:: _format_tools_description() -> str
 
-      **StepStatus** is an Enum defined in ``agents.planning.plan_execute_v3.engines``.
+      Format tools description for prompts.
 
 
+      .. autolink-examples:: _format_tools_description
+         :collapse:
 
 
+   .. py:method:: _parse_plan_response(response: str, goal: str) -> agents.planning.plan_execute_v3.models.Plan
 
-.. toggle:: Show Inheritance Diagram
+      Parse LLM response into a Plan object.
 
-   Inheritance diagram for ValidatorEngine:
 
-   .. graphviz::
-      :align: center
+      .. autolink-examples:: _parse_plan_response
+         :collapse:
 
-      digraph inheritance_ValidatorEngine {
-        node [shape=record];
-        "ValidatorEngine" [label="ValidatorEngine"];
-      }
 
-.. autoclass:: agents.planning.plan_execute_v3.engines.ValidatorEngine
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. py:method:: generate_plan(goal: str) -> agents.planning.plan_execute_v3.models.Plan
+      :async:
 
 
+      Generate an execution plan for the given goal.
 
+      :param goal: The goal to achieve
 
-.. rubric:: Related Links
+      :returns: Generated execution plan
 
-.. autolink-examples:: agents.planning.plan_execute_v3.engines
-   :collapse:
-   
-.. autolink-skip:: next
+
+      .. autolink-examples:: generate_plan
+         :collapse:
+
+
+   .. py:attribute:: llm
+
+
+   .. py:attribute:: tools
+
+
+   .. py:attribute:: tools_description
+      :value: ''
+
+
+
+.. py:class:: ReplannerEngine(llm_config: haive.core.engine.aug_llm.AugLLMConfig, tools: list[langchain_core.tools.BaseTool])
+
+   Engine for replanning when execution fails.
+
+   Initialize replanner engine.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: ReplannerEngine
+      :collapse:
+
+   .. py:method:: _format_plan_status(plan: agents.planning.plan_execute_v3.models.Plan) -> str
+
+      Format current plan status.
+
+
+      .. autolink-examples:: _format_plan_status
+         :collapse:
+
+
+   .. py:method:: _format_tools_description() -> str
+
+      Format tools description for prompts.
+
+
+      .. autolink-examples:: _format_tools_description
+         :collapse:
+
+
+   .. py:method:: _parse_plan_response(response: str, goal: str) -> agents.planning.plan_execute_v3.models.Plan
+
+      Parse LLM response into a Plan object.
+
+
+      .. autolink-examples:: _parse_plan_response
+         :collapse:
+
+
+   .. py:method:: create_revised_plan(original_plan: agents.planning.plan_execute_v3.models.Plan, issues: list[str]) -> agents.planning.plan_execute_v3.models.Plan
+      :async:
+
+
+      Create a revised plan based on execution issues.
+
+      :param original_plan: The plan that encountered issues
+      :param issues: List of issues encountered
+
+      :returns: Revised execution plan
+
+
+      .. autolink-examples:: create_revised_plan
+         :collapse:
+
+
+   .. py:attribute:: llm
+
+
+   .. py:attribute:: tools
+
+
+   .. py:attribute:: tools_description
+      :value: ''
+
+
+
+.. py:class:: ValidatorEngine(llm_config: haive.core.engine.aug_llm.AugLLMConfig, tools: list[langchain_core.tools.BaseTool])
+
+   Engine for validating and refining plans.
+
+   Initialize validator engine.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: ValidatorEngine
+      :collapse:
+
+   .. py:method:: _format_plan_for_validation(plan: agents.planning.plan_execute_v3.models.Plan) -> str
+
+      Format plan for validation prompt.
+
+
+      .. autolink-examples:: _format_plan_for_validation
+         :collapse:
+
+
+   .. py:method:: _format_tools_description() -> str
+
+      Format tools description for prompts.
+
+
+      .. autolink-examples:: _format_tools_description
+         :collapse:
+
+
+   .. py:method:: _parse_validation_response(response: str, original_plan: agents.planning.plan_execute_v3.models.Plan) -> agents.planning.plan_execute_v3.models.PlanValidationResult
+
+      Parse validation response.
+
+
+      .. autolink-examples:: _parse_validation_response
+         :collapse:
+
+
+   .. py:method:: validate_plan(plan: agents.planning.plan_execute_v3.models.Plan) -> agents.planning.plan_execute_v3.models.PlanValidationResult
+      :async:
+
+
+      Validate a plan and suggest refinements.
+
+      :param plan: The plan to validate
+
+      :returns: Validation result with issues and suggestions
+
+
+      .. autolink-examples:: validate_plan
+         :collapse:
+
+
+   .. py:attribute:: llm
+
+
+   .. py:attribute:: tools
+
+
+   .. py:attribute:: tools_description
+      :value: ''
+
+
+

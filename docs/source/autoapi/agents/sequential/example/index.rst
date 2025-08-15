@@ -1,18 +1,27 @@
-
-:py:mod:`agents.sequential.example`
-===================================
+agents.sequential.example
+=========================
 
 .. py:module:: agents.sequential.example
 
-Quick example of using SequentialAgent with imported AugLLMConfig components.
+.. autoapi-nested-parse::
 
-from typing import Any
-This demonstrates how to easily chain together pre-configured components
-for a sequential reasoning workflow.
+   Quick example of using SequentialAgent with imported AugLLMConfig components.
+
+   from typing import Any
+   This demonstrates how to easily chain together pre-configured components
+   for a sequential reasoning workflow.
 
 
-.. autolink-examples:: agents.sequential.example
-   :collapse:
+   .. autolink-examples:: agents.sequential.example
+      :collapse:
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.sequential.example.agent
 
 
 Functions
@@ -22,6 +31,10 @@ Functions
 
    agents.sequential.example.pretty_print
    agents.sequential.example.run_example
+
+
+Module Contents
+---------------
 
 .. py:function:: pretty_print(obj: Any) -> None
 
@@ -33,11 +46,5 @@ Functions
 
 .. py:function:: run_example() -> Any
 
+.. py:data:: agent
 
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.sequential.example
-   :collapse:
-   
-.. autolink-skip:: next

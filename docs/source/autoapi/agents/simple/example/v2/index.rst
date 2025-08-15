@@ -1,17 +1,27 @@
-
-:py:mod:`agents.simple.example.v2`
-==================================
+agents.simple.example.v2
+========================
 
 .. py:module:: agents.simple.example.v2
 
-Example usage of SimpleAgent implementation with enhanced debugging.
+.. autoapi-nested-parse::
 
-from typing import Any
-This script demonstrates how to create and use SimpleAgent with custom state schema.
+   Example usage of SimpleAgent implementation with enhanced debugging.
+
+   from typing import Any
+   This script demonstrates how to create and use SimpleAgent with custom state schema.
 
 
-.. autolink-examples:: agents.simple.example.v2
-   :collapse:
+   .. autolink-examples:: agents.simple.example.v2
+      :collapse:
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.simple.example.v2.console
+   agents.simple.example.v2.logger
 
 
 Functions
@@ -21,6 +31,10 @@ Functions
 
    agents.simple.example.v2.debug_print
    agents.simple.example.v2.example_with_custom_state_schema
+
+
+Module Contents
+---------------
 
 .. py:function:: debug_print(title, obj, expand=False) -> None
 
@@ -38,11 +52,7 @@ Functions
    .. autolink-examples:: example_with_custom_state_schema
       :collapse:
 
+.. py:data:: console
 
+.. py:data:: logger
 
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.simple.example.v2
-   :collapse:
-   
-.. autolink-skip:: next

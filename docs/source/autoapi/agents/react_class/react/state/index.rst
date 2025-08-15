@@ -1,6 +1,5 @@
-
-:py:mod:`agents.react_class.react.state`
-========================================
+agents.react_class.react.state
+==============================
 
 .. py:module:: agents.react_class.react.state
 
@@ -16,33 +15,62 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: ReactAgentState
+
+   Bases: :py:obj:`haive.agents.simple.state.SimpleAgentState`
+
+
+   State for React Agent, extending SimpleAgentState.
+
+   Adds fields for tool results, intermediate reasoning,
+   and structured output.
+
+
+   .. autolink-examples:: ReactAgentState
+      :collapse:
+
+   .. py:attribute:: active_tools
+      :type:  list[str]
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ReactAgentState:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ReactAgentState {
-        node [shape=record];
-        "ReactAgentState" [label="ReactAgentState"];
-        "haive.agents.simple.state.SimpleAgentState" -> "ReactAgentState";
-      }
-
-.. autoclass:: agents.react_class.react.state.ReactAgentState
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. py:attribute:: final_answer
+      :type:  str | None
+      :value: None
 
 
 
+   .. py:attribute:: intermediate_steps
+      :type:  list[dict[str, Any]]
+      :value: None
 
-.. rubric:: Related Links
 
-.. autolink-examples:: agents.react_class.react.state
-   :collapse:
-   
-.. autolink-skip:: next
+
+   .. py:attribute:: model_config
+
+
+   .. py:attribute:: reasoning
+      :type:  str | None
+      :value: None
+
+
+
+   .. py:attribute:: selected_tools
+      :type:  list[dict[str, Any]]
+      :value: None
+
+
+
+   .. py:attribute:: structured_output
+      :type:  dict[str, Any] | None
+      :value: None
+
+
+
+   .. py:attribute:: tool_results
+      :type:  list[dict[str, Any]]
+      :value: None
+
+
+

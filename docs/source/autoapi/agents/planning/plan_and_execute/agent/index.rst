@@ -1,6 +1,5 @@
-
-:py:mod:`agents.planning.plan_and_execute.agent`
-================================================
+agents.planning.plan_and_execute.agent
+======================================
 
 .. py:module:: agents.planning.plan_and_execute.agent
 
@@ -16,33 +15,70 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: PlanAndExecuteAgent(config: haive.agents.planning.plan_and_execute.config.PlanAndExecuteConfig = PlanAndExecuteConfig())
+
+   Bases: :py:obj:`haive.core.engine.agent.agent.Agent`\ [\ :py:obj:`haive.agents.planning.plan_and_execute.config.PlanAndExecuteConfig`\ ]
+
+
+   .. py:method:: arun(input_text: str | None = None, input_dict: dict[str, Any] | None = None)
+      :async:
 
 
 
-.. toggle:: Show Inheritance Diagram
+   .. py:method:: execute_step(state: PlanAndExecuteState)
+      :async:
 
-   Inheritance diagram for PlanAndExecuteAgent:
 
-   .. graphviz::
-      :align: center
+      Executes the next step in the plan.
 
-      digraph inheritance_PlanAndExecuteAgent {
-        node [shape=record];
-        "PlanAndExecuteAgent" [label="PlanAndExecuteAgent"];
-        "haive.core.engine.agent.agent.Agent[haive.agents.planning.plan_and_execute.config.PlanAndExecuteConfig]" -> "PlanAndExecuteAgent";
-      }
 
-.. autoclass:: agents.planning.plan_and_execute.agent.PlanAndExecuteAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
+      .. autolink-examples:: execute_step
+         :collapse:
+
+
+   .. py:method:: planner(state: PlanAndExecuteState)
+      :async:
 
 
 
+   .. py:method:: replan_step(state: PlanAndExecuteState)
+      :async:
 
-.. rubric:: Related Links
 
-.. autolink-examples:: agents.planning.plan_and_execute.agent
-   :collapse:
-   
-.. autolink-skip:: next
+      Replans the steps based on completed progress.
+
+
+      .. autolink-examples:: replan_step
+         :collapse:
+
+
+   .. py:method:: setup_workflow() -> None
+
+
+   .. py:method:: should_end(state: PlanAndExecuteState)
+
+      Determines if the process should end.
+
+      :param state: The current state.
+      :type state: PlanAndExecuteState
+
+      :returns: "END" if finished, otherwise continue to the next node.
+      :rtype: str
+
+
+      .. autolink-examples:: should_end
+         :collapse:
+
+
+   .. py:attribute:: agent_executor_runnable
+
+
+   .. py:attribute:: config
+
+
+   .. py:attribute:: planner_runnable
+
+
+   .. py:attribute:: replanner_runnable
+
+

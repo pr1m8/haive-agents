@@ -1,20 +1,29 @@
-
-:py:mod:`example_dynamic`
-=========================
+example_dynamic
+===============
 
 .. py:module:: example_dynamic
 
-Example usage of DynamicSupervisorAgent.
+.. autoapi-nested-parse::
 
-This example demonstrates the dynamic supervisor capabilities including:
-- Runtime agent registration and deregistration
-- Adaptive response handling
-- Performance monitoring
-- Dynamic configuration updates
+   Example usage of DynamicSupervisorAgent.
+
+   This example demonstrates the dynamic supervisor capabilities including:
+   - Runtime agent registration and deregistration
+   - Adaptive response handling
+   - Performance monitoring
+   - Dynamic configuration updates
 
 
-.. autolink-examples:: example_dynamic
-   :collapse:
+   .. autolink-examples:: example_dynamic
+      :collapse:
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   example_dynamic.console
 
 
 Functions
@@ -26,6 +35,10 @@ Functions
    example_dynamic.demonstrate_dynamic_supervisor
    example_dynamic.demonstrate_parallel_execution
    example_dynamic.main
+
+
+Module Contents
+---------------
 
 .. py:function:: demonstrate_adaptation_rules()
    :async:
@@ -67,11 +80,5 @@ Functions
    .. autolink-examples:: main
       :collapse:
 
+.. py:data:: console
 
-
-.. rubric:: Related Links
-
-.. autolink-examples:: example_dynamic
-   :collapse:
-   
-.. autolink-skip:: next

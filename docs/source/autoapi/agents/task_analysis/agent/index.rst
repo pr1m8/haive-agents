@@ -1,8 +1,15 @@
-
-:py:mod:`agents.task_analysis.agent`
-====================================
+agents.task_analysis.agent
+==========================
 
 .. py:module:: agents.task_analysis.agent
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.task_analysis.agent.logger
 
 
 Classes
@@ -11,31 +18,6 @@ Classes
 .. autoapisummary::
 
    agents.task_analysis.agent.TaskAnalysisAgent
-
-
-Module Contents
----------------
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for TaskAnalysisAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_TaskAnalysisAgent {
-        node [shape=record];
-        "TaskAnalysisAgent" [label="TaskAnalysisAgent"];
-        "haive.agents.base.agent.Agent" -> "TaskAnalysisAgent";
-      }
-
-.. autoclass:: agents.task_analysis.agent.TaskAnalysisAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
 
 Functions
@@ -50,6 +32,113 @@ Functions
    agents.task_analysis.agent.route_after_decomposition
    agents.task_analysis.agent.route_after_validation
    agents.task_analysis.agent.route_final_decision
+
+
+Module Contents
+---------------
+
+.. py:class:: TaskAnalysisAgent(**kwargs)
+
+   Bases: :py:obj:`haive.agents.base.agent.Agent`
+
+
+   Comprehensive task analysis agent that orchestrates multiple analysis engines.
+
+   This agent:
+   1. Decomposes tasks hierarchically
+   2. Analyzes complexity across multiple dimensions
+   3. Identifies parallelization opportunities
+   4. Plans execution with resource allocation
+   5. Provides integrated analysis and recommendations
+
+   Initialize with engines properly set up.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: TaskAnalysisAgent
+      :collapse:
+
+   .. py:method:: analyze_task(task_description: str, domain: str = 'general', additional_context: str = '', max_depth: int | None = None) -> dict[str, Any]
+
+      Analyze a task comprehensively.
+
+      :param task_description: Natural language task description
+      :param domain: Task domain (e.g., "software", "research", "creative")
+      :param additional_context: Any additional context
+      :param max_depth: Maximum decomposition depth (uses default if None)
+
+      :returns: Comprehensive analysis results
+
+
+      .. autolink-examples:: analyze_task
+         :collapse:
+
+
+   .. py:method:: build_graph() -> haive.core.graph.state_graph.base_graph2.BaseGraph
+
+      Build the task analysis workflow graph.
+
+
+      .. autolink-examples:: build_graph
+         :collapse:
+
+
+   .. py:method:: get_complexity_assessment(analysis_result: dict[str, Any]) -> haive.agents.task_analysis.complexity.models.ComplexityVector | None
+
+      Extract complexity assessment from analysis results.
+
+
+      .. autolink-examples:: get_complexity_assessment
+         :collapse:
+
+
+   .. py:method:: get_execution_plan(analysis_result: dict[str, Any]) -> haive.agents.task_analysis.execution.models.ExecutionPlan | None
+
+      Extract execution plan from analysis results.
+
+
+      .. autolink-examples:: get_execution_plan
+         :collapse:
+
+
+   .. py:method:: get_recommendations(analysis_result: dict[str, Any]) -> list[str]
+
+      Extract recommendations from analysis results.
+
+
+      .. autolink-examples:: get_recommendations
+         :collapse:
+
+
+   .. py:method:: setup_agent() -> None
+
+      Set up the agent with schema derived from engines.
+
+
+      .. autolink-examples:: setup_agent
+         :collapse:
+
+
+   .. py:attribute:: enable_recursive_decomposition
+      :type:  bool
+      :value: None
+
+
+
+   .. py:attribute:: max_decomposition_depth
+      :type:  int
+      :value: None
+
+
+
+   .. py:attribute:: parallel_analysis
+      :type:  bool
+      :value: None
+
+
 
 .. py:function:: join_analyses(state: dict[str, Any]) -> langgraph.types.Command[Literal['execution_planning', 'optimization', 'integrate_analysis']]
 
@@ -107,11 +196,5 @@ Functions
    .. autolink-examples:: route_final_decision
       :collapse:
 
+.. py:data:: logger
 
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.task_analysis.agent
-   :collapse:
-   
-.. autolink-skip:: next

@@ -1,14 +1,29 @@
-
-:py:mod:`agents.document_modifiers.summarizer.iterative_refinement`
-===================================================================
+agents.document_modifiers.summarizer.iterative_refinement
+=========================================================
 
 .. py:module:: agents.document_modifiers.summarizer.iterative_refinement
 
-Module exports.
+.. autoapi-nested-parse::
+
+   Module exports.
 
 
-.. autolink-examples:: agents.document_modifiers.summarizer.iterative_refinement
-   :collapse:
+   .. autolink-examples:: agents.document_modifiers.summarizer.iterative_refinement
+      :collapse:
+
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/agents/document_modifiers/summarizer/iterative_refinement/agent/index
+   /autoapi/agents/document_modifiers/summarizer/iterative_refinement/config/index
+   /autoapi/agents/document_modifiers/summarizer/iterative_refinement/engines/index
+   /autoapi/agents/document_modifiers/summarizer/iterative_refinement/example/index
+   /autoapi/agents/document_modifiers/summarizer/iterative_refinement/state/index
+
 
 Classes
 -------
@@ -22,138 +37,179 @@ Classes
    agents.document_modifiers.summarizer.iterative_refinement.IterativeSummarizerState
 
 
-Module Contents
----------------
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for IterativeSummarizer:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_IterativeSummarizer {
-        node [shape=record];
-        "IterativeSummarizer" [label="IterativeSummarizer"];
-        "haive.core.engine.agent.agent.Agent[haive.agents.document_modifiers.summarizer.iterative_refinement.config.IterativeSummarizerConfig]" -> "IterativeSummarizer";
-      }
-
-.. autoclass:: agents.document_modifiers.summarizer.iterative_refinement.IterativeSummarizer
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for IterativeSummarizerConfig:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_IterativeSummarizerConfig {
-        node [shape=record];
-        "IterativeSummarizerConfig" [label="IterativeSummarizerConfig"];
-        "haive.core.engine.agent.agent.AgentConfig" -> "IterativeSummarizerConfig";
-      }
-
-.. autoclass:: agents.document_modifiers.summarizer.iterative_refinement.IterativeSummarizerConfig
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for IterativeSummarizerInput:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_IterativeSummarizerInput {
-        node [shape=record];
-        "IterativeSummarizerInput" [label="IterativeSummarizerInput"];
-        "pydantic.BaseModel" -> "IterativeSummarizerInput";
-      }
-
-.. autopydantic_model:: agents.document_modifiers.summarizer.iterative_refinement.IterativeSummarizerInput
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
-
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for IterativeSummarizerOutput:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_IterativeSummarizerOutput {
-        node [shape=record];
-        "IterativeSummarizerOutput" [label="IterativeSummarizerOutput"];
-        "pydantic.BaseModel" -> "IterativeSummarizerOutput";
-      }
-
-.. autopydantic_model:: agents.document_modifiers.summarizer.iterative_refinement.IterativeSummarizerOutput
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
-
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for IterativeSummarizerState:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_IterativeSummarizerState {
-        node [shape=record];
-        "IterativeSummarizerState" [label="IterativeSummarizerState"];
-        "IterativeSummarizerInput" -> "IterativeSummarizerState";
-        "IterativeSummarizerOutput" -> "IterativeSummarizerState";
-      }
-
-.. autoclass:: agents.document_modifiers.summarizer.iterative_refinement.IterativeSummarizerState
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
 Functions
 ---------
 
 .. autoapisummary::
 
    agents.document_modifiers.summarizer.iterative_refinement.should_refine
+
+
+Package Contents
+----------------
+
+.. py:class:: IterativeSummarizer(config: haive.agents.document_modifiers.summarizer.iterative_refinement.config.IterativeSummarizerConfig = IterativeSummarizerConfig())
+
+   Bases: :py:obj:`haive.core.engine.agent.agent.Agent`\ [\ :py:obj:`haive.agents.document_modifiers.summarizer.iterative_refinement.config.IterativeSummarizerConfig`\ ]
+
+
+   An agent that summarizes a document iteratively.
+
+
+   .. autolink-examples:: IterativeSummarizer
+      :collapse:
+
+   .. py:method:: generate_initial_summary(state: haive.agents.document_modifiers.summarizer.iterative_refinement.state.IterativeSummarizerState, config: langchain_core.runnables.RunnableConfig)
+      :async:
+
+
+
+   .. py:method:: refine_summary(state: haive.agents.document_modifiers.summarizer.iterative_refinement.state.IterativeSummarizerState, config: langchain_core.runnables.RunnableConfig)
+      :async:
+
+
+
+   .. py:method:: setup_workflow() -> None
+
+
+.. py:class:: IterativeSummarizerConfig
+
+   Bases: :py:obj:`haive.core.engine.agent.agent.AgentConfig`
+
+
+   The configuration for the iterative summarizer.
+
+
+   .. autolink-examples:: IterativeSummarizerConfig
+      :collapse:
+
+   .. py:attribute:: checkpoint_mode
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: engines
+      :type:  dict[str, haive.core.engine.aug_llm.AugLLMConfig]
+      :value: None
+
+
+
+   .. py:attribute:: input_schema
+      :type:  haive.agents.document_modifiers.summarizer.iterative_refinement.state.IterativeSummarizerInput
+      :value: None
+
+
+
+   .. py:attribute:: output_schema
+      :type:  haive.agents.document_modifiers.summarizer.iterative_refinement.state.IterativeSummarizerOutput
+      :value: None
+
+
+
+   .. py:attribute:: state_schema
+      :type:  haive.agents.document_modifiers.summarizer.iterative_refinement.state.IterativeSummarizerState
+      :value: None
+
+
+
+.. py:class:: IterativeSummarizerInput(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Input for the summarizer – supports string, Document, message, or dict content.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: IterativeSummarizerInput
+      :collapse:
+
+   .. py:method:: normalize_contents(value: str)
+      :classmethod:
+
+
+      Ensure all items are string representations.
+
+
+      .. autolink-examples:: normalize_contents
+         :collapse:
+
+
+   .. py:attribute:: contents
+      :type:  list[str | langchain_core.documents.Document | langchain_core.messages.BaseMessage | dict[str, Any]]
+      :value: None
+
+
+
+.. py:class:: IterativeSummarizerOutput(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Output for the summarizer – stores the final summary result.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: IterativeSummarizerOutput
+      :collapse:
+
+   .. py:attribute:: summary
+      :type:  str
+      :value: None
+
+
+
+.. py:class:: IterativeSummarizerState(/, **data: Any)
+
+   Bases: :py:obj:`IterativeSummarizerInput`, :py:obj:`IterativeSummarizerOutput`
+
+
+   Full state for the iterative summarizer agent – tracks progress and summary.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: IterativeSummarizerState
+      :collapse:
+
+   .. py:method:: should_refine() -> Literal['refine_summary', '__end__']
+
+
+   .. py:attribute:: index
+      :type:  int
+      :value: None
+
+
 
 .. py:function:: should_refine(state: state.IterativeSummarizerState) -> str
 
@@ -163,11 +219,3 @@ Functions
    .. autolink-examples:: should_refine
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.document_modifiers.summarizer.iterative_refinement
-   :collapse:
-   
-.. autolink-skip:: next

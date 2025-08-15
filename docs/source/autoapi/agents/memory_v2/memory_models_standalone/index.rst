@@ -1,14 +1,16 @@
-
-:py:mod:`agents.memory_v2.memory_models_standalone`
-===================================================
+agents.memory_v2.memory_models_standalone
+=========================================
 
 .. py:module:: agents.memory_v2.memory_models_standalone
 
-Standalone memory models to avoid broken imports.
+.. autoapi-nested-parse::
+
+   Standalone memory models to avoid broken imports.
 
 
-.. autolink-examples:: agents.memory_v2.memory_models_standalone
-   :collapse:
+   .. autolink-examples:: agents.memory_v2.memory_models_standalone
+      :collapse:
+
 
 Classes
 -------
@@ -25,145 +27,270 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: EnhancedMemoryItem(/, **data: Any)
+
+   Bases: :py:obj:`MemoryItem`
+
+
+   Enhanced memory item with V2 features.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: EnhancedMemoryItem
+      :collapse:
+
+   .. py:attribute:: access_count
+      :type:  int
+      :value: 0
 
 
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for EnhancedMemoryItem:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_EnhancedMemoryItem {
-        node [shape=record];
-        "EnhancedMemoryItem" [label="EnhancedMemoryItem"];
-        "MemoryItem" -> "EnhancedMemoryItem";
-      }
-
-.. autoclass:: agents.memory_v2.memory_models_standalone.EnhancedMemoryItem
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. py:attribute:: confidence
+      :type:  float
+      :value: None
 
 
 
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ImportanceLevel:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ImportanceLevel {
-        node [shape=record];
-        "ImportanceLevel" [label="ImportanceLevel"];
-        "str" -> "ImportanceLevel";
-        "enum.Enum" -> "ImportanceLevel";
-      }
-
-.. autoclass:: agents.memory_v2.memory_models_standalone.ImportanceLevel
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-   .. note::
-
-      **ImportanceLevel** is an Enum defined in ``agents.memory_v2.memory_models_standalone``.
+   .. py:attribute:: created_at
+      :type:  datetime.datetime
+      :value: None
 
 
 
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for KnowledgeTriple:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_KnowledgeTriple {
-        node [shape=record];
-        "KnowledgeTriple" [label="KnowledgeTriple"];
-        "pydantic.BaseModel" -> "KnowledgeTriple";
-      }
-
-.. autopydantic_model:: agents.memory_v2.memory_models_standalone.KnowledgeTriple
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: embedding
+      :type:  list[float] | None
+      :value: None
 
 
 
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for MemoryItem:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_MemoryItem {
-        node [shape=record];
-        "MemoryItem" [label="MemoryItem"];
-        "pydantic.BaseModel" -> "MemoryItem";
-      }
-
-.. autopydantic_model:: agents.memory_v2.memory_models_standalone.MemoryItem
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: id
+      :type:  str
+      :value: None
 
 
 
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for MemoryType:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_MemoryType {
-        node [shape=record];
-        "MemoryType" [label="MemoryType"];
-        "str" -> "MemoryType";
-        "enum.Enum" -> "MemoryType";
-      }
-
-.. autoclass:: agents.memory_v2.memory_models_standalone.MemoryType
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-   .. note::
-
-      **MemoryType** is an Enum defined in ``agents.memory_v2.memory_models_standalone``.
+   .. py:attribute:: importance
+      :type:  ImportanceLevel
+      :value: None
 
 
 
+   .. py:attribute:: last_accessed
+      :type:  datetime.datetime | None
+      :value: None
 
 
-.. rubric:: Related Links
 
-.. autolink-examples:: agents.memory_v2.memory_models_standalone
-   :collapse:
-   
-.. autolink-skip:: next
+   .. py:attribute:: relevance_scores
+      :type:  dict[str, float]
+      :value: None
+
+
+
+   .. py:attribute:: source
+      :type:  str | None
+      :value: None
+
+
+
+   .. py:attribute:: tags
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: user_id
+      :type:  str | None
+      :value: None
+
+
+
+   .. py:attribute:: vector_id
+      :type:  str | None
+      :value: None
+
+
+
+.. py:class:: ImportanceLevel
+
+   Bases: :py:obj:`str`, :py:obj:`enum.Enum`
+
+
+   Importance levels for memory prioritization.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: ImportanceLevel
+      :collapse:
+
+   .. py:attribute:: CRITICAL
+      :value: 'critical'
+
+
+
+   .. py:attribute:: HIGH
+      :value: 'high'
+
+
+
+   .. py:attribute:: LOW
+      :value: 'low'
+
+
+
+   .. py:attribute:: MEDIUM
+      :value: 'medium'
+
+
+
+.. py:class:: KnowledgeTriple(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Knowledge graph triple.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: KnowledgeTriple
+      :collapse:
+
+   .. py:attribute:: confidence
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: metadata
+      :type:  dict[str, Any]
+      :value: None
+
+
+
+   .. py:attribute:: object
+      :type:  str
+
+
+   .. py:attribute:: predicate
+      :type:  str
+
+
+   .. py:attribute:: subject
+      :type:  str
+
+
+.. py:class:: MemoryItem(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Individual memory item.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: MemoryItem
+      :collapse:
+
+   .. py:attribute:: content
+      :type:  str
+
+
+   .. py:attribute:: importance
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: memory_type
+      :type:  MemoryType
+
+
+   .. py:attribute:: metadata
+      :type:  dict[str, Any]
+      :value: None
+
+
+
+   .. py:attribute:: timestamp
+      :type:  datetime.datetime
+      :value: None
+
+
+
+.. py:class:: MemoryType
+
+   Bases: :py:obj:`str`, :py:obj:`enum.Enum`
+
+
+   Types of memory.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: MemoryType
+      :collapse:
+
+   .. py:attribute:: CONVERSATIONAL
+      :value: 'conversational'
+
+
+
+   .. py:attribute:: EPISODIC
+      :value: 'episodic'
+
+
+
+   .. py:attribute:: FACTUAL
+      :value: 'factual'
+
+
+
+   .. py:attribute:: PROCEDURAL
+      :value: 'procedural'
+
+
+
+   .. py:attribute:: SEMANTIC
+      :value: 'semantic'
+
+
+

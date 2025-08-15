@@ -1,6 +1,5 @@
-
-:py:mod:`agents.reasoning_and_critique.tot.modular.models`
-==========================================================
+agents.reasoning_and_critique.tot.modular.models
+================================================
 
 .. py:module:: agents.reasoning_and_critique.tot.modular.models
 
@@ -19,128 +18,154 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: Candidate(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   A candidate solution in the Tree of Thoughts algorithm.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: Candidate
+      :collapse:
+
+   .. py:method:: __str__() -> str
+
+      String representation of the candidate.
+
+
+      .. autolink-examples:: __str__
+         :collapse:
+
+
+   .. py:attribute:: content
+      :type:  str
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for Candidate:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_Candidate {
-        node [shape=record];
-        "Candidate" [label="Candidate"];
-        "pydantic.BaseModel" -> "Candidate";
-      }
-
-.. autopydantic_model:: agents.reasoning_and_critique.tot.modular.models.Candidate
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: feedback
+      :type:  str | None
+      :value: None
 
 
 
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for CandidateContent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_CandidateContent {
-        node [shape=record];
-        "CandidateContent" [label="CandidateContent"];
-        "pydantic.BaseModel" -> "CandidateContent";
-      }
-
-.. autopydantic_model:: agents.reasoning_and_critique.tot.modular.models.CandidateContent
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: metadata
+      :type:  dict[str, Any]
+      :value: None
 
 
 
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for CandidateList:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_CandidateList {
-        node [shape=record];
-        "CandidateList" [label="CandidateList"];
-        "pydantic.BaseModel" -> "CandidateList";
-      }
-
-.. autopydantic_model:: agents.reasoning_and_critique.tot.modular.models.CandidateList
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: score
+      :type:  float | None
+      :value: None
 
 
 
+.. py:class:: CandidateContent(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
 
 
-.. toggle:: Show Inheritance Diagram
+   A potential solution to the problem.
 
-   Inheritance diagram for CandidateScore:
+   Create a new model by parsing and validating input data from keyword arguments.
 
-   .. graphviz::
-      :align: center
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
 
-      digraph inheritance_CandidateScore {
-        node [shape=record];
-        "CandidateScore" [label="CandidateScore"];
-        "pydantic.BaseModel" -> "CandidateScore";
-      }
-
-.. autopydantic_model:: agents.reasoning_and_critique.tot.modular.models.CandidateScore
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   `self` is explicitly positional-only to allow `self` as a field name.
 
 
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: CandidateContent
+      :collapse:
+
+   .. py:attribute:: content
+      :type:  str
+      :value: None
 
 
 
-.. rubric:: Related Links
+.. py:class:: CandidateList(/, **data: Any)
 
-.. autolink-examples:: agents.reasoning_and_critique.tot.modular.models
-   :collapse:
-   
-.. autolink-skip:: next
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   A list of candidate solutions.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: CandidateList
+      :collapse:
+
+   .. py:attribute:: candidates
+      :type:  list[CandidateContent]
+      :value: None
+
+
+
+   .. py:attribute:: reasoning
+      :type:  str | None
+      :value: None
+
+
+
+.. py:class:: CandidateScore(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Score and feedback for a candidate solution.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: CandidateScore
+      :collapse:
+
+   .. py:attribute:: feedback
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: score
+      :type:  float
+      :value: None
+
+
+

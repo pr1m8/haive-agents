@@ -1,6 +1,5 @@
-
-:py:mod:`agents.long_term_memory.state`
-=======================================
+agents.long_term_memory.state
+=============================
 
 .. py:module:: agents.long_term_memory.state
 
@@ -16,33 +15,20 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: LongTermMemoryState
+
+   Bases: :py:obj:`haive.agents.react.state.AgentState`
+
+
+   State for the long term memory agent.
+
+
+   .. autolink-examples:: LongTermMemoryState
+      :collapse:
+
+   .. py:attribute:: memories
+      :type:  list[pydantic.BaseModel | haive.agents.long_term_memory.models.KnowledgeTriple]
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for LongTermMemoryState:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_LongTermMemoryState {
-        node [shape=record];
-        "LongTermMemoryState" [label="LongTermMemoryState"];
-        "haive.agents.react.state.AgentState" -> "LongTermMemoryState";
-      }
-
-.. autoclass:: agents.long_term_memory.state.LongTermMemoryState
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.long_term_memory.state
-   :collapse:
-   
-.. autolink-skip:: next

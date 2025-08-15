@@ -1,244 +1,156 @@
-
-:py:mod:`agents.planning.rewoo_v3.agent`
-========================================
+agents.planning.rewoo_v3.agent
+==============================
 
 .. py:module:: agents.planning.rewoo_v3.agent
 
-ReWOO V3 Agent using Enhanced MultiAgent V3 coordination.
+.. autoapi-nested-parse::
 
-This module implements the ReWOO (Reasoning WithOut Observation) methodology
-using our proven patterns from Plan-and-Execute V3 success.
+   ReWOO V3 Agent using Enhanced MultiAgent V3 coordination.
 
-ReWOO Architecture:
-1. Planner: Creates complete reasoning plan with evidence placeholders
-2. Worker: Executes all tool calls to collect evidence
-3. Solver: Synthesizes all evidence into final answer
+   This module implements the ReWOO (Reasoning WithOut Observation) methodology
+   using our proven patterns from Plan-and-Execute V3 success.
 
-Key advantages:
-- Token efficiency (5x improvement over iterative methods)
-- Parallel tool execution capability
-- Robust to partial failures
-- Fine-tuning friendly modular design
+   ReWOO Architecture:
+   1. Planner: Creates complete reasoning plan with evidence placeholders
+   2. Worker: Executes all tool calls to collect evidence
+   3. Solver: Synthesizes all evidence into final answer
+
+   Key advantages:
+   - Token efficiency (5x improvement over iterative methods)
+   - Parallel tool execution capability
+   - Robust to partial failures
+   - Fine-tuning friendly modular design
 
 
-.. autolink-examples:: agents.planning.rewoo_v3.agent
-   :collapse:
+   .. autolink-examples:: agents.planning.rewoo_v3.agent
+      :collapse:
+
 
 Classes
 -------
 
 .. autoapisummary::
 
-   agents.planning.rewoo_v3.agent.EvidenceCollection
-   agents.planning.rewoo_v3.agent.ReWOOPlan
-   agents.planning.rewoo_v3.agent.ReWOOSolution
    agents.planning.rewoo_v3.agent.ReWOOV3Agent
-   agents.planning.rewoo_v3.agent.ReWOOV3Input
-   agents.planning.rewoo_v3.agent.ReWOOV3Output
-   agents.planning.rewoo_v3.agent.ReWOOV3State
 
 
 Module Contents
 ---------------
 
-:orphan:
+.. py:class:: ReWOOV3Agent(name: str, config: haive.core.engine.aug_llm.AugLLMConfig, tools: list | None = None, max_steps: int = 10, **kwargs)
 
+   ReWOO V3 Agent using Enhanced MultiAgent V3 coordination.
 
+   Implements ReWOO (Reasoning WithOut Observation) methodology:
+   - Separates planning, execution, and synthesis phases
+   - Plans complete solution upfront without tool observation
+   - Executes all tool calls in batch/parallel
+   - Synthesizes all evidence together for final answer
 
-.. toggle:: Show Inheritance Diagram
+   This provides significant efficiency gains over traditional iterative
+   agent approaches while maintaining high solution quality.
 
-   Inheritance diagram for EvidenceCollection:
+   Initialize ReWOO V3 Agent.
 
-   .. graphviz::
-      :align: center
+   :param name: Agent identifier
+   :param config: Base LLM configuration for all sub-agents
+   :param tools: Available tools for worker agent execution
+   :param max_steps: Maximum planning steps allowed
+   :param \*\*kwargs: Additional configuration for Enhanced MultiAgent V3
 
-      digraph inheritance_EvidenceCollection {
-        node [shape=record];
-        "EvidenceCollection" [label="EvidenceCollection"];
-        "pydantic.BaseModel" -> "EvidenceCollection";
-      }
 
-.. autopydantic_model:: agents.planning.rewoo_v3.agent.EvidenceCollection
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. autolink-examples:: __init__
+      :collapse:
 
 
-:orphan:
+   .. autolink-examples:: ReWOOV3Agent
+      :collapse:
 
+   .. py:method:: _format_output(result: agents.planning.rewoo_v3.state.ReWOOV3State, query: str, total_time: float, planning_time: float, execution_time: float, solving_time: float) -> agents.planning.rewoo_v3.models.ReWOOV3Output
 
+      Format Enhanced MultiAgent V3 result into structured output.
 
-.. toggle:: Show Inheritance Diagram
+      :param result: Final state from Enhanced MultiAgent V3 execution
+      :param query: Original query
+      :param total_time: Total execution time
+      :param planning_time: Time spent in planning phase
+      :param execution_time: Time spent in execution phase
+      :param solving_time: Time spent in solving phase
 
-   Inheritance diagram for ReWOOPlan:
+      :returns: Structured ReWOO V3 output with all results and metadata
 
-   .. graphviz::
-      :align: center
 
-      digraph inheritance_ReWOOPlan {
-        node [shape=record];
-        "ReWOOPlan" [label="ReWOOPlan"];
-        "pydantic.BaseModel" -> "ReWOOPlan";
-      }
+      .. autolink-examples:: _format_output
+         :collapse:
 
-.. autopydantic_model:: agents.planning.rewoo_v3.agent.ReWOOPlan
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
 
+   .. py:method:: _setup_sub_agents()
 
-:orphan:
+      Create ReWOO sub-agents with proper prompt templates.
 
+      CRITICAL: Uses prompt_template (NOT system_message) following
+      proven Plan-and-Execute V3 pattern.
 
 
-.. toggle:: Show Inheritance Diagram
+      .. autolink-examples:: _setup_sub_agents
+         :collapse:
 
-   Inheritance diagram for ReWOOSolution:
 
-   .. graphviz::
-      :align: center
+   .. py:method:: arun(query: str, context: str | None = None, max_steps: int | None = None, tools_preference: list[str] | None = None, **kwargs) -> agents.planning.rewoo_v3.models.ReWOOV3Output
+      :async:
 
-      digraph inheritance_ReWOOSolution {
-        node [shape=record];
-        "ReWOOSolution" [label="ReWOOSolution"];
-        "pydantic.BaseModel" -> "ReWOOSolution";
-      }
 
-.. autopydantic_model:: agents.planning.rewoo_v3.agent.ReWOOSolution
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+      Execute ReWOO V3 workflow asynchronously.
 
+      :param query: User query to solve using ReWOO methodology
+      :param context: Optional additional context
+      :param max_steps: Override default max steps
+      :param tools_preference: Preferred tools to use
+      :param \*\*kwargs: Additional arguments for Enhanced MultiAgent V3
 
+      :returns: Structured output with complete ReWOO results and metadata
 
 
+      .. autolink-examples:: arun
+         :collapse:
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for ReWOOV3Agent:
+   .. py:method:: run(query: str, context: str | None = None, max_steps: int | None = None, tools_preference: list[str] | None = None, **kwargs) -> agents.planning.rewoo_v3.models.ReWOOV3Output
 
-   .. graphviz::
-      :align: center
+      Synchronous wrapper for ReWOO V3 execution.
 
-      digraph inheritance_ReWOOV3Agent {
-        node [shape=record];
-        "ReWOOV3Agent" [label="ReWOOV3Agent"];
-      }
+      :param query: User query to solve
+      :param context: Optional additional context
+      :param max_steps: Override default max steps
+      :param tools_preference: Preferred tools to use
+      :param \*\*kwargs: Additional arguments
 
-.. autoclass:: agents.planning.rewoo_v3.agent.ReWOOV3Agent
-   :members:
-   :undoc-members:
-   :show-inheritance:
+      :returns: Structured output with ReWOO results
 
-:orphan:
 
+      .. autolink-examples:: run
+         :collapse:
 
 
-.. toggle:: Show Inheritance Diagram
+   .. py:attribute:: config
 
-   Inheritance diagram for ReWOOV3Input:
 
-   .. graphviz::
-      :align: center
+   .. py:attribute:: execution_stats
 
-      digraph inheritance_ReWOOV3Input {
-        node [shape=record];
-        "ReWOOV3Input" [label="ReWOOV3Input"];
-        "pydantic.BaseModel" -> "ReWOOV3Input";
-      }
 
-.. autopydantic_model:: agents.planning.rewoo_v3.agent.ReWOOV3Input
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: max_steps
+      :value: 10
 
 
-:orphan:
 
+   .. py:attribute:: multi_agent
 
 
-.. toggle:: Show Inheritance Diagram
+   .. py:attribute:: name
 
-   Inheritance diagram for ReWOOV3Output:
 
-   .. graphviz::
-      :align: center
+   .. py:attribute:: tools
+      :value: []
 
-      digraph inheritance_ReWOOV3Output {
-        node [shape=record];
-        "ReWOOV3Output" [label="ReWOOV3Output"];
-        "pydantic.BaseModel" -> "ReWOOV3Output";
-      }
 
-.. autopydantic_model:: agents.planning.rewoo_v3.agent.ReWOOV3Output
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
 
-
-:orphan:
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ReWOOV3State:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ReWOOV3State {
-        node [shape=record];
-        "ReWOOV3State" [label="ReWOOV3State"];
-        "haive.core.schema.prebuilt.messages_state.MessagesState" -> "ReWOOV3State";
-      }
-
-.. autoclass:: agents.planning.rewoo_v3.agent.ReWOOV3State
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.planning.rewoo_v3.agent
-   :collapse:
-   
-.. autolink-skip:: next

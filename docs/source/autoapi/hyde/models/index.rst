@@ -1,6 +1,5 @@
-
-:py:mod:`hyde.models`
-=====================
+hyde.models
+===========
 
 .. py:module:: hyde.models
 
@@ -17,70 +16,110 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: HyDEResponse(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   HyDE (Hypothetical Document Embeddings) response.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: HyDEResponse
+      :collapse:
+
+   .. py:attribute:: hypothetical_documents
+      :type:  list[HypotheticalDocument]
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for HyDEResponse:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_HyDEResponse {
-        node [shape=record];
-        "HyDEResponse" [label="HyDEResponse"];
-        "pydantic.BaseModel" -> "HyDEResponse";
-      }
-
-.. autopydantic_model:: hyde.models.HyDEResponse
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: original_query
+      :type:  str
+      :value: None
 
 
 
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for HypotheticalDocument:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_HypotheticalDocument {
-        node [shape=record];
-        "HypotheticalDocument" [label="HypotheticalDocument"];
-        "pydantic.BaseModel" -> "HypotheticalDocument";
-      }
-
-.. autopydantic_model:: hyde.models.HypotheticalDocument
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: query_analysis
+      :type:  str
+      :value: None
 
 
 
+   .. py:attribute:: retrieval_strategy
+      :type:  str
+      :value: None
 
 
-.. rubric:: Related Links
 
-.. autolink-examples:: hyde.models
-   :collapse:
-   
-.. autolink-skip:: next
+   .. py:attribute:: search_queries
+      :type:  list[str]
+      :value: None
+
+
+
+.. py:class:: HypotheticalDocument(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   A hypothetical document generated for HyDE.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: HypotheticalDocument
+      :collapse:
+
+   .. py:method:: to_query() -> str
+
+      Convert the hypothetical document to a query.
+
+
+      .. autolink-examples:: to_query
+         :collapse:
+
+
+   .. py:attribute:: content
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: document_type
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: key_concepts
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: relevance_explanation
+      :type:  str
+      :value: None
+
+
+

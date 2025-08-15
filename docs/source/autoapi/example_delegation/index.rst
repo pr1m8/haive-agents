@@ -1,17 +1,27 @@
-
-:py:mod:`example_delegation`
-============================
+example_delegation
+==================
 
 .. py:module:: example_delegation
 
-Example delegation tasks following LangGraph tutorial pattern.
+.. autoapi-nested-parse::
 
-This example demonstrates the Haive Supervisor agent managing specialized
-worker agents for different types of tasks, similar to the LangGraph tutorial.
+   Example delegation tasks following LangGraph tutorial pattern.
+
+   This example demonstrates the Haive Supervisor agent managing specialized
+   worker agents for different types of tasks, similar to the LangGraph tutorial.
 
 
-.. autolink-examples:: example_delegation
-   :collapse:
+   .. autolink-examples:: example_delegation
+      :collapse:
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   example_delegation.console
+   example_delegation.logger
 
 
 Functions
@@ -26,6 +36,10 @@ Functions
    example_delegation.main
    example_delegation.test_delegation_flow
    example_delegation.test_dynamic_agent_management
+
+
+Module Contents
+---------------
 
 .. py:function:: create_mock_math_agent() -> haive.agents.simple.agent.SimpleAgent
 
@@ -87,11 +101,7 @@ Functions
    .. autolink-examples:: test_dynamic_agent_management
       :collapse:
 
+.. py:data:: console
 
+.. py:data:: logger
 
-.. rubric:: Related Links
-
-.. autolink-examples:: example_delegation
-   :collapse:
-   
-.. autolink-skip:: next

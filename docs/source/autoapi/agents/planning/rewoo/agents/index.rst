@@ -1,17 +1,16 @@
-
-:py:mod:`agents.planning.rewoo.agents`
-======================================
+agents.planning.rewoo.agents
+============================
 
 .. py:module:: agents.planning.rewoo.agents
 
-ReWOO Agents.
+.. autoapi-nested-parse::
 
-Agent implementations for the ReWOO planning system.
+   ReWOO Agents.
 
-
-.. autolink-examples:: agents.planning.rewoo.agents
-   :collapse:
+   Agent implementations for the ReWOO planning system.
 
 
+   .. autolink-examples:: agents.planning.rewoo.agents
+      :collapse:
 
 

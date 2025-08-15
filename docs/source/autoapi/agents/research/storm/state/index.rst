@@ -1,39 +1,41 @@
-
-:py:mod:`agents.research.storm.state`
-=====================================
+agents.research.storm.state
+===========================
 
 .. py:module:: agents.research.storm.state
 
-State management for STORM research workflow.
+.. autoapi-nested-parse::
 
-This module provides Pydantic models for managing state throughout the STORM
-(Synthesis of Topic Outline through Retrieval and Multi-perspective questioning)
-research process, including topic definition, article generation, and research coordination.
+   State management for STORM research workflow.
 
-Classes:
-    TopicState: Simple state container for research topic
-    ArticleState: State container for final article content
-    ResearchState: Complete research workflow state management
+   This module provides Pydantic models for managing state throughout the STORM
+   (Synthesis of Topic Outline through Retrieval and Multi-perspective questioning)
+   research process, including topic definition, article generation, and research coordination.
 
-.. rubric:: Example
+   Classes:
+       TopicState: Simple state container for research topic
+       ArticleState: State container for final article content
+       ResearchState: Complete research workflow state management
 
-Basic research state management::
+   .. rubric:: Example
 
-    from haive.agents.research.storm.state import ResearchState
+   Basic research state management::
 
-    state = ResearchState(
-        topic=TopicState(topic="AI Safety"),
-        outline=outline_instance,
-        editors=editor_list,
-        interview_results=interview_list,
-        sections=section_list
-    )
+       from haive.agents.research.storm.state import ResearchState
 
-    draft = state.draft  # Get compiled article draft
+       state = ResearchState(
+           topic=TopicState(topic="AI Safety"),
+           outline=outline_instance,
+           editors=editor_list,
+           interview_results=interview_list,
+           sections=section_list
+       )
+
+       draft = state.draft  # Get compiled article draft
 
 
-.. autolink-examples:: agents.research.storm.state
-   :collapse:
+   .. autolink-examples:: agents.research.storm.state
+      :collapse:
+
 
 Classes
 -------
@@ -48,92 +50,197 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: ArticleState(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   State container for final article content.
+
+   .. attribute:: article
+
+      The complete final article text.
+
+   .. rubric:: Example
+
+   >>> state = ArticleState(article="This is the final article...")
+   >>> print(len(state.article))
+   25
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: ArticleState
+      :collapse:
+
+   .. py:attribute:: article
+      :type:  str
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
+.. py:class:: ResearchState(/, **data: Any)
 
-   Inheritance diagram for ArticleState:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ArticleState {
-        node [shape=record];
-        "ArticleState" [label="ArticleState"];
-        "pydantic.BaseModel" -> "ArticleState";
-      }
-
-.. autopydantic_model:: agents.research.storm.state.ArticleState
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   Bases: :py:obj:`TopicState`, :py:obj:`ArticleState`
 
 
+   Complete research workflow state management.
+
+   This class manages the entire STORM research process state, including
+   topic definition, outline generation, editor perspectives, interview
+   results, and final section compilation.
+
+   .. attribute:: topic
+
+      The research topic state container.
+
+   .. attribute:: outline
+
+      Generated outline for the research article.
+
+   .. attribute:: editors
+
+      List of editor perspectives for multi-angle research.
+
+   .. attribute:: interview_results
+
+      Results from perspective-based interviews.
+
+   .. attribute:: sections
+
+      Final compiled sections for the article.
+
+   Properties:
+       draft: Compiled draft article from all sections.
+
+   .. rubric:: Example
+
+   Complete research workflow::
+
+       from haive.agents.research.storm.state import ResearchState
+
+       state = ResearchState(
+           topic=TopicState(topic="Climate Change"),
+           outline=generated_outline,
+           editors=editor_perspectives,
+           interview_results=interview_data,
+           sections=compiled_sections
+       )
+
+       # Get the complete draft
+       article_draft = state.draft
+       print(f"Draft length: {len(article_draft)} characters")
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: ResearchState
+      :collapse:
+
+   .. py:property:: draft
+      :type: str
+
+
+      Compile all sections into a single draft article.
+
+      :returns: Complete article draft with all sections joined by double newlines.
+      :rtype: str
+
+      .. rubric:: Example
+
+      >>> draft_text = research_state.draft
+      >>> print(draft_text[:100])
+      # Introduction
+
+      Climate change refers to...
+
+      .. autolink-examples:: draft
+         :collapse:
+
+
+   .. py:attribute:: editors
+      :type:  list[haive.agents.research.storm.generate_perspectives.models.Editor]
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ResearchState:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ResearchState {
-        node [shape=record];
-        "ResearchState" [label="ResearchState"];
-        "TopicState" -> "ResearchState";
-        "ArticleState" -> "ResearchState";
-      }
-
-.. autoclass:: agents.research.storm.state.ResearchState
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. py:attribute:: interview_results
+      :type:  list[haive.agents.research.storm.interview.models.InterviewState]
+      :value: None
 
 
 
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for TopicState:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_TopicState {
-        node [shape=record];
-        "TopicState" [label="TopicState"];
-        "pydantic.BaseModel" -> "TopicState";
-      }
-
-.. autopydantic_model:: agents.research.storm.state.TopicState
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: outline
+      :type:  haive.agents.research.storm.outline_generator.models.Outline
+      :value: None
 
 
 
+   .. py:attribute:: sections
+      :type:  list[haive.agents.research.storm.section_writer.models.WikiSection]
+      :value: None
 
 
-.. rubric:: Related Links
 
-.. autolink-examples:: agents.research.storm.state
-   :collapse:
-   
-.. autolink-skip:: next
+   .. py:attribute:: topic
+      :type:  TopicState
+      :value: None
+
+
+
+.. py:class:: TopicState(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Simple state container for research topic.
+
+   .. attribute:: topic
+
+      The research topic as a string.
+
+   .. rubric:: Example
+
+   >>> state = TopicState(topic="Machine Learning Ethics")
+   >>> print(state.topic)
+   Machine Learning Ethics
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: TopicState
+      :collapse:
+
+   .. py:attribute:: topic
+      :type:  str
+      :value: None
+
+
+

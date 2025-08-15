@@ -1,74 +1,86 @@
-
-:py:mod:`agents.document_modifiers`
-===================================
+agents.document_modifiers
+=========================
 
 .. py:module:: agents.document_modifiers
 
-Document transformation and information extraction agents.
+.. autoapi-nested-parse::
 
-This module provides a comprehensive suite of agents for transforming documents
-and extracting structured information. It includes agents for building knowledge
-graphs, generating taxonomies, summarizing documents, and extracting structured
-data with validation.
+   Document transformation and information extraction agents.
 
-The module is organized into specialized submodules:
-    - :mod:`~haive.agents.document_modifiers.base`: Base classes and shared state
-    - :mod:`~haive.agents.document_modifiers.tnt`: Taxonomy and topic generation
-    - :mod:`~haive.agents.document_modifiers.complex_extraction`: Structured data extraction
-    - :mod:`~haive.agents.document_modifiers.kg`: Knowledge graph construction
-    - :mod:`~haive.agents.document_modifiers.summarizer`: Document summarization
+   This module provides a comprehensive suite of agents for transforming documents
+   and extracting structured information. It includes agents for building knowledge
+   graphs, generating taxonomies, summarizing documents, and extracting structured
+   data with validation.
 
-Key Features:
-    - Schema-based data extraction with validation and retries
-    - Multiple knowledge graph construction strategies
-    - Map-reduce document summarization for large texts
-    - Hierarchical taxonomy generation from conversations
-    - Shared document processing state and utilities
+   The module is organized into specialized submodules:
+       - :mod:`~haive.agents.document_modifiers.base`: Base classes and shared state
+       - :mod:`~haive.agents.document_modifiers.tnt`: Taxonomy and topic generation
+       - :mod:`~haive.agents.document_modifiers.complex_extraction`: Structured data extraction
+       - :mod:`~haive.agents.document_modifiers.kg`: Knowledge graph construction
+       - :mod:`~haive.agents.document_modifiers.summarizer`: Document summarization
 
-.. rubric:: Example
+   Key Features:
+       - Schema-based data extraction with validation and retries
+       - Multiple knowledge graph construction strategies
+       - Map-reduce document summarization for large texts
+       - Hierarchical taxonomy generation from conversations
+       - Shared document processing state and utilities
 
-Basic knowledge graph extraction::
+   .. rubric:: Example
 
-    from haive.agents.document_modifiers.kg.kg_map_merge import ParallelKGTransformer
-    from haive.agents.document_modifiers.kg.kg_map_merge.config import ParallelKGTransformerConfig
+   Basic knowledge graph extraction::
 
-    # Configure and create agent
-    config = ParallelKGTransformerConfig()
-    agent = ParallelKGTransformer(config)
+       from haive.agents.document_modifiers.kg.kg_map_merge import ParallelKGTransformer
+       from haive.agents.document_modifiers.kg.kg_map_merge.config import ParallelKGTransformerConfig
 
-    # Extract knowledge graph
-    documents = ["Marie Curie won two Nobel Prizes.", "She discovered radium."]
-    result = agent.run({"contents": documents})
-    graph = result["final_graph"]
+       # Configure and create agent
+       config = ParallelKGTransformerConfig()
+       agent = ParallelKGTransformer(config)
 
-Document summarization::
+       # Extract knowledge graph
+       documents = ["Marie Curie won two Nobel Prizes.", "She discovered radium."]
+       result = agent.run({"contents": documents})
+       graph = result["final_graph"]
 
-    from haive.agents.document_modifiers.summarizer.map_branch import SummarizerAgent
-    from haive.agents.document_modifiers.summarizer.map_branch.config import SummarizerAgentConfig
+   Document summarization::
 
-    config = SummarizerAgentConfig(token_max=1000)
-    agent = SummarizerAgent(config)
+       from haive.agents.document_modifiers.summarizer.map_branch import SummarizerAgent
+       from haive.agents.document_modifiers.summarizer.map_branch.config import SummarizerAgentConfig
 
-    result = agent.run({"contents": ["Long document text..."]})
-    summary = result["final_summary"]
+       config = SummarizerAgentConfig(token_max=1000)
+       agent = SummarizerAgent(config)
 
-.. seealso::
+       result = agent.run({"contents": ["Long document text..."]})
+       summary = result["final_summary"]
 
-   :mod:`haive.agents.document_modifiers.tnt`: Taxonomy generation from conversations
-   :mod:`haive.agents.document_modifiers.base`: Base document processing utilities
-   :mod:`haive.agents.document_modifiers.summarizer`: Advanced summarization strategies
-   :mod:`haive.agents.document_modifiers.complex_extraction`: Schema-based data extraction
-   :mod:`haive.agents.document_modifiers.kg`: Knowledge graph construction agents
+   .. seealso::
 
-.. note::
+      :mod:`haive.agents.document_modifiers.tnt`: Taxonomy generation from conversations
+      :mod:`haive.agents.document_modifiers.base`: Base document processing utilities
+      :mod:`haive.agents.document_modifiers.summarizer`: Advanced summarization strategies
+      :mod:`haive.agents.document_modifiers.complex_extraction`: Schema-based data extraction
+      :mod:`haive.agents.document_modifiers.kg`: Knowledge graph construction agents
 
-   All agents in this module process documents asynchronously. Use the
-   appropriate async/await patterns when integrating with your application.
+   .. note::
 
-
-.. autolink-examples:: agents.document_modifiers
-   :collapse:
+      All agents in this module process documents asynchronously. Use the
+      appropriate async/await patterns when integrating with your application.
 
 
+   .. autolink-examples:: agents.document_modifiers
+      :collapse:
+
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/agents/document_modifiers/base/index
+   /autoapi/agents/document_modifiers/complex_extraction/index
+   /autoapi/agents/document_modifiers/kg/index
+   /autoapi/agents/document_modifiers/summarizer/index
+   /autoapi/agents/document_modifiers/tnt/index
 
 

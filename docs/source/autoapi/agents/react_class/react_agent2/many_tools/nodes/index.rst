@@ -1,9 +1,7 @@
-
-:py:mod:`agents.react_class.react_agent2.many_tools.nodes`
-==========================================================
+agents.react_class.react_agent2.many_tools.nodes
+================================================
 
 .. py:module:: agents.react_class.react_agent2.many_tools.nodes
-
 
 
 Functions
@@ -13,6 +11,10 @@ Functions
 
    agents.react_class.react_agent2.many_tools.nodes.select_tools
    agents.react_class.react_agent2.many_tools.nodes.select_tools_with_repeat
+
+
+Module Contents
+---------------
 
 .. py:function:: select_tools(state: haive.core.models.state.State, vs_config: haive.core.models.vectorstore.base.VectorStoreConfig)
 
@@ -28,11 +30,3 @@ Functions
    .. autolink-examples:: select_tools_with_repeat
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.react_class.react_agent2.many_tools.nodes
-   :collapse:
-   
-.. autolink-skip:: next

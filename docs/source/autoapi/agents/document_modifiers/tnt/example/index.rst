@@ -1,9 +1,7 @@
-
-:py:mod:`agents.document_modifiers.tnt.example`
-===============================================
+agents.document_modifiers.tnt.example
+=====================================
 
 .. py:module:: agents.document_modifiers.tnt.example
-
 
 
 Functions
@@ -13,6 +11,10 @@ Functions
 
    agents.document_modifiers.tnt.example.run_example
 
+
+Module Contents
+---------------
+
 .. py:function:: run_example()
 
    Run the TNT example.
@@ -21,11 +23,3 @@ Functions
    .. autolink-examples:: run_example
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.document_modifiers.tnt.example
-   :collapse:
-   
-.. autolink-skip:: next

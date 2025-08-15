@@ -1,25 +1,36 @@
-
-:py:mod:`agents.simple.enhanced_simple_minimal.v2`
-==================================================
+agents.simple.enhanced_simple_minimal.v2
+========================================
 
 .. py:module:: agents.simple.enhanced_simple_minimal.v2
 
-Enhanced_Simple_Minimal core module.
+.. autoapi-nested-parse::
 
-This module provides enhanced simple minimal functionality for the Haive framework.
+   Enhanced_Simple_Minimal core module.
 
-Classes:
-    Engine: Engine implementation.
-    AugLLMConfig: AugLLMConfig implementation.
-    Workflow: Workflow implementation.
+   This module provides enhanced simple minimal functionality for the Haive framework.
 
-Functions:
-    execute: Execute functionality.
-    execute: Execute functionality.
+   Classes:
+       Engine: Engine implementation.
+       AugLLMConfig: AugLLMConfig implementation.
+       Workflow: Workflow implementation.
+
+   Functions:
+       execute: Execute functionality.
+       execute: Execute functionality.
 
 
-.. autolink-examples:: agents.simple.enhanced_simple_minimal.v2
-   :collapse:
+   .. autolink-examples:: agents.simple.enhanced_simple_minimal.v2
+      :collapse:
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.simple.enhanced_simple_minimal.v2.EngineT
+   agents.simple.enhanced_simple_minimal.v2.config
+
 
 Classes
 -------
@@ -36,117 +47,88 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: Agent(name: str, engine: EngineT)
+
+   Bases: :py:obj:`Workflow`, :py:obj:`Generic`\ [\ :py:obj:`EngineT`\ ]
 
 
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for Agent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_Agent {
-        node [shape=record];
-        "Agent" [label="Agent"];
-        "Workflow" -> "Agent";
-        "Generic[EngineT]" -> "Agent";
-      }
-
-.. autoclass:: agents.simple.enhanced_simple_minimal.v2.Agent
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   Agent = Workflow + Engine with engine-focused generics.
 
 
+   .. autolink-examples:: Agent
+      :collapse:
+
+   .. py:method:: __repr__() -> str
 
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for AugLLMConfig:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_AugLLMConfig {
-        node [shape=record];
-        "AugLLMConfig" [label="AugLLMConfig"];
-        "Engine" -> "AugLLMConfig";
-      }
-
-.. autoclass:: agents.simple.enhanced_simple_minimal.v2.AugLLMConfig
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. py:method:: execute(input_data: Any) -> Any
+      :async:
 
 
+      Execute using the engine.
 
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for Engine:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_Engine {
-        node [shape=record];
-        "Engine" [label="Engine"];
-      }
-
-.. autoclass:: agents.simple.enhanced_simple_minimal.v2.Engine
-   :members:
-   :undoc-members:
-   :show-inheritance:
+      .. autolink-examples:: execute
+         :collapse:
 
 
+   .. py:attribute:: engine
 
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for SimpleAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_SimpleAgent {
-        node [shape=record];
-        "SimpleAgent" [label="SimpleAgent"];
-        "Agent[AugLLMConfig]" -> "SimpleAgent";
-      }
-
-.. autoclass:: agents.simple.enhanced_simple_minimal.v2.SimpleAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. py:attribute:: name
 
 
+.. py:class:: AugLLMConfig
+
+   Bases: :py:obj:`Engine`
 
 
-.. toggle:: Show Inheritance Diagram
+.. py:class:: Engine
 
-   Inheritance diagram for Workflow:
+.. py:class:: SimpleAgent(name: str, engine: EngineT)
 
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_Workflow {
-        node [shape=record];
-        "Workflow" [label="Workflow"];
-        "abc.ABC" -> "Workflow";
-      }
-
-.. autoclass:: agents.simple.enhanced_simple_minimal.v2.Workflow
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   Bases: :py:obj:`Agent`\ [\ :py:obj:`AugLLMConfig`\ ]
 
 
+   SimpleAgent is nothing more than Agent[AugLLMConfig].
+
+   This demonstrates the power of engine-focused generics:
+   - SimpleAgent = Agent[AugLLMConfig]
+   - ReactAgent = Agent[AugLLMConfig] + reasoning loop
+   - RAGAgent = Agent[RetrieverEngine]
+   - etc.
+
+   The engine type IS the primary differentiator between agent types.
 
 
-.. rubric:: Related Links
+   .. autolink-examples:: SimpleAgent
+      :collapse:
 
-.. autolink-examples:: agents.simple.enhanced_simple_minimal.v2
-   :collapse:
-   
-.. autolink-skip:: next
+.. py:class:: Workflow
+
+   Bases: :py:obj:`abc.ABC`
+
+
+   Pure workflow - no engine.
+
+
+   .. autolink-examples:: Workflow
+      :collapse:
+
+   .. py:method:: execute(input_data: Any) -> Any
+      :abstractmethod:
+
+      :async:
+
+
+      Execute workflow logic.
+
+
+      .. autolink-examples:: execute
+         :collapse:
+
+
+.. py:data:: EngineT
+
+.. py:data:: config
+

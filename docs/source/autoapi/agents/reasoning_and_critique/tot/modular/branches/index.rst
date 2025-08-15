@@ -1,6 +1,5 @@
-
-:py:mod:`agents.reasoning_and_critique.tot.modular.branches`
-============================================================
+agents.reasoning_and_critique.tot.modular.branches
+==================================================
 
 .. py:module:: agents.reasoning_and_critique.tot.modular.branches
 
@@ -16,33 +15,35 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: ToTBranch(agent: Any)
+
+   Bases: :py:obj:`haive.core.graph.branches.Branch`
 
 
+   Branch class for Tree of Thoughts routing logic.
 
-.. toggle:: Show Inheritance Diagram
+   Handles the logic of deciding whether to continue exploration or
+   terminate the search and return the best solution found.
 
-   Inheritance diagram for ToTBranch:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ToTBranch {
-        node [shape=record];
-        "ToTBranch" [label="ToTBranch"];
-        "haive.core.graph.branches.Branch" -> "ToTBranch";
-      }
-
-.. autoclass:: agents.reasoning_and_critique.tot.modular.branches.ToTBranch
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   Initialize with reference to parent agent for config access.
 
 
+   .. autolink-examples:: __init__
+      :collapse:
 
 
-.. rubric:: Related Links
+   .. autolink-examples:: ToTBranch
+      :collapse:
 
-.. autolink-examples:: agents.reasoning_and_critique.tot.modular.branches
-   :collapse:
-   
-.. autolink-skip:: next
+   .. py:method:: evaluate(state: dict[str, Any]) -> str | tuple | list[langgraph.types.Send] | langgraph.types.Command
+
+      Evaluate the current state and determine the next steps.
+
+
+      .. autolink-examples:: evaluate
+         :collapse:
+
+
+   .. py:attribute:: agent
+
+

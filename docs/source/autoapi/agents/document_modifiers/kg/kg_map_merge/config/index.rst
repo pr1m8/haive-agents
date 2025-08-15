@@ -1,6 +1,5 @@
-
-:py:mod:`agents.document_modifiers.kg.kg_map_merge.config`
-==========================================================
+agents.document_modifiers.kg.kg_map_merge.config
+================================================
 
 .. py:module:: agents.document_modifiers.kg.kg_map_merge.config
 
@@ -17,54 +16,77 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: ParallelKGAgentConfig
+
+   Bases: :py:obj:`haive.core.engine.agent.agent.AgentConfig`
+
+
+   Configuration for the Parallel Knowledge Graph Agent with structured extraction.
+
+
+   .. autolink-examples:: ParallelKGAgentConfig
+      :collapse:
+
+   .. py:attribute:: contents
+      :type:  list[langchain_core.documents.Document]
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ParallelKGAgentConfig:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ParallelKGAgentConfig {
-        node [shape=record];
-        "ParallelKGAgentConfig" [label="ParallelKGAgentConfig"];
-        "haive.core.engine.agent.agent.AgentConfig" -> "ParallelKGAgentConfig";
-      }
-
-.. autoclass:: agents.document_modifiers.kg.kg_map_merge.config.ParallelKGAgentConfig
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. py:attribute:: kg_extraction_config
+      :type:  haive.core.engine.aug_llm.AugLLMConfig
+      :value: None
 
 
 
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ParallelKGTransformerConfig:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ParallelKGTransformerConfig {
-        node [shape=record];
-        "ParallelKGTransformerConfig" [label="ParallelKGTransformerConfig"];
-        "haive.core.engine.agent.agent.AgentConfig" -> "ParallelKGTransformerConfig";
-      }
-
-.. autoclass:: agents.document_modifiers.kg.kg_map_merge.config.ParallelKGTransformerConfig
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. py:attribute:: max_parallel_workers
+      :type:  int
+      :value: None
 
 
 
+   .. py:attribute:: merge_analysis_config
+      :type:  haive.core.engine.aug_llm.AugLLMConfig
+      :value: None
 
-.. rubric:: Related Links
 
-.. autolink-examples:: agents.document_modifiers.kg.kg_map_merge.config
-   :collapse:
-   
-.. autolink-skip:: next
+
+   .. py:attribute:: schema_extraction_config
+      :type:  haive.core.engine.aug_llm.AugLLMConfig
+      :value: None
+
+
+
+.. py:class:: ParallelKGTransformerConfig
+
+   Bases: :py:obj:`haive.core.engine.agent.agent.AgentConfig`
+
+
+   Configuration for the Parallel Knowledge Graph Transformer.
+
+
+   .. autolink-examples:: ParallelKGTransformerConfig
+      :collapse:
+
+   .. py:attribute:: checkpoint_mode
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: contents
+      :type:  list[langchain_core.documents.Document]
+
+
+   .. py:attribute:: graph_extraction_config
+      :type:  haive.core.engine.aug_llm.AugLLMConfig
+      :value: None
+
+
+
+   .. py:attribute:: graph_merge_config
+      :type:  haive.core.engine.aug_llm.AugLLMConfig
+      :value: None
+
+
+

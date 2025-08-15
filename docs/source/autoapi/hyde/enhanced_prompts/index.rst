@@ -1,24 +1,39 @@
-
-:py:mod:`hyde.enhanced_prompts`
-===============================
+hyde.enhanced_prompts
+=====================
 
 .. py:module:: hyde.enhanced_prompts
 
-Enhanced HyDE prompts based on LangChain best practices.
+.. autoapi-nested-parse::
 
-This module provides improved HyDE prompt templates that follow the principle
-of separating document generation from structured output parsing.
+   Enhanced HyDE prompts based on LangChain best practices.
 
-Key improvements:
-- Simplified generation prompts focused on content creation
-- Domain-specific prompt templates
-- Separate analysis/parsing prompts for structured output
-- Multi-perspective generation support
-- Controlled document length
+   This module provides improved HyDE prompt templates that follow the principle
+   of separating document generation from structured output parsing.
+
+   Key improvements:
+   - Simplified generation prompts focused on content creation
+   - Domain-specific prompt templates
+   - Separate analysis/parsing prompts for structured output
+   - Multi-perspective generation support
+   - Controlled document length
 
 
-.. autolink-examples:: hyde.enhanced_prompts
-   :collapse:
+   .. autolink-examples:: hyde.enhanced_prompts
+      :collapse:
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   hyde.enhanced_prompts.HYDE_ANALYSIS_PROMPT
+   hyde.enhanced_prompts.HYDE_ENSEMBLE_PROMPT
+   hyde.enhanced_prompts.HYDE_EXTRACTION_PROMPT
+   hyde.enhanced_prompts.HYDE_GENERATION_PROMPTS
+   hyde.enhanced_prompts.HYDE_LENGTH_CONTROLLED_PROMPT
+   hyde.enhanced_prompts.HYDE_PERSPECTIVE_PROMPT
+
 
 Classes
 -------
@@ -28,93 +43,6 @@ Classes
    hyde.enhanced_prompts.HyDEPerspective
    hyde.enhanced_prompts.HyDEPromptConfig
    hyde.enhanced_prompts.HyDEPromptType
-
-
-Module Contents
----------------
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for HyDEPerspective:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_HyDEPerspective {
-        node [shape=record];
-        "HyDEPerspective" [label="HyDEPerspective"];
-        "str" -> "HyDEPerspective";
-        "enum.Enum" -> "HyDEPerspective";
-      }
-
-.. autoclass:: hyde.enhanced_prompts.HyDEPerspective
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-   .. note::
-
-      **HyDEPerspective** is an Enum defined in ``hyde.enhanced_prompts``.
-
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for HyDEPromptConfig:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_HyDEPromptConfig {
-        node [shape=record];
-        "HyDEPromptConfig" [label="HyDEPromptConfig"];
-        "pydantic.BaseModel" -> "HyDEPromptConfig";
-      }
-
-.. autopydantic_model:: hyde.enhanced_prompts.HyDEPromptConfig
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
-
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for HyDEPromptType:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_HyDEPromptType {
-        node [shape=record];
-        "HyDEPromptType" [label="HyDEPromptType"];
-        "str" -> "HyDEPromptType";
-        "enum.Enum" -> "HyDEPromptType";
-      }
-
-.. autoclass:: hyde.enhanced_prompts.HyDEPromptType
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-   .. note::
-
-      **HyDEPromptType** is an Enum defined in ``hyde.enhanced_prompts``.
-
 
 
 Functions
@@ -127,6 +55,156 @@ Functions
    hyde.enhanced_prompts.get_generation_prompt
    hyde.enhanced_prompts.get_perspective_prompt
    hyde.enhanced_prompts.select_prompt_automatically
+
+
+Module Contents
+---------------
+
+.. py:class:: HyDEPerspective
+
+   Bases: :py:obj:`str`, :py:obj:`enum.Enum`
+
+
+   Different perspectives for multi-angle document generation.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: HyDEPerspective
+      :collapse:
+
+   .. py:attribute:: BEGINNER
+      :value: 'beginner'
+
+
+
+   .. py:attribute:: CRITIC
+      :value: 'critic'
+
+
+
+   .. py:attribute:: EXPERT
+      :value: 'expert'
+
+
+
+   .. py:attribute:: PRACTITIONER
+      :value: 'practitioner'
+
+
+
+   .. py:attribute:: RESEARCHER
+      :value: 'researcher'
+
+
+
+.. py:class:: HyDEPromptConfig(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Configuration for HyDE prompt selection.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: HyDEPromptConfig
+      :collapse:
+
+   .. py:attribute:: num_documents
+      :type:  int
+      :value: None
+
+
+
+   .. py:attribute:: perspective
+      :type:  HyDEPerspective | None
+      :value: None
+
+
+
+   .. py:attribute:: prompt_type
+      :type:  HyDEPromptType
+      :value: None
+
+
+
+   .. py:attribute:: target_length
+      :type:  int
+      :value: None
+
+
+
+   .. py:attribute:: use_ensemble
+      :type:  bool
+      :value: None
+
+
+
+.. py:class:: HyDEPromptType
+
+   Bases: :py:obj:`str`, :py:obj:`enum.Enum`
+
+
+   Types of HyDE prompts for different domains.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: HyDEPromptType
+      :collapse:
+
+   .. py:attribute:: ACADEMIC
+      :value: 'academic'
+
+
+
+   .. py:attribute:: BUSINESS
+      :value: 'business'
+
+
+
+   .. py:attribute:: GENERAL
+      :value: 'general'
+
+
+
+   .. py:attribute:: NEWS
+      :value: 'news'
+
+
+
+   .. py:attribute:: REFERENCE
+      :value: 'reference'
+
+
+
+   .. py:attribute:: TECHNICAL
+      :value: 'technical'
+
+
+
+   .. py:attribute:: TUTORIAL
+      :value: 'tutorial'
+
+
 
 .. py:function:: create_hyde_prompt(config: HyDEPromptConfig, query: str) -> langchain_core.prompts.ChatPromptTemplate
 
@@ -192,11 +270,16 @@ Functions
    .. autolink-examples:: select_prompt_automatically
       :collapse:
 
+.. py:data:: HYDE_ANALYSIS_PROMPT
 
+.. py:data:: HYDE_ENSEMBLE_PROMPT
 
-.. rubric:: Related Links
+.. py:data:: HYDE_EXTRACTION_PROMPT
 
-.. autolink-examples:: hyde.enhanced_prompts
-   :collapse:
-   
-.. autolink-skip:: next
+.. py:data:: HYDE_GENERATION_PROMPTS
+   :type:  dict[HyDEPromptType, langchain_core.prompts.ChatPromptTemplate]
+
+.. py:data:: HYDE_LENGTH_CONTROLLED_PROMPT
+
+.. py:data:: HYDE_PERSPECTIVE_PROMPT
+

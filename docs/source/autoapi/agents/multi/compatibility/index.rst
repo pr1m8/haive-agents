@@ -1,15 +1,14 @@
-
-:py:mod:`agents.multi.compatibility`
-====================================
+agents.multi.compatibility
+==========================
 
 .. py:module:: agents.multi.compatibility
 
-Backward compatibility for compatibility.py imports.
+.. autoapi-nested-parse::
+
+   Backward compatibility for compatibility.py imports.
 
 
-.. autolink-examples:: agents.multi.compatibility
-   :collapse:
-
-
+   .. autolink-examples:: agents.multi.compatibility
+      :collapse:
 
 

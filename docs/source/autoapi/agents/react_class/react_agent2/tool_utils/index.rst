@@ -1,9 +1,15 @@
-
-:py:mod:`agents.react_class.react_agent2.tool_utils`
-====================================================
+agents.react_class.react_agent2.tool_utils
+==========================================
 
 .. py:module:: agents.react_class.react_agent2.tool_utils
 
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.react_class.react_agent2.tool_utils.logger
 
 
 Functions
@@ -13,6 +19,10 @@ Functions
 
    agents.react_class.react_agent2.tool_utils.create_custom_tool_node
    agents.react_class.react_agent2.tool_utils.fix_tool_messages
+
+
+Module Contents
+---------------
 
 .. py:function:: create_custom_tool_node(tools: list[langchain_core.tools.BaseTool]) -> collections.abc.Callable
 
@@ -44,11 +54,5 @@ Functions
    .. autolink-examples:: fix_tool_messages
       :collapse:
 
+.. py:data:: logger
 
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.react_class.react_agent2.tool_utils
-   :collapse:
-   
-.. autolink-skip:: next

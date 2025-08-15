@@ -1,6 +1,5 @@
-
-:py:mod:`agents.document_modifiers.summarizer.iterative_refinement.config`
-==========================================================================
+agents.document_modifiers.summarizer.iterative_refinement.config
+================================================================
 
 .. py:module:: agents.document_modifiers.summarizer.iterative_refinement.config
 
@@ -16,33 +15,44 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: IterativeSummarizerConfig
+
+   Bases: :py:obj:`haive.core.engine.agent.agent.AgentConfig`
+
+
+   The configuration for the iterative summarizer.
+
+
+   .. autolink-examples:: IterativeSummarizerConfig
+      :collapse:
+
+   .. py:attribute:: checkpoint_mode
+      :type:  str
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for IterativeSummarizerConfig:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_IterativeSummarizerConfig {
-        node [shape=record];
-        "IterativeSummarizerConfig" [label="IterativeSummarizerConfig"];
-        "haive.core.engine.agent.agent.AgentConfig" -> "IterativeSummarizerConfig";
-      }
-
-.. autoclass:: agents.document_modifiers.summarizer.iterative_refinement.config.IterativeSummarizerConfig
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. py:attribute:: engines
+      :type:  dict[str, haive.core.engine.aug_llm.AugLLMConfig]
+      :value: None
 
 
 
+   .. py:attribute:: input_schema
+      :type:  haive.agents.document_modifiers.summarizer.iterative_refinement.state.IterativeSummarizerInput
+      :value: None
 
-.. rubric:: Related Links
 
-.. autolink-examples:: agents.document_modifiers.summarizer.iterative_refinement.config
-   :collapse:
-   
-.. autolink-skip:: next
+
+   .. py:attribute:: output_schema
+      :type:  haive.agents.document_modifiers.summarizer.iterative_refinement.state.IterativeSummarizerOutput
+      :value: None
+
+
+
+   .. py:attribute:: state_schema
+      :type:  haive.agents.document_modifiers.summarizer.iterative_refinement.state.IterativeSummarizerState
+      :value: None
+
+
+

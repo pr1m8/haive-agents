@@ -1,6 +1,5 @@
-
-:py:mod:`agents.reasoning_and_critique.self_discover.models`
-============================================================
+agents.reasoning_and_critique.self_discover.models
+==================================================
 
 .. py:module:: agents.reasoning_and_critique.self_discover.models
 
@@ -23,244 +22,345 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: AdaptedModule(/, **data: Any)
 
+   Bases: :py:obj:`pydantic.BaseModel`
 
 
-.. toggle:: Show Inheritance Diagram
+   An adapted version of a reasoning module for a specific task.
 
-   Inheritance diagram for AdaptedModule:
+   Create a new model by parsing and validating input data from keyword arguments.
 
-   .. graphviz::
-      :align: center
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
 
-      digraph inheritance_AdaptedModule {
-        node [shape=record];
-        "AdaptedModule" [label="AdaptedModule"];
-        "pydantic.BaseModel" -> "AdaptedModule";
-      }
+   `self` is explicitly positional-only to allow `self` as a field name.
 
-.. autopydantic_model:: agents.reasoning_and_critique.self_discover.models.AdaptedModule
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
 
+   .. autolink-examples:: __init__
+      :collapse:
 
 
+   .. autolink-examples:: AdaptedModule
+      :collapse:
 
+   .. py:attribute:: adapted_description
+      :type:  str
+      :value: None
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for ModuleAdaptationResult:
 
-   .. graphviz::
-      :align: center
+   .. py:attribute:: application_strategy
+      :type:  str
+      :value: None
 
-      digraph inheritance_ModuleAdaptationResult {
-        node [shape=record];
-        "ModuleAdaptationResult" [label="ModuleAdaptationResult"];
-        "pydantic.BaseModel" -> "ModuleAdaptationResult";
-      }
 
-.. autopydantic_model:: agents.reasoning_and_critique.self_discover.models.ModuleAdaptationResult
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
 
+   .. py:attribute:: original_module_id
+      :type:  str
+      :value: None
 
 
 
+.. py:class:: ModuleAdaptationResult(/, **data: Any)
 
-.. toggle:: Show Inheritance Diagram
+   Bases: :py:obj:`pydantic.BaseModel`
 
-   Inheritance diagram for ModuleSelectionResult:
 
-   .. graphviz::
-      :align: center
+   Result of the module adaptation stage.
 
-      digraph inheritance_ModuleSelectionResult {
-        node [shape=record];
-        "ModuleSelectionResult" [label="ModuleSelectionResult"];
-        "pydantic.BaseModel" -> "ModuleSelectionResult";
-      }
+   Create a new model by parsing and validating input data from keyword arguments.
 
-.. autopydantic_model:: agents.reasoning_and_critique.self_discover.models.ModuleSelectionResult
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
 
+   `self` is explicitly positional-only to allow `self` as a field name.
 
 
+   .. autolink-examples:: __init__
+      :collapse:
 
 
-.. toggle:: Show Inheritance Diagram
+   .. autolink-examples:: ModuleAdaptationResult
+      :collapse:
 
-   Inheritance diagram for ReasoningOutput:
+   .. py:method:: format_for_next_stage() -> str
 
-   .. graphviz::
-      :align: center
+      Format the adapted modules for the structure stage.
 
-      digraph inheritance_ReasoningOutput {
-        node [shape=record];
-        "ReasoningOutput" [label="ReasoningOutput"];
-        "pydantic.BaseModel" -> "ReasoningOutput";
-      }
 
-.. autopydantic_model:: agents.reasoning_and_critique.self_discover.models.ReasoningOutput
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+      .. autolink-examples:: format_for_next_stage
+         :collapse:
 
 
+   .. py:attribute:: adapted_modules
+      :type:  list[AdaptedModule]
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
+.. py:class:: ModuleSelectionResult(/, **data: Any)
 
-   Inheritance diagram for ReasoningOutputStep:
+   Bases: :py:obj:`pydantic.BaseModel`
 
-   .. graphviz::
-      :align: center
 
-      digraph inheritance_ReasoningOutputStep {
-        node [shape=record];
-        "ReasoningOutputStep" [label="ReasoningOutputStep"];
-        "pydantic.BaseModel" -> "ReasoningOutputStep";
-      }
+   Result of the module selection stage.
 
-.. autopydantic_model:: agents.reasoning_and_critique.self_discover.models.ReasoningOutputStep
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   Create a new model by parsing and validating input data from keyword arguments.
 
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
 
+   `self` is explicitly positional-only to allow `self` as a field name.
 
 
+   .. autolink-examples:: __init__
+      :collapse:
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for ReasoningStep:
+   .. autolink-examples:: ModuleSelectionResult
+      :collapse:
 
-   .. graphviz::
-      :align: center
+   .. py:method:: format_for_next_stage() -> str
 
-      digraph inheritance_ReasoningStep {
-        node [shape=record];
-        "ReasoningStep" [label="ReasoningStep"];
-        "pydantic.BaseModel" -> "ReasoningStep";
-      }
+      Format the selected modules for the adaptation stage.
 
-.. autopydantic_model:: agents.reasoning_and_critique.self_discover.models.ReasoningStep
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
 
+      .. autolink-examples:: format_for_next_stage
+         :collapse:
 
 
+   .. py:method:: validate_modules(modules) -> Any
+      :classmethod:
 
 
-.. toggle:: Show Inheritance Diagram
+      Ensure we have a reasonable number of modules.
 
-   Inheritance diagram for ReasoningStructure:
 
-   .. graphviz::
-      :align: center
+      .. autolink-examples:: validate_modules
+         :collapse:
 
-      digraph inheritance_ReasoningStructure {
-        node [shape=record];
-        "ReasoningStructure" [label="ReasoningStructure"];
-        "pydantic.BaseModel" -> "ReasoningStructure";
-      }
 
-.. autopydantic_model:: agents.reasoning_and_critique.self_discover.models.ReasoningStructure
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: selected_modules
+      :type:  list[SelectedModule]
+      :value: None
 
 
 
+.. py:class:: ReasoningOutput(/, **data: Any)
 
+   Bases: :py:obj:`pydantic.BaseModel`
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for SelectedModule:
+   Complete reasoning output with all steps and final answer.
 
-   .. graphviz::
-      :align: center
+   Create a new model by parsing and validating input data from keyword arguments.
 
-      digraph inheritance_SelectedModule {
-        node [shape=record];
-        "SelectedModule" [label="SelectedModule"];
-        "pydantic.BaseModel" -> "SelectedModule";
-      }
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
 
-.. autopydantic_model:: agents.reasoning_and_critique.self_discover.models.SelectedModule
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   `self` is explicitly positional-only to allow `self` as a field name.
 
 
+   .. autolink-examples:: __init__
+      :collapse:
 
 
+   .. autolink-examples:: ReasoningOutput
+      :collapse:
 
-.. rubric:: Related Links
+   .. py:method:: format_complete_reasoning() -> str
 
-.. autolink-examples:: agents.reasoning_and_critique.self_discover.models
-   :collapse:
-   
-.. autolink-skip:: next
+      Format the complete reasoning process.
+
+
+      .. autolink-examples:: format_complete_reasoning
+         :collapse:
+
+
+   .. py:attribute:: completed_steps
+      :type:  list[ReasoningOutputStep]
+      :value: None
+
+
+
+   .. py:attribute:: confidence
+      :type:  float | None
+      :value: None
+
+
+
+   .. py:attribute:: final_answer
+      :type:  str
+      :value: None
+
+
+
+.. py:class:: ReasoningOutputStep(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   A completed step in the reasoning process.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: ReasoningOutputStep
+      :collapse:
+
+   .. py:attribute:: reasoning
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: result
+      :type:  Any | None
+      :value: None
+
+
+
+   .. py:attribute:: step_id
+      :type:  str
+      :value: None
+
+
+
+.. py:class:: ReasoningStep(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   A step in the reasoning plan.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: ReasoningStep
+      :collapse:
+
+   .. py:attribute:: description
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: related_module_ids
+      :type:  list[str] | None
+      :value: None
+
+
+
+   .. py:attribute:: step_id
+      :type:  str
+      :value: None
+
+
+
+.. py:class:: ReasoningStructure(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   A structured reasoning plan.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: ReasoningStructure
+      :collapse:
+
+   .. py:method:: format_for_next_stage() -> str
+
+      Format the reasoning structure as JSON for the reasoning stage.
+
+
+      .. autolink-examples:: format_for_next_stage
+         :collapse:
+
+
+   .. py:method:: validate_steps(steps) -> Any
+      :classmethod:
+
+
+      Ensure we have a reasonable number of steps.
+
+
+      .. autolink-examples:: validate_steps
+         :collapse:
+
+
+   .. py:attribute:: steps
+      :type:  list[ReasoningStep]
+      :value: None
+
+
+
+.. py:class:: SelectedModule(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   A reasoning module selected for a specific problem.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: SelectedModule
+      :collapse:
+
+   .. py:attribute:: module_id
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: module_name
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: rationale
+      :type:  str
+      :value: None
+
+
+

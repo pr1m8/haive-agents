@@ -1,21 +1,30 @@
-
-:py:mod:`example_integrated`
-============================
+example_integrated
+==================
 
 .. py:module:: example_integrated
 
-Example of Integrated Dynamic Multi-Agent Supervisor.
+.. autoapi-nested-parse::
 
-This example demonstrates:
-- Adding agents dynamically through tools
-- DynamicChoiceModel integration
-- Multi-agent coordination
-- Tool-based agent management
-- Dynamic routing based on agent capabilities and tools
+   Example of Integrated Dynamic Multi-Agent Supervisor.
+
+   This example demonstrates:
+   - Adding agents dynamically through tools
+   - DynamicChoiceModel integration
+   - Multi-agent coordination
+   - Tool-based agent management
+   - Dynamic routing based on agent capabilities and tools
 
 
-.. autolink-examples:: example_integrated
-   :collapse:
+   .. autolink-examples:: example_integrated
+      :collapse:
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   example_integrated.console
 
 
 Functions
@@ -27,6 +36,10 @@ Functions
    example_integrated.demonstrate_integrated_supervisor
    example_integrated.demonstrate_tool_routing
    example_integrated.main
+
+
+Module Contents
+---------------
 
 .. py:function:: demonstrate_dynamic_choice_model_integration()
    :async:
@@ -68,11 +81,5 @@ Functions
    .. autolink-examples:: main
       :collapse:
 
+.. py:data:: console
 
-
-.. rubric:: Related Links
-
-.. autolink-examples:: example_integrated
-   :collapse:
-   
-.. autolink-skip:: next

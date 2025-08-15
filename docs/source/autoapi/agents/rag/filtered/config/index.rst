@@ -1,6 +1,5 @@
-
-:py:mod:`agents.rag.filtered.config`
-====================================
+agents.rag.filtered.config
+==========================
 
 .. py:module:: agents.rag.filtered.config
 
@@ -16,33 +15,42 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: FilteredRAGConfig
+
+   Bases: :py:obj:`haive.agents.rag.base.config.BaseRAGConfig`
+
+
+   Configuration for RAG agents with document filtering capabilities.
+
+   This RAG implementation extends the base RAG with:
+   1. Document filtering based on relevance to the query
+   2. Configurable relevance threshold to filter out irrelevant documents
+
+
+   .. autolink-examples:: FilteredRAGConfig
+      :collapse:
+
+   .. py:attribute:: answer_generator_config
+      :type:  haive.core.engine.aug_llm.AugLLMConfig | None
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for FilteredRAGConfig:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_FilteredRAGConfig {
-        node [shape=record];
-        "FilteredRAGConfig" [label="FilteredRAGConfig"];
-        "haive.agents.rag.base.config.BaseRAGConfig" -> "FilteredRAGConfig";
-      }
-
-.. autoclass:: agents.rag.filtered.config.FilteredRAGConfig
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. py:attribute:: document_filter_config
+      :type:  haive.core.engine.aug_llm.AugLLMConfig | None
+      :value: None
 
 
 
+   .. py:attribute:: relevance_threshold
+      :type:  float
+      :value: None
 
-.. rubric:: Related Links
 
-.. autolink-examples:: agents.rag.filtered.config
-   :collapse:
-   
-.. autolink-skip:: next
+
+   .. py:attribute:: state_schema
+      :type:  type
+      :value: None
+
+
+

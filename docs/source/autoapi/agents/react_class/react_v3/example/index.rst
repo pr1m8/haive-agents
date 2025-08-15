@@ -1,21 +1,31 @@
-
-:py:mod:`agents.react_class.react_v3.example`
-=============================================
+agents.react_class.react_v3.example
+===================================
 
 .. py:module:: agents.react_class.react_v3.example
 
-Test script for ReactAgent demonstrating various usage patterns.
+.. autoapi-nested-parse::
 
-from typing import Any
-This script shows how to:
-1. Create ReactAgents with different tools
-2. Use RetryPolicy with LangGraph
-3. Schema composition with tool integration
-4. Running agents with different input formats
+   Test script for ReactAgent demonstrating various usage patterns.
+
+   from typing import Any
+   This script shows how to:
+   1. Create ReactAgents with different tools
+   2. Use RetryPolicy with LangGraph
+   3. Schema composition with tool integration
+   4. Running agents with different input formats
 
 
-.. autolink-examples:: agents.react_class.react_v3.example
-   :collapse:
+   .. autolink-examples:: agents.react_class.react_v3.example
+      :collapse:
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.react_class.react_v3.example.logger
+
 
 Classes
 -------
@@ -23,39 +33,6 @@ Classes
 .. autoapisummary::
 
    agents.react_class.react_v3.example.Calculator
-
-
-Module Contents
----------------
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for Calculator:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_Calculator {
-        node [shape=record];
-        "Calculator" [label="Calculator"];
-        "pydantic.BaseModel" -> "Calculator";
-      }
-
-.. autopydantic_model:: agents.react_class.react_v3.example.Calculator
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
-
 
 
 Functions
@@ -71,6 +48,50 @@ Functions
    agents.react_class.react_v3.example.test_multi_turn_conversation
    agents.react_class.react_v3.example.test_retry_policy
    agents.react_class.react_v3.example.test_structured_tool_agent
+
+
+Module Contents
+---------------
+
+.. py:class:: Calculator(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Tool for performing simple calculations.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: Calculator
+      :collapse:
+
+   .. py:attribute:: a
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: b
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: operation
+      :type:  str
+      :value: None
+
+
 
 .. py:function:: calculate(args: Calculator) -> str
 
@@ -136,11 +157,5 @@ Functions
    .. autolink-examples:: test_structured_tool_agent
       :collapse:
 
+.. py:data:: logger
 
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.react_class.react_v3.example
-   :collapse:
-   
-.. autolink-skip:: next

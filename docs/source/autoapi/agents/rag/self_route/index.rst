@@ -1,15 +1,23 @@
-
-:py:mod:`agents.rag.self_route`
-===============================
+agents.rag.self_route
+=====================
 
 .. py:module:: agents.rag.self_route
 
-Module exports.
+.. autoapi-nested-parse::
+
+   Module exports.
 
 
-.. autolink-examples:: agents.rag.self_route
-   :collapse:
+   .. autolink-examples:: agents.rag.self_route
+      :collapse:
 
 
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/agents/rag/self_route/agent/index
 
 

@@ -1,23 +1,37 @@
-
-:py:mod:`agents.multi.utils.compatibility`
-==========================================
+agents.multi.utils.compatibility
+================================
 
 .. py:module:: agents.multi.utils.compatibility
 
-Compatibility module for legacy multi-agent imports.
+.. autoapi-nested-parse::
 
-This module provides backward compatibility for code that imports from:
-- haive.agents.multi.base
-- haive.agents.multi.multi_agent
-- haive.agents.multi.base_multi_agent
+   Compatibility module for legacy multi-agent imports.
 
-New code should use:
-- haive.agents.multi.clean.MultiAgent (current default)
-- haive.agents.multi.enhanced_multi_agent_v4.MultiAgent (recommended)
+   This module provides backward compatibility for code that imports from:
+   - haive.agents.multi.base
+   - haive.agents.multi.multi_agent
+   - haive.agents.multi.base_multi_agent
+
+   New code should use:
+   - haive.agents.multi.clean.MultiAgent (current default)
+   - haive.agents.multi.enhanced_multi_agent_v4.MultiAgent (recommended)
 
 
-.. autolink-examples:: agents.multi.utils.compatibility
-   :collapse:
+   .. autolink-examples:: agents.multi.utils.compatibility
+      :collapse:
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.multi.utils.compatibility.BaseMultiAgent
+   agents.multi.utils.compatibility.BranchAgent
+   agents.multi.utils.compatibility.ConditionalAgent
+   agents.multi.utils.compatibility.ParallelAgent
+   agents.multi.utils.compatibility.SequentialAgent
+
 
 Classes
 -------
@@ -30,39 +44,62 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: ExecutionMode
+
+   Bases: :py:obj:`str`, :py:obj:`enum.Enum`
+
+
+   Legacy ExecutionMode enum for backward compatibility.
+
+   Modern implementations use string literals instead:
+   - "sequential"
+   - "parallel"
+   - "conditional"
+   - "branch"
+   - "infer"
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: ExecutionMode
+      :collapse:
+
+   .. py:attribute:: BRANCH
+      :value: 'branch'
 
 
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ExecutionMode:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ExecutionMode {
-        node [shape=record];
-        "ExecutionMode" [label="ExecutionMode"];
-        "str" -> "ExecutionMode";
-        "enum.Enum" -> "ExecutionMode";
-      }
-
-.. autoclass:: agents.multi.utils.compatibility.ExecutionMode
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-   .. note::
-
-      **ExecutionMode** is an Enum defined in ``agents.multi.utils.compatibility``.
+   .. py:attribute:: CONDITIONAL
+      :value: 'conditional'
 
 
 
+   .. py:attribute:: INFER
+      :value: 'infer'
 
 
-.. rubric:: Related Links
 
-.. autolink-examples:: agents.multi.utils.compatibility
-   :collapse:
-   
-.. autolink-skip:: next
+   .. py:attribute:: PARALLEL
+      :value: 'parallel'
+
+
+
+   .. py:attribute:: SEQUENTIAL
+      :value: 'sequential'
+
+
+
+.. py:data:: BaseMultiAgent
+
+.. py:data:: BranchAgent
+
+.. py:data:: ConditionalAgent
+
+.. py:data:: ParallelAgent
+
+.. py:data:: SequentialAgent
+

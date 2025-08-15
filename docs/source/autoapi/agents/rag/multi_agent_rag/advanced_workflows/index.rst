@@ -1,17 +1,19 @@
-
-:py:mod:`agents.rag.multi_agent_rag.advanced_workflows`
-=======================================================
+agents.rag.multi_agent_rag.advanced_workflows
+=============================================
 
 .. py:module:: agents.rag.multi_agent_rag.advanced_workflows
 
-Advanced RAG Workflows - Graph RAG and Agentic RAG Patterns.
+.. autoapi-nested-parse::
 
-This module implements the most sophisticated RAG architectures including
-Graph RAG, Agentic routing, speculative execution, and self-routing patterns.
+   Advanced RAG Workflows - Graph RAG and Agentic RAG Patterns.
+
+   This module implements the most sophisticated RAG architectures including
+   Graph RAG, Agentic routing, speculative execution, and self-routing patterns.
 
 
-.. autolink-examples:: agents.rag.multi_agent_rag.advanced_workflows
-   :collapse:
+   .. autolink-examples:: agents.rag.multi_agent_rag.advanced_workflows
+      :collapse:
+
 
 Classes
 -------
@@ -29,205 +31,229 @@ Classes
    agents.rag.multi_agent_rag.advanced_workflows.SpeculativeRAGAgent
 
 
-Module Contents
----------------
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for AgenticGraphRAGAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_AgenticGraphRAGAgent {
-        node [shape=record];
-        "AgenticGraphRAGAgent" [label="AgenticGraphRAGAgent"];
-        "haive.agents.multi.base.MultiAgent" -> "AgenticGraphRAGAgent";
-      }
-
-.. autoclass:: agents.rag.multi_agent_rag.advanced_workflows.AgenticGraphRAGAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for AgenticRAGRouterAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_AgenticRAGRouterAgent {
-        node [shape=record];
-        "AgenticRAGRouterAgent" [label="AgenticRAGRouterAgent"];
-        "haive.agents.multi.base.MultiAgent" -> "AgenticRAGRouterAgent";
-      }
-
-.. autoclass:: agents.rag.multi_agent_rag.advanced_workflows.AgenticRAGRouterAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for AgenticRAGState:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_AgenticRAGState {
-        node [shape=record];
-        "AgenticRAGState" [label="AgenticRAGState"];
-        "haive.core.schema.prebuilt.rag_state.RAGState" -> "AgenticRAGState";
-      }
-
-.. autoclass:: agents.rag.multi_agent_rag.advanced_workflows.AgenticRAGState
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for GraphRAGAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_GraphRAGAgent {
-        node [shape=record];
-        "GraphRAGAgent" [label="GraphRAGAgent"];
-        "haive.agents.multi.base.MultiAgent" -> "GraphRAGAgent";
-      }
-
-.. autoclass:: agents.rag.multi_agent_rag.advanced_workflows.GraphRAGAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for GraphRAGState:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_GraphRAGState {
-        node [shape=record];
-        "GraphRAGState" [label="GraphRAGState"];
-        "haive.core.schema.prebuilt.rag_state.RAGState" -> "GraphRAGState";
-      }
-
-.. autoclass:: agents.rag.multi_agent_rag.advanced_workflows.GraphRAGState
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for QueryPlanningAgenticRAGAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_QueryPlanningAgenticRAGAgent {
-        node [shape=record];
-        "QueryPlanningAgenticRAGAgent" [label="QueryPlanningAgenticRAGAgent"];
-        "haive.agents.multi.base.MultiAgent" -> "QueryPlanningAgenticRAGAgent";
-      }
-
-.. autoclass:: agents.rag.multi_agent_rag.advanced_workflows.QueryPlanningAgenticRAGAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for SelfReflectiveAgenticRAGAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_SelfReflectiveAgenticRAGAgent {
-        node [shape=record];
-        "SelfReflectiveAgenticRAGAgent" [label="SelfReflectiveAgenticRAGAgent"];
-        "haive.agents.multi.base.MultiAgent" -> "SelfReflectiveAgenticRAGAgent";
-      }
-
-.. autoclass:: agents.rag.multi_agent_rag.advanced_workflows.SelfReflectiveAgenticRAGAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for SelfRouteRAGAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_SelfRouteRAGAgent {
-        node [shape=record];
-        "SelfRouteRAGAgent" [label="SelfRouteRAGAgent"];
-        "haive.agents.multi.base.MultiAgent" -> "SelfRouteRAGAgent";
-      }
-
-.. autoclass:: agents.rag.multi_agent_rag.advanced_workflows.SelfRouteRAGAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for SpeculativeRAGAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_SpeculativeRAGAgent {
-        node [shape=record];
-        "SpeculativeRAGAgent" [label="SpeculativeRAGAgent"];
-        "haive.agents.multi.base.MultiAgent" -> "SpeculativeRAGAgent";
-      }
-
-.. autoclass:: agents.rag.multi_agent_rag.advanced_workflows.SpeculativeRAGAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
 Functions
 ---------
 
 .. autoapisummary::
 
    agents.rag.multi_agent_rag.advanced_workflows.build_custom_graph
+
+
+Module Contents
+---------------
+
+.. py:class:: AgenticGraphRAGAgent(**kwargs)
+
+   Bases: :py:obj:`haive.agents.multi.base.MultiAgent`
+
+
+   Agentic Graph RAG - combines graph reasoning with agentic routing.
+   and dynamic planning for complex multi-step reasoning.
+
+
+   .. autolink-examples:: AgenticGraphRAGAgent
+      :collapse:
+
+   .. py:method:: build_custom_graph() -> Any
+
+      Build the custom graph for this multi-agent workflow.
+
+
+      .. autolink-examples:: build_custom_graph
+         :collapse:
+
+
+.. py:class:: AgenticRAGRouterAgent(**kwargs)
+
+   Bases: :py:obj:`haive.agents.multi.base.MultiAgent`
+
+
+   Agentic RAG Router - intelligently routes queries to different RAG strategies.
+   based on query type, complexity, and domain.
+
+
+   .. autolink-examples:: AgenticRAGRouterAgent
+      :collapse:
+
+   .. py:method:: build_custom_graph() -> Any
+
+      Build the custom graph for this multi-agent workflow.
+
+
+      .. autolink-examples:: build_custom_graph
+         :collapse:
+
+
+.. py:class:: AgenticRAGState
+
+   Bases: :py:obj:`haive.core.schema.prebuilt.rag_state.RAGState`
+
+
+   RAG state for agentic routing and planning.
+
+
+   .. autolink-examples:: AgenticRAGState
+      :collapse:
+
+   .. py:attribute:: agent_plan
+      :type:  list[dict[str, Any]]
+      :value: []
+
+
+
+   .. py:attribute:: dynamic_routing
+      :type:  bool
+      :value: True
+
+
+
+   .. py:attribute:: execution_trace
+      :type:  list[str]
+      :value: []
+
+
+
+   .. py:attribute:: routing_strategy
+      :type:  str
+      :value: ''
+
+
+
+.. py:class:: GraphRAGAgent(**kwargs)
+
+   Bases: :py:obj:`haive.agents.multi.base.MultiAgent`
+
+
+   Graph RAG - uses knowledge graph construction and traversal.
+   for contextually rich retrieval and reasoning.
+
+
+   .. autolink-examples:: GraphRAGAgent
+      :collapse:
+
+   .. py:method:: build_custom_graph() -> Any
+
+      Build the custom graph for this multi-agent workflow.
+
+
+      .. autolink-examples:: build_custom_graph
+         :collapse:
+
+
+.. py:class:: GraphRAGState
+
+   Bases: :py:obj:`haive.core.schema.prebuilt.rag_state.RAGState`
+
+
+   RAG state for graph-based approaches.
+
+
+   .. autolink-examples:: GraphRAGState
+      :collapse:
+
+   .. py:attribute:: entity_relationships
+      :type:  dict[str, dict[str, str]]
+
+
+   .. py:attribute:: graph_entities
+      :type:  list[str]
+      :value: []
+
+
+
+   .. py:attribute:: graph_paths
+      :type:  list[list[str]]
+      :value: []
+
+
+
+   .. py:attribute:: knowledge_graph
+      :type:  dict[str, list[str]]
+
+
+.. py:class:: QueryPlanningAgenticRAGAgent(**kwargs)
+
+   Bases: :py:obj:`haive.agents.multi.base.MultiAgent`
+
+
+   Query Planning Agentic RAG - creates detailed execution plans.
+   for complex queries requiring multiple reasoning steps.
+
+
+   .. autolink-examples:: QueryPlanningAgenticRAGAgent
+      :collapse:
+
+   .. py:method:: build_custom_graph() -> Any
+
+      Build the custom graph for this multi-agent workflow.
+
+
+      .. autolink-examples:: build_custom_graph
+         :collapse:
+
+
+.. py:class:: SelfReflectiveAgenticRAGAgent(**kwargs)
+
+   Bases: :py:obj:`haive.agents.multi.base.MultiAgent`
+
+
+   Self-Reflective Agentic RAG - continuously reflects on and improves.
+   its own reasoning and retrieval processes.
+
+
+   .. autolink-examples:: SelfReflectiveAgenticRAGAgent
+      :collapse:
+
+   .. py:method:: build_custom_graph() -> Any
+
+      Build the custom graph for this multi-agent workflow.
+
+
+      .. autolink-examples:: build_custom_graph
+         :collapse:
+
+
+.. py:class:: SelfRouteRAGAgent(**kwargs)
+
+   Bases: :py:obj:`haive.agents.multi.base.MultiAgent`
+
+
+   Self-Route RAG - dynamically routes itself to different reasoning.
+   strategies based on intermediate results and confidence levels.
+
+
+   .. autolink-examples:: SelfRouteRAGAgent
+      :collapse:
+
+   .. py:method:: build_custom_graph() -> Any
+
+      Build the custom graph for this multi-agent workflow.
+
+
+      .. autolink-examples:: build_custom_graph
+         :collapse:
+
+
+.. py:class:: SpeculativeRAGAgent(**kwargs)
+
+   Bases: :py:obj:`haive.agents.multi.base.MultiAgent`
+
+
+   Speculative RAG - generates multiple possible answer hypotheses.
+   in parallel and validates them against retrieved evidence.
+
+
+   .. autolink-examples:: SpeculativeRAGAgent
+      :collapse:
+
+   .. py:method:: build_custom_graph() -> Any
+
+      Build the custom graph for this multi-agent workflow.
+
+
+      .. autolink-examples:: build_custom_graph
+         :collapse:
+
 
 .. py:function:: build_custom_graph() -> Any
 
@@ -242,11 +268,3 @@ Functions
    .. autolink-examples:: build_custom_graph
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.rag.multi_agent_rag.advanced_workflows
-   :collapse:
-   
-.. autolink-skip:: next

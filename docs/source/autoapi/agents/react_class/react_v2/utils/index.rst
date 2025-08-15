@@ -1,14 +1,15 @@
-
-:py:mod:`agents.react_class.react_v2.utils`
-===========================================
+agents.react_class.react_v2.utils
+=================================
 
 .. py:module:: agents.react_class.react_v2.utils
 
-Utility functions for creating and customizing ReactAgents.
+.. autoapi-nested-parse::
+
+   Utility functions for creating and customizing ReactAgents.
 
 
-.. autolink-examples:: agents.react_class.react_v2.utils
-   :collapse:
+   .. autolink-examples:: agents.react_class.react_v2.utils
+      :collapse:
 
 
 Functions
@@ -20,6 +21,10 @@ Functions
    agents.react_class.react_v2.utils.create_react_agent
    agents.react_class.react_v2.utils.create_structured_react_agent
    agents.react_class.react_v2.utils.organize_tools_by_category
+
+
+Module Contents
+---------------
 
 .. py:function:: create_agent_with_custom_engine(engine: haive.core.engine.aug_llm.AugLLMConfig, tools: haive.agents.react.config.ToolsInput, name: str | None = None, max_iterations: int = 10, parallel_tool_execution: bool = False, max_retries: int = 3, retry_delay: float = 0.5, **kwargs) -> haive.agents.react.agent.ReactAgent
 
@@ -96,11 +101,3 @@ Functions
    .. autolink-examples:: organize_tools_by_category
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.react_class.react_v2.utils
-   :collapse:
-   
-.. autolink-skip:: next

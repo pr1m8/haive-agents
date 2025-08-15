@@ -1,15 +1,25 @@
-
-:py:mod:`agents.research.open_perplexity.examples.batch_research`
-=================================================================
+agents.research.open_perplexity.examples.batch_research
+=======================================================
 
 .. py:module:: agents.research.open_perplexity.examples.batch_research
 
-Batch research example demonstrating how to use the Open Perplexity research agent.
-to process multiple research topics in sequence.
+.. autoapi-nested-parse::
+
+   Batch research example demonstrating how to use the Open Perplexity research agent.
+   to process multiple research topics in sequence.
 
 
-.. autolink-examples:: agents.research.open_perplexity.examples.batch_research
-   :collapse:
+   .. autolink-examples:: agents.research.open_perplexity.examples.batch_research
+      :collapse:
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.research.open_perplexity.examples.batch_research.RESEARCH_TOPICS
+   agents.research.open_perplexity.examples.batch_research.logger
 
 
 Functions
@@ -19,6 +29,10 @@ Functions
 
    agents.research.open_perplexity.examples.batch_research.conduct_research
    agents.research.open_perplexity.examples.batch_research.main
+
+
+Module Contents
+---------------
 
 .. py:function:: conduct_research(agent: haive.agents.open_perplexity.agent.ResearchAgent, topic: dict[str, str], output_dir: str) -> dict
 
@@ -42,11 +56,7 @@ Functions
    .. autolink-examples:: main
       :collapse:
 
+.. py:data:: RESEARCH_TOPICS
 
+.. py:data:: logger
 
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.research.open_perplexity.examples.batch_research
-   :collapse:
-   
-.. autolink-skip:: next

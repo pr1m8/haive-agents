@@ -1,18 +1,30 @@
-
-:py:mod:`agents.rag.step_back.agent`
-====================================
+agents.rag.step_back.agent
+==========================
 
 .. py:module:: agents.rag.step_back.agent
 
-Step-Back Prompting RAG Agents.
+.. autoapi-nested-parse::
 
-from typing import Any
-Implementation of step-back prompting for abstract reasoning.
-Generates broader conceptual queries for enhanced context retrieval.
+   Step-Back Prompting RAG Agents.
+
+   from typing import Any
+   Implementation of step-back prompting for abstract reasoning.
+   Generates broader conceptual queries for enhanced context retrieval.
 
 
-.. autolink-examples:: agents.rag.step_back.agent
-   :collapse:
+   .. autolink-examples:: agents.rag.step_back.agent
+      :collapse:
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.rag.step_back.agent.STEP_BACK_GENERATOR_PROMPT
+   agents.rag.step_back.agent.STEP_BACK_SYNTHESIS_PROMPT
+   agents.rag.step_back.agent.logger
+
 
 Classes
 -------
@@ -26,131 +38,6 @@ Classes
    agents.rag.step_back.agent.StepBackResult
 
 
-Module Contents
----------------
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for DualRetrievalAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_DualRetrievalAgent {
-        node [shape=record];
-        "DualRetrievalAgent" [label="DualRetrievalAgent"];
-        "haive.agents.base.agent.Agent" -> "DualRetrievalAgent";
-      }
-
-.. autoclass:: agents.rag.step_back.agent.DualRetrievalAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for StepBackQuery:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_StepBackQuery {
-        node [shape=record];
-        "StepBackQuery" [label="StepBackQuery"];
-        "pydantic.BaseModel" -> "StepBackQuery";
-      }
-
-.. autopydantic_model:: agents.rag.step_back.agent.StepBackQuery
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
-
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for StepBackQueryGeneratorAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_StepBackQueryGeneratorAgent {
-        node [shape=record];
-        "StepBackQueryGeneratorAgent" [label="StepBackQueryGeneratorAgent"];
-        "haive.agents.base.agent.Agent" -> "StepBackQueryGeneratorAgent";
-      }
-
-.. autoclass:: agents.rag.step_back.agent.StepBackQueryGeneratorAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for StepBackRAGAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_StepBackRAGAgent {
-        node [shape=record];
-        "StepBackRAGAgent" [label="StepBackRAGAgent"];
-        "haive.agents.multi.base.SequentialAgent" -> "StepBackRAGAgent";
-      }
-
-.. autoclass:: agents.rag.step_back.agent.StepBackRAGAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for StepBackResult:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_StepBackResult {
-        node [shape=record];
-        "StepBackResult" [label="StepBackResult"];
-        "pydantic.BaseModel" -> "StepBackResult";
-      }
-
-.. autopydantic_model:: agents.rag.step_back.agent.StepBackResult
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
-
-
-
 Functions
 ---------
 
@@ -158,6 +45,260 @@ Functions
 
    agents.rag.step_back.agent.create_step_back_rag_agent
    agents.rag.step_back.agent.get_step_back_rag_io_schema
+
+
+Module Contents
+---------------
+
+.. py:class:: DualRetrievalAgent(documents: list[langchain_core.documents.Document], embedding_model: str | None = None, max_docs_each: int = 5, **kwargs)
+
+   Bases: :py:obj:`haive.agents.base.agent.Agent`
+
+
+   Agent that performs both original and step-back retrieval.
+
+   Initialize dual retrieval agent.
+
+   :param documents: Documents for retrieval
+   :param embedding_model: Embedding model
+   :param max_docs_each: Max docs to retrieve for each query
+   :param \*\*kwargs: Additional arguments
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: DualRetrievalAgent
+      :collapse:
+
+   .. py:method:: build_graph() -> haive.core.graph.state_graph.base_graph2.BaseGraph
+
+      Build dual retrieval graph.
+
+
+      .. autolink-examples:: build_graph
+         :collapse:
+
+
+   .. py:attribute:: base_retriever
+
+
+   .. py:attribute:: documents
+
+
+   .. py:attribute:: embedding_model
+      :value: None
+
+
+
+   .. py:attribute:: max_docs_each
+      :value: 5
+
+
+
+   .. py:attribute:: name
+      :type:  str
+      :value: 'Dual Retrieval'
+
+
+
+.. py:class:: StepBackQuery(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Step-back query generation result.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: StepBackQuery
+      :collapse:
+
+   .. py:attribute:: abstraction_level
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: broader_context
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: conceptual_focus
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: expected_benefit
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: original_query
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: reasoning
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: step_back_query
+      :type:  str
+      :value: None
+
+
+
+.. py:class:: StepBackQueryGeneratorAgent(llm_config: haive.core.models.llm.base.LLMConfig | None = None, abstraction_level: str = 'moderate', **kwargs)
+
+   Bases: :py:obj:`haive.agents.base.agent.Agent`
+
+
+   Agent that generates step-back queries for abstract reasoning.
+
+   Initialize step-back query generator.
+
+   :param llm_config: LLM configuration
+   :param abstraction_level: Level of abstraction ("low", "moderate", "high")
+   :param \*\*kwargs: Additional agent arguments
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: StepBackQueryGeneratorAgent
+      :collapse:
+
+   .. py:method:: build_graph() -> haive.core.graph.state_graph.base_graph2.BaseGraph
+
+      Build step-back query generation graph.
+
+
+      .. autolink-examples:: build_graph
+         :collapse:
+
+
+   .. py:attribute:: abstraction_level
+      :value: 'moderate'
+
+
+
+   .. py:attribute:: llm_config
+
+
+   .. py:attribute:: name
+      :type:  str
+      :value: 'Step-Back Query Generator'
+
+
+
+.. py:class:: StepBackRAGAgent
+
+   Bases: :py:obj:`haive.agents.multi.base.SequentialAgent`
+
+
+   Complete Step-Back RAG agent with abstract reasoning.
+
+
+   .. autolink-examples:: StepBackRAGAgent
+      :collapse:
+
+   .. py:method:: from_documents(documents: list[langchain_core.documents.Document], llm_config: haive.core.models.llm.base.LLMConfig | None = None, embedding_model: str | None = None, abstraction_level: str = 'moderate', max_docs_each: int = 5, **kwargs)
+      :classmethod:
+
+
+      Create Step-Back RAG agent from documents.
+
+      :param documents: Documents to index
+      :param llm_config: LLM configuration
+      :param embedding_model: Embedding model for retrieval
+      :param abstraction_level: Level of abstraction for step-back queries
+      :param max_docs_each: Max docs to retrieve for each query type
+      :param \*\*kwargs: Additional arguments
+
+      :returns: StepBackRAGAgent instance
+
+
+      .. autolink-examples:: from_documents
+         :collapse:
+
+
+.. py:class:: StepBackResult(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Combined results from step-back retrieval.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: StepBackResult
+      :collapse:
+
+   .. py:attribute:: conceptual_coverage
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: context_enhancement
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: integration_strategy
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: original_documents
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: step_back_documents
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: synthesis_approach
+      :type:  str
+      :value: None
+
+
 
 .. py:function:: create_step_back_rag_agent(documents: list[langchain_core.documents.Document], llm_config: haive.core.models.llm.base.LLMConfig | None = None, reasoning_depth: str = 'moderate', **kwargs) -> StepBackRAGAgent
 
@@ -182,11 +323,9 @@ Functions
    .. autolink-examples:: get_step_back_rag_io_schema
       :collapse:
 
+.. py:data:: STEP_BACK_GENERATOR_PROMPT
 
+.. py:data:: STEP_BACK_SYNTHESIS_PROMPT
 
-.. rubric:: Related Links
+.. py:data:: logger
 
-.. autolink-examples:: agents.rag.step_back.agent
-   :collapse:
-   
-.. autolink-skip:: next

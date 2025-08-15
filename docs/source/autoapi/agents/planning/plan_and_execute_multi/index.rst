@@ -1,17 +1,18 @@
-
-:py:mod:`agents.planning.plan_and_execute_multi`
-================================================
+agents.planning.plan_and_execute_multi
+======================================
 
 .. py:module:: agents.planning.plan_and_execute_multi
 
-Plan and Execute Agent Implementation.
+.. autoapi-nested-parse::
 
-from typing import Any, Dict
-Simple Plan and Execute agent using MultiAgentBase with proper configuration.
+   Plan and Execute Agent Implementation.
+
+   from typing import Any, Dict
+   Simple Plan and Execute agent using MultiAgentBase with proper configuration.
 
 
-.. autolink-examples:: agents.planning.plan_and_execute_multi
-   :collapse:
+   .. autolink-examples:: agents.planning.plan_and_execute_multi
+      :collapse:
 
 
 Functions
@@ -19,12 +20,12 @@ Functions
 
 .. autoapisummary::
 
-   agents.planning.plan_and_execute_multi.PlanAndExecuteAgent
-   agents.planning.plan_and_execute_multi.create_plan_execute_branches
    agents.planning.plan_and_execute_multi.should_continue
    agents.planning.plan_and_execute_multi.should_end
 
 
+Module Contents
+---------------
 
 .. py:function:: should_continue(state: dict[str, Any]) -> str
 
@@ -42,11 +43,3 @@ Functions
    .. autolink-examples:: should_end
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.planning.plan_and_execute_multi
-   :collapse:
-   
-.. autolink-skip:: next

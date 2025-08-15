@@ -1,6 +1,5 @@
-
-:py:mod:`agents.rag.dynamic.data_source_types`
-==============================================
+agents.rag.dynamic.data_source_types
+====================================
 
 .. py:module:: agents.rag.dynamic.data_source_types
 
@@ -16,39 +15,50 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: DataSourceType
+
+   Bases: :py:obj:`str`, :py:obj:`enum.Enum`
+
+
+   Types of data sources available.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: DataSourceType
+      :collapse:
+
+   .. py:attribute:: API
+      :value: 'api'
 
 
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for DataSourceType:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_DataSourceType {
-        node [shape=record];
-        "DataSourceType" [label="DataSourceType"];
-        "str" -> "DataSourceType";
-        "enum.Enum" -> "DataSourceType";
-      }
-
-.. autoclass:: agents.rag.dynamic.data_source_types.DataSourceType
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-   .. note::
-
-      **DataSourceType** is an Enum defined in ``agents.rag.dynamic.data_source_types``.
+   .. py:attribute:: DOCUMENT_STORE
+      :value: 'document_store'
 
 
 
+   .. py:attribute:: GRAPH_DB
+      :value: 'graph_db'
 
 
-.. rubric:: Related Links
 
-.. autolink-examples:: agents.rag.dynamic.data_source_types
-   :collapse:
-   
-.. autolink-skip:: next
+   .. py:attribute:: SQL_DB
+      :value: 'sql_db'
+
+
+
+   .. py:attribute:: VECTOR_DB
+      :value: 'vector_db'
+
+
+
+   .. py:attribute:: WEB_SEARCH
+      :value: 'web_search'
+
+
+

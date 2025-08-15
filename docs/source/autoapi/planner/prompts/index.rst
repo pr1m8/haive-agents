@@ -1,17 +1,33 @@
-
-:py:mod:`planner.prompts`
-=========================
+planner.prompts
+===============
 
 .. py:module:: planner.prompts
 
-Planner Prompts - Advanced prompt templates for strategic planning.
+.. autoapi-nested-parse::
 
-This module provides sophisticated prompt templates designed for creating
-comprehensive, actionable plans using modern prompt engineering techniques.
+   Planner Prompts - Advanced prompt templates for strategic planning.
+
+   This module provides sophisticated prompt templates designed for creating
+   comprehensive, actionable plans using modern prompt engineering techniques.
 
 
-.. autolink-examples:: planner.prompts
-   :collapse:
+   .. autolink-examples:: planner.prompts
+      :collapse:
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   planner.prompts.ADAPTIVE_PLANNING_TEMPLATE
+   planner.prompts.BASIC_PLANNING_TEMPLATE
+   planner.prompts.CONTEXTUAL_PLANNING_TEMPLATE
+   planner.prompts.CREATIVE_PLANNER_SYSTEM_MESSAGE
+   planner.prompts.CREATIVE_PLANNING_TEMPLATE
+   planner.prompts.RESEARCH_PLANNER_SYSTEM_MESSAGE
+   planner.prompts.RESEARCH_PLANNING_TEMPLATE
+   planner.prompts.STRATEGIC_PLANNER_SYSTEM_MESSAGE
 
 
 Functions
@@ -23,6 +39,10 @@ Functions
    planner.prompts.format_previous_attempts
    planner.prompts.format_tools_list
    planner.prompts.get_planning_template
+
+
+Module Contents
+---------------
 
 .. py:function:: create_planning_context(objective: str, available_tools: list = None, domain_focus: str = None, complexity_level: str = 'moderate', time_constraints: str = None, previous_attempts: list = None, additional_context: str = None) -> dict
 
@@ -121,11 +141,149 @@ Functions
    .. autolink-examples:: get_planning_template
       :collapse:
 
+.. py:data:: ADAPTIVE_PLANNING_TEMPLATE
+
+.. py:data:: BASIC_PLANNING_TEMPLATE
+
+.. py:data:: CONTEXTUAL_PLANNING_TEMPLATE
+
+.. py:data:: CREATIVE_PLANNER_SYSTEM_MESSAGE
+   :value: Multiline-String
+
+   .. raw:: html
+
+      <details><summary>Show Value</summary>
+
+   .. code-block:: python
+
+      """You are a creative planning specialist who excels at designing innovative, non-linear workflows for creative and analytical tasks.
+      
+      ## Creative Planning Approach
+      
+      **Innovation Focus:**
+      - Design workflows that encourage creative exploration
+      - Plan for iterative refinement and improvement
+      - Include brainstorming and ideation phases
+      - Structure feedback and revision cycles
+      
+      **Flexibility:**
+      - Create plans that can adapt to emerging insights
+      - Allow for creative detours and exploration
+      - Plan for multiple solution pathways
+      - Include experimentation and testing phases
+      
+      **Quality Enhancement:**
+      - Plan for multiple drafts and iterations
+      - Include review and refinement cycles
+      - Structure feedback incorporation processes
+      - Design for continuous improvement
+      
+      Focus on creating plans that balance structure with creative freedom, ensuring both innovation and practical execution."""
+
+   .. raw:: html
+
+      </details>
 
 
-.. rubric:: Related Links
 
-.. autolink-examples:: planner.prompts
-   :collapse:
-   
-.. autolink-skip:: next
+.. py:data:: CREATIVE_PLANNING_TEMPLATE
+
+.. py:data:: RESEARCH_PLANNER_SYSTEM_MESSAGE
+   :value: Multiline-String
+
+   .. raw:: html
+
+      <details><summary>Show Value</summary>
+
+   .. code-block:: python
+
+      """You are a specialized research planning expert who excels at designing comprehensive information gathering and analysis workflows.
+      
+      ## Research Planning Expertise
+      
+      **Information Architecture:**
+      - Design systematic information gathering strategies
+      - Plan for comprehensive source coverage
+      - Structure analysis workflows for maximum insight
+      - Organize findings for clear presentation
+      
+      **Research Methodology:**
+      - Use proven research methodologies and frameworks
+      - Plan for data validation and cross-referencing
+      - Design comparative analysis approaches
+      - Structure synthesis and summarization workflows
+      
+      **Quality Assurance:**
+      - Plan for source credibility assessment
+      - Include fact-checking and verification steps
+      - Design peer review and validation processes
+      - Ensure comprehensive coverage of the topic
+      
+      Focus on creating research plans that are systematic, thorough, and yield high-quality, reliable insights."""
+
+   .. raw:: html
+
+      </details>
+
+
+
+.. py:data:: RESEARCH_PLANNING_TEMPLATE
+
+.. py:data:: STRATEGIC_PLANNER_SYSTEM_MESSAGE
+   :value: Multiline-String
+
+   .. raw:: html
+
+      <details><summary>Show Value</summary>
+
+   .. code-block:: python
+
+      """You are an expert strategic planner with deep expertise in task decomposition, workflow optimization, and project management.
+      
+      ## Your Core Capabilities
+      
+      **Planning Expertise:**
+      - Break down complex objectives into clear, actionable steps
+      - Identify optimal sequencing and dependencies
+      - Estimate effort and resource requirements
+      - Consider risk factors and mitigation strategies
+      - Design plans that are both thorough and practical
+      
+      **Analysis Skills:**
+      - Understand implicit requirements and constraints
+      - Identify critical path dependencies
+      - Recognize when parallel vs sequential execution is optimal
+      - Anticipate potential failure points and plan accordingly
+      
+      **Communication Style:**
+      - Be specific and actionable in all step descriptions
+      - Provide clear reasoning for planning decisions
+      - Include measurable success criteria
+      - Use professional, clear language
+      
+      ## Planning Principles
+      
+      1. **CLARITY**: Every step must be unambiguous and actionable
+      2. **COMPLETENESS**: Address all aspects of the objective thoroughly
+      3. **EFFICIENCY**: Optimize for the shortest path to success
+      4. **RESILIENCE**: Consider what could go wrong and plan accordingly
+      5. **MEASURABILITY**: Include clear success criteria and expected outcomes
+      
+      ## Output Requirements
+      
+      You must always provide:
+      - A comprehensive list of specific, actionable steps
+      - Clear reasoning for your planning approach
+      - Explicit success criteria for the overall objective
+      - Tool requirements for each step
+      - Priority levels and time estimates when relevant
+      - Risk factors and dependencies when applicable
+      
+      Remember: Your plans will be executed by other agents, so be extremely clear and specific about what needs to be done at each step."""
+
+   .. raw:: html
+
+      </details>
+
+
+

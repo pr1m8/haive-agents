@@ -1,19 +1,30 @@
-
-:py:mod:`agents.rag.hyde.agent`
-===============================
+agents.rag.hyde.agent
+=====================
 
 .. py:module:: agents.rag.hyde.agent
 
-HyDE (Hypothetical Document Embeddings) RAG Agent.
+.. autoapi-nested-parse::
 
-from typing import Any
-Bridges query-document semantic gap by generating hypothetical documents.
-Implements architecture from rag-architectures-flows.md:
-Query -> Generate Hypothetical Doc -> Embed -> Retrieve Real Docs -> Generate
+   HyDE (Hypothetical Document Embeddings) RAG Agent.
+
+   from typing import Any
+   Bridges query-document semantic gap by generating hypothetical documents.
+   Implements architecture from rag-architectures-flows.md:
+   Query -> Generate Hypothetical Doc -> Embed -> Retrieve Real Docs -> Generate
 
 
-.. autolink-examples:: agents.rag.hyde.agent
-   :collapse:
+   .. autolink-examples:: agents.rag.hyde.agent
+      :collapse:
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.rag.hyde.agent.HYDE_ANSWER_PROMPT
+   agents.rag.hyde.agent.HYDE_GENERATION_PROMPT
+
 
 Classes
 -------
@@ -26,33 +37,35 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: HyDERAGAgent
+
+   Bases: :py:obj:`haive.agents.multi.MultiAgent`
 
 
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for HyDERAGAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_HyDERAGAgent {
-        node [shape=record];
-        "HyDERAGAgent" [label="HyDERAGAgent"];
-        "haive.agents.multi.MultiAgent" -> "HyDERAGAgent";
-      }
-
-.. autoclass:: agents.rag.hyde.agent.HyDERAGAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   HyDE RAG using hypothetical document generation for better retrieval.
 
 
+   .. autolink-examples:: HyDERAGAgent
+      :collapse:
+
+   .. py:method:: from_documents(documents: list[langchain_core.documents.Document], llm_config: haive.core.models.llm.base.LLMConfig | None = None, **kwargs)
+      :classmethod:
 
 
-.. rubric:: Related Links
+      Create HyDE RAG from documents.
 
-.. autolink-examples:: agents.rag.hyde.agent
-   :collapse:
-   
-.. autolink-skip:: next
+      :param documents: Documents to index
+      :param llm_config: Optional LLM configuration
+      :param \*\*kwargs: Additional arguments
+
+      :returns: HyDERAGAgent instance
+
+
+      .. autolink-examples:: from_documents
+         :collapse:
+
+
+.. py:data:: HYDE_ANSWER_PROMPT
+
+.. py:data:: HYDE_GENERATION_PROMPT
+

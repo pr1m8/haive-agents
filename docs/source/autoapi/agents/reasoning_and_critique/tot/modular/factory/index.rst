@@ -1,9 +1,7 @@
-
-:py:mod:`agents.reasoning_and_critique.tot.modular.factory`
-===========================================================
+agents.reasoning_and_critique.tot.modular.factory
+=================================================
 
 .. py:module:: agents.reasoning_and_critique.tot.modular.factory
-
 
 
 Functions
@@ -14,6 +12,10 @@ Functions
    agents.reasoning_and_critique.tot.modular.factory.create_game24_tot_agent
    agents.reasoning_and_critique.tot.modular.factory.create_math_tot_agent
    agents.reasoning_and_critique.tot.modular.factory.create_tot_agent
+
+
+Module Contents
+---------------
 
 .. py:function:: create_game24_tot_agent(model: str = 'gpt-4o', temperature: float = 0.7, name: str | None = None, **kwargs) -> haive.agents.reasoning_and_critique.tot.modular.agent.ToTAgent
 
@@ -69,11 +71,3 @@ Functions
    .. autolink-examples:: create_tot_agent
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.reasoning_and_critique.tot.modular.factory
-   :collapse:
-   
-.. autolink-skip:: next

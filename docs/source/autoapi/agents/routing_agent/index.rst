@@ -1,8 +1,16 @@
-
-:py:mod:`agents.routing_agent`
-==============================
+agents.routing_agent
+====================
 
 .. py:module:: agents.routing_agent
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.routing_agent.logger
+   agents.routing_agent.main_engine
 
 
 Classes
@@ -15,79 +23,94 @@ Classes
    agents.routing_agent.RoutingAgentSchema
 
 
-Module Contents
----------------
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for RoutingAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_RoutingAgent {
-        node [shape=record];
-        "RoutingAgent" [label="RoutingAgent"];
-        "haive.agents.simple.agent.SimpleAgent" -> "RoutingAgent";
-      }
-
-.. autoclass:: agents.routing_agent.RoutingAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for RoutingAgentConfig:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_RoutingAgentConfig {
-        node [shape=record];
-        "RoutingAgentConfig" [label="RoutingAgentConfig"];
-        "haive.agents.simple.config.SimpleAgentConfig" -> "RoutingAgentConfig";
-      }
-
-.. autoclass:: agents.routing_agent.RoutingAgentConfig
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for RoutingAgentSchema:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_RoutingAgentSchema {
-        node [shape=record];
-        "RoutingAgentSchema" [label="RoutingAgentSchema"];
-        "haive.agents.simple.agent.SimpleAgentSchema" -> "RoutingAgentSchema";
-      }
-
-.. autoclass:: agents.routing_agent.RoutingAgentSchema
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
 Functions
 ---------
 
 .. autoapisummary::
 
    agents.routing_agent.create_routing_agent
+
+
+Module Contents
+---------------
+
+.. py:class:: RoutingAgent
+
+   Bases: :py:obj:`haive.agents.simple.agent.SimpleAgent`
+
+
+   Simple agent with conditional routing capabilities.
+
+
+   .. autolink-examples:: RoutingAgent
+      :collapse:
+
+   .. py:method:: setup_workflow() -> None
+
+      Set up the workflow with routing.
+
+
+      .. autolink-examples:: setup_workflow
+         :collapse:
+
+
+.. py:class:: RoutingAgentConfig
+
+   Bases: :py:obj:`haive.agents.simple.config.SimpleAgentConfig`
+
+
+   Configuration for a routing agent.
+
+
+   .. autolink-examples:: RoutingAgentConfig
+      :collapse:
+
+   .. py:attribute:: conditions
+      :type:  dict[str, list[collections.abc.Callable]]
+      :value: None
+
+
+
+   .. py:attribute:: default_routes
+      :type:  dict[str, str]
+      :value: None
+
+
+
+   .. py:attribute:: handlers
+      :type:  dict[str, haive.core.engine.aug_llm.AugLLMConfig | collections.abc.Callable]
+      :value: None
+
+
+
+   .. py:attribute:: state_schema
+      :type:  type[pydantic.BaseModel]
+      :value: None
+
+
+
+.. py:class:: RoutingAgentSchema
+
+   Bases: :py:obj:`haive.agents.simple.agent.SimpleAgentSchema`
+
+
+   Schema for routing agents.
+
+
+   .. autolink-examples:: RoutingAgentSchema
+      :collapse:
+
+   .. py:attribute:: current_node
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: route_history
+      :type:  list[str]
+      :value: None
+
+
 
 .. py:function:: create_routing_agent(main_engine: haive.core.engine.aug_llm.AugLLMConfig, handlers: dict[str, haive.core.engine.aug_llm.AugLLMConfig | collections.abc.Callable], conditions: dict[str, list[collections.abc.Callable]], default_routes: dict[str, str], system_prompt: str = 'You are a helpful assistant.', name: str | None = None) -> RoutingAgent
 
@@ -106,11 +129,7 @@ Functions
    .. autolink-examples:: create_routing_agent
       :collapse:
 
+.. py:data:: logger
 
+.. py:data:: main_engine
 
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.routing_agent
-   :collapse:
-   
-.. autolink-skip:: next

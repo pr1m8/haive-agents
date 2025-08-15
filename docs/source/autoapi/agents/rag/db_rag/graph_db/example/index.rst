@@ -1,45 +1,54 @@
-
-:py:mod:`agents.rag.db_rag.graph_db.example`
-============================================
+agents.rag.db_rag.graph_db.example
+==================================
 
 .. py:module:: agents.rag.db_rag.graph_db.example
 
-Example usage of the Graph Database RAG Agent.
+.. autoapi-nested-parse::
 
-This module demonstrates various ways to use the GraphDBRAGAgent for querying
-Neo4j databases with natural language. It includes basic usage, advanced
-configurations, error handling, and different execution modes.
+   Example usage of the Graph Database RAG Agent.
 
-The examples cover:
-    - Basic agent usage with default configuration
-    - Custom domain configuration
-    - Streaming execution with progress tracking
-    - Batch query processing
-    - Error handling and debugging
-    - Performance monitoring
+   This module demonstrates various ways to use the GraphDBRAGAgent for querying
+   Neo4j databases with natural language. It includes basic usage, advanced
+   configurations, error handling, and different execution modes.
 
-To run these examples:
-    1. Ensure Neo4j is running and accessible
-    2. Set environment variables for Neo4j connection
-    3. Run: python example.py
+   The examples cover:
+       - Basic agent usage with default configuration
+       - Custom domain configuration
+       - Streaming execution with progress tracking
+       - Batch query processing
+       - Error handling and debugging
+       - Performance monitoring
 
-.. rubric:: Example
+   To run these examples:
+       1. Ensure Neo4j is running and accessible
+       2. Set environment variables for Neo4j connection
+       3. Run: python example.py
 
-Basic execution::
+   .. rubric:: Example
 
-    $ export NEO4J_URI="bolt://localhost:7687"
-    $ export NEO4J_USER="neo4j"
-    $ export NEO4J_PASSWORD="your-password"
-    $ python example.py
+   Basic execution::
 
-.. note::
+       $ export NEO4J_URI="bolt://localhost:7687"
+       $ export NEO4J_USER="neo4j"
+       $ export NEO4J_PASSWORD="your-password"
+       $ python example.py
 
-   These examples assume you have a Neo4j database with movie data.
-   Adjust the queries and domain configuration for your specific use case.
+   .. note::
+
+      These examples assume you have a Neo4j database with movie data.
+      Adjust the queries and domain configuration for your specific use case.
 
 
-.. autolink-examples:: agents.rag.db_rag.graph_db.example
-   :collapse:
+   .. autolink-examples:: agents.rag.db_rag.graph_db.example
+      :collapse:
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.rag.db_rag.graph_db.example.logger
 
 
 Functions
@@ -56,6 +65,10 @@ Functions
    agents.rag.db_rag.graph_db.example.performance_monitoring_example
    agents.rag.db_rag.graph_db.example.run_all_examples
    agents.rag.db_rag.graph_db.example.streaming_example
+
+
+Module Contents
+---------------
 
 .. py:function:: async_example()
    :async:
@@ -312,11 +325,5 @@ Functions
    .. autolink-examples:: streaming_example
       :collapse:
 
+.. py:data:: logger
 
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.rag.db_rag.graph_db.example
-   :collapse:
-   
-.. autolink-skip:: next

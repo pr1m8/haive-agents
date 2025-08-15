@@ -1,14 +1,16 @@
-
-:py:mod:`agents.memory.search.quick_search.models`
-==================================================
+agents.memory.search.quick_search.models
+========================================
 
 .. py:module:: agents.memory.search.quick_search.models
 
-Data models for Quick Search Agent.
+.. autoapi-nested-parse::
+
+   Data models for Quick Search Agent.
 
 
-.. autolink-examples:: agents.memory.search.quick_search.models
-   :collapse:
+   .. autolink-examples:: agents.memory.search.quick_search.models
+      :collapse:
+
 
 Classes
 -------
@@ -23,91 +25,138 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: Config(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Configuration for Quick Search Agent.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: Config
+      :collapse:
+
+   .. py:attribute:: fast_mode
+      :type:  bool
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for Config:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_Config {
-        node [shape=record];
-        "Config" [label="Config"];
-        "pydantic.BaseModel" -> "Config";
-      }
-
-.. autopydantic_model:: agents.memory.search.quick_search.models.Config
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: include_snippets
+      :type:  bool
+      :value: None
 
 
 
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for QuickSearchRequest:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_QuickSearchRequest {
-        node [shape=record];
-        "QuickSearchRequest" [label="QuickSearchRequest"];
-        "pydantic.BaseModel" -> "QuickSearchRequest";
-      }
-
-.. autopydantic_model:: agents.memory.search.quick_search.models.QuickSearchRequest
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: max_results
+      :type:  int
+      :value: None
 
 
 
+.. py:class:: QuickSearchRequest(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
 
 
-.. toggle:: Show Inheritance Diagram
+   Request model for quick search operations.
 
-   Inheritance diagram for QuickSearchResponse:
+   Create a new model by parsing and validating input data from keyword arguments.
 
-   .. graphviz::
-      :align: center
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
 
-      digraph inheritance_QuickSearchResponse {
-        node [shape=record];
-        "QuickSearchResponse" [label="QuickSearchResponse"];
-        "haive.agents.memory.search.base.SearchResponse" -> "QuickSearchResponse";
-      }
-
-.. autoclass:: agents.memory.search.quick_search.models.QuickSearchResponse
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   `self` is explicitly positional-only to allow `self` as a field name.
 
 
+   .. autolink-examples:: __init__
+      :collapse:
 
 
-.. rubric:: Related Links
+   .. autolink-examples:: QuickSearchRequest
+      :collapse:
 
-.. autolink-examples:: agents.memory.search.quick_search.models
-   :collapse:
-   
-.. autolink-skip:: next
+   .. py:class:: Config
+
+      Pydantic configuration.
+
+
+      .. autolink-examples:: Config
+         :collapse:
+
+      .. py:attribute:: json_schema_extra
+
+
+
+   .. py:attribute:: include_sources
+      :type:  bool
+      :value: None
+
+
+
+   .. py:attribute:: max_response_length
+      :type:  int
+      :value: None
+
+
+
+   .. py:attribute:: query
+      :type:  str
+      :value: None
+
+
+
+.. py:class:: QuickSearchResponse
+
+   Bases: :py:obj:`haive.agents.memory.search.base.SearchResponse`
+
+
+   Response model for quick search operations.
+
+   Extends the base SearchResponse with quick search specific fields.
+
+
+   .. autolink-examples:: QuickSearchResponse
+      :collapse:
+
+   .. py:class:: Config
+
+      Pydantic configuration.
+
+
+      .. autolink-examples:: Config
+         :collapse:
+
+      .. py:attribute:: json_schema_extra
+
+
+
+   .. py:attribute:: answer_type
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: keywords
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: search_type
+      :type:  str
+      :value: None
+
+
+

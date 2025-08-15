@@ -1,15 +1,23 @@
-
-:py:mod:`agents.multi.base`
-===========================
+agents.multi.base
+=================
 
 .. py:module:: agents.multi.base
 
-Base multi-agent module.
+.. autoapi-nested-parse::
+
+   Base multi-agent module.
 
 
-.. autolink-examples:: agents.multi.base
-   :collapse:
+   .. autolink-examples:: agents.multi.base
+      :collapse:
 
 
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/agents/multi/base/agent/index
 
 

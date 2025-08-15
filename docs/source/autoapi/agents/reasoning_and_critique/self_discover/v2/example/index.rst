@@ -1,14 +1,15 @@
-
-:py:mod:`agents.reasoning_and_critique.self_discover.v2.example`
-================================================================
+agents.reasoning_and_critique.self_discover.v2.example
+======================================================
 
 .. py:module:: agents.reasoning_and_critique.self_discover.v2.example
 
-Example usage of the Self-Discovery reasoning system.
+.. autoapi-nested-parse::
+
+   Example usage of the Self-Discovery reasoning system.
 
 
-.. autolink-examples:: agents.reasoning_and_critique.self_discover.v2.example
-   :collapse:
+   .. autolink-examples:: agents.reasoning_and_critique.self_discover.v2.example
+      :collapse:
 
 
 Functions
@@ -18,6 +19,10 @@ Functions
 
    agents.reasoning_and_critique.self_discover.v2.example.run_custom_task
    agents.reasoning_and_critique.self_discover.v2.example.run_self_discovery_example
+
+
+Module Contents
+---------------
 
 .. py:function:: run_custom_task(task_description: str, custom_modules: list[str] | None = None)
 
@@ -35,11 +40,3 @@ Functions
    .. autolink-examples:: run_self_discovery_example
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.reasoning_and_critique.self_discover.v2.example
-   :collapse:
-   
-.. autolink-skip:: next

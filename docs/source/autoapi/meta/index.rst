@@ -1,14 +1,25 @@
-
-:py:mod:`meta`
-==============
+meta
+====
 
 .. py:module:: meta
 
-Module exports.
+.. autoapi-nested-parse::
+
+   Module exports.
 
 
-.. autolink-examples:: meta
-   :collapse:
+   .. autolink-examples:: meta
+      :collapse:
+
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/meta/agent/index
+
 
 Classes
 -------
@@ -17,53 +28,6 @@ Classes
 
    meta.MetaAgent
    meta.MetaAgentState
-
-
-Module Contents
----------------
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for MetaAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_MetaAgent {
-        node [shape=record];
-        "MetaAgent" [label="MetaAgent"];
-        "haive.agents.base.agent.Agent" -> "MetaAgent";
-        "Generic[TAgent]" -> "MetaAgent";
-      }
-
-.. autoclass:: meta.MetaAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for MetaAgentState:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_MetaAgentState {
-        node [shape=record];
-        "MetaAgentState" [label="MetaAgentState"];
-        "haive.core.schema.StateSchema" -> "MetaAgentState";
-      }
-
-.. autoclass:: meta.MetaAgentState
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
 
 Functions
@@ -80,6 +44,211 @@ Functions
    meta.update_wrapped_agent
    meta.wrap
    meta.wrapped_agent
+
+
+Package Contents
+----------------
+
+.. py:class:: MetaAgent(wrapped_agent: TAgent, name: str | None = None, engine: haive.core.engine.aug_llm.AugLLMConfig | None = None, **kwargs)
+
+   Bases: :py:obj:`haive.agents.base.agent.Agent`, :py:obj:`Generic`\ [\ :py:obj:`TAgent`\ ]
+
+
+   Generic meta agent that can wrap any agent type.
+
+   This provides a generic wrapper around any agent, adding:
+   - Recompilation tracking and management
+   - Graph composition capabilities
+   - Nested execution with state management
+   - Dynamic agent modification
+
+   Usage:
+       .. code-block:: python
+
+           # Wrap any agent type
+           simple_agent = SimpleAgent(name="worker", engine=engine)
+           meta_simple = MetaAgent[SimpleAgent](wrapped_agent=simple_agent)
+
+           # Execute through meta layer
+           result = await meta_simple.execute()
+
+           # Check recompilation
+           if meta_simple.needs_recompilation():
+           meta_simple.recompile()
+
+
+   Initialize meta agent with wrapped agent.
+
+   :param wrapped_agent: The agent to wrap with meta capabilities
+   :param name: Optional name (defaults to "meta_{wrapped_agent.name}")
+   :param engine: Optional engine (uses wrapped agent's engine if not provided)
+   :param \*\*kwargs: Additional arguments for Agent base class
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: MetaAgent
+      :collapse:
+
+   .. py:method:: __repr__() -> str
+
+      String representation.
+
+
+      .. autolink-examples:: __repr__
+         :collapse:
+
+
+   .. py:method:: arun(*args, **kwargs) -> Any
+      :async:
+
+
+      Execute wrapped agent through meta layer.
+
+
+      .. autolink-examples:: arun
+         :collapse:
+
+
+   .. py:method:: build_graph() -> Any
+
+      Build graph for meta agent execution.
+
+      The meta agent delegates to the wrapped agent's graph.
+
+
+      .. autolink-examples:: build_graph
+         :collapse:
+
+
+   .. py:method:: get_summary() -> dict[str, Any]
+
+      Get execution and recompilation summary.
+
+
+      .. autolink-examples:: get_summary
+         :collapse:
+
+
+   .. py:method:: needs_recompilation() -> bool
+
+      Check if wrapped agent needs recompilation.
+
+
+      .. autolink-examples:: needs_recompilation
+         :collapse:
+
+
+   .. py:method:: recompile(reason: str = 'Manual recompilation') -> dict[str, Any]
+
+      Recompile the wrapped agent if needed.
+
+
+      .. autolink-examples:: recompile
+         :collapse:
+
+
+   .. py:method:: run(*args, **kwargs) -> Any
+
+      Sync version of arun.
+
+
+      .. autolink-examples:: run
+         :collapse:
+
+
+   .. py:method:: setup_agent() -> None
+
+      Setup meta agent with wrapped agent.
+
+
+      .. autolink-examples:: setup_agent
+         :collapse:
+
+
+   .. py:method:: update_wrapped_agent(new_agent: TAgent) -> None
+
+      Update the wrapped agent dynamically.
+
+
+      .. autolink-examples:: update_wrapped_agent
+         :collapse:
+
+
+   .. py:method:: wrap(agent: TAgent, **kwargs) -> MetaAgent[TAgent]
+      :classmethod:
+
+
+      Factory method to wrap any agent with meta capabilities.
+
+      :param agent: The agent to wrap
+      :param \*\*kwargs: Additional arguments for MetaAgent
+
+      :returns: MetaAgent wrapping the provided agent
+
+
+      .. autolink-examples:: wrap
+         :collapse:
+
+
+   .. py:property:: wrapped_agent
+      :type: TAgent
+
+
+      Get the wrapped agent.
+
+      .. autolink-examples:: wrapped_agent
+         :collapse:
+
+
+.. py:class:: MetaAgentState
+
+   Bases: :py:obj:`haive.core.schema.StateSchema`
+
+
+   State for generic meta agents.
+
+
+   .. autolink-examples:: MetaAgentState
+      :collapse:
+
+   .. py:attribute:: execution_count
+      :type:  int
+      :value: None
+
+
+
+   .. py:attribute:: last_recompilation_reason
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: last_result
+      :type:  dict[str, Any] | None
+      :value: None
+
+
+
+   .. py:attribute:: meta_state
+      :type:  haive.core.schema.prebuilt.meta_state.MetaStateSchema
+      :value: None
+
+
+
+   .. py:attribute:: recompilation_count
+      :type:  int
+      :value: None
+
+
+
+   .. py:attribute:: wrapped_agent_ref
+      :type:  Any | None
+      :value: None
+
+
 
 .. py:function:: get_summary(meta_agent: MetaAgent) -> dict[str, Any]
 
@@ -155,11 +324,3 @@ Functions
    .. autolink-examples:: wrapped_agent
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: meta
-   :collapse:
-   
-.. autolink-skip:: next

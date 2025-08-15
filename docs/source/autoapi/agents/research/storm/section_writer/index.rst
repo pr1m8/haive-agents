@@ -1,15 +1,25 @@
-
-:py:mod:`agents.research.storm.section_writer`
-==============================================
+agents.research.storm.section_writer
+====================================
 
 .. py:module:: agents.research.storm.section_writer
 
-Module exports.
+.. autoapi-nested-parse::
+
+   Module exports.
 
 
-.. autolink-examples:: agents.research.storm.section_writer
-   :collapse:
+   .. autolink-examples:: agents.research.storm.section_writer
+      :collapse:
 
 
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/agents/research/storm/section_writer/agent/index
+   /autoapi/agents/research/storm/section_writer/models/index
+   /autoapi/agents/research/storm/section_writer/prompt/index
 
 

@@ -1,25 +1,26 @@
-
-:py:mod:`agents.document_modifiers.tnt.branches`
-================================================
+agents.document_modifiers.tnt.branches
+======================================
 
 .. py:module:: agents.document_modifiers.tnt.branches
 
-Branch decision functions for taxonomy generation workflow.
+.. autoapi-nested-parse::
 
-This module contains functions that determine the flow of the taxonomy generation process
-by making decisions about which branch of the workflow to follow next.
+   Branch decision functions for taxonomy generation workflow.
 
-.. rubric:: Example
+   This module contains functions that determine the flow of the taxonomy generation process
+   by making decisions about which branch of the workflow to follow next.
 
-Basic usage of branch decision functions::
+   .. rubric:: Example
 
-    state = TaxonomyGenerationState(...)
-    next_node = should_review(state)
-    # Returns either 'update_taxonomy' or 'review_taxonomy'
+   Basic usage of branch decision functions::
+
+       state = TaxonomyGenerationState(...)
+       next_node = should_review(state)
+       # Returns either 'update_taxonomy' or 'review_taxonomy'
 
 
-.. autolink-examples:: agents.document_modifiers.tnt.branches
-   :collapse:
+   .. autolink-examples:: agents.document_modifiers.tnt.branches
+      :collapse:
 
 
 Functions
@@ -28,6 +29,10 @@ Functions
 .. autoapisummary::
 
    agents.document_modifiers.tnt.branches.should_review
+
+
+Module Contents
+---------------
 
 .. py:function:: should_review(state: haive.agents.document_modifiers.tnt.state.TaxonomyGenerationState) -> str
 
@@ -60,11 +65,3 @@ Functions
    .. autolink-examples:: should_review
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.document_modifiers.tnt.branches
-   :collapse:
-   
-.. autolink-skip:: next

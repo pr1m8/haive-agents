@@ -1,9 +1,7 @@
-
-:py:mod:`agents.factory`
-========================
+agents.factory
+==============
 
 .. py:module:: agents.factory
-
 
 
 Functions
@@ -12,6 +10,10 @@ Functions
 .. autoapisummary::
 
    agents.factory.create_simple_agent
+
+
+Module Contents
+---------------
 
 .. py:function:: create_simple_agent(name: str, system_message: str = 'You are a helpful assistant', model: str = 'gpt-4o', use_chat_history: bool = True, persistence_config: Any | None = None, **kwargs) -> haive.agents.simple.config.SimpleAgentConfig
 
@@ -30,11 +32,3 @@ Functions
    .. autolink-examples:: create_simple_agent
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.factory
-   :collapse:
-   
-.. autolink-skip:: next

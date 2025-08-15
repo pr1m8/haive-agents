@@ -1,15 +1,26 @@
-
-:py:mod:`agents.planning.rewoo.models`
-======================================
+agents.planning.rewoo.models
+============================
 
 .. py:module:: agents.planning.rewoo.models
 
-Module exports.
+.. autoapi-nested-parse::
+
+   Module exports.
 
 
-.. autolink-examples:: agents.planning.rewoo.models
-   :collapse:
+   .. autolink-examples:: agents.planning.rewoo.models
+      :collapse:
 
 
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/agents/planning/rewoo/models/join_step/index
+   /autoapi/agents/planning/rewoo/models/plans/index
+   /autoapi/agents/planning/rewoo/models/steps/index
+   /autoapi/agents/planning/rewoo/models/tool_step/index
 
 

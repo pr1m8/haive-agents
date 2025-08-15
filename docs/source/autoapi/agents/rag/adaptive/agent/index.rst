@@ -1,17 +1,28 @@
-
-:py:mod:`agents.rag.adaptive.agent`
-===================================
+agents.rag.adaptive.agent
+=========================
 
 .. py:module:: agents.rag.adaptive.agent
 
-Adaptive RAG Agent.
+.. autoapi-nested-parse::
 
-Dynamic strategy selection based on query complexity.
-Routes queries to appropriate RAG strategies.
+   Adaptive RAG Agent.
+
+   Dynamic strategy selection based on query complexity.
+   Routes queries to appropriate RAG strategies.
 
 
-.. autolink-examples:: agents.rag.adaptive.agent
-   :collapse:
+   .. autolink-examples:: agents.rag.adaptive.agent
+      :collapse:
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.rag.adaptive.agent.DIRECT_ANSWER_PROMPT
+   agents.rag.adaptive.agent.QUERY_ANALYZER_PROMPT
+
 
 Classes
 -------
@@ -25,62 +36,94 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: AdaptiveRAGAgent
+
+   Bases: :py:obj:`haive.agents.multi.base.ConditionalAgent`
+
+
+   Adaptive RAG that routes queries based on complexity.
+
+
+   .. autolink-examples:: AdaptiveRAGAgent
+      :collapse:
+
+   .. py:method:: from_documents(documents: list[langchain_core.documents.Document], llm_config: haive.core.models.llm.base.LLMConfig | None = None, embedding_model: str | None = None, **kwargs)
+      :classmethod:
+
+
+      Create Adaptive RAG from documents.
+
+      :param documents: Documents to index
+      :param llm_config: Optional LLM configuration
+      :param embedding_model: Optional embedding model
+      :param \*\*kwargs: Additional arguments
+
+      :returns: AdaptiveRAGAgent instance
+
+
+      .. autolink-examples:: from_documents
+         :collapse:
+
+
+.. py:class:: QueryAnalysis(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Analysis of query characteristics.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: QueryAnalysis
+      :collapse:
+
+   .. py:attribute:: complexity
+      :type:  Literal['simple', 'medium', 'complex', 'known']
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for AdaptiveRAGAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_AdaptiveRAGAgent {
-        node [shape=record];
-        "AdaptiveRAGAgent" [label="AdaptiveRAGAgent"];
-        "haive.agents.multi.base.ConditionalAgent" -> "AdaptiveRAGAgent";
-      }
-
-.. autoclass:: agents.rag.adaptive.agent.AdaptiveRAGAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. py:attribute:: confidence
+      :type:  float
+      :value: None
 
 
 
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for QueryAnalysis:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_QueryAnalysis {
-        node [shape=record];
-        "QueryAnalysis" [label="QueryAnalysis"];
-        "pydantic.BaseModel" -> "QueryAnalysis";
-      }
-
-.. autopydantic_model:: agents.rag.adaptive.agent.QueryAnalysis
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: domain_specific
+      :type:  bool
+      :value: None
 
 
 
+   .. py:attribute:: requires_multi_hop
+      :type:  bool
+      :value: None
 
 
-.. rubric:: Related Links
 
-.. autolink-examples:: agents.rag.adaptive.agent
-   :collapse:
-   
-.. autolink-skip:: next
+   .. py:attribute:: temporal_sensitivity
+      :type:  bool
+      :value: None
+
+
+
+   .. py:attribute:: topics
+      :type:  list[str]
+      :value: None
+
+
+
+.. py:data:: DIRECT_ANSWER_PROMPT
+
+.. py:data:: QUERY_ANALYZER_PROMPT
+

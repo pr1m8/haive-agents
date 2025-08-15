@@ -1,35 +1,49 @@
-
-:py:mod:`agents.reasoning_and_critique`
-=======================================
+agents.reasoning_and_critique
+=============================
 
 .. py:module:: agents.reasoning_and_critique
 
-Reasoning And Critique - Module for reasoning and self-critique agents.
+.. autoapi-nested-parse::
 
-This module provides agents that can reason about their outputs and perform
-self-critique and reflection to improve their responses.
+   Reasoning And Critique - Module for reasoning and self-critique agents.
 
-Available Agents:
-    - MCTSAgent: Monte Carlo Tree Search based reasoning agent
+   This module provides agents that can reason about their outputs and perform
+   self-critique and reflection to improve their responses.
 
-.. rubric:: Example
+   Available Agents:
+       - MCTSAgent: Monte Carlo Tree Search based reasoning agent
 
-Basic MCTS usage::
+   .. rubric:: Example
 
-    from haive.agents.reasoning_and_critique.mcts import MCTSAgent, MCTSAgentConfig
+   Basic MCTS usage::
 
-    config = MCTSAgentConfig(
-        name="mcts_reasoner",
-        max_iterations=10
-    )
-    agent = MCTSAgent(config=config)
+       from haive.agents.reasoning_and_critique.mcts import MCTSAgent, MCTSAgentConfig
 
-    result = await agent.ainvoke({"problem": "Solve this logic puzzle..."})
+       config = MCTSAgentConfig(
+           name="mcts_reasoner",
+           max_iterations=10
+       )
+       agent = MCTSAgent(config=config)
 
-
-.. autolink-examples:: agents.reasoning_and_critique
-   :collapse:
+       result = await agent.ainvoke({"problem": "Solve this logic puzzle..."})
 
 
+   .. autolink-examples:: agents.reasoning_and_critique
+      :collapse:
+
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/agents/reasoning_and_critique/lats/index
+   /autoapi/agents/reasoning_and_critique/logic/index
+   /autoapi/agents/reasoning_and_critique/mcts/index
+   /autoapi/agents/reasoning_and_critique/reflection/index
+   /autoapi/agents/reasoning_and_critique/reflexion/index
+   /autoapi/agents/reasoning_and_critique/self_discover/index
+   /autoapi/agents/reasoning_and_critique/tot/index
 
 

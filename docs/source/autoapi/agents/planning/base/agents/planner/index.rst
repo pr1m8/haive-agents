@@ -1,73 +1,26 @@
-
-:py:mod:`agents.planning.base.agents.planner`
-=============================================
+agents.planning.base.agents.planner
+===================================
 
 .. py:module:: agents.planning.base.agents.planner
 
-Base Planner Agent - Sophisticated planning agent with comprehensive system prompt.
+.. autoapi-nested-parse::
 
-This module provides the foundational planner agent with an extensive system prompt
-designed for creating detailed, actionable plans with thorough analysis and reasoning.
+   Base Planner Agent - Sophisticated planning agent with comprehensive system prompt.
+
+   This module provides the foundational planner agent with an extensive system prompt
+   designed for creating detailed, actionable plans with thorough analysis and reasoning.
 
 
-.. autolink-examples:: agents.planning.base.agents.planner
-   :collapse:
+   .. autolink-examples:: agents.planning.base.agents.planner
+      :collapse:
+
 
 Classes
 -------
 
 .. autoapisummary::
 
-   agents.planning.base.agents.planner.BasePlan
    agents.planning.base.agents.planner.BasePlannerAgent
-
-
-Module Contents
----------------
-
-:orphan:
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for BasePlan:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_BasePlan {
-        node [shape=record];
-        "BasePlan" [label="BasePlan"];
-        "IntelligentStatusMixin" -> "BasePlan";
-        "Generic[T]" -> "BasePlan";
-      }
-
-.. autoclass:: agents.planning.base.agents.planner.BasePlan
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for BasePlannerAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_BasePlannerAgent {
-        node [shape=record];
-        "BasePlannerAgent" [label="BasePlannerAgent"];
-        "SimpleAgentV3" -> "BasePlannerAgent";
-      }
-
-.. autoclass:: agents.planning.base.agents.planner.BasePlannerAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
 
 Functions
@@ -77,6 +30,74 @@ Functions
 
    agents.planning.base.agents.planner.create_base_planner
    agents.planning.base.agents.planner.create_conversation_summary_planner
+
+
+Module Contents
+---------------
+
+.. py:class:: BasePlannerAgent
+
+   Bases: :py:obj:`SimpleAgentV3`
+
+
+   Base planner agent with comprehensive planning capabilities.
+
+   This agent specializes in creating detailed, strategic plans by breaking down
+   complex objectives into clear, actionable steps with thorough analysis.
+
+   Features:
+   - Comprehensive objective analysis
+   - Detailed step-by-step planning
+   - Risk assessment and mitigation
+   - Resource and tool identification
+   - Timeline and dependency management
+   - Success criteria definition
+
+   .. rubric:: Examples
+
+   Basic planning:
+
+       planner = BasePlannerAgent()
+       plan = await planner.arun("Create a comprehensive business plan")
+
+   Custom configuration:
+
+       planner = BasePlannerAgent(
+           name="strategic_planner",
+           engine=AugLLMConfig(
+               model="gpt-4",
+               temperature=0.2,
+               system_message="Expert strategic planning specialist"
+           )
+       )
+       plan = await planner.arun("Launch new product line")
+
+
+   .. autolink-examples:: BasePlannerAgent
+      :collapse:
+
+   .. py:attribute:: engine
+      :type:  haive.core.engine.aug_llm.AugLLMConfig
+      :value: None
+
+
+
+   .. py:attribute:: name
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: prompt_template
+      :type:  langchain_core.prompts.ChatPromptTemplate
+      :value: None
+
+
+
+   .. py:attribute:: structured_output_model
+      :value: None
+
+
 
 .. py:function:: create_base_planner(name: str = 'base_planner', model: str = 'gpt-4o-mini', temperature: float = 0.3, structured_output_model=None) -> BasePlannerAgent
 
@@ -122,11 +143,3 @@ Functions
    .. autolink-examples:: create_conversation_summary_planner
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.planning.base.agents.planner
-   :collapse:
-   
-.. autolink-skip:: next

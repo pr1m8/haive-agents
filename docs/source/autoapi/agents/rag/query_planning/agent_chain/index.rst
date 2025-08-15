@@ -1,16 +1,18 @@
-
-:py:mod:`agents.rag.query_planning.agent_chain`
-===============================================
+agents.rag.query_planning.agent_chain
+=====================================
 
 .. py:module:: agents.rag.query_planning.agent_chain
 
-Query Planning RAG using ChainAgent.
+.. autoapi-nested-parse::
 
-Simplified version using the new ChainAgent approach.
+   Query Planning RAG using ChainAgent.
+
+   Simplified version using the new ChainAgent approach.
 
 
-.. autolink-examples:: agents.rag.query_planning.agent_chain
-   :collapse:
+   .. autolink-examples:: agents.rag.query_planning.agent_chain
+      :collapse:
+
 
 Classes
 -------
@@ -19,68 +21,6 @@ Classes
 
    agents.rag.query_planning.agent_chain.QueryPlan
    agents.rag.query_planning.agent_chain.SubQueryResult
-
-
-Module Contents
----------------
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for QueryPlan:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_QueryPlan {
-        node [shape=record];
-        "QueryPlan" [label="QueryPlan"];
-        "pydantic.BaseModel" -> "QueryPlan";
-      }
-
-.. autopydantic_model:: agents.rag.query_planning.agent_chain.QueryPlan
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
-
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for SubQueryResult:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_SubQueryResult {
-        node [shape=record];
-        "SubQueryResult" [label="SubQueryResult"];
-        "pydantic.BaseModel" -> "SubQueryResult";
-      }
-
-.. autopydantic_model:: agents.rag.query_planning.agent_chain.SubQueryResult
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
-
 
 
 Functions
@@ -92,6 +32,90 @@ Functions
    agents.rag.query_planning.agent_chain.create_query_planning_chain
    agents.rag.query_planning.agent_chain.create_simple_decomposition_chain
    agents.rag.query_planning.agent_chain.get_query_planning_chain_io_schema
+
+
+Module Contents
+---------------
+
+.. py:class:: QueryPlan(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Simplified query plan.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: QueryPlan
+      :collapse:
+
+   .. py:attribute:: execution_strategy
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: sub_queries
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: synthesis_approach
+      :type:  str
+      :value: None
+
+
+
+.. py:class:: SubQueryResult(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Result from a sub-query.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: SubQueryResult
+      :collapse:
+
+   .. py:attribute:: answer
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: confidence
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: query
+      :type:  str
+      :value: None
+
+
 
 .. py:function:: create_adaptive_planning_chain(documents: list[langchain_core.documents.Document], llm_config: haive.core.models.llm.base.LLMConfig | None = None) -> haive.agents.chain.ChainAgent
 
@@ -125,11 +149,3 @@ Functions
    .. autolink-examples:: get_query_planning_chain_io_schema
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.rag.query_planning.agent_chain
-   :collapse:
-   
-.. autolink-skip:: next

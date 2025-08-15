@@ -1,15 +1,24 @@
-
-:py:mod:`agents.memory_reorganized.search.deep_research`
-========================================================
+agents.memory_reorganized.search.deep_research
+==============================================
 
 .. py:module:: agents.memory_reorganized.search.deep_research
 
-Module exports.
+.. autoapi-nested-parse::
+
+   Module exports.
 
 
-.. autolink-examples:: agents.memory_reorganized.search.deep_research
-   :collapse:
+   .. autolink-examples:: agents.memory_reorganized.search.deep_research
+      :collapse:
 
 
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/agents/memory_reorganized/search/deep_research/agent/index
+   /autoapi/agents/memory_reorganized/search/deep_research/models/index
 
 

@@ -1,15 +1,24 @@
-
-:py:mod:`pro_search.tasks`
-==========================
+pro_search.tasks
+================
 
 .. py:module:: pro_search.tasks
 
-Module exports.
+.. autoapi-nested-parse::
+
+   Module exports.
 
 
-.. autolink-examples:: pro_search.tasks
-   :collapse:
+   .. autolink-examples:: pro_search.tasks
+      :collapse:
 
 
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/pro_search/tasks/models/index
+   /autoapi/pro_search/tasks/prompts/index
 
 

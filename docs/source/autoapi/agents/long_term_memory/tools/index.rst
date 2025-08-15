@@ -1,9 +1,7 @@
-
-:py:mod:`agents.long_term_memory.tools`
-=======================================
+agents.long_term_memory.tools
+=============================
 
 .. py:module:: agents.long_term_memory.tools
-
 
 
 Functions
@@ -14,6 +12,10 @@ Functions
    agents.long_term_memory.tools.save_recall_memory
    agents.long_term_memory.tools.save_structured_recall_memory
    agents.long_term_memory.tools.search_recall_memories
+
+
+Module Contents
+---------------
 
 .. py:function:: save_recall_memory(memory: str, config: langchain_core.runnables.RunnableConfig, vs_config: haive.core.models.vectorstore.base.VectorStoreConfig) -> str
 
@@ -39,11 +41,3 @@ Functions
    .. autolink-examples:: search_recall_memories
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.long_term_memory.tools
-   :collapse:
-   
-.. autolink-skip:: next

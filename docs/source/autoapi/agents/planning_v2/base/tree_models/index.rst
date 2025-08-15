@@ -1,17 +1,29 @@
-
-:py:mod:`agents.planning_v2.base.tree_models`
-=============================================
+agents.planning_v2.base.tree_models
+===================================
 
 .. py:module:: agents.planning_v2.base.tree_models
 
-Tree-based planning models using the enhanced tree_leaf structure.
+.. autoapi-nested-parse::
 
-This module provides planning models that leverage the generic tree/leaf
-structure from haive-core for more flexible and type-safe planning.
+   Tree-based planning models using the enhanced tree_leaf structure.
+
+   This module provides planning models that leverage the generic tree/leaf
+   structure from haive-core for more flexible and type-safe planning.
 
 
-.. autolink-examples:: agents.planning_v2.base.tree_models
-   :collapse:
+   .. autolink-examples:: agents.planning_v2.base.tree_models
+      :collapse:
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.planning_v2.base.tree_models.PlanLeaf
+   agents.planning_v2.base.tree_models.PlanTree
+   agents.planning_v2.base.tree_models.SimplePlanTree
+
 
 Classes
 -------
@@ -24,116 +36,6 @@ Classes
    agents.planning_v2.base.tree_models.TaskPlan
 
 
-Module Contents
----------------
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for PlanContent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_PlanContent {
-        node [shape=record];
-        "PlanContent" [label="PlanContent"];
-        "pydantic.BaseModel" -> "PlanContent";
-      }
-
-.. autopydantic_model:: agents.planning_v2.base.tree_models.PlanContent
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
-
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for PlanResult:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_PlanResult {
-        node [shape=record];
-        "PlanResult" [label="PlanResult"];
-        "pydantic.BaseModel" -> "PlanResult";
-      }
-
-.. autopydantic_model:: agents.planning_v2.base.tree_models.PlanResult
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
-
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for PlanStatus:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_PlanStatus {
-        node [shape=record];
-        "PlanStatus" [label="PlanStatus"];
-        "str" -> "PlanStatus";
-        "enum.Enum" -> "PlanStatus";
-      }
-
-.. autoclass:: agents.planning_v2.base.tree_models.PlanStatus
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-   .. note::
-
-      **PlanStatus** is an Enum defined in ``agents.planning_v2.base.tree_models``.
-
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for TaskPlan:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_TaskPlan {
-        node [shape=record];
-        "TaskPlan" [label="TaskPlan"];
-        "PlanTree" -> "TaskPlan";
-      }
-
-.. autoclass:: agents.planning_v2.base.tree_models.TaskPlan
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
 Functions
 ---------
 
@@ -141,6 +43,284 @@ Functions
 
    agents.planning_v2.base.tree_models.create_phased_plan
    agents.planning_v2.base.tree_models.create_simple_plan
+
+
+Module Contents
+---------------
+
+.. py:class:: PlanContent(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Content for plan nodes (both tasks and sub-plans).
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: PlanContent
+      :collapse:
+
+   .. py:attribute:: description
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: metadata
+      :type:  dict
+      :value: None
+
+
+
+   .. py:attribute:: objective
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: priority
+      :type:  int
+      :value: None
+
+
+
+   .. py:attribute:: status
+      :type:  PlanStatus
+      :value: None
+
+
+
+.. py:class:: PlanResult(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Result of executing a plan node.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: PlanResult
+      :collapse:
+
+   .. py:attribute:: artifacts
+      :type:  dict
+      :value: None
+
+
+
+   .. py:attribute:: duration_seconds
+      :type:  float | None
+      :value: None
+
+
+
+   .. py:attribute:: error
+      :type:  str | None
+      :value: None
+
+
+
+   .. py:attribute:: output
+      :type:  str | None
+      :value: None
+
+
+
+   .. py:attribute:: success
+      :type:  bool
+      :value: None
+
+
+
+.. py:class:: PlanStatus
+
+   Bases: :py:obj:`str`, :py:obj:`enum.Enum`
+
+
+   Status for plan nodes.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: PlanStatus
+      :collapse:
+
+   .. py:attribute:: BLOCKED
+      :value: 'blocked'
+
+
+
+   .. py:attribute:: CANCELLED
+      :value: 'cancelled'
+
+
+
+   .. py:attribute:: COMPLETED
+      :value: 'completed'
+
+
+
+   .. py:attribute:: FAILED
+      :value: 'failed'
+
+
+
+   .. py:attribute:: IN_PROGRESS
+      :value: 'in_progress'
+
+
+
+   .. py:attribute:: PENDING
+      :value: 'pending'
+
+
+
+.. py:class:: TaskPlan
+
+   Bases: :py:obj:`PlanTree`
+
+
+   A concrete plan implementation using the tree structure.
+
+   This class extends the generic Tree to provide planning-specific
+   functionality while maintaining type safety.
+
+   .. rubric:: Example
+
+   ```python
+   # Create a plan
+   plan = TaskPlan(content=PlanContent(
+       objective="Deploy new feature",
+       priority=4
+   ))
+
+   # Add simple tasks
+   plan.add_task("Write tests", priority=5)
+   plan.add_task("Code review", priority=3)
+
+   # Add sub-plan
+   deploy_plan = plan.add_subplan("Deploy to production")
+   deploy_plan.add_task("Deploy to staging")
+   deploy_plan.add_task("Run smoke tests")
+   deploy_plan.add_task("Deploy to prod")
+
+   # Check status
+   print(f"Total tasks: {plan.total_nodes}")
+   print(f"Progress: {plan.progress_percentage}%")
+   ```
+
+
+   .. autolink-examples:: TaskPlan
+      :collapse:
+
+   .. py:method:: add_parallel_tasks(tasks: list[tuple[str, int]]) -> list[PlanLeaf]
+
+      Add multiple tasks that can execute in parallel.
+
+      :param tasks: List of (objective, priority) tuples
+
+      :returns: List of created task nodes
+
+
+      .. autolink-examples:: add_parallel_tasks
+         :collapse:
+
+
+   .. py:method:: add_subplan(objective: str, description: str = '', priority: int = 1) -> TaskPlan
+
+      Add a sub-plan that can contain its own tasks.
+
+
+      .. autolink-examples:: add_subplan
+         :collapse:
+
+
+   .. py:method:: add_task(objective: str, description: str = '', priority: int = 1) -> PlanLeaf
+
+      Add a simple task to the plan.
+
+
+      .. autolink-examples:: add_task
+         :collapse:
+
+
+   .. py:method:: get_blocked_tasks() -> list[Union[PlanLeaf, TaskPlan]]
+
+      Get all tasks that are blocked.
+
+
+      .. autolink-examples:: get_blocked_tasks
+         :collapse:
+
+
+   .. py:method:: get_current_task() -> Union[PlanLeaf, TaskPlan] | None
+
+      Get the current task to execute (first pending or in-progress).
+
+
+      .. autolink-examples:: get_current_task
+         :collapse:
+
+
+   .. py:method:: get_tasks_by_priority(min_priority: int = 1) -> list[Union[PlanLeaf, TaskPlan]]
+
+      Get all tasks with priority >= min_priority.
+
+
+      .. autolink-examples:: get_tasks_by_priority
+         :collapse:
+
+
+   .. py:method:: mark_current_completed(output: str = 'Done') -> bool
+
+      Mark the current active task as completed.
+
+
+      .. autolink-examples:: mark_current_completed
+         :collapse:
+
+
+   .. py:method:: mark_current_failed(error: str) -> bool
+
+      Mark the current active task as failed.
+
+
+      .. autolink-examples:: mark_current_failed
+         :collapse:
+
+
+   .. py:method:: to_markdown(indent: int = 0) -> str
+
+      Convert plan to markdown representation.
+
+
+      .. autolink-examples:: to_markdown
+         :collapse:
+
 
 .. py:function:: create_phased_plan(objective: str, phases: dict[str, list[str]]) -> TaskPlan
 
@@ -172,11 +352,9 @@ Functions
    .. autolink-examples:: create_simple_plan
       :collapse:
 
+.. py:data:: PlanLeaf
 
+.. py:data:: PlanTree
 
-.. rubric:: Related Links
+.. py:data:: SimplePlanTree
 
-.. autolink-examples:: agents.planning_v2.base.tree_models
-   :collapse:
-   
-.. autolink-skip:: next

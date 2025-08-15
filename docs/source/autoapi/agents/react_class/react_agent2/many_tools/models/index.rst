@@ -1,6 +1,5 @@
-
-:py:mod:`agents.react_class.react_agent2.many_tools.models`
-===========================================================
+agents.react_class.react_agent2.many_tools.models
+=================================================
 
 .. py:module:: agents.react_class.react_agent2.many_tools.models
 
@@ -16,41 +15,31 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: QueryForTools(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Generate a query for additional tools.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: QueryForTools
+      :collapse:
+
+   .. py:attribute:: query
+      :type:  str
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for QueryForTools:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_QueryForTools {
-        node [shape=record];
-        "QueryForTools" [label="QueryForTools"];
-        "pydantic.BaseModel" -> "QueryForTools";
-      }
-
-.. autopydantic_model:: agents.react_class.react_agent2.many_tools.models.QueryForTools
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
-
-
-
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.react_class.react_agent2.many_tools.models
-   :collapse:
-   
-.. autolink-skip:: next

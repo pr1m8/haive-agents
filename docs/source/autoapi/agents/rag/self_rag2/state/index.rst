@@ -1,14 +1,16 @@
-
-:py:mod:`agents.rag.self_rag2.state`
-====================================
+agents.rag.self_rag2.state
+==========================
 
 .. py:module:: agents.rag.self_rag2.state
 
-State for the self-rag agent.
+.. autoapi-nested-parse::
+
+   State for the self-rag agent.
 
 
-.. autolink-examples:: agents.rag.self_rag2.state
-   :collapse:
+   .. autolink-examples:: agents.rag.self_rag2.state
+      :collapse:
+
 
 Classes
 -------
@@ -21,33 +23,44 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: GraphState
+
+   Bases: :py:obj:`typing_extensions.TypedDict`
 
 
+   Represents the state of our graph.
 
-.. toggle:: Show Inheritance Diagram
+   .. attribute:: question
 
-   Inheritance diagram for GraphState:
+      question
 
-   .. graphviz::
-      :align: center
+   .. attribute:: generation
 
-      digraph inheritance_GraphState {
-        node [shape=record];
-        "GraphState" [label="GraphState"];
-        "typing_extensions.TypedDict" -> "GraphState";
-      }
+      LLM generation
 
-.. autoclass:: agents.rag.self_rag2.state.GraphState
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. attribute:: documents
+
+      list of documents
+
+   Initialize self.  See help(type(self)) for accurate signature.
 
 
+   .. autolink-examples:: __init__
+      :collapse:
 
 
-.. rubric:: Related Links
+   .. autolink-examples:: GraphState
+      :collapse:
 
-.. autolink-examples:: agents.rag.self_rag2.state
-   :collapse:
-   
-.. autolink-skip:: next
+   .. py:attribute:: documents
+      :type:  list[str]
+
+
+   .. py:attribute:: generation
+      :type:  str
+
+
+   .. py:attribute:: question
+      :type:  str
+
+

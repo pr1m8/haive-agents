@@ -1,17 +1,29 @@
-
-:py:mod:`agents.base.debug_utils`
-=================================
+agents.base.debug_utils
+=======================
 
 .. py:module:: agents.base.debug_utils
 
-Debug utilities for agent execution with Rich UI.
+.. autoapi-nested-parse::
 
-Provides comprehensive debugging and logging capabilities for agent execution,
-particularly focused on runnable config and recursion limit issues.
+   Debug utilities for agent execution with Rich UI.
+
+   Provides comprehensive debugging and logging capabilities for agent execution,
+   particularly focused on runnable config and recursion limit issues.
 
 
-.. autolink-examples:: agents.base.debug_utils
-   :collapse:
+   .. autolink-examples:: agents.base.debug_utils
+      :collapse:
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.base.debug_utils._global_debugger
+   agents.base.debug_utils.debug_console
+   agents.base.debug_utils.debug_logger
+
 
 Classes
 -------
@@ -19,30 +31,6 @@ Classes
 .. autoapisummary::
 
    agents.base.debug_utils.AgentDebugger
-
-
-Module Contents
----------------
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for AgentDebugger:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_AgentDebugger {
-        node [shape=record];
-        "AgentDebugger" [label="AgentDebugger"];
-      }
-
-.. autoclass:: agents.base.debug_utils.AgentDebugger
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
 
 Functions
@@ -54,6 +42,85 @@ Functions
    agents.base.debug_utils.disable_agent_debugging
    agents.base.debug_utils.enable_agent_debugging
    agents.base.debug_utils.get_agent_debugger
+
+
+Module Contents
+---------------
+
+.. py:class:: AgentDebugger(agent_name: str = 'Agent', enabled: bool = False)
+
+   Rich UI debugger for agent execution.
+
+
+   .. autolink-examples:: AgentDebugger
+      :collapse:
+
+   .. py:method:: disable() -> None
+
+      Disable debugging output.
+
+
+      .. autolink-examples:: disable
+         :collapse:
+
+
+   .. py:method:: enable() -> None
+
+      Enable debugging output.
+
+
+      .. autolink-examples:: enable
+         :collapse:
+
+
+   .. py:method:: log_agent_execution_start(input_data: Any, config: langchain_core.runnables.RunnableConfig)
+
+      Log the start of agent execution.
+
+
+      .. autolink-examples:: log_agent_execution_start
+         :collapse:
+
+
+   .. py:method:: log_config_preparation(base_config: langchain_core.runnables.RunnableConfig | None, runtime_config: langchain_core.runnables.RunnableConfig, thread_id: str | None, kwargs: dict[str, Any])
+
+      Log the config preparation process.
+
+
+      .. autolink-examples:: log_config_preparation
+         :collapse:
+
+
+   .. py:method:: log_recursion_limit_flow(step: str, recursion_limit: Any, source: str = '')
+
+      Track recursion limit through the execution flow.
+
+
+      .. autolink-examples:: log_recursion_limit_flow
+         :collapse:
+
+
+   .. py:method:: log_runnable_config(config: langchain_core.runnables.RunnableConfig, context: str = '')
+
+      Log runnable config with rich formatting.
+
+
+      .. autolink-examples:: log_runnable_config
+         :collapse:
+
+
+   .. py:attribute:: agent_name
+      :value: 'Agent'
+
+
+
+   .. py:attribute:: console
+
+
+   .. py:attribute:: enabled
+      :value: False
+
+
 
 .. py:function:: debug_runnable_config(config: langchain_core.runnables.RunnableConfig, context: str = '', agent_name: str = 'Agent')
 
@@ -87,11 +154,12 @@ Functions
    .. autolink-examples:: get_agent_debugger
       :collapse:
 
+.. py:data:: _global_debugger
+   :type:  AgentDebugger | None
+   :value: None
 
 
-.. rubric:: Related Links
+.. py:data:: debug_console
 
-.. autolink-examples:: agents.base.debug_utils
-   :collapse:
-   
-.. autolink-skip:: next
+.. py:data:: debug_logger
+

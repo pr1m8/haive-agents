@@ -1,14 +1,15 @@
-
-:py:mod:`agents.planning_v2.base.planner.example`
-=================================================
+agents.planning_v2.base.planner.example
+=======================================
 
 .. py:module:: agents.planning_v2.base.planner.example
 
-Simple example of using the PlannerAgent.
+.. autoapi-nested-parse::
+
+   Simple example of using the PlannerAgent.
 
 
-.. autolink-examples:: agents.planning_v2.base.planner.example
-   :collapse:
+   .. autolink-examples:: agents.planning_v2.base.planner.example
+      :collapse:
 
 
 Functions
@@ -17,6 +18,10 @@ Functions
 .. autoapisummary::
 
    agents.planning_v2.base.planner.example.main
+
+
+Module Contents
+---------------
 
 .. py:function:: main()
    :async:
@@ -28,11 +33,3 @@ Functions
    .. autolink-examples:: main
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.planning_v2.base.planner.example
-   :collapse:
-   
-.. autolink-skip:: next

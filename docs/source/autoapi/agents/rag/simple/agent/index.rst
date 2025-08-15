@@ -1,14 +1,16 @@
-
-:py:mod:`agents.rag.simple.agent`
-=================================
+agents.rag.simple.agent
+=======================
 
 .. py:module:: agents.rag.simple.agent
 
-Simple RAG Agent - BaseRAGAgent + AnswerAgent in sequence.
+.. autoapi-nested-parse::
+
+   Simple RAG Agent - BaseRAGAgent + AnswerAgent in sequence.
 
 
-.. autolink-examples:: agents.rag.simple.agent
-   :collapse:
+   .. autolink-examples:: agents.rag.simple.agent
+      :collapse:
+
 
 Classes
 -------
@@ -21,33 +23,26 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: SimpleRAGAgent
+
+   Bases: :py:obj:`haive.agents.multi.agent.MultiAgent`
+
+
+   Simple RAG = BaseRAGAgent + AnswerAgent in sequence.
+
+
+   .. autolink-examples:: SimpleRAGAgent
+      :collapse:
+
+   .. py:attribute:: agents
+      :type:  list
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for SimpleRAGAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_SimpleRAGAgent {
-        node [shape=record];
-        "SimpleRAGAgent" [label="SimpleRAGAgent"];
-        "haive.agents.multi.agent.MultiAgent" -> "SimpleRAGAgent";
-      }
-
-.. autoclass:: agents.rag.simple.agent.SimpleRAGAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. py:attribute:: execution_mode
+      :type:  str
+      :value: None
 
 
 
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.rag.simple.agent
-   :collapse:
-   
-.. autolink-skip:: next

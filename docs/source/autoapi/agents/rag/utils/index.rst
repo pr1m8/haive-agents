@@ -1,15 +1,23 @@
-
-:py:mod:`agents.rag.utils`
-==========================
+agents.rag.utils
+================
 
 .. py:module:: agents.rag.utils
 
-Package initialization file.
+.. autoapi-nested-parse::
+
+   Package initialization file.
 
 
-.. autolink-examples:: agents.rag.utils
-   :collapse:
+   .. autolink-examples:: agents.rag.utils
+      :collapse:
 
 
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/agents/rag/utils/structured_output_enhancer/index
 
 

@@ -1,6 +1,5 @@
-
-:py:mod:`agents.rag.llm_rag.state`
-==================================
+agents.rag.llm_rag.state
+========================
 
 .. py:module:: agents.rag.llm_rag.state
 
@@ -18,76 +17,48 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: LLMRAGInputState
+
+   Bases: :py:obj:`haive.agents.rag.base.state.BaseRAGInputState`
+
+
+   Input state for LLM RAG agents.
+
+
+   .. autolink-examples:: LLMRAGInputState
+      :collapse:
+
+.. py:class:: LLMRAGOutputState
+
+   Bases: :py:obj:`haive.agents.rag.base.state.BaseRAGOutputState`
+
+
+   Output state for LLM RAG agents.
+
+
+   .. autolink-examples:: LLMRAGOutputState
+      :collapse:
+
+   .. py:attribute:: answer
+      :type:  str
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for LLMRAGInputState:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_LLMRAGInputState {
-        node [shape=record];
-        "LLMRAGInputState" [label="LLMRAGInputState"];
-        "haive.agents.rag.base.state.BaseRAGInputState" -> "LLMRAGInputState";
-      }
-
-.. autoclass:: agents.rag.llm_rag.state.LLMRAGInputState
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. py:attribute:: is_relevant
+      :type:  bool
+      :value: None
 
 
 
+.. py:class:: LLMRAGState
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for LLMRAGOutputState:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_LLMRAGOutputState {
-        node [shape=record];
-        "LLMRAGOutputState" [label="LLMRAGOutputState"];
-        "haive.agents.rag.base.state.BaseRAGOutputState" -> "LLMRAGOutputState";
-      }
-
-.. autoclass:: agents.rag.llm_rag.state.LLMRAGOutputState
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   Bases: :py:obj:`haive.agents.rag.base.state.BaseRAGState`, :py:obj:`LLMRAGOutputState`
 
 
+   State for LLM RAG agents.
 
 
-.. toggle:: Show Inheritance Diagram
+   .. autolink-examples:: LLMRAGState
+      :collapse:
 
-   Inheritance diagram for LLMRAGState:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_LLMRAGState {
-        node [shape=record];
-        "LLMRAGState" [label="LLMRAGState"];
-        "haive.agents.rag.base.state.BaseRAGState" -> "LLMRAGState";
-        "LLMRAGOutputState" -> "LLMRAGState";
-      }
-
-.. autoclass:: agents.rag.llm_rag.state.LLMRAGState
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.rag.llm_rag.state
-   :collapse:
-   
-.. autolink-skip:: next

@@ -1,14 +1,16 @@
-
-:py:mod:`agents.planning.plan_and_execute.v2.models`
-====================================================
+agents.planning.plan_and_execute.v2.models
+==========================================
 
 .. py:module:: agents.planning.plan_and_execute.v2.models
 
-Models for Plan and Execute Agent v2.
+.. autoapi-nested-parse::
+
+   Models for Plan and Execute Agent v2.
 
 
-.. autolink-examples:: agents.planning.plan_and_execute.v2.models
-   :collapse:
+   .. autolink-examples:: agents.planning.plan_and_execute.v2.models
+      :collapse:
+
 
 Classes
 -------
@@ -25,157 +27,221 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: Act(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Action to take - either respond or create new plan.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: Act
+      :collapse:
+
+   .. py:attribute:: action
+      :type:  Response | Plan
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
+.. py:class:: ExecutionResult(/, **data: Any)
 
-   Inheritance diagram for Act:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_Act {
-        node [shape=record];
-        "Act" [label="Act"];
-        "pydantic.BaseModel" -> "Act";
-      }
-
-.. autopydantic_model:: agents.planning.plan_and_execute.v2.models.Act
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   Bases: :py:obj:`pydantic.BaseModel`
 
 
+   Result of executing a step.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
 
 
+   .. autolink-examples:: __init__
+      :collapse:
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for ExecutionResult:
+   .. autolink-examples:: ExecutionResult
+      :collapse:
 
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ExecutionResult {
-        node [shape=record];
-        "ExecutionResult" [label="ExecutionResult"];
-        "pydantic.BaseModel" -> "ExecutionResult";
-      }
-
-.. autopydantic_model:: agents.planning.plan_and_execute.v2.models.ExecutionResult
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: result
+      :type:  str
+      :value: None
 
 
 
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for Plan:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_Plan {
-        node [shape=record];
-        "Plan" [label="Plan"];
-        "pydantic.BaseModel" -> "Plan";
-      }
-
-.. autopydantic_model:: agents.planning.plan_and_execute.v2.models.Plan
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: step_completed
+      :type:  bool
+      :value: None
 
 
 
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for Response:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_Response {
-        node [shape=record];
-        "Response" [label="Response"];
-        "pydantic.BaseModel" -> "Response";
-      }
-
-.. autopydantic_model:: agents.planning.plan_and_execute.v2.models.Response
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: step_id
+      :type:  int | None
+      :value: None
 
 
 
+.. py:class:: Plan(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
 
 
-.. toggle:: Show Inheritance Diagram
+   A plan containing steps to execute.
 
-   Inheritance diagram for Step:
+   Create a new model by parsing and validating input data from keyword arguments.
 
-   .. graphviz::
-      :align: center
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
 
-      digraph inheritance_Step {
-        node [shape=record];
-        "Step" [label="Step"];
-        "pydantic.BaseModel" -> "Step";
-      }
-
-.. autopydantic_model:: agents.planning.plan_and_execute.v2.models.Step
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   `self` is explicitly positional-only to allow `self` as a field name.
 
 
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: Plan
+      :collapse:
+
+   .. py:method:: get_next_step() -> Step | None
+
+      Get the next incomplete step.
+
+
+      .. autolink-examples:: get_next_step
+         :collapse:
+
+
+   .. py:method:: update_status() -> None
+
+      Update plan status based on step completion.
+
+
+      .. autolink-examples:: update_status
+         :collapse:
+
+
+   .. py:attribute:: description
+      :type:  str
+      :value: None
 
 
 
-.. rubric:: Related Links
+   .. py:attribute:: status
+      :type:  Literal['not_started', 'in_progress', 'complete']
+      :value: None
 
-.. autolink-examples:: agents.planning.plan_and_execute.v2.models
-   :collapse:
-   
-.. autolink-skip:: next
+
+
+   .. py:attribute:: steps
+      :type:  list[Step]
+      :value: None
+
+
+
+.. py:class:: Response(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Final response to user.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: Response
+      :collapse:
+
+   .. py:attribute:: response
+      :type:  str
+      :value: None
+
+
+
+.. py:class:: Step(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   A step in the plan.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: Step
+      :collapse:
+
+   .. py:method:: add_result(result: str) -> None
+
+      Add result and mark step as complete.
+
+
+      .. autolink-examples:: add_result
+         :collapse:
+
+
+   .. py:method:: is_complete() -> bool
+
+      Check if step is complete.
+
+
+      .. autolink-examples:: is_complete
+         :collapse:
+
+
+   .. py:attribute:: description
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: id
+      :type:  int
+      :value: None
+
+
+
+   .. py:attribute:: result
+      :type:  str | None
+      :value: None
+
+
+
+   .. py:attribute:: status
+      :type:  Literal['not_started', 'in_progress', 'complete']
+      :value: None
+
+
+

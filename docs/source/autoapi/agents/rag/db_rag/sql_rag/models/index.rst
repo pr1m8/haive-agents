@@ -1,6 +1,5 @@
-
-:py:mod:`agents.rag.db_rag.sql_rag.models`
-==========================================
+agents.rag.db_rag.sql_rag.models
+================================
 
 .. py:module:: agents.rag.db_rag.sql_rag.models
 
@@ -22,215 +21,264 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: GradeAnswer(/, **data: Any)
 
+   Bases: :py:obj:`pydantic.BaseModel`
 
 
-.. toggle:: Show Inheritance Diagram
+   Binary score to assess answer addresses question.
 
-   Inheritance diagram for GradeAnswer:
+   Create a new model by parsing and validating input data from keyword arguments.
 
-   .. graphviz::
-      :align: center
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
 
-      digraph inheritance_GradeAnswer {
-        node [shape=record];
-        "GradeAnswer" [label="GradeAnswer"];
-        "pydantic.BaseModel" -> "GradeAnswer";
-      }
+   `self` is explicitly positional-only to allow `self` as a field name.
 
-.. autopydantic_model:: agents.rag.db_rag.sql_rag.models.GradeAnswer
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
 
+   .. autolink-examples:: __init__
+      :collapse:
 
 
+   .. autolink-examples:: GradeAnswer
+      :collapse:
 
+   .. py:attribute:: binary_score
+      :type:  str
+      :value: None
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for GradeHallucinations:
 
-   .. graphviz::
-      :align: center
+.. py:class:: GradeHallucinations(/, **data: Any)
 
-      digraph inheritance_GradeHallucinations {
-        node [shape=record];
-        "GradeHallucinations" [label="GradeHallucinations"];
-        "pydantic.BaseModel" -> "GradeHallucinations";
-      }
+   Bases: :py:obj:`pydantic.BaseModel`
 
-.. autopydantic_model:: agents.rag.db_rag.sql_rag.models.GradeHallucinations
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
 
+   Binary score for hallucination present in generated answer.
 
+   Create a new model by parsing and validating input data from keyword arguments.
 
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
 
+   `self` is explicitly positional-only to allow `self` as a field name.
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for GuardrailsOutput:
+   .. autolink-examples:: __init__
+      :collapse:
 
-   .. graphviz::
-      :align: center
 
-      digraph inheritance_GuardrailsOutput {
-        node [shape=record];
-        "GuardrailsOutput" [label="GuardrailsOutput"];
-        "pydantic.BaseModel" -> "GuardrailsOutput";
-      }
+   .. autolink-examples:: GradeHallucinations
+      :collapse:
 
-.. autopydantic_model:: agents.rag.db_rag.sql_rag.models.GuardrailsOutput
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: binary_score
+      :type:  str
+      :value: None
 
 
 
+.. py:class:: GuardrailsOutput(/, **data: Any)
 
+   Bases: :py:obj:`pydantic.BaseModel`
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for Query:
+   Output from the guardrails check.
 
-   .. graphviz::
-      :align: center
+   Create a new model by parsing and validating input data from keyword arguments.
 
-      digraph inheritance_Query {
-        node [shape=record];
-        "Query" [label="Query"];
-        "pydantic.BaseModel" -> "Query";
-      }
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
 
-.. autopydantic_model:: agents.rag.db_rag.sql_rag.models.Query
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   `self` is explicitly positional-only to allow `self` as a field name.
 
 
+   .. autolink-examples:: __init__
+      :collapse:
 
 
+   .. autolink-examples:: GuardrailsOutput
+      :collapse:
 
-.. toggle:: Show Inheritance Diagram
+   .. py:attribute:: decision
+      :type:  str
+      :value: None
 
-   Inheritance diagram for SQLAnalysisOutput:
 
-   .. graphviz::
-      :align: center
 
-      digraph inheritance_SQLAnalysisOutput {
-        node [shape=record];
-        "SQLAnalysisOutput" [label="SQLAnalysisOutput"];
-        "pydantic.BaseModel" -> "SQLAnalysisOutput";
-      }
+   .. py:attribute:: reason
+      :type:  str | None
+      :value: None
 
-.. autopydantic_model:: agents.rag.db_rag.sql_rag.models.SQLAnalysisOutput
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
 
 
+.. py:class:: Query(/, **data: Any)
 
+   Bases: :py:obj:`pydantic.BaseModel`
 
 
-.. toggle:: Show Inheritance Diagram
+   Model for a query to the SQL database.
 
-   Inheritance diagram for SQLQueryOutput:
+   Create a new model by parsing and validating input data from keyword arguments.
 
-   .. graphviz::
-      :align: center
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
 
-      digraph inheritance_SQLQueryOutput {
-        node [shape=record];
-        "SQLQueryOutput" [label="SQLQueryOutput"];
-        "pydantic.BaseModel" -> "SQLQueryOutput";
-      }
+   `self` is explicitly positional-only to allow `self` as a field name.
 
-.. autopydantic_model:: agents.rag.db_rag.sql_rag.models.SQLQueryOutput
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
 
+   .. autolink-examples:: __init__
+      :collapse:
 
 
+   .. autolink-examples:: Query
+      :collapse:
 
+   .. py:attribute:: question
+      :type:  str
+      :value: None
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for SQLValidationOutput:
 
-   .. graphviz::
-      :align: center
+.. py:class:: SQLAnalysisOutput(/, **data: Any)
 
-      digraph inheritance_SQLValidationOutput {
-        node [shape=record];
-        "SQLValidationOutput" [label="SQLValidationOutput"];
-        "pydantic.BaseModel" -> "SQLValidationOutput";
-      }
+   Bases: :py:obj:`pydantic.BaseModel`
 
-.. autopydantic_model:: agents.rag.db_rag.sql_rag.models.SQLValidationOutput
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
 
+   Represents the analysis of a natural language query.
 
+   Create a new model by parsing and validating input data from keyword arguments.
 
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
 
+   `self` is explicitly positional-only to allow `self` as a field name.
 
-.. rubric:: Related Links
 
-.. autolink-examples:: agents.rag.db_rag.sql_rag.models
-   :collapse:
-   
-.. autolink-skip:: next
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: SQLAnalysisOutput
+      :collapse:
+
+   .. py:attribute:: aggregations
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: complexity
+      :type:  Literal['simple', 'medium', 'complex']
+      :value: None
+
+
+
+   .. py:attribute:: constraints
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: joins_needed
+      :type:  list[dict[str, str]]
+      :value: None
+
+
+
+   .. py:attribute:: needed_columns
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: relevant_tables
+      :type:  list[str]
+      :value: None
+
+
+
+.. py:class:: SQLQueryOutput(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Validated structured output model for SQL query generation.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: SQLQueryOutput
+      :collapse:
+
+   .. py:method:: validate_sql_syntax(query: str) -> str
+      :classmethod:
+
+
+      Ensure the query starts with a valid SQL keyword.
+
+
+      .. autolink-examples:: validate_sql_syntax
+         :collapse:
+
+
+   .. py:attribute:: parameters
+      :type:  dict[str, Any] | None
+      :value: None
+
+
+
+   .. py:attribute:: query
+      :type:  str
+      :value: None
+
+
+
+.. py:class:: SQLValidationOutput(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Represents the validation result of a SQL query's output.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: SQLValidationOutput
+      :collapse:
+
+   .. py:attribute:: errors
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: is_valid
+      :type:  bool
+      :value: None
+
+
+
+   .. py:attribute:: suggestions
+      :type:  str | None
+      :value: None
+
+
+

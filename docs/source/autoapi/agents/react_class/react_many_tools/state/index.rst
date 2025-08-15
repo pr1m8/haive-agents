@@ -1,6 +1,5 @@
-
-:py:mod:`agents.react_class.react_many_tools.state`
-===================================================
+agents.react_class.react_many_tools.state
+=========================================
 
 .. py:module:: agents.react_class.react_many_tools.state
 
@@ -16,33 +15,58 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: ReactManyToolsState
+
+   Bases: :py:obj:`haive.agents.react.react.state.ReactAgentState`
+
+
+   State for React Agent with many tools.
+
+   Adds fields for tool selection, filtering, and document retrieval.
+
+
+   .. autolink-examples:: ReactManyToolsState
+      :collapse:
+
+   .. py:attribute:: current_tool_category
+      :type:  str | None
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ReactManyToolsState:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ReactManyToolsState {
-        node [shape=record];
-        "ReactManyToolsState" [label="ReactManyToolsState"];
-        "haive.agents.react.react.state.ReactAgentState" -> "ReactManyToolsState";
-      }
-
-.. autoclass:: agents.react_class.react_many_tools.state.ReactManyToolsState
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. py:attribute:: filtered_tools
+      :type:  list[str]
+      :value: None
 
 
 
+   .. py:attribute:: query
+      :type:  str | None
+      :value: None
 
-.. rubric:: Related Links
 
-.. autolink-examples:: agents.react_class.react_many_tools.state
-   :collapse:
-   
-.. autolink-skip:: next
+
+   .. py:attribute:: retrieval_metadata
+      :type:  dict[str, Any]
+      :value: None
+
+
+
+   .. py:attribute:: retrieved_documents
+      :type:  list[dict[str, Any]]
+      :value: None
+
+
+
+   .. py:attribute:: tool_categories
+      :type:  dict[str, list[str]]
+      :value: None
+
+
+
+   .. py:attribute:: tool_filter_query
+      :type:  str | None
+      :value: None
+
+
+

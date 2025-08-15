@@ -1,18 +1,28 @@
-
-:py:mod:`agents.rag.unified_factory`
-====================================
+agents.rag.unified_factory
+==========================
 
 .. py:module:: agents.rag.unified_factory
 
-Unified RAG Factory.
+.. autoapi-nested-parse::
 
-from typing import Any, Dict
-Create any RAG agent using either traditional or ChainAgent approach.
-Integrates with multi-agent system.
+   Unified RAG Factory.
+
+   from typing import Any, Dict
+   Create any RAG agent using either traditional or ChainAgent approach.
+   Integrates with multi-agent system.
 
 
-.. autolink-examples:: agents.rag.unified_factory
-   :collapse:
+   .. autolink-examples:: agents.rag.unified_factory
+      :collapse:
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.rag.unified_factory.logger
+
 
 Classes
 -------
@@ -22,84 +32,6 @@ Classes
    agents.rag.unified_factory.RAGFactory
    agents.rag.unified_factory.RAGStyle
    agents.rag.unified_factory.RAGType
-
-
-Module Contents
----------------
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for RAGFactory:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_RAGFactory {
-        node [shape=record];
-        "RAGFactory" [label="RAGFactory"];
-      }
-
-.. autoclass:: agents.rag.unified_factory.RAGFactory
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for RAGStyle:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_RAGStyle {
-        node [shape=record];
-        "RAGStyle" [label="RAGStyle"];
-        "str" -> "RAGStyle";
-        "enum.Enum" -> "RAGStyle";
-      }
-
-.. autoclass:: agents.rag.unified_factory.RAGStyle
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-   .. note::
-
-      **RAGStyle** is an Enum defined in ``agents.rag.unified_factory``.
-
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for RAGType:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_RAGType {
-        node [shape=record];
-        "RAGType" [label="RAGType"];
-        "str" -> "RAGType";
-        "enum.Enum" -> "RAGType";
-      }
-
-.. autoclass:: agents.rag.unified_factory.RAGType
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-   .. note::
-
-      **RAGType** is an Enum defined in ``agents.rag.unified_factory``.
-
 
 
 Functions
@@ -112,6 +44,172 @@ Functions
    agents.rag.unified_factory.create_rag_multi
    agents.rag.unified_factory.create_rag_pipeline
    agents.rag.unified_factory.example_usage
+
+
+Module Contents
+---------------
+
+.. py:class:: RAGFactory
+
+   Unified factory for creating RAG agents.
+
+
+   .. autolink-examples:: RAGFactory
+      :collapse:
+
+   .. py:method:: _create_chain(rag_type: RAGType, documents: list[langchain_core.documents.Document], llm_config: haive.core.models.llm.base.LLMConfig, name: str, **kwargs) -> haive.agents.chain.ChainAgent
+      :staticmethod:
+
+
+
+   .. py:method:: _create_multi(rag_type: RAGType, documents: list[langchain_core.documents.Document], llm_config: haive.core.models.llm.base.LLMConfig, name: str, **kwargs) -> haive.agents.chain.multi_integration.ChainMultiAgent
+      :staticmethod:
+
+
+
+   .. py:method:: _create_traditional(rag_type: RAGType, documents: list[langchain_core.documents.Document], llm_config: haive.core.models.llm.base.LLMConfig, name: str, **kwargs) -> haive.agents.base.agent.Agent
+      :staticmethod:
+
+
+
+   .. py:method:: create(rag_type: RAGType, documents: list[langchain_core.documents.Document], llm_config: haive.core.models.llm.base.LLMConfig | None = None, style: RAGStyle = RAGStyle.CHAIN, name: str | None = None, **kwargs) -> haive.agents.base.agent.Agent | haive.agents.chain.ChainAgent
+      :staticmethod:
+
+
+      Create any RAG agent.
+
+      :param rag_type: Type of RAG to create
+      :param documents: Documents for retrieval
+      :param llm_config: LLM configuration
+      :param style: Implementation style
+      :param name: Agent name
+      :param \*\*kwargs: Additional arguments
+
+      :returns: The created RAG agent
+
+
+      .. autolink-examples:: create
+         :collapse:
+
+
+.. py:class:: RAGStyle
+
+   Bases: :py:obj:`str`, :py:obj:`enum.Enum`
+
+
+   Implementation style.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: RAGStyle
+      :collapse:
+
+   .. py:attribute:: CHAIN
+      :value: 'chain'
+
+
+
+   .. py:attribute:: MULTI
+      :value: 'multi'
+
+
+
+   .. py:attribute:: TRADITIONAL
+      :value: 'traditional'
+
+
+
+.. py:class:: RAGType
+
+   Bases: :py:obj:`str`, :py:obj:`enum.Enum`
+
+
+   Available RAG types.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: RAGType
+      :collapse:
+
+   .. py:attribute:: ADAPTIVE_TOOLS
+      :value: 'adaptive_tools'
+
+
+
+   .. py:attribute:: AGENTIC_ROUTER
+      :value: 'agentic_router'
+
+
+
+   .. py:attribute:: CORRECTIVE
+      :value: 'corrective'
+
+
+
+   .. py:attribute:: FLARE
+      :value: 'flare'
+
+
+
+   .. py:attribute:: FUSION
+      :value: 'fusion'
+
+
+
+   .. py:attribute:: HYDE
+      :value: 'hyde'
+
+
+
+   .. py:attribute:: MEMORY_AWARE
+      :value: 'memory_aware'
+
+
+
+   .. py:attribute:: MULTI_QUERY
+      :value: 'multi_query'
+
+
+
+   .. py:attribute:: QUERY_PLANNING
+      :value: 'query_planning'
+
+
+
+   .. py:attribute:: SELF_REFLECTIVE
+      :value: 'self_reflective'
+
+
+
+   .. py:attribute:: SELF_ROUTE
+      :value: 'self_route'
+
+
+
+   .. py:attribute:: SIMPLE
+      :value: 'simple'
+
+
+
+   .. py:attribute:: SPECULATIVE
+      :value: 'speculative'
+
+
+
+   .. py:attribute:: STEP_BACK
+      :value: 'step_back'
+
+
 
 .. py:function:: create_rag(rag_type: str | RAGType, documents: list[langchain_core.documents.Document], style: str | RAGStyle = 'chain', **kwargs) -> haive.agents.base.agent.Agent | haive.agents.chain.ChainAgent
 
@@ -153,11 +251,5 @@ Functions
    .. autolink-examples:: example_usage
       :collapse:
 
+.. py:data:: logger
 
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.rag.unified_factory
-   :collapse:
-   
-.. autolink-skip:: next

@@ -1,9 +1,7 @@
-
-:py:mod:`agents.research.person.utils`
-======================================
+agents.research.person.utils
+============================
 
 .. py:module:: agents.research.person.utils
-
 
 
 Functions
@@ -14,6 +12,10 @@ Functions
    agents.research.person.utils.deduplicate_and_format_sources
    agents.research.person.utils.format_all_notes
    agents.research.person.utils.get_config_from_runnable_config
+
+
+Module Contents
+---------------
 
 .. py:function:: deduplicate_and_format_sources(search_response: Any, max_tokens_per_source: int, include_raw_content: bool = True) -> str
 
@@ -59,11 +61,3 @@ Functions
    .. autolink-examples:: get_config_from_runnable_config
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.research.person.utils
-   :collapse:
-   
-.. autolink-skip:: next

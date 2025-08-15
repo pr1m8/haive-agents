@@ -1,15 +1,23 @@
-
-:py:mod:`agents.rag.self_reflective`
-====================================
+agents.rag.self_reflective
+==========================
 
 .. py:module:: agents.rag.self_reflective
 
-Module exports.
+.. autoapi-nested-parse::
+
+   Module exports.
 
 
-.. autolink-examples:: agents.rag.self_reflective
-   :collapse:
+   .. autolink-examples:: agents.rag.self_reflective
+      :collapse:
 
 
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/agents/rag/self_reflective/agent/index
 
 

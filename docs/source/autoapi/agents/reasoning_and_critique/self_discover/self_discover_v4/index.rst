@@ -1,20 +1,30 @@
-
-:py:mod:`agents.reasoning_and_critique.self_discover.self_discover_v4`
-======================================================================
+agents.reasoning_and_critique.self_discover.self_discover_v4
+============================================================
 
 .. py:module:: agents.reasoning_and_critique.self_discover.self_discover_v4
 
-Self-Discover V4 - Using SimpleAgentV3 and MultiAgent.
+.. autoapi-nested-parse::
 
-Clean implementation following CLAUDE.md patterns:
-- SimpleAgentV3 for individual agents
-- MultiAgent for orchestration
-- No custom __init__ overrides
-- Proper state handling
+   Self-Discover V4 - Using SimpleAgentV3 and MultiAgent.
+
+   Clean implementation following CLAUDE.md patterns:
+   - SimpleAgentV3 for individual agents
+   - MultiAgent for orchestration
+   - No custom __init__ overrides
+   - Proper state handling
 
 
-.. autolink-examples:: agents.reasoning_and_critique.self_discover.self_discover_v4
-   :collapse:
+   .. autolink-examples:: agents.reasoning_and_critique.self_discover.self_discover_v4
+      :collapse:
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.reasoning_and_critique.self_discover.self_discover_v4.REASONING_MODULES
+
 
 Classes
 -------
@@ -31,234 +41,6 @@ Classes
    agents.reasoning_and_critique.self_discover.self_discover_v4.SelfDiscoverV4
 
 
-Module Contents
----------------
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for AdaptationResult:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_AdaptationResult {
-        node [shape=record];
-        "AdaptationResult" [label="AdaptationResult"];
-        "pydantic.BaseModel" -> "AdaptationResult";
-      }
-
-.. autopydantic_model:: agents.reasoning_and_critique.self_discover.self_discover_v4.AdaptationResult
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
-
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for AdaptedModule:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_AdaptedModule {
-        node [shape=record];
-        "AdaptedModule" [label="AdaptedModule"];
-        "pydantic.BaseModel" -> "AdaptedModule";
-      }
-
-.. autopydantic_model:: agents.reasoning_and_critique.self_discover.self_discover_v4.AdaptedModule
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
-
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for FinalAnswer:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_FinalAnswer {
-        node [shape=record];
-        "FinalAnswer" [label="FinalAnswer"];
-        "pydantic.BaseModel" -> "FinalAnswer";
-      }
-
-.. autopydantic_model:: agents.reasoning_and_critique.self_discover.self_discover_v4.FinalAnswer
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
-
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ModuleSelection:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ModuleSelection {
-        node [shape=record];
-        "ModuleSelection" [label="ModuleSelection"];
-        "pydantic.BaseModel" -> "ModuleSelection";
-      }
-
-.. autopydantic_model:: agents.reasoning_and_critique.self_discover.self_discover_v4.ModuleSelection
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
-
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ReasoningPlan:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ReasoningPlan {
-        node [shape=record];
-        "ReasoningPlan" [label="ReasoningPlan"];
-        "pydantic.BaseModel" -> "ReasoningPlan";
-      }
-
-.. autopydantic_model:: agents.reasoning_and_critique.self_discover.self_discover_v4.ReasoningPlan
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
-
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ReasoningStep:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ReasoningStep {
-        node [shape=record];
-        "ReasoningStep" [label="ReasoningStep"];
-        "pydantic.BaseModel" -> "ReasoningStep";
-      }
-
-.. autopydantic_model:: agents.reasoning_and_critique.self_discover.self_discover_v4.ReasoningStep
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
-
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for SelectedModule:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_SelectedModule {
-        node [shape=record];
-        "SelectedModule" [label="SelectedModule"];
-        "pydantic.BaseModel" -> "SelectedModule";
-      }
-
-.. autopydantic_model:: agents.reasoning_and_critique.self_discover.self_discover_v4.SelectedModule
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
-
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for SelfDiscoverV4:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_SelfDiscoverV4 {
-        node [shape=record];
-        "SelfDiscoverV4" [label="SelfDiscoverV4"];
-        "haive.agents.multi.agent.MultiAgent" -> "SelfDiscoverV4";
-      }
-
-.. autoclass:: agents.reasoning_and_critique.self_discover.self_discover_v4.SelfDiscoverV4
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
 Functions
 ---------
 
@@ -270,6 +52,328 @@ Functions
    agents.reasoning_and_critique.self_discover.self_discover_v4.create_self_discover_v4
    agents.reasoning_and_critique.self_discover.self_discover_v4.create_structurer
    agents.reasoning_and_critique.self_discover.self_discover_v4.main
+
+
+Module Contents
+---------------
+
+.. py:class:: AdaptationResult(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Result from the adapter agent.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: AdaptationResult
+      :collapse:
+
+   .. py:method:: to_string() -> str
+
+      Convert to string for next agent.
+
+
+      .. autolink-examples:: to_string
+         :collapse:
+
+
+   .. py:attribute:: adapted_modules
+      :type:  list[AdaptedModule]
+      :value: None
+
+
+
+.. py:class:: AdaptedModule(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   A module adapted for the specific task.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: AdaptedModule
+      :collapse:
+
+   .. py:attribute:: adapted_approach
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: module_number
+      :type:  int
+      :value: None
+
+
+
+.. py:class:: FinalAnswer(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Result from the executor agent.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: FinalAnswer
+      :collapse:
+
+   .. py:attribute:: answer
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: confidence
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: reasoning_process
+      :type:  str
+      :value: None
+
+
+
+.. py:class:: ModuleSelection(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Result from the selector agent.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: ModuleSelection
+      :collapse:
+
+   .. py:method:: to_string() -> str
+
+      Convert to string for next agent.
+
+
+      .. autolink-examples:: to_string
+         :collapse:
+
+
+   .. py:attribute:: selected_modules
+      :type:  list[SelectedModule]
+      :value: None
+
+
+
+.. py:class:: ReasoningPlan(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Result from the structurer agent.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: ReasoningPlan
+      :collapse:
+
+   .. py:method:: to_string() -> str
+
+      Convert to string for executor.
+
+
+      .. autolink-examples:: to_string
+         :collapse:
+
+
+   .. py:attribute:: steps
+      :type:  list[ReasoningStep]
+      :value: None
+
+
+
+.. py:class:: ReasoningStep(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   A step in the reasoning plan.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: ReasoningStep
+      :collapse:
+
+   .. py:attribute:: action
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: modules
+      :type:  list[int]
+      :value: None
+
+
+
+   .. py:attribute:: step
+      :type:  int
+      :value: None
+
+
+
+.. py:class:: SelectedModule(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   A reasoning module selected for the task.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: SelectedModule
+      :collapse:
+
+   .. py:attribute:: explanation
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: module_name
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: module_number
+      :type:  int
+      :value: None
+
+
+
+.. py:class:: SelfDiscoverV4(name: str = 'self_discover_v4', **kwargs)
+
+   Bases: :py:obj:`haive.agents.multi.agent.MultiAgent`
+
+
+   Self-Discover agent using V4 architecture.
+
+   This is a clean implementation that:
+   1. Uses SimpleAgentV3 for all agents
+   2. Uses MultiAgent for orchestration
+   3. Properly handles state between agents
+   4. No custom __init__ overrides
+
+   Initialize with the four agents in sequence.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: SelfDiscoverV4
+      :collapse:
+
+   .. py:method:: prepare_initial_state(task: str, modules: str | None = None) -> dict[str, Any]
+
+      Prepare the initial state for execution.
+
+      :param task: The task to solve
+      :param modules: Optional custom modules (defaults to REASONING_MODULES)
+
+      :returns: Dict with initial state for the workflow
+
+
+      .. autolink-examples:: prepare_initial_state
+         :collapse:
+
+
+   .. py:method:: solve(task: str, modules: str | None = None) -> FinalAnswer
+      :async:
+
+
+      Convenience method to solve a task.
+
+      :param task: The task to solve
+      :param modules: Optional custom reasoning modules
+
+      :returns: FinalAnswer with the solution
+
+
+      .. autolink-examples:: solve
+         :collapse:
+
 
 .. py:function:: create_adapter() -> haive.agents.simple.agent.SimpleAgent
 
@@ -321,11 +425,39 @@ Functions
    .. autolink-examples:: main
       :collapse:
 
+.. py:data:: REASONING_MODULES
+   :value: Multiline-String
+
+   .. raw:: html
+
+      <details><summary>Show Value</summary>
+
+   .. code-block:: python
+
+      """1. Critical Thinking: Question assumptions, evaluate evidence
+      2. Systems Analysis: Break down complex systems and relationships
+      3. Root Cause Analysis: Identify underlying causes
+      4. Pattern Recognition: Identify recurring themes and structures
+      5. Hypothesis Testing: Formulate and test theories
+      6. Cost-Benefit Analysis: Evaluate trade-offs
+      7. Risk Assessment: Identify and evaluate risks
+      8. Design Thinking: User-centered problem solving
+      9. Analogical Reasoning: Draw insights from similar situations
+      10. Causal Analysis: Understand cause-effect relationships
+      11. Scenario Planning: Consider multiple possibilities
+      12. Constraint Analysis: Identify limitations
+      13. Optimization: Find best solution within parameters
+      14. Data Analysis: Extract insights from data
+      15. Process Analysis: Examine workflows
+      16. Brainstorming: Generate creative ideas
+      17. Prioritization: Rank by importance
+      18. Stakeholder Analysis: Consider perspectives
+      19. SWOT Analysis: Strengths, weaknesses, opportunities, threats
+      20. Competitive Analysis: Understand landscape"""
+
+   .. raw:: html
+
+      </details>
 
 
-.. rubric:: Related Links
 
-.. autolink-examples:: agents.reasoning_and_critique.self_discover.self_discover_v4
-   :collapse:
-   
-.. autolink-skip:: next

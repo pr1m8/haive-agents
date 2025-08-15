@@ -1,141 +1,171 @@
-
-:py:mod:`agents.conversation`
-=============================
+agents.conversation
+===================
 
 .. py:module:: agents.conversation
 
-Conversation Agents - Multi-Agent Dialogue Orchestration System.
+.. autoapi-nested-parse::
 
-A comprehensive suite of multi-agent conversation orchestrators for facilitating
-different types of agent-to-agent interactions and dialogues. This package provides
-specialized conversation frameworks that enable multiple agents to interact with each
-other according to different patterns, structures, and rules.
+   Conversation Agents - Multi-Agent Dialogue Orchestration System.
 
-Architecture:
-    The conversation system is built around a hierarchical architecture:
+   A comprehensive suite of multi-agent conversation orchestrators for facilitating
+   different types of agent-to-agent interactions and dialogues. This package provides
+   specialized conversation frameworks that enable multiple agents to interact with each
+   other according to different patterns, structures, and rules.
 
-    - BaseConversationAgent: Core orchestration logic and state management
-    - Specialized conversation types: Each with unique interaction patterns
-    - Shared state system: Common message handling and flow control
-    - Integration layer: Seamless connection with other Haive components
+   Architecture:
+       The conversation system is built around a hierarchical architecture:
 
-Core Conversation Types:
-    BaseConversationAgent: Foundation for all conversation agents with core
-        orchestration logic, state management, and message routing capabilities.
+       - BaseConversationAgent: Core orchestration logic and state management
+       - Specialized conversation types: Each with unique interaction patterns
+       - Shared state system: Common message handling and flow control
+       - Integration layer: Seamless connection with other Haive components
 
-    RoundRobinConversation: Simple turn-taking conversation where each agent
-        speaks in sequence. Useful for panel discussions and ordered dialogues.
+   Core Conversation Types:
+       BaseConversationAgent: Foundation for all conversation agents with core
+           orchestration logic, state management, and message routing capabilities.
 
-    DirectedConversation: Conversations with a directed flow controlled by a
-        moderator. Supports dynamic speaker selection and flow control.
+       RoundRobinConversation: Simple turn-taking conversation where each agent
+           speaks in sequence. Useful for panel discussions and ordered dialogues.
 
-    DebateConversation: Structured debates with positions, arguments, rebuttals,
-        and judging. Includes scoring and evaluation mechanisms.
+       DirectedConversation: Conversations with a directed flow controlled by a
+           moderator. Supports dynamic speaker selection and flow control.
 
-    CollaborativeConversation: Multiple agents collaborating on a shared task.
-        Features task decomposition, role assignment, and result synthesis.
+       DebateConversation: Structured debates with positions, arguments, rebuttals,
+           and judging. Includes scoring and evaluation mechanisms.
 
-    SocialMediaConversation: Simulated social media interactions with posts,
-        replies, reactions, and viral propagation patterns.
+       CollaborativeConversation: Multiple agents collaborating on a shared task.
+           Features task decomposition, role assignment, and result synthesis.
 
-State Management:
-    Each conversation type maintains rich state information including:
-    - Participant registry and roles
-    - Message history and threading
-    - Turn management and flow control
-    - Context and memory management
-    - Performance metrics and analytics
+       SocialMediaConversation: Simulated social media interactions with posts,
+           replies, reactions, and viral propagation patterns.
 
-Usage Patterns:
-    Basic Round Robin Conversation::
+   State Management:
+       Each conversation type maintains rich state information including:
+       - Participant registry and roles
+       - Message history and threading
+       - Turn management and flow control
+       - Context and memory management
+       - Performance metrics and analytics
 
-        from haive.agents.conversation import RoundRobinConversation
-        from haive.agents.simple import SimpleAgent
+   Usage Patterns:
+       Basic Round Robin Conversation::
 
-        # Create participants
-        alice = SimpleAgent(name="Alice")
-        bob = SimpleAgent(name="Bob")
-        charlie = SimpleAgent(name="Charlie")
+           from haive.agents.conversation import RoundRobinConversation
+           from haive.agents.simple import SimpleAgent
 
-        # Create conversation
-        conversation = RoundRobinConversation(
-            participants=[alice, bob, charlie],
-            topic="Future of AI",
-            rounds=3
-        )
+           # Create participants
+           alice = SimpleAgent(name="Alice")
+           bob = SimpleAgent(name="Bob")
+           charlie = SimpleAgent(name="Charlie")
 
-        # Run conversation
-        result = await conversation.arun()
+           # Create conversation
+           conversation = RoundRobinConversation(
+               participants=[alice, bob, charlie],
+               topic="Future of AI",
+               rounds=3
+           )
 
-    Structured Debate::
+           # Run conversation
+           result = await conversation.arun()
 
-        from haive.agents.conversation import DebateConversation
+       Structured Debate::
 
-        debate = DebateConversation(
-            topic="Should AI be regulated?",
-            pro_agents=[pro_agent1, pro_agent2],
-            con_agents=[con_agent1, con_agent2],
-            judge_agent=judge_agent,
-            rounds=5
-        )
+           from haive.agents.conversation import DebateConversation
 
-        result = await debate.arun()
-        winner = result.get("winner")
+           debate = DebateConversation(
+               topic="Should AI be regulated?",
+               pro_agents=[pro_agent1, pro_agent2],
+               con_agents=[con_agent1, con_agent2],
+               judge_agent=judge_agent,
+               rounds=5
+           )
 
-    Collaborative Task::
+           result = await debate.arun()
+           winner = result.get("winner")
 
-        from haive.agents.conversation import CollaborativeConversation
+       Collaborative Task::
 
-        collaboration = CollaborativeConversation(
-            participants={
-                "designer": designer_agent,
-                "engineer": engineer_agent,
-                "product_manager": pm_agent
-            },
-            task="Design a new mobile app",
-            deliverables=["mockup", "specs", "timeline"]
-        )
+           from haive.agents.conversation import CollaborativeConversation
 
-        result = await collaboration.arun()
+           collaboration = CollaborativeConversation(
+               participants={
+                   "designer": designer_agent,
+                   "engineer": engineer_agent,
+                   "product_manager": pm_agent
+               },
+               task="Design a new mobile app",
+               deliverables=["mockup", "specs", "timeline"]
+           )
 
-Advanced Features:
-    - Dynamic participant addition/removal
-    - Conversation branching and merging
-    - Real-time conversation monitoring
-    - Conversation recording and playback
-    - Integration with external chat systems
-    - Conversation analytics and insights
+           result = await collaboration.arun()
 
-Integration:
-    Conversation agents integrate seamlessly with:
-    - Haive core schema system for state management
-    - Graph-based workflow execution
-    - Tool integration for enhanced capabilities
-    - Persistence systems for conversation history
-    - Monitoring and analytics platforms
+   Advanced Features:
+       - Dynamic participant addition/removal
+       - Conversation branching and merging
+       - Real-time conversation monitoring
+       - Conversation recording and playback
+       - Integration with external chat systems
+       - Conversation analytics and insights
 
-.. rubric:: Examples
+   Integration:
+       Conversation agents integrate seamlessly with:
+       - Haive core schema system for state management
+       - Graph-based workflow execution
+       - Tool integration for enhanced capabilities
+       - Persistence systems for conversation history
+       - Monitoring and analytics platforms
 
-For comprehensive examples, see the documentation and examples directory:
-- examples/basic_round_robin.py
-- examples/structured_debate.py
-- examples/collaborative_design.py
-- examples/social_media_simulation.py
+   .. rubric:: Examples
 
-.. seealso::
+   For comprehensive examples, see the documentation and examples directory:
+   - examples/basic_round_robin.py
+   - examples/structured_debate.py
+   - examples/collaborative_design.py
+   - examples/social_media_simulation.py
 
-   - :mod:`~haive.agents.base.agent`: Base agent classes that conversation agents extend
-   - :mod:`~haive.agents.simple.agent`: Simple agent used for conversation participants
-   - :mod:`~haive.core.graph.state_graph`: State graph system for conversation flow
-   - :mod:`~haive.core.schema`: State schema system for conversation state
+   .. seealso::
 
-Version: 1.0.0
-Author: Haive Team
-License: MIT
+      - :mod:`~haive.agents.base.agent`: Base agent classes that conversation agents extend
+      - :mod:`~haive.agents.simple.agent`: Simple agent used for conversation participants
+      - :mod:`~haive.core.graph.state_graph`: State graph system for conversation flow
+      - :mod:`~haive.core.schema`: State schema system for conversation state
+
+   Version: 1.0.0
+   Author: Haive Team
+   License: MIT
 
 
-.. autolink-examples:: agents.conversation
-   :collapse:
+   .. autolink-examples:: agents.conversation
+      :collapse:
+
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/agents/conversation/base/index
+   /autoapi/agents/conversation/collaberative/index
+   /autoapi/agents/conversation/debate/index
+   /autoapi/agents/conversation/directed/index
+   /autoapi/agents/conversation/round_robin/index
+   /autoapi/agents/conversation/social_media/index
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.conversation.ConversationStatus
+   agents.conversation.ConversationType
+   agents.conversation.MessageType
+   agents.conversation.ParticipantRole
+   agents.conversation.__author__
+   agents.conversation.__license__
+   agents.conversation.__version__
+
 
 Classes
 -------
@@ -148,107 +178,157 @@ Classes
    agents.conversation.DebateConfig
 
 
-Module Contents
----------------
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for CollaborativeConfig:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_CollaborativeConfig {
-        node [shape=record];
-        "CollaborativeConfig" [label="CollaborativeConfig"];
-        "ConversationConfig" -> "CollaborativeConfig";
-      }
-
-.. autoclass:: agents.conversation.CollaborativeConfig
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ConversationConfig:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ConversationConfig {
-        node [shape=record];
-        "ConversationConfig" [label="ConversationConfig"];
-        "typing_extensions.TypedDict" -> "ConversationConfig";
-      }
-
-.. autoclass:: agents.conversation.ConversationConfig
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ConversationParticipant:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ConversationParticipant {
-        node [shape=record];
-        "ConversationParticipant" [label="ConversationParticipant"];
-        "Protocol" -> "ConversationParticipant";
-      }
-
-.. autoclass:: agents.conversation.ConversationParticipant
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for DebateConfig:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_DebateConfig {
-        node [shape=record];
-        "DebateConfig" [label="DebateConfig"];
-        "ConversationConfig" -> "DebateConfig";
-      }
-
-.. autoclass:: agents.conversation.DebateConfig
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
 Functions
 ---------
 
 .. autoapisummary::
 
-   agents.conversation.__dir__
-   agents.conversation._initialize_conversation_module
    agents.conversation.create_collaboration
    agents.conversation.create_conversation
    agents.conversation.create_debate
    agents.conversation.get_conversation_types
    agents.conversation.validate_participants
 
+
+Package Contents
+----------------
+
+.. py:class:: CollaborativeConfig
+
+   Bases: :py:obj:`ConversationConfig`
+
+
+   Configuration specific to collaborative conversations.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: CollaborativeConfig
+      :collapse:
+
+   .. py:attribute:: deliverables
+      :type:  NotRequired[list[str]]
+
+
+   .. py:attribute:: progress_tracking
+      :type:  NotRequired[bool]
+
+
+   .. py:attribute:: role_assignment
+      :type:  NotRequired[dict[str, str]]
+
+
+   .. py:attribute:: task_decomposition
+      :type:  NotRequired[bool]
+
+
+.. py:class:: ConversationConfig
+
+   Bases: :py:obj:`typing_extensions.TypedDict`
+
+
+   Configuration for conversation agents.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: ConversationConfig
+      :collapse:
+
+   .. py:attribute:: allow_interruptions
+      :type:  NotRequired[bool]
+
+
+   .. py:attribute:: auto_moderation
+      :type:  NotRequired[bool]
+
+
+   .. py:attribute:: max_turns
+      :type:  NotRequired[int]
+
+
+   .. py:attribute:: save_history
+      :type:  NotRequired[bool]
+
+
+   .. py:attribute:: timeout_seconds
+      :type:  NotRequired[float]
+
+
+.. py:class:: ConversationParticipant
+
+   Bases: :py:obj:`Protocol`
+
+
+   Protocol for agents that can participate in conversations.
+
+
+   .. autolink-examples:: ConversationParticipant
+      :collapse:
+
+   .. py:method:: arun(input_data: Any) -> Any
+      :async:
+
+
+      Run the agent with input data.
+
+
+      .. autolink-examples:: arun
+         :collapse:
+
+
+   .. py:method:: get_role() -> ParticipantRole
+
+      Get the participant's role in the conversation.
+
+
+      .. autolink-examples:: get_role
+         :collapse:
+
+
+   .. py:attribute:: name
+      :type:  str
+
+
+.. py:class:: DebateConfig
+
+   Bases: :py:obj:`ConversationConfig`
+
+
+   Configuration specific to debate conversations.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: DebateConfig
+      :collapse:
+
+   .. py:attribute:: allow_rebuttals
+      :type:  NotRequired[bool]
+
+
+   .. py:attribute:: rounds
+      :type:  NotRequired[int]
+
+
+   .. py:attribute:: scoring_system
+      :type:  NotRequired[str]
+
+
+   .. py:attribute:: time_per_round
+      :type:  NotRequired[float]
 
 
 .. py:function:: create_collaboration(task: str, participants: dict[str, ConversationParticipant], deliverables: list[str] | None = None, config: CollaborativeConfig | None = None) -> haive.agents.conversation.collaberative.agent.CollaborativeConversation
@@ -393,11 +473,31 @@ Functions
    .. autolink-examples:: validate_participants
       :collapse:
 
+.. py:type:: ConversationStatus
+   :canonical: Literal['pending', 'active', 'paused', 'completed', 'cancelled']
 
 
-.. rubric:: Related Links
+.. py:type:: ConversationType
+   :canonical: Literal['round_robin', 'directed', 'debate', 'collaborative', 'social_media']
 
-.. autolink-examples:: agents.conversation
-   :collapse:
-   
-.. autolink-skip:: next
+
+.. py:type:: MessageType
+   :canonical: Literal['statement', 'question', 'response', 'argument', 'rebuttal', 'judgment']
+
+
+.. py:type:: ParticipantRole
+   :canonical: Literal['speaker', 'moderator', 'judge', 'observer']
+
+
+.. py:data:: __author__
+   :value: 'Haive Team'
+
+
+.. py:data:: __license__
+   :value: 'MIT'
+
+
+.. py:data:: __version__
+   :value: '1.0.0'
+
+

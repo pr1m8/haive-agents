@@ -1,14 +1,32 @@
-
-:py:mod:`agents.chain`
-======================
+agents.chain
+============
 
 .. py:module:: agents.chain
 
-Module exports.
+.. autoapi-nested-parse::
+
+   Module exports.
 
 
-.. autolink-examples:: agents.chain
-   :collapse:
+   .. autolink-examples:: agents.chain
+      :collapse:
+
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/agents/chain/chain_agent_simple/index
+   /autoapi/agents/chain/chain_examples/index
+   /autoapi/agents/chain/declarative_chain/index
+   /autoapi/agents/chain/examples/index
+   /autoapi/agents/chain/examples_simple/index
+   /autoapi/agents/chain/extended_chain/index
+   /autoapi/agents/chain/extended_examples/index
+   /autoapi/agents/chain/multi_integration/index
+
 
 Classes
 -------
@@ -17,50 +35,6 @@ Classes
 
    agents.chain.ChainAgent
    agents.chain.FlowBuilder
-
-
-Module Contents
----------------
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ChainAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ChainAgent {
-        node [shape=record];
-        "ChainAgent" [label="ChainAgent"];
-      }
-
-.. autoclass:: agents.chain.ChainAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for FlowBuilder:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_FlowBuilder {
-        node [shape=record];
-        "FlowBuilder" [label="FlowBuilder"];
-      }
-
-.. autoclass:: agents.chain.FlowBuilder
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
 
 Functions
@@ -79,6 +53,26 @@ Functions
    agents.chain.flow_with_edges
    agents.chain.formatter
    agents.chain.merge_to
+
+
+Package Contents
+----------------
+
+.. py:class:: ChainAgent
+
+   Placeholder for ChainAgent - temporarily disabled.
+
+
+   .. autolink-examples:: ChainAgent
+      :collapse:
+
+.. py:class:: FlowBuilder
+
+   Placeholder for FlowBuilder - temporarily disabled.
+
+
+   .. autolink-examples:: FlowBuilder
+      :collapse:
 
 .. py:function:: branch(*args, **kwargs)
 
@@ -168,11 +162,3 @@ Functions
    .. autolink-examples:: merge_to
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.chain
-   :collapse:
-   
-.. autolink-skip:: next

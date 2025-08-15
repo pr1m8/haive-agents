@@ -1,9 +1,15 @@
-
-:py:mod:`agents.reasoning_and_critique.logic.engines.logical_reasoner`
-======================================================================
+agents.reasoning_and_critique.logic.engines.logical_reasoner
+============================================================
 
 .. py:module:: agents.reasoning_and_critique.logic.engines.logical_reasoner
 
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.reasoning_and_critique.logic.engines.logical_reasoner.LOGICAL_REASONING_PROMPT
 
 
 Functions
@@ -13,6 +19,10 @@ Functions
 
    agents.reasoning_and_critique.logic.engines.logical_reasoner.create_logical_reasoner
 
+
+Module Contents
+---------------
+
 .. py:function:: create_logical_reasoner() -> Any
 
    Create the logical reasoning agent.
@@ -21,11 +31,5 @@ Functions
    .. autolink-examples:: create_logical_reasoner
       :collapse:
 
+.. py:data:: LOGICAL_REASONING_PROMPT
 
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.reasoning_and_critique.logic.engines.logical_reasoner
-   :collapse:
-   
-.. autolink-skip:: next

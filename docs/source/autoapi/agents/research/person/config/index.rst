@@ -1,6 +1,5 @@
-
-:py:mod:`agents.research.person.config`
-=======================================
+agents.research.person.config
+=============================
 
 .. py:module:: agents.research.person.config
 
@@ -16,33 +15,38 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: PersonResearchAgentConfig
+
+   Bases: :py:obj:`haive.core.engine.agent.agent.AgentConfig`
+
+
+   Configuration for the Person Research Agent.
+
+
+   .. autolink-examples:: PersonResearchAgentConfig
+      :collapse:
+
+   .. py:attribute:: agent_settings
+      :type:  dict[str, Any]
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for PersonResearchAgentConfig:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_PersonResearchAgentConfig {
-        node [shape=record];
-        "PersonResearchAgentConfig" [label="PersonResearchAgentConfig"];
-        "haive.core.engine.agent.agent.AgentConfig" -> "PersonResearchAgentConfig";
-      }
-
-.. autoclass:: agents.research.person.config.PersonResearchAgentConfig
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. py:attribute:: engine
+      :type:  haive.core.engine.aug_llm.AugLLMConfig
+      :value: None
 
 
 
+   .. py:attribute:: engines
+      :type:  dict[str, haive.core.engine.aug_llm.AugLLMConfig]
+      :value: None
 
-.. rubric:: Related Links
 
-.. autolink-examples:: agents.research.person.config
-   :collapse:
-   
-.. autolink-skip:: next
+
+   .. py:attribute:: name
+      :type:  str
+      :value: None
+
+
+

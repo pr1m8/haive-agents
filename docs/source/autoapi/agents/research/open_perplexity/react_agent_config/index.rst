@@ -1,9 +1,7 @@
-
-:py:mod:`agents.research.open_perplexity.react_agent_config`
-============================================================
+agents.research.open_perplexity.react_agent_config
+==================================================
 
 .. py:module:: agents.research.open_perplexity.react_agent_config
-
 
 
 Functions
@@ -14,6 +12,10 @@ Functions
    agents.research.open_perplexity.react_agent_config.create_research_rag_agent_config
    agents.research.open_perplexity.react_agent_config.create_research_rag_engine
    agents.research.open_perplexity.react_agent_config.create_research_react_agent_config
+
+
+Module Contents
+---------------
 
 .. py:function:: create_research_rag_agent_config(vectorstore_config: haive.core.models.vectorstore.base.VectorStoreConfig, name: str | None = None, llm_model: str = 'gpt-4o', temperature: float = 0.2) -> haive.agents.rag.base.config.BaseRAGConfig
 
@@ -59,11 +61,3 @@ Functions
    .. autolink-examples:: create_research_react_agent_config
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.research.open_perplexity.react_agent_config
-   :collapse:
-   
-.. autolink-skip:: next

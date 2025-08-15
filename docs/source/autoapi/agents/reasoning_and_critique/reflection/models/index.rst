@@ -1,14 +1,16 @@
-
-:py:mod:`agents.reasoning_and_critique.reflection.models`
-=========================================================
+agents.reasoning_and_critique.reflection.models
+===============================================
 
 .. py:module:: agents.reasoning_and_critique.reflection.models
 
-Models for the Reflection Agent.
+.. autoapi-nested-parse::
+
+   Models for the Reflection Agent.
 
 
-.. autolink-examples:: agents.reasoning_and_critique.reflection.models
-   :collapse:
+   .. autolink-examples:: agents.reasoning_and_critique.reflection.models
+      :collapse:
+
 
 Classes
 -------
@@ -23,99 +25,145 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: ReflectionOutput(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Model for the output of the reflection step.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: ReflectionOutput
+      :collapse:
+
+   .. py:attribute:: answer
+      :type:  str
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ReflectionOutput:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ReflectionOutput {
-        node [shape=record];
-        "ReflectionOutput" [label="ReflectionOutput"];
-        "pydantic.BaseModel" -> "ReflectionOutput";
-      }
-
-.. autopydantic_model:: agents.reasoning_and_critique.reflection.models.ReflectionOutput
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: reflection
+      :type:  ReflectionResult
+      :value: None
 
 
 
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ReflectionResult:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ReflectionResult {
-        node [shape=record];
-        "ReflectionResult" [label="ReflectionResult"];
-        "pydantic.BaseModel" -> "ReflectionResult";
-      }
-
-.. autopydantic_model:: agents.reasoning_and_critique.reflection.models.ReflectionResult
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: search_queries
+      :type:  list[str]
+      :value: None
 
 
 
+.. py:class:: ReflectionResult(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
 
 
-.. toggle:: Show Inheritance Diagram
+   Model for structured reflection output.
 
-   Inheritance diagram for SearchQuery:
+   Create a new model by parsing and validating input data from keyword arguments.
 
-   .. graphviz::
-      :align: center
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
 
-      digraph inheritance_SearchQuery {
-        node [shape=record];
-        "SearchQuery" [label="SearchQuery"];
-        "pydantic.BaseModel" -> "SearchQuery";
-      }
-
-.. autopydantic_model:: agents.reasoning_and_critique.reflection.models.SearchQuery
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   `self` is explicitly positional-only to allow `self` as a field name.
 
 
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: ReflectionResult
+      :collapse:
+
+   .. py:method:: as_message() -> dict[str, Any]
+
+      Convert to a message format.
+
+
+      .. autolink-examples:: as_message
+         :collapse:
+
+
+   .. py:attribute:: found_solution
+      :type:  bool
+      :value: None
 
 
 
-.. rubric:: Related Links
+   .. py:attribute:: missing
+      :type:  str
+      :value: None
 
-.. autolink-examples:: agents.reasoning_and_critique.reflection.models
-   :collapse:
-   
-.. autolink-skip:: next
+
+
+   .. py:property:: normalized_score
+      :type: float
+
+
+      Return the score normalized to 0-1.
+
+      .. autolink-examples:: normalized_score
+         :collapse:
+
+
+   .. py:attribute:: reflection
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: score
+      :type:  int
+      :value: None
+
+
+
+   .. py:attribute:: superfluous
+      :type:  str
+      :value: None
+
+
+
+.. py:class:: SearchQuery(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Model for a search query.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: SearchQuery
+      :collapse:
+
+   .. py:method:: __str__() -> str
+
+
+   .. py:attribute:: query
+      :type:  str
+      :value: None
+
+
+

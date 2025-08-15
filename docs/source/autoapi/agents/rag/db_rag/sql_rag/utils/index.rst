@@ -1,31 +1,32 @@
-
-:py:mod:`agents.rag.db_rag.sql_rag.utils`
-=========================================
+agents.rag.db_rag.sql_rag.utils
+===============================
 
 .. py:module:: agents.rag.db_rag.sql_rag.utils
 
-Utility functions for SQL RAG Agent.
+.. autoapi-nested-parse::
 
-This module provides helper functions for database operations, toolkit creation,
-error handling, and schema exploration. These utilities support the main agent
-workflow with reusable functionality.
+   Utility functions for SQL RAG Agent.
 
-.. rubric:: Example
+   This module provides helper functions for database operations, toolkit creation,
+   error handling, and schema exploration. These utilities support the main agent
+   workflow with reusable functionality.
 
-Creating SQL toolkit::
+   .. rubric:: Example
 
-    >>> from haive.agents.rag.db_rag.sql_rag.utils import create_sql_toolkit
-    >>> from haive.agents.rag.db_rag.sql_rag.config import SQLDatabaseConfig
-    >>>
-    >>> db_config = SQLDatabaseConfig(db_uri="sqlite:///example.db")
-    >>> toolkit = create_sql_toolkit(db_config)
-    >>> tools = toolkit.get_tools()
-    >>> print(f"Available tools: {[tool.name for tool in tools]}")
-    Available tools: ['sql_db_query', 'sql_db_schema', 'sql_db_list_tables', ...]
+   Creating SQL toolkit::
+
+       >>> from haive.agents.rag.db_rag.sql_rag.utils import create_sql_toolkit
+       >>> from haive.agents.rag.db_rag.sql_rag.config import SQLDatabaseConfig
+       >>>
+       >>> db_config = SQLDatabaseConfig(db_uri="sqlite:///example.db")
+       >>> toolkit = create_sql_toolkit(db_config)
+       >>> tools = toolkit.get_tools()
+       >>> print(f"Available tools: {[tool.name for tool in tools]}")
+       Available tools: ['sql_db_query', 'sql_db_schema', 'sql_db_list_tables', ...]
 
 
-.. autolink-examples:: agents.rag.db_rag.sql_rag.utils
-   :collapse:
+   .. autolink-examples:: agents.rag.db_rag.sql_rag.utils
+      :collapse:
 
 
 Functions
@@ -38,6 +39,10 @@ Functions
    agents.rag.db_rag.sql_rag.utils.explore_database_schema
    agents.rag.db_rag.sql_rag.utils.get_all_toolkit_tools
    agents.rag.db_rag.sql_rag.utils.handle_tool_error
+
+
+Module Contents
+---------------
 
 .. py:function:: create_sql_toolkit(db_config: haive.agents.rag.db_rag.sql_rag.config.SQLDatabaseConfig, llm_config: haive.core.engine.aug_llm.AugLLMConfig | haive.core.models.llm.base.LLMConfig | None = None) -> langchain_community.agent_toolkits.SQLDatabaseToolkit
 
@@ -206,11 +211,3 @@ Functions
    .. autolink-examples:: handle_tool_error
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.rag.db_rag.sql_rag.utils
-   :collapse:
-   
-.. autolink-skip:: next

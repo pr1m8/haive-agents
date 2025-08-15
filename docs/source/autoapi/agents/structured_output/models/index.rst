@@ -1,14 +1,16 @@
-
-:py:mod:`agents.structured_output.models`
-=========================================
+agents.structured_output.models
+===============================
 
 .. py:module:: agents.structured_output.models
 
-Common structured output models for various agent patterns.
+.. autoapi-nested-parse::
+
+   Common structured output models for various agent patterns.
 
 
-.. autolink-examples:: agents.structured_output.models
-   :collapse:
+   .. autolink-examples:: agents.structured_output.models
+      :collapse:
+
 
 Classes
 -------
@@ -34,418 +36,767 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: Analysis(/, **data: Any)
 
+   Bases: :py:obj:`pydantic.BaseModel`
 
 
-.. toggle:: Show Inheritance Diagram
+   Structured analysis result.
 
-   Inheritance diagram for Analysis:
+   Create a new model by parsing and validating input data from keyword arguments.
 
-   .. graphviz::
-      :align: center
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
 
-      digraph inheritance_Analysis {
-        node [shape=record];
-        "Analysis" [label="Analysis"];
-        "pydantic.BaseModel" -> "Analysis";
-      }
+   `self` is explicitly positional-only to allow `self` as a field name.
 
-.. autopydantic_model:: agents.structured_output.models.Analysis
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
 
+   .. autolink-examples:: __init__
+      :collapse:
 
 
+   .. autolink-examples:: Analysis
+      :collapse:
 
+   .. py:attribute:: conclusions
+      :type:  list[str]
+      :value: None
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for Critique:
 
-   .. graphviz::
-      :align: center
+   .. py:attribute:: confidence_level
+      :type:  str
+      :value: None
 
-      digraph inheritance_Critique {
-        node [shape=record];
-        "Critique" [label="Critique"];
-        "pydantic.BaseModel" -> "Critique";
-      }
 
-.. autopydantic_model:: agents.structured_output.models.Critique
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
 
+   .. py:attribute:: data_points
+      :type:  dict[str, Any]
+      :value: None
 
 
 
+   .. py:attribute:: insights
+      :type:  list[str]
+      :value: None
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for Decision:
 
-   .. graphviz::
-      :align: center
+   .. py:attribute:: key_points
+      :type:  list[str]
+      :value: None
 
-      digraph inheritance_Decision {
-        node [shape=record];
-        "Decision" [label="Decision"];
-        "pydantic.BaseModel" -> "Decision";
-      }
 
-.. autopydantic_model:: agents.structured_output.models.Decision
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
 
+   .. py:attribute:: topic
+      :type:  str
+      :value: None
 
 
 
+.. py:class:: Critique(/, **data: Any)
 
-.. toggle:: Show Inheritance Diagram
+   Bases: :py:obj:`pydantic.BaseModel`
 
-   Inheritance diagram for ExtractedData:
 
-   .. graphviz::
-      :align: center
+   Structured critique of an output.
 
-      digraph inheritance_ExtractedData {
-        node [shape=record];
-        "ExtractedData" [label="ExtractedData"];
-        "pydantic.BaseModel" -> "ExtractedData";
-      }
+   Create a new model by parsing and validating input data from keyword arguments.
 
-.. autopydantic_model:: agents.structured_output.models.ExtractedData
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
 
+   `self` is explicitly positional-only to allow `self` as a field name.
 
 
+   .. autolink-examples:: __init__
+      :collapse:
 
 
-.. toggle:: Show Inheritance Diagram
+   .. autolink-examples:: Critique
+      :collapse:
 
-   Inheritance diagram for Improvement:
+   .. py:attribute:: needs_revision
+      :type:  bool
+      :value: None
 
-   .. graphviz::
-      :align: center
 
-      digraph inheritance_Improvement {
-        node [shape=record];
-        "Improvement" [label="Improvement"];
-        "pydantic.BaseModel" -> "Improvement";
-      }
 
-.. autopydantic_model:: agents.structured_output.models.Improvement
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: overall_quality
+      :type:  float
+      :value: None
 
 
 
+   .. py:attribute:: strengths
+      :type:  list[str]
+      :value: None
 
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for Intent:
+   .. py:attribute:: suggestions
+      :type:  list[str]
+      :value: None
 
-   .. graphviz::
-      :align: center
 
-      digraph inheritance_Intent {
-        node [shape=record];
-        "Intent" [label="Intent"];
-        "pydantic.BaseModel" -> "Intent";
-      }
 
-.. autopydantic_model:: agents.structured_output.models.Intent
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: weaknesses
+      :type:  list[str]
+      :value: None
 
 
 
+.. py:class:: Decision(/, **data: Any)
 
+   Bases: :py:obj:`pydantic.BaseModel`
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for QualityCheck:
+   Structured decision output.
 
-   .. graphviz::
-      :align: center
+   Create a new model by parsing and validating input data from keyword arguments.
 
-      digraph inheritance_QualityCheck {
-        node [shape=record];
-        "QualityCheck" [label="QualityCheck"];
-        "pydantic.BaseModel" -> "QualityCheck";
-      }
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
 
-.. autopydantic_model:: agents.structured_output.models.QualityCheck
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   `self` is explicitly positional-only to allow `self` as a field name.
 
 
+   .. autolink-examples:: __init__
+      :collapse:
 
 
+   .. autolink-examples:: Decision
+      :collapse:
 
-.. toggle:: Show Inheritance Diagram
+   .. py:attribute:: alternatives
+      :type:  list[str]
+      :value: None
 
-   Inheritance diagram for ReflectionResult:
 
-   .. graphviz::
-      :align: center
 
-      digraph inheritance_ReflectionResult {
-        node [shape=record];
-        "ReflectionResult" [label="ReflectionResult"];
-        "pydantic.BaseModel" -> "ReflectionResult";
-      }
+   .. py:attribute:: confidence
+      :type:  float
+      :value: None
 
-.. autopydantic_model:: agents.structured_output.models.ReflectionResult
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
 
 
+   .. py:attribute:: decision
+      :type:  str
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
+   .. py:attribute:: next_steps
+      :type:  list[str]
+      :value: None
 
-   Inheritance diagram for Response:
 
-   .. graphviz::
-      :align: center
 
-      digraph inheritance_Response {
-        node [shape=record];
-        "Response" [label="Response"];
-        "pydantic.BaseModel" -> "Response";
-      }
+   .. py:attribute:: reasoning
+      :type:  str
+      :value: None
 
-.. autopydantic_model:: agents.structured_output.models.Response
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
 
 
+   .. py:attribute:: risks
+      :type:  list[str]
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
+.. py:class:: ExtractedData(/, **data: Any)
 
-   Inheritance diagram for SearchQuery:
+   Bases: :py:obj:`pydantic.BaseModel`
 
-   .. graphviz::
-      :align: center
 
-      digraph inheritance_SearchQuery {
-        node [shape=record];
-        "SearchQuery" [label="SearchQuery"];
-        "pydantic.BaseModel" -> "SearchQuery";
-      }
+   Extracted structured data.
 
-.. autopydantic_model:: agents.structured_output.models.SearchQuery
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   Create a new model by parsing and validating input data from keyword arguments.
 
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
 
+   `self` is explicitly positional-only to allow `self` as a field name.
 
 
+   .. autolink-examples:: __init__
+      :collapse:
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for SearchResult:
+   .. autolink-examples:: ExtractedData
+      :collapse:
 
-   .. graphviz::
-      :align: center
+   .. py:attribute:: entities
+      :type:  dict[str, list[str]]
+      :value: None
 
-      digraph inheritance_SearchResult {
-        node [shape=record];
-        "SearchResult" [label="SearchResult"];
-        "pydantic.BaseModel" -> "SearchResult";
-      }
 
-.. autopydantic_model:: agents.structured_output.models.SearchResult
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
 
+   .. py:attribute:: facts
+      :type:  list[str]
+      :value: None
 
 
 
+   .. py:attribute:: metadata
+      :type:  dict[str, Any]
+      :value: None
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for Summary:
 
-   .. graphviz::
-      :align: center
+   .. py:attribute:: relationships
+      :type:  list[dict[str, str]]
+      :value: None
 
-      digraph inheritance_Summary {
-        node [shape=record];
-        "Summary" [label="Summary"];
-        "pydantic.BaseModel" -> "Summary";
-      }
 
-.. autopydantic_model:: agents.structured_output.models.Summary
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
 
+   .. py:attribute:: source_text
+      :type:  str | None
+      :value: None
 
 
 
+.. py:class:: Improvement(/, **data: Any)
 
-.. toggle:: Show Inheritance Diagram
+   Bases: :py:obj:`pydantic.BaseModel`
 
-   Inheritance diagram for TaskResult:
 
-   .. graphviz::
-      :align: center
+   Structured improvement suggestions.
 
-      digraph inheritance_TaskResult {
-        node [shape=record];
-        "TaskResult" [label="TaskResult"];
-        "pydantic.BaseModel" -> "TaskResult";
-      }
+   Create a new model by parsing and validating input data from keyword arguments.
 
-.. autopydantic_model:: agents.structured_output.models.TaskResult
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
 
+   `self` is explicitly positional-only to allow `self` as a field name.
 
 
+   .. autolink-examples:: __init__
+      :collapse:
 
 
-.. toggle:: Show Inheritance Diagram
+   .. autolink-examples:: Improvement
+      :collapse:
 
-   Inheritance diagram for ValidationResult:
+   .. py:attribute:: expected_impact
+      :type:  str
+      :value: None
 
-   .. graphviz::
-      :align: center
 
-      digraph inheritance_ValidationResult {
-        node [shape=record];
-        "ValidationResult" [label="ValidationResult"];
-        "pydantic.BaseModel" -> "ValidationResult";
-      }
 
-.. autopydantic_model:: agents.structured_output.models.ValidationResult
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: implementation_steps
+      :type:  list[str]
+      :value: None
 
 
 
+   .. py:attribute:: original_issue
+      :type:  str
+      :value: None
 
 
-.. rubric:: Related Links
 
-.. autolink-examples:: agents.structured_output.models
-   :collapse:
-   
-.. autolink-skip:: next
+   .. py:attribute:: priority
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: proposed_solution
+      :type:  str
+      :value: None
+
+
+
+.. py:class:: Intent(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   User intent classification.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: Intent
+      :collapse:
+
+   .. py:attribute:: confidence
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: entities
+      :type:  dict[str, Any]
+      :value: None
+
+
+
+   .. py:attribute:: primary_intent
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: secondary_intents
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: suggested_action
+      :type:  str
+      :value: None
+
+
+
+.. py:class:: QualityCheck(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Quality assessment result.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: QualityCheck
+      :collapse:
+
+   .. py:attribute:: accuracy
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: clarity
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: completeness
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: feedback
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: meets_requirements
+      :type:  bool
+      :value: None
+
+
+
+   .. py:attribute:: overall_quality
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: relevance
+      :type:  float
+      :value: None
+
+
+
+.. py:class:: ReflectionResult(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Complete reflection analysis.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: ReflectionResult
+      :collapse:
+
+   .. py:attribute:: action_items
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: confidence
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: critique
+      :type:  Critique
+      :value: None
+
+
+
+   .. py:attribute:: improvements
+      :type:  list[Improvement]
+      :value: None
+
+
+
+   .. py:attribute:: summary
+      :type:  str
+      :value: None
+
+
+
+.. py:class:: Response(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Structured response.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: Response
+      :collapse:
+
+   .. py:attribute:: confidence
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: content
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: follow_up
+      :type:  str | None
+      :value: None
+
+
+
+   .. py:attribute:: sources
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: type
+      :type:  str
+      :value: None
+
+
+
+.. py:class:: SearchQuery(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Structured search query.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: SearchQuery
+      :collapse:
+
+   .. py:attribute:: filters
+      :type:  dict[str, Any]
+      :value: None
+
+
+
+   .. py:attribute:: include_fields
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: limit
+      :type:  int
+      :value: None
+
+
+
+   .. py:attribute:: query
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: sort_by
+      :type:  str | None
+      :value: None
+
+
+
+.. py:class:: SearchResult(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Structured search result.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: SearchResult
+      :collapse:
+
+   .. py:attribute:: facets
+      :type:  dict[str, list[str]]
+      :value: None
+
+
+
+   .. py:attribute:: next_page_token
+      :type:  str | None
+      :value: None
+
+
+
+   .. py:attribute:: query
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: results
+      :type:  list[dict[str, Any]]
+      :value: None
+
+
+
+   .. py:attribute:: total_results
+      :type:  int
+      :value: None
+
+
+
+.. py:class:: Summary(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Structured summary.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: Summary
+      :collapse:
+
+   .. py:attribute:: action_items
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: details
+      :type:  dict[str, str]
+      :value: None
+
+
+
+   .. py:attribute:: executive_summary
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: main_points
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: title
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: word_count
+      :type:  int
+      :value: None
+
+
+
+.. py:class:: TaskResult(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Result of task execution.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: TaskResult
+      :collapse:
+
+   .. py:attribute:: duration_ms
+      :type:  int | None
+      :value: None
+
+
+
+   .. py:attribute:: error
+      :type:  str | None
+      :value: None
+
+
+
+   .. py:attribute:: metadata
+      :type:  dict[str, Any]
+      :value: None
+
+
+
+   .. py:attribute:: result
+      :type:  Any
+      :value: None
+
+
+
+   .. py:attribute:: status
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: task_id
+      :type:  str
+      :value: None
+
+
+
+.. py:class:: ValidationResult(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Result of validation check.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: ValidationResult
+      :collapse:
+
+   .. py:attribute:: details
+      :type:  dict[str, Any]
+      :value: None
+
+
+
+   .. py:attribute:: errors
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: is_valid
+      :type:  bool
+      :value: None
+
+
+
+   .. py:attribute:: score
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: warnings
+      :type:  list[str]
+      :value: None
+
+
+

@@ -1,6 +1,5 @@
-
-:py:mod:`agents.memory.models_dir.meta`
-=======================================
+agents.memory.models_dir.meta
+=============================
 
 .. py:module:: agents.memory.models_dir.meta
 
@@ -16,33 +15,75 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: MemoryValidationMeta
+
+   Bases: :py:obj:`pydantic._internal._model_construction.ModelMetaclass`
 
 
+   Advanced metaclass for memory models with automatic validation registration.
+   and cross-model consistency checking.
 
-.. toggle:: Show Inheritance Diagram
+   Metaclass for creating Pydantic models.
 
-   Inheritance diagram for MemoryValidationMeta:
+   :param cls_name: The name of the class to be created.
+   :param bases: The base classes of the class to be created.
+   :param namespace: The attribute dictionary of the class to be created.
+   :param __pydantic_generic_metadata__: Metadata for generic models.
+   :param __pydantic_reset_parent_namespace__: Reset parent namespace.
+   :param _create_model_module: The module of the class to be created, if created by `create_model`.
+   :param \*\*kwargs: Catch-all for any other keyword arguments.
 
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_MemoryValidationMeta {
-        node [shape=record];
-        "MemoryValidationMeta" [label="MemoryValidationMeta"];
-        "pydantic._internal._model_construction.ModelMetaclass" -> "MemoryValidationMeta";
-      }
-
-.. autoclass:: agents.memory.models_dir.meta.MemoryValidationMeta
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   :returns: The new class created by the metaclass.
 
 
+   .. autolink-examples:: __new__
+      :collapse:
 
 
-.. rubric:: Related Links
+   .. autolink-examples:: MemoryValidationMeta
+      :collapse:
 
-.. autolink-examples:: agents.memory.models_dir.meta
-   :collapse:
-   
-.. autolink-skip:: next
+   .. py:method:: _apply_global_validations(namespace: dict, level: str) -> dict
+      :classmethod:
+
+
+      Apply validation rules based on validation level.
+
+
+      .. autolink-examples:: _apply_global_validations
+         :collapse:
+
+
+   .. py:method:: _integrity_validator(obj) -> bool
+      :staticmethod:
+
+
+      Data integrity validation.
+
+
+      .. autolink-examples:: _integrity_validator
+         :collapse:
+
+
+   .. py:method:: _security_validator(obj) -> bool
+      :staticmethod:
+
+
+      Enterprise security validation.
+
+
+      .. autolink-examples:: _security_validator
+         :collapse:
+
+
+   .. py:attribute:: _lock
+
+
+   .. py:attribute:: _memory_registry
+      :type:  dict[str, type]
+
+
+   .. py:attribute:: _validation_rules
+      :type:  dict[str, list[callable]]
+
+

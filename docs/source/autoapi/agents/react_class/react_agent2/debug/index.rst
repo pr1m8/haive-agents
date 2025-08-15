@@ -1,9 +1,15 @@
-
-:py:mod:`agents.react_class.react_agent2.debug`
-===============================================
+agents.react_class.react_agent2.debug
+=====================================
 
 .. py:module:: agents.react_class.react_agent2.debug
 
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.react_class.react_agent2.debug.logger
 
 
 Functions
@@ -14,6 +20,10 @@ Functions
    agents.react_class.react_agent2.debug.create_debug_tool_node
    agents.react_class.react_agent2.debug.debug_print_state
    agents.react_class.react_agent2.debug.fix_tool_messages
+
+
+Module Contents
+---------------
 
 .. py:function:: create_debug_tool_node(tools: list[Any])
 
@@ -43,11 +53,5 @@ Functions
    .. autolink-examples:: fix_tool_messages
       :collapse:
 
+.. py:data:: logger
 
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.react_class.react_agent2.debug
-   :collapse:
-   
-.. autolink-skip:: next

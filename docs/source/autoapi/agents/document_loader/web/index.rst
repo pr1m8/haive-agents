@@ -1,15 +1,23 @@
-
-:py:mod:`agents.document_loader.web`
-====================================
+agents.document_loader.web
+==========================
 
 .. py:module:: agents.document_loader.web
 
-Module exports.
+.. autoapi-nested-parse::
+
+   Module exports.
 
 
-.. autolink-examples:: agents.document_loader.web
-   :collapse:
+   .. autolink-examples:: agents.document_loader.web
+      :collapse:
 
 
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/agents/document_loader/web/agent/index
 
 

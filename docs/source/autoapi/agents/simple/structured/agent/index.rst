@@ -1,10 +1,6 @@
-
-:py:mod:`agents.simple.structured.agent`
-========================================
+agents.simple.structured.agent
+==============================
 
 .. py:module:: agents.simple.structured.agent
-
-
-
 
 

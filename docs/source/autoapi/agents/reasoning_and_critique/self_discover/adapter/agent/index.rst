@@ -1,84 +1,70 @@
-
-:py:mod:`agents.reasoning_and_critique.self_discover.adapter.agent`
-===================================================================
+agents.reasoning_and_critique.self_discover.adapter.agent
+=========================================================
 
 .. py:module:: agents.reasoning_and_critique.self_discover.adapter.agent
 
-Self-Discover Adapter Agent implementation.
+.. autoapi-nested-parse::
+
+   Self-Discover Adapter Agent implementation.
 
 
-.. autolink-examples:: agents.reasoning_and_critique.self_discover.adapter.agent
-   :collapse:
+   .. autolink-examples:: agents.reasoning_and_critique.self_discover.adapter.agent
+      :collapse:
+
 
 Classes
 -------
 
 .. autoapisummary::
 
-   agents.reasoning_and_critique.self_discover.adapter.agent.AdaptedModules
    agents.reasoning_and_critique.self_discover.adapter.agent.AdapterAgent
 
 
 Module Contents
 ---------------
 
-:orphan:
+.. py:class:: AdapterAgent(name: str = 'adapter', engine: haive.core.engine.aug_llm.AugLLMConfig = None, **kwargs)
+
+   Bases: :py:obj:`haive.agents.simple.SimpleAgent`
 
 
+   Agent that adapts selected reasoning modules for specific tasks.
 
-.. toggle:: Show Inheritance Diagram
+   The Adapter Agent is the second stage in the Self-Discover workflow.
+   It takes the reasoning modules selected by the Selector Agent and adapts
+   them to be concrete and actionable for the specific task at hand.
 
-   Inheritance diagram for AdaptedModules:
+   .. attribute:: name
 
-   .. graphviz::
-      :align: center
+      Agent identifier (default: "adapter")
 
-      digraph inheritance_AdaptedModules {
-        node [shape=record];
-        "AdaptedModules" [label="AdaptedModules"];
-        "pydantic.BaseModel" -> "AdaptedModules";
-      }
+   .. attribute:: engine
 
-.. autopydantic_model:: agents.reasoning_and_critique.self_discover.adapter.agent.AdaptedModules
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+      LLM configuration for the agent
 
+   .. rubric:: Example
 
+   >>> from haive.core.engine.aug_llm import AugLLMConfig
+   >>>
+   >>> config = AugLLMConfig(temperature=0.4)
+   >>> adapter = AdapterAgent(engine=config)
+   >>>
+   >>> result = await adapter.arun({
+   ...     "selected_modules": "1. Critical thinking: Analyze assumptions...",
+   ...     "task_description": "Design a recommendation system"
+   ... })
 
+   Initialize the Adapter Agent.
 
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for AdapterAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_AdapterAgent {
-        node [shape=record];
-        "AdapterAgent" [label="AdapterAgent"];
-        "haive.agents.simple.SimpleAgent" -> "AdapterAgent";
-      }
-
-.. autoclass:: agents.reasoning_and_critique.self_discover.adapter.agent.AdapterAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   :param name: Name for the agent
+   :param engine: LLM configuration (if not provided, creates default)
+   :param \*\*kwargs: Additional arguments passed to SimpleAgent
 
 
+   .. autolink-examples:: __init__
+      :collapse:
 
 
-.. rubric:: Related Links
+   .. autolink-examples:: AdapterAgent
+      :collapse:
 
-.. autolink-examples:: agents.reasoning_and_critique.self_discover.adapter.agent
-   :collapse:
-   
-.. autolink-skip:: next

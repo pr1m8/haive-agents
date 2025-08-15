@@ -1,17 +1,16 @@
-
-:py:mod:`agents.planning_v2.base.state`
-=======================================
+agents.planning_v2.base.state
+=============================
 
 .. py:module:: agents.planning_v2.base.state
 
-State management for planning agents.
+.. autoapi-nested-parse::
 
-This module uses the prebuilt MessagesState from haive.core.
+   State management for planning agents.
 
-
-.. autolink-examples:: agents.planning_v2.base.state
-   :collapse:
+   This module uses the prebuilt MessagesState from haive.core.
 
 
+   .. autolink-examples:: agents.planning_v2.base.state
+      :collapse:
 
 

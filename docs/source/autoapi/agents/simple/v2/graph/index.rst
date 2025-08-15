@@ -1,6 +1,5 @@
-
-:py:mod:`agents.simple.v2.graph`
-================================
+agents.simple.v2.graph
+======================
 
 .. py:module:: agents.simple.v2.graph
 
@@ -16,33 +15,14 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: SimpleGraph
+
+   Bases: :py:obj:`haive.core.graph.state_graph.base_graph2.BaseGraph`
 
 
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for SimpleGraph:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_SimpleGraph {
-        node [shape=record];
-        "SimpleGraph" [label="SimpleGraph"];
-        "haive.core.graph.state_graph.base_graph2.BaseGraph" -> "SimpleGraph";
-      }
-
-.. autoclass:: agents.simple.v2.graph.SimpleGraph
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   A simple graph implementation for testing and demonstration purposes.
 
 
+   .. autolink-examples:: SimpleGraph
+      :collapse:
 
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.simple.v2.graph
-   :collapse:
-   
-.. autolink-skip:: next

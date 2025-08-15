@@ -1,6 +1,5 @@
-
-:py:mod:`agents.rag.base.config`
-================================
+agents.rag.base.config
+======================
 
 .. py:module:: agents.rag.base.config
 
@@ -16,33 +15,69 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: BaseRAGConfig
+
+   Bases: :py:obj:`haive.core.engine.agent.agent.AgentConfig`
+
+
+   Configuration for a basic RAG agent.
+
+
+   .. autolink-examples:: BaseRAGConfig
+      :collapse:
+
+   .. py:method:: convert_vector_store_to_retriever(data: dict[str, Any]) -> dict[str, Any]
+      :classmethod:
+
+
+      Pre-validation converter from VectorStoreConfig to RetrieverConfig.
+      This runs before Pydantic validation, ensuring the type checking works.
+
+
+      .. autolink-examples:: convert_vector_store_to_retriever
+         :collapse:
+
+
+   .. py:method:: setup_engine() -> BaseRAGConfig
+
+      After validation, set the engine property to the retriever_config.
+      This ensures the agent can use the retriever directly.
+
+
+      .. autolink-examples:: setup_engine
+         :collapse:
+
+
+   .. py:attribute:: description
+      :type:  str
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
+   .. py:attribute:: input_schema
+      :type:  type[pydantic.BaseModel]
 
-   Inheritance diagram for BaseRAGConfig:
 
-   .. graphviz::
-      :align: center
+   .. py:attribute:: model_config
 
-      digraph inheritance_BaseRAGConfig {
-        node [shape=record];
-        "BaseRAGConfig" [label="BaseRAGConfig"];
-        "haive.core.engine.agent.agent.AgentConfig" -> "BaseRAGConfig";
-      }
 
-.. autoclass:: agents.rag.base.config.BaseRAGConfig
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. py:attribute:: name
+      :type:  str
+      :value: None
 
 
 
+   .. py:attribute:: output_schema
+      :type:  type[pydantic.BaseModel]
 
-.. rubric:: Related Links
 
-.. autolink-examples:: agents.rag.base.config
-   :collapse:
-   
-.. autolink-skip:: next
+   .. py:attribute:: retriever_config
+      :type:  haive.core.engine.retriever.BaseRetrieverConfig | haive.core.engine.vectorstore.VectorStoreConfig
+      :value: None
+
+
+
+   .. py:attribute:: state_schema
+      :type:  type[pydantic.BaseModel]
+
+

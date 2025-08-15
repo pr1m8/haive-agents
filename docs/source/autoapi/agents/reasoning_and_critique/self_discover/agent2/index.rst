@@ -1,8 +1,15 @@
-
-:py:mod:`agents.reasoning_and_critique.self_discover.agent2`
-============================================================
+agents.reasoning_and_critique.self_discover.agent2
+==================================================
 
 .. py:module:: agents.reasoning_and_critique.self_discover.agent2
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.reasoning_and_critique.self_discover.agent2.logger
 
 
 Classes
@@ -13,37 +20,45 @@ Classes
    agents.reasoning_and_critique.self_discover.agent2.SelfDiscoverAgent
 
 
-Module Contents
----------------
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for SelfDiscoverAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_SelfDiscoverAgent {
-        node [shape=record];
-        "SelfDiscoverAgent" [label="SelfDiscoverAgent"];
-        "haive.core.engine.agent.agent.Agent[haive.agents.reasoning_and_critique.self_discover.config.SelfDiscoverAgentConfig]" -> "SelfDiscoverAgent";
-      }
-
-.. autoclass:: agents.reasoning_and_critique.self_discover.agent2.SelfDiscoverAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
 Functions
 ---------
 
 .. autoapisummary::
 
    agents.reasoning_and_critique.self_discover.agent2.create_self_discover_agent
+
+
+Module Contents
+---------------
+
+.. py:class:: SelfDiscoverAgent
+
+   Bases: :py:obj:`haive.core.engine.agent.agent.Agent`\ [\ :py:obj:`haive.agents.reasoning_and_critique.self_discover.config.SelfDiscoverAgentConfig`\ ]
+
+
+   An agent that implements the SelfDiscover methodology with structured output models.
+
+   This agent follows a four-stage approach:
+   1. Select appropriate reasoning modules for the task
+   2. Adapt the modules to better fit the task
+   3. Structure the reasoning into a step-by-step plan
+   4. Execute the plan to solve the task
+
+   Each stage uses a dedicated LLM with structured output models to ensure
+   consistent, high-quality reasoning.
+
+
+   .. autolink-examples:: SelfDiscoverAgent
+      :collapse:
+
+   .. py:method:: setup_workflow() -> None
+
+      Set up the workflow graph for the SelfDiscover agent.
+
+
+      .. autolink-examples:: setup_workflow
+         :collapse:
+
 
 .. py:function:: create_self_discover_agent(model: str = 'gpt-4o', temperature: float = 0.0, name: str | None = None, reasoning_modules: list[str] | None = None, select_prompt: str | langchain_core.prompts.ChatPromptTemplate | None = None, adapt_prompt: str | langchain_core.prompts.ChatPromptTemplate | None = None, structure_prompt: str | langchain_core.prompts.ChatPromptTemplate | None = None, reasoning_prompt: str | langchain_core.prompts.ChatPromptTemplate | None = None, visualize: bool = True, **kwargs) -> SelfDiscoverAgent
 
@@ -66,11 +81,5 @@ Functions
    .. autolink-examples:: create_self_discover_agent
       :collapse:
 
+.. py:data:: logger
 
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.reasoning_and_critique.self_discover.agent2
-   :collapse:
-   
-.. autolink-skip:: next

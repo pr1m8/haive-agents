@@ -1,6 +1,5 @@
-
-:py:mod:`agents.reasoning_and_critique.reflexion.models`
-========================================================
+agents.reasoning_and_critique.reflexion.models
+==============================================
 
 .. py:module:: agents.reasoning_and_critique.reflexion.models
 
@@ -18,91 +17,108 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: AnswerQuestion(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Answer the question. Provide an answer, reflection, and follow up with search queries to improve the answer.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: AnswerQuestion
+      :collapse:
+
+   .. py:attribute:: answer
+      :type:  str
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for AnswerQuestion:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_AnswerQuestion {
-        node [shape=record];
-        "AnswerQuestion" [label="AnswerQuestion"];
-        "pydantic.BaseModel" -> "AnswerQuestion";
-      }
-
-.. autopydantic_model:: agents.reasoning_and_critique.reflexion.models.AnswerQuestion
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: reflection
+      :type:  Reflection
+      :value: None
 
 
 
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for Reflection:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_Reflection {
-        node [shape=record];
-        "Reflection" [label="Reflection"];
-        "pydantic.BaseModel" -> "Reflection";
-      }
-
-.. autopydantic_model:: agents.reasoning_and_critique.reflexion.models.Reflection
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: search_queries
+      :type:  list[str]
+      :value: None
 
 
 
+.. py:class:: Reflection(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
 
 
-.. toggle:: Show Inheritance Diagram
+   Reflection on the answer.
 
-   Inheritance diagram for ReviseAnswer:
+   Create a new model by parsing and validating input data from keyword arguments.
 
-   .. graphviz::
-      :align: center
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
 
-      digraph inheritance_ReviseAnswer {
-        node [shape=record];
-        "ReviseAnswer" [label="ReviseAnswer"];
-        "AnswerQuestion" -> "ReviseAnswer";
-      }
-
-.. autoclass:: agents.reasoning_and_critique.reflexion.models.ReviseAnswer
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   `self` is explicitly positional-only to allow `self` as a field name.
 
 
+   .. autolink-examples:: __init__
+      :collapse:
 
 
-.. rubric:: Related Links
+   .. autolink-examples:: Reflection
+      :collapse:
 
-.. autolink-examples:: agents.reasoning_and_critique.reflexion.models
-   :collapse:
-   
-.. autolink-skip:: next
+   .. py:attribute:: missing
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: superfluous
+      :type:  str
+      :value: None
+
+
+
+.. py:class:: ReviseAnswer(/, **data: Any)
+
+   Bases: :py:obj:`AnswerQuestion`
+
+
+   Revise your original answer to your question. Provide an answer, reflection,.
+
+   cite your reflection with references, and finally
+   add search queries to improve the answer.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: ReviseAnswer
+      :collapse:
+
+   .. py:attribute:: references
+      :type:  list[str]
+      :value: None
+
+
+

@@ -1,23 +1,25 @@
-
-:py:mod:`agents.memory_reorganized.models.meta`
-===============================================
+agents.memory_reorganized.models.meta
+=====================================
 
 .. py:module:: agents.memory_reorganized.models.meta
 
-Meta model module.
+.. autoapi-nested-parse::
 
-This module provides meta functionality for the Haive framework.
+   Meta model module.
 
-Classes:
-    MemoryValidationMeta: MemoryValidationMeta implementation.
-    for: for implementation.
-    in: in implementation.
+   This module provides meta functionality for the Haive framework.
 
-Functions:
+   Classes:
+       MemoryValidationMeta: MemoryValidationMeta implementation.
+       for: for implementation.
+       in: in implementation.
+
+   Functions:
 
 
-.. autolink-examples:: agents.memory_reorganized.models.meta
-   :collapse:
+   .. autolink-examples:: agents.memory_reorganized.models.meta
+      :collapse:
+
 
 Classes
 -------
@@ -30,33 +32,59 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: MemoryValidationMeta
+
+   Bases: :py:obj:`abc.ABCMeta`
 
 
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for MemoryValidationMeta:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_MemoryValidationMeta {
-        node [shape=record];
-        "MemoryValidationMeta" [label="MemoryValidationMeta"];
-        "abc.ABCMeta" -> "MemoryValidationMeta";
-      }
-
-.. autoclass:: agents.memory_reorganized.models.meta.MemoryValidationMeta
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   Advanced metaclass for memory models with automatic validation registration and.
+   cross-model consistency checking.
 
 
+   .. autolink-examples:: MemoryValidationMeta
+      :collapse:
+
+   .. py:method:: _apply_global_validations(namespace: dict, level: str) -> dict
+      :classmethod:
 
 
-.. rubric:: Related Links
+      Apply validation rules based on validation level.
 
-.. autolink-examples:: agents.memory_reorganized.models.meta
-   :collapse:
-   
-.. autolink-skip:: next
+
+      .. autolink-examples:: _apply_global_validations
+         :collapse:
+
+
+   .. py:method:: _integrity_validator(obj) -> bool
+      :staticmethod:
+
+
+      Data integrity validation.
+
+
+      .. autolink-examples:: _integrity_validator
+         :collapse:
+
+
+   .. py:method:: _security_validator(obj) -> bool
+      :staticmethod:
+
+
+      Enterprise security validation.
+
+
+      .. autolink-examples:: _security_validator
+         :collapse:
+
+
+   .. py:attribute:: _lock
+
+
+   .. py:attribute:: _memory_registry
+      :type:  dict[str, type]
+
+
+   .. py:attribute:: _validation_rules
+      :type:  dict[str, list[callable]]
+
+

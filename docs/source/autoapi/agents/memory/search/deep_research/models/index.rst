@@ -1,14 +1,16 @@
-
-:py:mod:`agents.memory.search.deep_research.models`
-===================================================
+agents.memory.search.deep_research.models
+=========================================
 
 .. py:module:: agents.memory.search.deep_research.models
 
-Data models for Deep Research Agent.
+.. autoapi-nested-parse::
+
+   Data models for Deep Research Agent.
 
 
-.. autolink-examples:: agents.memory.search.deep_research.models
-   :collapse:
+   .. autolink-examples:: agents.memory.search.deep_research.models
+      :collapse:
+
 
 Classes
 -------
@@ -26,178 +28,396 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: Config(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Configuration for Deep Research Agent.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: Config
+      :collapse:
+
+   .. py:attribute:: generate_report
+      :type:  bool
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for Config:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_Config {
-        node [shape=record];
-        "Config" [label="Config"];
-        "pydantic.BaseModel" -> "Config";
-      }
-
-.. autopydantic_model:: agents.memory.search.deep_research.models.Config
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: include_fact_checking
+      :type:  bool
+      :value: None
 
 
 
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for DeepResearchRequest:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_DeepResearchRequest {
-        node [shape=record];
-        "DeepResearchRequest" [label="DeepResearchRequest"];
-        "pydantic.BaseModel" -> "DeepResearchRequest";
-      }
-
-.. autopydantic_model:: agents.memory.search.deep_research.models.DeepResearchRequest
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: max_sources
+      :type:  int
+      :value: None
 
 
 
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for DeepResearchResponse:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_DeepResearchResponse {
-        node [shape=record];
-        "DeepResearchResponse" [label="DeepResearchResponse"];
-        "haive.agents.memory.search.base.SearchResponse" -> "DeepResearchResponse";
-      }
-
-.. autoclass:: agents.memory.search.deep_research.models.DeepResearchResponse
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. py:attribute:: research_depth
+      :type:  int
+      :value: None
 
 
 
+.. py:class:: DeepResearchRequest(/, **data: Any)
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ResearchQuery:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ResearchQuery {
-        node [shape=record];
-        "ResearchQuery" [label="ResearchQuery"];
-        "pydantic.BaseModel" -> "ResearchQuery";
-      }
-
-.. autopydantic_model:: agents.memory.search.deep_research.models.ResearchQuery
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   Bases: :py:obj:`pydantic.BaseModel`
 
 
+   Request model for deep research operations.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
 
 
+   .. autolink-examples:: __init__
+      :collapse:
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for ResearchSection:
+   .. autolink-examples:: DeepResearchRequest
+      :collapse:
 
-   .. graphviz::
-      :align: center
+   .. py:class:: Config
 
-      digraph inheritance_ResearchSection {
-        node [shape=record];
-        "ResearchSection" [label="ResearchSection"];
-        "pydantic.BaseModel" -> "ResearchSection";
-      }
+      Pydantic configuration.
 
-.. autopydantic_model:: agents.memory.search.deep_research.models.ResearchSection
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+
+      .. autolink-examples:: Config
+         :collapse:
+
+      .. py:attribute:: json_schema_extra
 
 
 
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ResearchSource:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ResearchSource {
-        node [shape=record];
-        "ResearchSource" [label="ResearchSource"];
-        "pydantic.BaseModel" -> "ResearchSource";
-      }
-
-.. autopydantic_model:: agents.memory.search.deep_research.models.ResearchSource
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: focus_areas
+      :type:  list[str]
+      :value: None
 
 
 
+   .. py:attribute:: generate_report
+      :type:  bool
+      :value: None
 
 
-.. rubric:: Related Links
 
-.. autolink-examples:: agents.memory.search.deep_research.models
-   :collapse:
-   
-.. autolink-skip:: next
+   .. py:attribute:: include_fact_checking
+      :type:  bool
+      :value: None
+
+
+
+   .. py:attribute:: max_sources
+      :type:  int
+      :value: None
+
+
+
+   .. py:attribute:: query
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: research_depth
+      :type:  int
+      :value: None
+
+
+
+   .. py:attribute:: source_types
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: time_period
+      :type:  str | None
+      :value: None
+
+
+
+.. py:class:: DeepResearchResponse
+
+   Bases: :py:obj:`haive.agents.memory.search.base.SearchResponse`
+
+
+   Response model for deep research operations.
+
+   Extends the base SearchResponse with deep research specific fields.
+
+
+   .. autolink-examples:: DeepResearchResponse
+      :collapse:
+
+   .. py:class:: Config
+
+      Pydantic configuration.
+
+
+      .. autolink-examples:: Config
+         :collapse:
+
+      .. py:attribute:: json_schema_extra
+
+
+
+   .. py:attribute:: executive_summary
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: fact_checks
+      :type:  list[dict[str, Any]]
+      :value: None
+
+
+
+   .. py:attribute:: high_quality_sources
+      :type:  int
+      :value: None
+
+
+
+   .. py:attribute:: limitations
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: related_topics
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: research_depth
+      :type:  int
+      :value: None
+
+
+
+   .. py:attribute:: research_queries
+      :type:  list[ResearchQuery]
+      :value: None
+
+
+
+   .. py:attribute:: research_sections
+      :type:  list[ResearchSection]
+      :value: None
+
+
+
+   .. py:attribute:: search_type
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: total_sources_examined
+      :type:  int
+      :value: None
+
+
+
+.. py:class:: ResearchQuery(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Model for individual research queries performed.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: ResearchQuery
+      :collapse:
+
+   .. py:attribute:: processing_time
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: query
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: query_type
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: results_found
+      :type:  int
+      :value: None
+
+
+
+   .. py:attribute:: success
+      :type:  bool
+      :value: None
+
+
+
+.. py:class:: ResearchSection(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Model for a section of the research report.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: ResearchSection
+      :collapse:
+
+   .. py:attribute:: confidence_level
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: content
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: key_points
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: sources
+      :type:  list[ResearchSource]
+      :value: None
+
+
+
+   .. py:attribute:: title
+      :type:  str
+      :value: None
+
+
+
+.. py:class:: ResearchSource(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Model for research source with detailed metadata.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: ResearchSource
+      :collapse:
+
+   .. py:attribute:: author
+      :type:  str | None
+      :value: None
+
+
+
+   .. py:attribute:: content_snippet
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: credibility_score
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: domain
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: publication_date
+      :type:  datetime.datetime | None
+      :value: None
+
+
+
+   .. py:attribute:: relevance_score
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: source_type
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: title
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: url
+      :type:  str
+      :value: None
+
+
+

@@ -1,17 +1,27 @@
-
-:py:mod:`agents.supervisor.tools`
-=================================
+agents.supervisor.tools
+=======================
 
 .. py:module:: agents.supervisor.tools
 
-Tools and utilities for Dynamic Supervisor V2.
+.. autoapi-nested-parse::
 
-This module provides tools for agent creation, discovery, matching, and
-workflow coordination.
+   Tools and utilities for Dynamic Supervisor V2.
+
+   This module provides tools for agent creation, discovery, matching, and
+   workflow coordination.
 
 
-.. autolink-examples:: agents.supervisor.tools
-   :collapse:
+   .. autolink-examples:: agents.supervisor.tools
+      :collapse:
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.supervisor.tools.logger
+
 
 Classes
 -------
@@ -19,30 +29,6 @@ Classes
 .. autoapisummary::
 
    agents.supervisor.tools.AgentManagementTools
-
-
-Module Contents
----------------
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for AgentManagementTools:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_AgentManagementTools {
-        node [shape=record];
-        "AgentManagementTools" [label="AgentManagementTools"];
-      }
-
-.. autoclass:: agents.supervisor.tools.AgentManagementTools
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
 
 Functions
@@ -54,6 +40,51 @@ Functions
    agents.supervisor.tools.create_handoff_tool
    agents.supervisor.tools.discover_agents
    agents.supervisor.tools.find_matching_agent_specs
+
+
+Module Contents
+---------------
+
+.. py:class:: AgentManagementTools
+
+   Collection of tools for managing agents in the supervisor.
+
+   These tools can be provided to the supervisor to enable dynamic
+   agent management capabilities.
+
+
+   .. autolink-examples:: AgentManagementTools
+      :collapse:
+
+   .. py:method:: create_agent_stats_tool(state_accessor) -> langchain_core.tools.BaseTool
+      :staticmethod:
+
+
+      Create a tool for viewing agent statistics.
+
+      :param state_accessor: Function to access current state
+
+      :returns: Tool for viewing agent stats
+
+
+      .. autolink-examples:: create_agent_stats_tool
+         :collapse:
+
+
+   .. py:method:: create_list_agents_tool(state_accessor) -> langchain_core.tools.BaseTool
+      :staticmethod:
+
+
+      Create a tool for listing available agents.
+
+      :param state_accessor: Function to access current state
+
+      :returns: Tool for listing agents
+
+
+      .. autolink-examples:: create_list_agents_tool
+         :collapse:
+
 
 .. py:function:: create_agent_from_spec(spec: haive.agents.supervisor.models.AgentSpec) -> Any
 
@@ -148,11 +179,5 @@ Functions
    .. autolink-examples:: find_matching_agent_specs
       :collapse:
 
+.. py:data:: logger
 
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.supervisor.tools
-   :collapse:
-   
-.. autolink-skip:: next

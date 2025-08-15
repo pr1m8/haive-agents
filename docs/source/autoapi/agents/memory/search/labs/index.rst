@@ -1,15 +1,24 @@
-
-:py:mod:`agents.memory.search.labs`
-===================================
+agents.memory.search.labs
+=========================
 
 .. py:module:: agents.memory.search.labs
 
-Module exports.
+.. autoapi-nested-parse::
+
+   Module exports.
 
 
-.. autolink-examples:: agents.memory.search.labs
-   :collapse:
+   .. autolink-examples:: agents.memory.search.labs
+      :collapse:
 
 
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/agents/memory/search/labs/agent/index
+   /autoapi/agents/memory/search/labs/models/index
 
 

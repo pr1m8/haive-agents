@@ -1,9 +1,21 @@
-
-:py:mod:`agents.reasoning_and_critique.tot.v2.agent`
-====================================================
+agents.reasoning_and_critique.tot.v2.agent
+==========================================
 
 .. py:module:: agents.reasoning_and_critique.tot.v2.agent
 
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.reasoning_and_critique.tot.v2.agent.control_engine
+   agents.reasoning_and_critique.tot.v2.agent.controller
+   agents.reasoning_and_critique.tot.v2.agent.expander
+   agents.reasoning_and_critique.tot.v2.agent.expansion_engine
+   agents.reasoning_and_critique.tot.v2.agent.logger
+   agents.reasoning_and_critique.tot.v2.agent.scorer
+   agents.reasoning_and_critique.tot.v2.agent.scoring_engine
 
 
 Functions
@@ -21,6 +33,10 @@ Functions
    agents.reasoning_and_critique.tot.v2.agent.scoring_workflow
    agents.reasoning_and_critique.tot.v2.agent.should_continue_search
    agents.reasoning_and_critique.tot.v2.agent.solve_with_tot
+
+
+Module Contents
+---------------
 
 .. py:function:: control_workflow(state: haive.agents.reasoning_and_critique.tot.v2.state.ToTState) -> dict[str, Any]
 
@@ -102,11 +118,17 @@ Functions
    .. autolink-examples:: solve_with_tot
       :collapse:
 
+.. py:data:: control_engine
 
+.. py:data:: controller
 
-.. rubric:: Related Links
+.. py:data:: expander
 
-.. autolink-examples:: agents.reasoning_and_critique.tot.v2.agent
-   :collapse:
-   
-.. autolink-skip:: next
+.. py:data:: expansion_engine
+
+.. py:data:: logger
+
+.. py:data:: scorer
+
+.. py:data:: scoring_engine
+

@@ -1,23 +1,25 @@
-
-:py:mod:`agents.reasoning_and_critique.self_discover.self_discover_multiagent`
-==============================================================================
+agents.reasoning_and_critique.self_discover.self_discover_multiagent
+====================================================================
 
 .. py:module:: agents.reasoning_and_critique.self_discover.self_discover_multiagent
 
-Self-Discover Agent using the unified MultiAgent implementation.
+.. autoapi-nested-parse::
 
-This implementation demonstrates how to use the new MultiAgent class to create
-a sophisticated reasoning system that follows the Self-Discover methodology:
-1. Select relevant reasoning modules
-2. Adapt modules to the specific task
-3. Structure a step-by-step plan
-4. Execute the reasoning plan
+   Self-Discover Agent using the unified MultiAgent implementation.
 
-This showcases sequential execution with the unified MultiAgent.
+   This implementation demonstrates how to use the new MultiAgent class to create
+   a sophisticated reasoning system that follows the Self-Discover methodology:
+   1. Select relevant reasoning modules
+   2. Adapt modules to the specific task
+   3. Structure a step-by-step plan
+   4. Execute the reasoning plan
+
+   This showcases sequential execution with the unified MultiAgent.
 
 
-.. autolink-examples:: agents.reasoning_and_critique.self_discover.self_discover_multiagent
-   :collapse:
+   .. autolink-examples:: agents.reasoning_and_critique.self_discover.self_discover_multiagent
+      :collapse:
+
 
 Classes
 -------
@@ -25,31 +27,6 @@ Classes
 .. autoapisummary::
 
    agents.reasoning_and_critique.self_discover.self_discover_multiagent.SelfDiscoverMultiAgentState
-
-
-Module Contents
----------------
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for SelfDiscoverMultiAgentState:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_SelfDiscoverMultiAgentState {
-        node [shape=record];
-        "SelfDiscoverMultiAgentState" [label="SelfDiscoverMultiAgentState"];
-        "haive.core.schema.StateSchema" -> "SelfDiscoverMultiAgentState";
-      }
-
-.. autoclass:: agents.reasoning_and_critique.self_discover.self_discover_multiagent.SelfDiscoverMultiAgentState
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
 
 Functions
@@ -65,6 +42,63 @@ Functions
    agents.reasoning_and_critique.self_discover.self_discover_multiagent.create_structurer_agent
    agents.reasoning_and_critique.self_discover.self_discover_multiagent.get_default_reasoning_modules
    agents.reasoning_and_critique.self_discover.self_discover_multiagent.run_self_discover_example
+
+
+Module Contents
+---------------
+
+.. py:class:: SelfDiscoverMultiAgentState
+
+   Bases: :py:obj:`haive.core.schema.StateSchema`
+
+
+   State schema for the Self-Discover multi-agent workflow.
+
+
+   .. autolink-examples:: SelfDiscoverMultiAgentState
+      :collapse:
+
+   .. py:attribute:: adapted_modules
+      :type:  list[haive.agents.reasoning_and_critique.self_discover.models.AdaptedModule] | None
+      :value: None
+
+
+
+   .. py:attribute:: final_answer
+      :type:  str | None
+      :value: None
+
+
+
+   .. py:attribute:: reasoning_modules
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: reasoning_results
+      :type:  dict[str, str]
+      :value: None
+
+
+
+   .. py:attribute:: reasoning_structure
+      :type:  haive.agents.reasoning_and_critique.self_discover.models.ReasoningStructure | None
+      :value: None
+
+
+
+   .. py:attribute:: selected_modules
+      :type:  list[haive.agents.reasoning_and_critique.self_discover.models.SelectedModule] | None
+      :value: None
+
+
+
+   .. py:attribute:: task_description
+      :type:  str
+      :value: None
+
+
 
 .. py:function:: create_adapter_agent() -> haive.agents.simple.SimpleAgent
 
@@ -142,11 +176,3 @@ Functions
    .. autolink-examples:: run_self_discover_example
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.reasoning_and_critique.self_discover.self_discover_multiagent
-   :collapse:
-   
-.. autolink-skip:: next

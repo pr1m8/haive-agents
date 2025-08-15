@@ -1,15 +1,23 @@
-
-:py:mod:`agents.rag.db_rag.base`
-================================
+agents.rag.db_rag.base
+======================
 
 .. py:module:: agents.rag.db_rag.base
 
-Module exports.
+.. autoapi-nested-parse::
+
+   Module exports.
 
 
-.. autolink-examples:: agents.rag.db_rag.base
-   :collapse:
+   .. autolink-examples:: agents.rag.db_rag.base
+      :collapse:
 
 
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/agents/rag/db_rag/base/db_config/index
 
 

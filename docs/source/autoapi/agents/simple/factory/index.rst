@@ -1,17 +1,27 @@
-
-:py:mod:`agents.simple.factory`
-===============================
+agents.simple.factory
+=====================
 
 .. py:module:: agents.simple.factory
 
-Utility functions for creating and using SimpleAgent.
+.. autoapi-nested-parse::
 
-This module provides helper functions for easily creating SimpleAgent instances
-with various configurations.
+   Utility functions for creating and using SimpleAgent.
+
+   This module provides helper functions for easily creating SimpleAgent instances
+   with various configurations.
 
 
-.. autolink-examples:: agents.simple.factory
-   :collapse:
+   .. autolink-examples:: agents.simple.factory
+      :collapse:
+
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/agents/simple/factory/v2/index
 
 
 Functions
@@ -20,6 +30,10 @@ Functions
 .. autoapisummary::
 
    agents.simple.factory.create_simple_agent
+
+
+Module Contents
+---------------
 
 .. py:function:: create_simple_agent(name: str = 'simple_agent', engine: haive.core.engine.aug_llm.AugLLMConfig | None = None, state_schema: type[pydantic.BaseModel] = SimpleAgentState, system_prompt: str = 'You are a helpful assistant.', prompt_template: str | langchain_core.prompts.ChatPromptTemplate | None = None, input_mapping: dict[str, str] | None = None, output_mapping: dict[str, str] | None = None, model: str = 'gpt-4o', debug: bool = False, preserve_model: bool = True) -> haive.agents.simple.agent.SimpleAgent
 
@@ -42,11 +56,3 @@ Functions
    .. autolink-examples:: create_simple_agent
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.simple.factory
-   :collapse:
-   
-.. autolink-skip:: next

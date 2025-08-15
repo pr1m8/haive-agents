@@ -1,6 +1,5 @@
-
-:py:mod:`flare.models`
-======================
+flare.models
+============
 
 .. py:module:: flare.models
 
@@ -17,70 +16,119 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: FLAREResponse(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   FLARE (Forward-Looking Active Retrieval) response.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: FLAREResponse
+      :collapse:
+
+   .. py:attribute:: confidence_assessment
+      :type:  str
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for FLAREResponse:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_FLAREResponse {
-        node [shape=record];
-        "FLAREResponse" [label="FLAREResponse"];
-        "pydantic.BaseModel" -> "FLAREResponse";
-      }
-
-.. autopydantic_model:: flare.models.FLAREResponse
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: final_answer
+      :type:  str
+      :value: None
 
 
 
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for FLAREStep:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_FLAREStep {
-        node [shape=record];
-        "FLAREStep" [label="FLAREStep"];
-        "pydantic.BaseModel" -> "FLAREStep";
-      }
-
-.. autopydantic_model:: flare.models.FLAREStep
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: generation_steps
+      :type:  list[FLAREStep]
+      :value: None
 
 
 
+   .. py:attribute:: original_query
+      :type:  str
+      :value: None
 
 
-.. rubric:: Related Links
 
-.. autolink-examples:: flare.models
-   :collapse:
-   
-.. autolink-skip:: next
+   .. py:attribute:: remaining_uncertainties
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: retrieval_requests
+      :type:  list[str]
+      :value: None
+
+
+
+.. py:class:: FLAREStep(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Individual step in FLARE generation.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: FLAREStep
+      :collapse:
+
+   .. py:attribute:: confidence_level
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: generated_content
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: information_needs
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: search_queries
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: step_number
+      :type:  int
+      :value: None
+
+
+
+   .. py:attribute:: uncertainties
+      :type:  list[str]
+      :value: None
+
+
+

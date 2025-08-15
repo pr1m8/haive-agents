@@ -1,14 +1,16 @@
-
-:py:mod:`agents.planning.plan_and_execute.simple`
-=================================================
+agents.planning.plan_and_execute.simple
+=======================================
 
 .. py:module:: agents.planning.plan_and_execute.simple
 
-Simple Plan and Execute Agent - clean and proper.
+.. autoapi-nested-parse::
+
+   Simple Plan and Execute Agent - clean and proper.
 
 
-.. autolink-examples:: agents.planning.plan_and_execute.simple
-   :collapse:
+   .. autolink-examples:: agents.planning.plan_and_execute.simple
+      :collapse:
+
 
 Classes
 -------
@@ -21,33 +23,34 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: PlanAndExecuteAgent
+
+   Bases: :py:obj:`haive.agents.multi.agent.MultiAgent`
 
 
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for PlanAndExecuteAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_PlanAndExecuteAgent {
-        node [shape=record];
-        "PlanAndExecuteAgent" [label="PlanAndExecuteAgent"];
-        "haive.agents.multi.agent.MultiAgent" -> "PlanAndExecuteAgent";
-      }
-
-.. autoclass:: agents.planning.plan_and_execute.simple.PlanAndExecuteAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   Plan and Execute using MultiAgent with proper graph building.
 
 
+   .. autolink-examples:: PlanAndExecuteAgent
+      :collapse:
+
+   .. py:method:: build_graph() -> haive.agents.planning.plan_and_execute.v2.prompts.Any
+
+      Build the plan-execute-replan graph using BaseGraph.
 
 
-.. rubric:: Related Links
+      .. autolink-examples:: build_graph
+         :collapse:
 
-.. autolink-examples:: agents.planning.plan_and_execute.simple
-   :collapse:
-   
-.. autolink-skip:: next
+
+   .. py:method:: create(tools: list | None = None, name: str = 'plan_and_execute', **kwargs) -> PlanAndExecuteAgent
+      :classmethod:
+
+
+      Create Plan and Execute agent with planner, executor, replanner.
+
+
+      .. autolink-examples:: create
+         :collapse:
+
+

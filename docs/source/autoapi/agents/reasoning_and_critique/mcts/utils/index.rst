@@ -1,9 +1,15 @@
-
-:py:mod:`agents.reasoning_and_critique.mcts.utils`
-==================================================
+agents.reasoning_and_critique.mcts.utils
+========================================
 
 .. py:module:: agents.reasoning_and_critique.mcts.utils
 
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.reasoning_and_critique.mcts.utils.logger
 
 
 Functions
@@ -14,6 +20,10 @@ Functions
    agents.reasoning_and_critique.mcts.utils.create_mcts_agent
    agents.reasoning_and_critique.mcts.utils.extract_best_solution
    agents.reasoning_and_critique.mcts.utils.print_tree_stats
+
+
+Module Contents
+---------------
 
 .. py:function:: create_mcts_agent(tools: list[langchain_core.tools.BaseTool] | None = None, llm_config: haive.core.models.llm.base.LLMConfig | None = None, system_prompt: str | None = None, max_rollouts: int = 5, candidates_per_rollout: int = 5, exploration_weight: float = 1.0, name: str | None = None, **kwargs) -> haive.agents.reasoning_and_critique.mcts.agent.MCTSAgent
 
@@ -56,11 +66,5 @@ Functions
    .. autolink-examples:: print_tree_stats
       :collapse:
 
+.. py:data:: logger
 
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.reasoning_and_critique.mcts.utils
-   :collapse:
-   
-.. autolink-skip:: next

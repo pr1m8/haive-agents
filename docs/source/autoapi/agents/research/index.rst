@@ -1,36 +1,46 @@
-
-:py:mod:`agents.research`
-=========================
+agents.research
+===============
 
 .. py:module:: agents.research
 
-Research Agents - Advanced research and information gathering agents.
+.. autoapi-nested-parse::
 
-This module provides specialized agents for conducting research, gathering information,
-and generating comprehensive reports on various topics.
+   Research Agents - Advanced research and information gathering agents.
 
-Available Agents:
-    - PersonResearchAgent: Comprehensive person research with multi-source data
-    - OpenPerplexityAgent: Web search and research capabilities
-    - STORMAgent: Structured research methodology (in development)
+   This module provides specialized agents for conducting research, gathering information,
+   and generating comprehensive reports on various topics.
 
-.. rubric:: Example
+   Available Agents:
+       - PersonResearchAgent: Comprehensive person research with multi-source data
+       - OpenPerplexityAgent: Web search and research capabilities
+       - STORMAgent: Structured research methodology (in development)
 
-Basic research usage::
+   .. rubric:: Example
 
-    from haive.agents.research.person import PersonResearchAgent
+   Basic research usage::
 
-    agent = PersonResearchAgent(
-        name="researcher",
-        research_topic="AI Safety"
-    )
+       from haive.agents.research.person import PersonResearchAgent
 
-    result = await agent.ainvoke({"query": "Recent developments in AI safety"})
+       agent = PersonResearchAgent(
+           name="researcher",
+           research_topic="AI Safety"
+       )
 
-
-.. autolink-examples:: agents.research
-   :collapse:
+       result = await agent.ainvoke({"query": "Recent developments in AI safety"})
 
 
+   .. autolink-examples:: agents.research
+      :collapse:
+
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/agents/research/open_perplexity/index
+   /autoapi/agents/research/person/index
+   /autoapi/agents/research/storm/index
 
 

@@ -1,17 +1,18 @@
-
-:py:mod:`agents.planning.llm_compiler_v3.examples.basic_example`
-================================================================
+agents.planning.llm_compiler_v3.examples.basic_example
+======================================================
 
 .. py:module:: agents.planning.llm_compiler_v3.examples.basic_example
 
-Basic example of LLM Compiler V3 Agent usage.
+.. autoapi-nested-parse::
 
-This example demonstrates the core functionality of the LLM Compiler V3 Agent
-with simple tools and a straightforward query.
+   Basic example of LLM Compiler V3 Agent usage.
+
+   This example demonstrates the core functionality of the LLM Compiler V3 Agent
+   with simple tools and a straightforward query.
 
 
-.. autolink-examples:: agents.planning.llm_compiler_v3.examples.basic_example
-   :collapse:
+   .. autolink-examples:: agents.planning.llm_compiler_v3.examples.basic_example
+      :collapse:
 
 
 Functions
@@ -26,6 +27,10 @@ Functions
    agents.planning.llm_compiler_v3.examples.basic_example.parallel_efficiency_demo
    agents.planning.llm_compiler_v3.examples.basic_example.text_analyzer
    agents.planning.llm_compiler_v3.examples.basic_example.word_reverser
+
+
+Module Contents
+---------------
 
 .. py:function:: basic_llm_compiler_example()
    :async:
@@ -89,11 +94,3 @@ Functions
    .. autolink-examples:: word_reverser
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.planning.llm_compiler_v3.examples.basic_example
-   :collapse:
-   
-.. autolink-skip:: next

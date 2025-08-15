@@ -1,9 +1,7 @@
-
-:py:mod:`agents.document_modifiers.kg.kg_map_merge.engines`
-===========================================================
+agents.document_modifiers.kg.kg_map_merge.engines
+=================================================
 
 .. py:module:: agents.document_modifiers.kg.kg_map_merge.engines
-
 
 
 Functions
@@ -20,6 +18,10 @@ Functions
    agents.document_modifiers.kg.kg_map_merge.engines.main
    agents.document_modifiers.kg.kg_map_merge.engines.merge_analysis_engine
    agents.document_modifiers.kg.kg_map_merge.engines.schema_extraction_engine
+
+
+Module Contents
+---------------
 
 .. py:function:: create_graph_extraction_config(model: str = 'gpt-4o', temperature: float = 0.7) -> haive.core.engine.aug_llm.AugLLMConfig
 
@@ -126,11 +128,3 @@ Functions
    .. autolink-examples:: schema_extraction_engine
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.document_modifiers.kg.kg_map_merge.engines
-   :collapse:
-   
-.. autolink-skip:: next

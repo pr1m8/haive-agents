@@ -1,6 +1,5 @@
-
-:py:mod:`agents.rag.multi_strategy.query_types`
-===============================================
+agents.rag.multi_strategy.query_types
+=====================================
 
 .. py:module:: agents.rag.multi_strategy.query_types
 
@@ -16,39 +15,40 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: QueryType
+
+   Bases: :py:obj:`str`, :py:obj:`enum.Enum`
+
+
+   Types of queries that can be handled by specialized strategies.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: QueryType
+      :collapse:
+
+   .. py:attribute:: ANALYTICAL
+      :value: 'analytical'
 
 
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for QueryType:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_QueryType {
-        node [shape=record];
-        "QueryType" [label="QueryType"];
-        "str" -> "QueryType";
-        "enum.Enum" -> "QueryType";
-      }
-
-.. autoclass:: agents.rag.multi_strategy.query_types.QueryType
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-   .. note::
-
-      **QueryType** is an Enum defined in ``agents.rag.multi_strategy.query_types``.
+   .. py:attribute:: FACTUAL
+      :value: 'factual'
 
 
 
+   .. py:attribute:: RELATIONAL
+      :value: 'relational'
 
 
-.. rubric:: Related Links
 
-.. autolink-examples:: agents.rag.multi_strategy.query_types
-   :collapse:
-   
-.. autolink-skip:: next
+   .. py:attribute:: TEMPORAL
+      :value: 'temporal'
+
+
+

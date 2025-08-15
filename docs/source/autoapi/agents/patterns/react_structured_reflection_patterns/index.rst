@@ -1,23 +1,25 @@
-
-:py:mod:`agents.patterns.react_structured_reflection_patterns`
-==============================================================
+agents.patterns.react_structured_reflection_patterns
+====================================================
 
 .. py:module:: agents.patterns.react_structured_reflection_patterns
 
-Comprehensive ReactAgent → SimpleAgent Patterns with V3, V4, and Enhanced Base Agent.
+.. autoapi-nested-parse::
 
-This demonstrates all variations of ReactAgent → SimpleAgent workflows:
-1. V3: ReactAgent → SimpleAgent (structured output)
-2. V4: MultiAgent composition
-3. Enhanced Base: Using enhanced base agent with hooks
-4. Reflection: ReactAgent → SimpleAgentV3 → ReflectionAgent
-5. Graded Reflection: ReactAgent → GradingAgent → SimpleAgentV3 → ReflectionAgent
+   Comprehensive ReactAgent → SimpleAgent Patterns with V3, V4, and Enhanced Base Agent.
 
-Each pattern showcases the generalized hook system and different architectural approaches.
+   This demonstrates all variations of ReactAgent → SimpleAgent workflows:
+   1. V3: ReactAgent → SimpleAgent (structured output)
+   2. V4: MultiAgent composition
+   3. Enhanced Base: Using enhanced base agent with hooks
+   4. Reflection: ReactAgent → SimpleAgentV3 → ReflectionAgent
+   5. Graded Reflection: ReactAgent → GradingAgent → SimpleAgentV3 → ReflectionAgent
+
+   Each pattern showcases the generalized hook system and different architectural approaches.
 
 
-.. autolink-examples:: agents.patterns.react_structured_reflection_patterns
-   :collapse:
+   .. autolink-examples:: agents.patterns.react_structured_reflection_patterns
+      :collapse:
+
 
 Classes
 -------
@@ -31,178 +33,6 @@ Classes
    agents.patterns.react_structured_reflection_patterns.ReactWithReflection
    agents.patterns.react_structured_reflection_patterns.ResearchFindings
    agents.patterns.react_structured_reflection_patterns.TaskAnalysis
-
-
-Module Contents
----------------
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ProblemAnalysis:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ProblemAnalysis {
-        node [shape=record];
-        "ProblemAnalysis" [label="ProblemAnalysis"];
-        "pydantic.BaseModel" -> "ProblemAnalysis";
-      }
-
-.. autopydantic_model:: agents.patterns.react_structured_reflection_patterns.ProblemAnalysis
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
-
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ReactToStructuredV3:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ReactToStructuredV3 {
-        node [shape=record];
-        "ReactToStructuredV3" [label="ReactToStructuredV3"];
-      }
-
-.. autoclass:: agents.patterns.react_structured_reflection_patterns.ReactToStructuredV3
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ReactToStructuredV4:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ReactToStructuredV4 {
-        node [shape=record];
-        "ReactToStructuredV4" [label="ReactToStructuredV4"];
-        "haive.agents.multi.agent.MultiAgent" -> "ReactToStructuredV4";
-      }
-
-.. autoclass:: agents.patterns.react_structured_reflection_patterns.ReactToStructuredV4
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ReactWithGradedReflection:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ReactWithGradedReflection {
-        node [shape=record];
-        "ReactWithGradedReflection" [label="ReactWithGradedReflection"];
-      }
-
-.. autoclass:: agents.patterns.react_structured_reflection_patterns.ReactWithGradedReflection
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ReactWithReflection:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ReactWithReflection {
-        node [shape=record];
-        "ReactWithReflection" [label="ReactWithReflection"];
-      }
-
-.. autoclass:: agents.patterns.react_structured_reflection_patterns.ReactWithReflection
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ResearchFindings:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ResearchFindings {
-        node [shape=record];
-        "ResearchFindings" [label="ResearchFindings"];
-        "pydantic.BaseModel" -> "ResearchFindings";
-      }
-
-.. autopydantic_model:: agents.patterns.react_structured_reflection_patterns.ResearchFindings
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
-
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for TaskAnalysis:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_TaskAnalysis {
-        node [shape=record];
-        "TaskAnalysis" [label="TaskAnalysis"];
-        "pydantic.BaseModel" -> "TaskAnalysis";
-      }
-
-.. autopydantic_model:: agents.patterns.react_structured_reflection_patterns.TaskAnalysis
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
-
 
 
 Functions
@@ -222,6 +52,359 @@ Functions
    agents.patterns.react_structured_reflection_patterns.main
    agents.patterns.react_structured_reflection_patterns.stakeholder_analysis
    agents.patterns.react_structured_reflection_patterns.web_research
+
+
+Module Contents
+---------------
+
+.. py:class:: ProblemAnalysis(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Structured problem analysis.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: ProblemAnalysis
+      :collapse:
+
+   .. py:attribute:: impact_assessment
+      :type:  dict[str, str]
+      :value: None
+
+
+
+   .. py:attribute:: problem_definition
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: recommended_approach
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: root_causes
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: solution_options
+      :type:  list[dict[str, Any]]
+      :value: None
+
+
+
+   .. py:attribute:: stakeholders
+      :type:  list[str]
+      :value: None
+
+
+
+.. py:class:: ReactToStructuredV3(name: str, tools: list | None = None, structured_output_model: type[pydantic.BaseModel] = TaskAnalysis, reasoning_config: haive.core.engine.aug_llm.AugLLMConfig = None, structuring_config: haive.core.engine.aug_llm.AugLLMConfig = None)
+
+   V3 Pattern: ReactAgent → SimpleAgentV3 with structured output.
+
+
+   .. autolink-examples:: ReactToStructuredV3
+      :collapse:
+
+   .. py:method:: _setup_v3_hooks()
+
+      Set up hooks for V3 pattern monitoring.
+
+
+      .. autolink-examples:: _setup_v3_hooks
+         :collapse:
+
+
+   .. py:method:: arun(input_data: str) -> pydantic.BaseModel
+      :async:
+
+
+      Execute V3 pattern: ReactAgent → SimpleAgentV3.
+
+
+      .. autolink-examples:: arun
+         :collapse:
+
+
+   .. py:attribute:: name
+
+
+   .. py:attribute:: reasoning_agent
+
+
+   .. py:attribute:: structured_output_model
+
+
+   .. py:attribute:: structuring_agent
+
+
+.. py:class:: ReactToStructuredV4(**data)
+
+   Bases: :py:obj:`haive.agents.multi.agent.MultiAgent`
+
+
+   V4 Pattern: MultiAgent with ReactAgent → SimpleAgentV3.
+
+
+   .. autolink-examples:: ReactToStructuredV4
+      :collapse:
+
+   .. py:method:: _setup_v4_hooks()
+
+      Set up hooks for V4 pattern monitoring.
+
+
+      .. autolink-examples:: _setup_v4_hooks
+         :collapse:
+
+
+   .. py:method:: create_analysis_workflow(name: str = 'v4_analysis', tools: list | None = None, structured_output_model: type[pydantic.BaseModel] = TaskAnalysis) -> ReactToStructuredV4
+      :classmethod:
+
+
+      Create V4 analysis workflow.
+
+
+      .. autolink-examples:: create_analysis_workflow
+         :collapse:
+
+
+   .. py:attribute:: reasoning_agent
+      :type:  haive.agents.react.agent.ReactAgent
+      :value: None
+
+
+
+   .. py:attribute:: structured_output_model
+      :type:  type[pydantic.BaseModel]
+      :value: None
+
+
+
+   .. py:attribute:: structuring_agent
+      :type:  SimpleAgentV3
+      :value: None
+
+
+
+.. py:class:: ReactWithGradedReflection(name: str, tools: list | None = None, structured_output_model: type[pydantic.BaseModel] = TaskAnalysis)
+
+   Graded Reflection Pattern: ReactAgent → GradingAgent → SimpleAgentV3 → ReflectionAgent.
+
+
+   .. autolink-examples:: ReactWithGradedReflection
+      :collapse:
+
+   .. py:method:: _setup_graded_reflection_hooks()
+
+      Set up hooks for graded reflection pattern monitoring.
+
+
+      .. autolink-examples:: _setup_graded_reflection_hooks
+         :collapse:
+
+
+   .. py:method:: arun(input_data: str) -> dict[str, Any]
+      :async:
+
+
+      Execute Graded Reflection pattern.
+
+
+      .. autolink-examples:: arun
+         :collapse:
+
+
+   .. py:attribute:: name
+
+
+   .. py:attribute:: reasoning_agent
+
+
+   .. py:attribute:: structured_output_model
+
+
+   .. py:attribute:: structuring_agent
+
+
+.. py:class:: ReactWithReflection(name: str, tools: list | None = None, structured_output_model: type[pydantic.BaseModel] = TaskAnalysis, reasoning_config: haive.core.engine.aug_llm.AugLLMConfig = None, structuring_config: haive.core.engine.aug_llm.AugLLMConfig = None)
+
+   Enhanced Base Agent Pattern: ReactAgent → SimpleAgentV3 → ReflectionAgent.
+
+
+   .. autolink-examples:: ReactWithReflection
+      :collapse:
+
+   .. py:method:: _setup_reflection_hooks()
+
+      Set up hooks for reflection pattern monitoring.
+
+
+      .. autolink-examples:: _setup_reflection_hooks
+         :collapse:
+
+
+   .. py:method:: arun(input_data: str) -> dict[str, Any]
+      :async:
+
+
+      Execute Enhanced Base Agent pattern with reflection.
+
+
+      .. autolink-examples:: arun
+         :collapse:
+
+
+   .. py:attribute:: name
+
+
+   .. py:attribute:: reasoning_agent
+
+
+   .. py:attribute:: structured_output_model
+
+
+   .. py:attribute:: structuring_agent
+
+
+.. py:class:: ResearchFindings(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Structured research findings.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: ResearchFindings
+      :collapse:
+
+   .. py:attribute:: confidence_assessment
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: data_sources
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: key_findings
+      :type:  list[dict[str, str]]
+      :value: None
+
+
+
+   .. py:attribute:: limitations
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: methodology
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: next_steps
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: research_question
+      :type:  str
+      :value: None
+
+
+
+.. py:class:: TaskAnalysis(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Analysis of a complex task.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: TaskAnalysis
+      :collapse:
+
+   .. py:attribute:: complexity_level
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: estimated_effort
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: key_components
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: potential_challenges
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: success_criteria
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: task_summary
+      :type:  str
+      :value: None
+
+
 
 .. py:function:: create_graded_reflection_pattern(name: str = 'react_graded_reflection', tools: list | None = None, structured_output_model: type[pydantic.BaseModel] = TaskAnalysis) -> ReactWithGradedReflection
 
@@ -329,11 +512,3 @@ Functions
    .. autolink-examples:: web_research
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.patterns.react_structured_reflection_patterns
-   :collapse:
-   
-.. autolink-skip:: next

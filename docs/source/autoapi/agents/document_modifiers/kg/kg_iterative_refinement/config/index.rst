@@ -1,6 +1,5 @@
-
-:py:mod:`agents.document_modifiers.kg.kg_iterative_refinement.config`
-=====================================================================
+agents.document_modifiers.kg.kg_iterative_refinement.config
+===========================================================
 
 .. py:module:: agents.document_modifiers.kg.kg_iterative_refinement.config
 
@@ -16,33 +15,26 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: IterativeGraphTransformerConfig
+
+   Bases: :py:obj:`haive.core.engine.agent.agent.AgentConfig`
+
+
+   The configuration for the iterative graph transformer.
+
+
+   .. autolink-examples:: IterativeGraphTransformerConfig
+      :collapse:
+
+   .. py:attribute:: engines
+      :type:  dict[str, haive.core.engine.aug_llm.AugLLMConfig]
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for IterativeGraphTransformerConfig:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_IterativeGraphTransformerConfig {
-        node [shape=record];
-        "IterativeGraphTransformerConfig" [label="IterativeGraphTransformerConfig"];
-        "haive.core.engine.agent.agent.AgentConfig" -> "IterativeGraphTransformerConfig";
-      }
-
-.. autoclass:: agents.document_modifiers.kg.kg_iterative_refinement.config.IterativeGraphTransformerConfig
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. py:attribute:: state_schema
+      :type:  haive.agents.document_modifiers.kg.kg_iterative_refinement.state.IterativeGraphTransformerState
+      :value: None
 
 
 
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.document_modifiers.kg.kg_iterative_refinement.config
-   :collapse:
-   
-.. autolink-skip:: next

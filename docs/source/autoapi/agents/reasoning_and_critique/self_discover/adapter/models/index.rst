@@ -1,14 +1,16 @@
-
-:py:mod:`agents.reasoning_and_critique.self_discover.adapter.models`
-====================================================================
+agents.reasoning_and_critique.self_discover.adapter.models
+==========================================================
 
 .. py:module:: agents.reasoning_and_critique.self_discover.adapter.models
 
-Models for the Self-Discover Adapter Agent.
+.. autoapi-nested-parse::
+
+   Models for the Self-Discover Adapter Agent.
 
 
-.. autolink-examples:: agents.reasoning_and_critique.self_discover.adapter.models
-   :collapse:
+   .. autolink-examples:: agents.reasoning_and_critique.self_discover.adapter.models
+      :collapse:
+
 
 Classes
 -------
@@ -22,70 +24,89 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: AdaptedModule(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   A reasoning module adapted for the specific task.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: AdaptedModule
+      :collapse:
+
+   .. py:attribute:: concrete_steps
+      :type:  list[str]
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for AdaptedModule:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_AdaptedModule {
-        node [shape=record];
-        "AdaptedModule" [label="AdaptedModule"];
-        "pydantic.BaseModel" -> "AdaptedModule";
-      }
-
-.. autopydantic_model:: agents.reasoning_and_critique.self_discover.adapter.models.AdaptedModule
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: expected_insights
+      :type:  str
+      :value: None
 
 
 
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for AdaptedModules:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_AdaptedModules {
-        node [shape=record];
-        "AdaptedModules" [label="AdaptedModules"];
-        "pydantic.BaseModel" -> "AdaptedModules";
-      }
-
-.. autopydantic_model:: agents.reasoning_and_critique.self_discover.adapter.models.AdaptedModules
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: original_module
+      :type:  str
+      :value: None
 
 
 
+   .. py:attribute:: task_specific_adaptation
+      :type:  str
+      :value: None
 
 
-.. rubric:: Related Links
 
-.. autolink-examples:: agents.reasoning_and_critique.self_discover.adapter.models
-   :collapse:
-   
-.. autolink-skip:: next
+.. py:class:: AdaptedModules(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Collection of task-adapted reasoning modules.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: AdaptedModules
+      :collapse:
+
+   .. py:attribute:: adapted_modules
+      :type:  list[AdaptedModule]
+      :value: None
+
+
+
+   .. py:attribute:: integration_strategy
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: task_context
+      :type:  str
+      :value: None
+
+
+

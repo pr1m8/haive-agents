@@ -1,6 +1,5 @@
-
-:py:mod:`agents.reasoning_and_critique.reflexion.state`
-=======================================================
+agents.reasoning_and_critique.reflexion.state
+=============================================
 
 .. py:module:: agents.reasoning_and_critique.reflexion.state
 
@@ -16,33 +15,26 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: ReflexionState
+
+   Bases: :py:obj:`haive.agents.simple.state.SimpleAgentState`
+
+
+   State for the Reflexion agent.
+
+
+   .. autolink-examples:: ReflexionState
+      :collapse:
+
+   .. py:attribute:: answer
+      :type:  str
+      :value: ''
 
 
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ReflexionState:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ReflexionState {
-        node [shape=record];
-        "ReflexionState" [label="ReflexionState"];
-        "haive.agents.simple.state.SimpleAgentState" -> "ReflexionState";
-      }
-
-.. autoclass:: agents.reasoning_and_critique.reflexion.state.ReflexionState
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. py:attribute:: reflections_count
+      :type:  int
+      :value: 0
 
 
 
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.reasoning_and_critique.reflexion.state
-   :collapse:
-   
-.. autolink-skip:: next

@@ -1,17 +1,29 @@
-
-:py:mod:`agents.planning.base.agents`
-=====================================
+agents.planning.base.agents
+===========================
 
 .. py:module:: agents.planning.base.agents
 
-Base Planning Agents - Foundational agents for planning workflows.
+.. autoapi-nested-parse::
 
-This module provides the core planning agents that serve as building blocks
-for more complex planning systems.
+   Base Planning Agents - Foundational agents for planning workflows.
+
+   This module provides the core planning agents that serve as building blocks
+   for more complex planning systems.
 
 
-.. autolink-examples:: agents.planning.base.agents
-   :collapse:
+   .. autolink-examples:: agents.planning.base.agents
+      :collapse:
+
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/agents/planning/base/agents/executor/index
+   /autoapi/agents/planning/base/agents/planner/index
+
 
 Classes
 -------
@@ -21,31 +33,6 @@ Classes
    agents.planning.base.agents.BasePlannerAgent
 
 
-Module Contents
----------------
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for BasePlannerAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_BasePlannerAgent {
-        node [shape=record];
-        "BasePlannerAgent" [label="BasePlannerAgent"];
-        "SimpleAgentV3" -> "BasePlannerAgent";
-      }
-
-.. autoclass:: agents.planning.base.agents.BasePlannerAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
 Functions
 ---------
 
@@ -53,6 +40,74 @@ Functions
 
    agents.planning.base.agents.create_base_planner
    agents.planning.base.agents.create_conversation_summary_planner
+
+
+Package Contents
+----------------
+
+.. py:class:: BasePlannerAgent
+
+   Bases: :py:obj:`SimpleAgentV3`
+
+
+   Base planner agent with comprehensive planning capabilities.
+
+   This agent specializes in creating detailed, strategic plans by breaking down
+   complex objectives into clear, actionable steps with thorough analysis.
+
+   Features:
+   - Comprehensive objective analysis
+   - Detailed step-by-step planning
+   - Risk assessment and mitigation
+   - Resource and tool identification
+   - Timeline and dependency management
+   - Success criteria definition
+
+   .. rubric:: Examples
+
+   Basic planning:
+
+       planner = BasePlannerAgent()
+       plan = await planner.arun("Create a comprehensive business plan")
+
+   Custom configuration:
+
+       planner = BasePlannerAgent(
+           name="strategic_planner",
+           engine=AugLLMConfig(
+               model="gpt-4",
+               temperature=0.2,
+               system_message="Expert strategic planning specialist"
+           )
+       )
+       plan = await planner.arun("Launch new product line")
+
+
+   .. autolink-examples:: BasePlannerAgent
+      :collapse:
+
+   .. py:attribute:: engine
+      :type:  haive.core.engine.aug_llm.AugLLMConfig
+      :value: None
+
+
+
+   .. py:attribute:: name
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: prompt_template
+      :type:  langchain_core.prompts.ChatPromptTemplate
+      :value: None
+
+
+
+   .. py:attribute:: structured_output_model
+      :value: None
+
+
 
 .. py:function:: create_base_planner(name: str = 'base_planner', model: str = 'gpt-4o-mini', temperature: float = 0.3, structured_output_model=None) -> BasePlannerAgent
 
@@ -98,11 +153,3 @@ Functions
    .. autolink-examples:: create_conversation_summary_planner
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.planning.base.agents
-   :collapse:
-   
-.. autolink-skip:: next

@@ -1,16 +1,28 @@
-
-:py:mod:`agents.chain.chain_agent_simple`
-=========================================
+agents.chain.chain_agent_simple
+===============================
 
 .. py:module:: agents.chain.chain_agent_simple
 
-ChainAgent - The simplest way to build agent chains.
+.. autoapi-nested-parse::
 
-Just list your nodes and define the flow. That's it.
+   ChainAgent - The simplest way to build agent chains.
+
+   Just list your nodes and define the flow. That's it.
 
 
-.. autolink-examples:: agents.chain.chain_agent_simple
-   :collapse:
+   .. autolink-examples:: agents.chain.chain_agent_simple
+      :collapse:
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.chain.chain_agent_simple.EdgeLike
+   agents.chain.chain_agent_simple.NodeLike
+   agents.chain.chain_agent_simple.logger
+
 
 Classes
 -------
@@ -21,51 +33,6 @@ Classes
    agents.chain.chain_agent_simple.FlowBuilder
 
 
-Module Contents
----------------
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ChainAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ChainAgent {
-        node [shape=record];
-        "ChainAgent" [label="ChainAgent"];
-        "haive.agents.base.agent.Agent" -> "ChainAgent";
-      }
-
-.. autoclass:: agents.chain.chain_agent_simple.ChainAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for FlowBuilder:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_FlowBuilder {
-        node [shape=record];
-        "FlowBuilder" [label="FlowBuilder"];
-      }
-
-.. autoclass:: agents.chain.chain_agent_simple.FlowBuilder
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
 Functions
 ---------
 
@@ -73,6 +40,142 @@ Functions
 
    agents.chain.chain_agent_simple.flow
    agents.chain.chain_agent_simple.flow_with_edges
+
+
+Module Contents
+---------------
+
+.. py:class:: ChainAgent(*nodes: NodeLike, **kwargs)
+
+   Bases: :py:obj:`haive.agents.base.agent.Agent`
+
+
+   The simplest way to build chains - just list nodes and edges.
+
+   Initialize with nodes directly.
+
+   .. rubric:: Examples
+
+   ChainAgent(node1, node2, node3)  # Auto-sequential
+   ChainAgent(node1, node2, edges=["0->1"])
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: ChainAgent
+      :collapse:
+
+   .. py:method:: _add_edge_to_graph(graph: haive.core.graph.state_graph.base_graph2.BaseGraph, edge: EdgeLike, node_names: dict[int, str])
+
+      Add an edge to the graph.
+
+
+      .. autolink-examples:: _add_edge_to_graph
+         :collapse:
+
+
+   .. py:method:: add(node: NodeLike) -> ChainAgent
+
+      Add a node and auto-link from previous.
+
+
+      .. autolink-examples:: add
+         :collapse:
+
+
+   .. py:method:: branch(condition: collections.abc.Callable, **branches: NodeLike) -> ChainAgent
+
+      Add conditional branching.
+
+
+      .. autolink-examples:: branch
+         :collapse:
+
+
+   .. py:method:: build_graph() -> haive.core.graph.state_graph.base_graph2.BaseGraph
+
+      Build the graph from nodes and edges.
+
+
+      .. autolink-examples:: build_graph
+         :collapse:
+
+
+   .. py:method:: merge_to(target_idx: int) -> ChainAgent
+
+      Merge the last node to a target node.
+
+
+      .. autolink-examples:: merge_to
+         :collapse:
+
+
+   .. py:attribute:: edges
+      :type:  list[EdgeLike]
+      :value: None
+
+
+
+   .. py:attribute:: name
+      :type:  str
+      :value: 'Chain Agent'
+
+
+
+   .. py:attribute:: nodes
+      :type:  list[NodeLike]
+      :value: None
+
+
+
+.. py:class:: FlowBuilder(initial: NodeLike | None = None)
+
+   Builder for method chaining.
+
+
+   .. autolink-examples:: FlowBuilder
+      :collapse:
+
+   .. py:method:: add(node: NodeLike) -> FlowBuilder
+
+      Add a node.
+
+
+      .. autolink-examples:: add
+         :collapse:
+
+
+   .. py:method:: branch(condition: collections.abc.Callable, **branches: NodeLike) -> FlowBuilder
+
+      Add branching.
+
+
+      .. autolink-examples:: branch
+         :collapse:
+
+
+   .. py:method:: build() -> ChainAgent
+
+      Get the chain.
+
+
+      .. autolink-examples:: build
+         :collapse:
+
+
+   .. py:method:: merge_to(target_idx: int) -> FlowBuilder
+
+      Merge to a previous node.
+
+
+      .. autolink-examples:: merge_to
+         :collapse:
+
+
+   .. py:attribute:: chain
+
 
 .. py:function:: flow(*nodes: NodeLike, **kwargs) -> ChainAgent
 
@@ -110,11 +213,9 @@ Functions
    .. autolink-examples:: flow_with_edges
       :collapse:
 
+.. py:data:: EdgeLike
 
+.. py:data:: NodeLike
 
-.. rubric:: Related Links
+.. py:data:: logger
 
-.. autolink-examples:: agents.chain.chain_agent_simple
-   :collapse:
-   
-.. autolink-skip:: next

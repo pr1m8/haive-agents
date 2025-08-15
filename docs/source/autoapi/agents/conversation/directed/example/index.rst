@@ -1,14 +1,15 @@
-
-:py:mod:`agents.conversation.directed.example`
-==============================================
+agents.conversation.directed.example
+====================================
 
 .. py:module:: agents.conversation.directed.example
 
-Examples for directed conversation patterns with mentions and targeted responses.
+.. autoapi-nested-parse::
+
+   Examples for directed conversation patterns with mentions and targeted responses.
 
 
-.. autolink-examples:: agents.conversation.directed.example
-   :collapse:
+   .. autolink-examples:: agents.conversation.directed.example
+      :collapse:
 
 
 Functions
@@ -20,6 +21,10 @@ Functions
    agents.conversation.directed.example.example_customer_support
    agents.conversation.directed.example.example_interactive_story
    agents.conversation.directed.example.example_team_meeting
+
+
+Module Contents
+---------------
 
 .. py:function:: example_classroom_discussion() -> None
 
@@ -53,11 +58,3 @@ Functions
    .. autolink-examples:: example_team_meeting
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.conversation.directed.example
-   :collapse:
-   
-.. autolink-skip:: next

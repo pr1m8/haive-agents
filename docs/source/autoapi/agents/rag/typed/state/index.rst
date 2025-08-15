@@ -1,6 +1,5 @@
-
-:py:mod:`agents.rag.typed.state`
-================================
+agents.rag.typed.state
+======================
 
 .. py:module:: agents.rag.typed.state
 
@@ -16,33 +15,44 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: TypedRAGState
+
+   Bases: :py:obj:`haive.agents.rag.base.state.BaseRAGState`
+
+
+   State for Typed-RAG.
+
+
+   .. autolink-examples:: TypedRAGState
+      :collapse:
+
+   .. py:attribute:: aggregated_answer
+      :type:  str | None
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for TypedRAGState:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_TypedRAGState {
-        node [shape=record];
-        "TypedRAGState" [label="TypedRAGState"];
-        "haive.agents.rag.base.state.BaseRAGState" -> "TypedRAGState";
-      }
-
-.. autoclass:: agents.rag.typed.state.TypedRAGState
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. py:attribute:: query_category
+      :type:  str | None
+      :value: None
 
 
 
+   .. py:attribute:: query_metadata
+      :type:  dict[str, Any]
+      :value: None
 
-.. rubric:: Related Links
 
-.. autolink-examples:: agents.rag.typed.state
-   :collapse:
-   
-.. autolink-skip:: next
+
+   .. py:attribute:: subqueries
+      :type:  dict[str, str]
+      :value: None
+
+
+
+   .. py:attribute:: subquery_results
+      :type:  dict[str, list[langchain.schema.Document]]
+      :value: None
+
+
+

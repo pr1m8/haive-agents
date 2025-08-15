@@ -1,9 +1,7 @@
-
-:py:mod:`agents.rag.self_rag2.nodes.generate`
-=============================================
+agents.rag.self_rag2.nodes.generate
+===================================
 
 .. py:module:: agents.rag.self_rag2.nodes.generate
-
 
 
 Functions
@@ -12,6 +10,10 @@ Functions
 .. autoapisummary::
 
    agents.rag.self_rag2.nodes.generate.generate
+
+
+Module Contents
+---------------
 
 .. py:function:: generate(state: dict[str, Any])
 
@@ -27,11 +29,3 @@ Functions
    .. autolink-examples:: generate
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.rag.self_rag2.nodes.generate
-   :collapse:
-   
-.. autolink-skip:: next

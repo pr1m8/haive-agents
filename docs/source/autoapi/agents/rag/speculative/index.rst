@@ -1,15 +1,23 @@
-
-:py:mod:`agents.rag.speculative`
-================================
+agents.rag.speculative
+======================
 
 .. py:module:: agents.rag.speculative
 
-Module exports.
+.. autoapi-nested-parse::
+
+   Module exports.
 
 
-.. autolink-examples:: agents.rag.speculative
-   :collapse:
+   .. autolink-examples:: agents.rag.speculative
+      :collapse:
 
 
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/agents/rag/speculative/agent/index
 
 

@@ -1,15 +1,25 @@
-
-:py:mod:`agents.rag.filtered`
-=============================
+agents.rag.filtered
+===================
 
 .. py:module:: agents.rag.filtered
 
-Module exports.
+.. autoapi-nested-parse::
+
+   Module exports.
 
 
-.. autolink-examples:: agents.rag.filtered
-   :collapse:
+   .. autolink-examples:: agents.rag.filtered
+      :collapse:
 
 
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/agents/rag/filtered/agent/index
+   /autoapi/agents/rag/filtered/config/index
+   /autoapi/agents/rag/filtered/state/index
 
 

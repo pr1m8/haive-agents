@@ -1,6 +1,5 @@
-
-:py:mod:`agents.memory.state`
-=============================
+agents.memory.state
+===================
 
 .. py:module:: agents.memory.state
 
@@ -16,33 +15,49 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: MemoryAgentState
+
+   Bases: :py:obj:`haive.core.schema.prebuilt.messages_state.MessagesState`
+
+
+   State for Memory Agent, extending MessagesState.
+
+   Adds fields for storing and retrieving memories.
+
+
+   .. autolink-examples:: MemoryAgentState
+      :collapse:
+
+   .. py:attribute:: extracted_memories
+      :type:  list[haive.agents.memory.models.MemoryItem | haive.agents.memory.models.KnowledgeTriple]
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for MemoryAgentState:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_MemoryAgentState {
-        node [shape=record];
-        "MemoryAgentState" [label="MemoryAgentState"];
-        "haive.core.schema.prebuilt.messages_state.MessagesState" -> "MemoryAgentState";
-      }
-
-.. autoclass:: agents.memory.state.MemoryAgentState
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. py:attribute:: memory_type
+      :type:  str
+      :value: None
 
 
 
+   .. py:attribute:: model_config
 
-.. rubric:: Related Links
 
-.. autolink-examples:: agents.memory.state
-   :collapse:
-   
-.. autolink-skip:: next
+   .. py:attribute:: recall_memories
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: should_save_memories
+      :type:  bool
+      :value: None
+
+
+
+   .. py:attribute:: user_id
+      :type:  str | None
+      :value: None
+
+
+

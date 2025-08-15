@@ -1,6 +1,5 @@
-
-:py:mod:`agents.research.person.models`
-=======================================
+agents.research.person.models
+=============================
 
 .. py:module:: agents.research.person.models
 
@@ -17,70 +16,77 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: Queries(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Structure for search queries.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: Queries
+      :collapse:
+
+   .. py:attribute:: queries
+      :type:  list[str]
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
+.. py:class:: ReflectionOutput(/, **data: Any)
 
-   Inheritance diagram for Queries:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_Queries {
-        node [shape=record];
-        "Queries" [label="Queries"];
-        "pydantic.BaseModel" -> "Queries";
-      }
-
-.. autopydantic_model:: agents.research.person.models.Queries
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   Bases: :py:obj:`pydantic.BaseModel`
 
 
+   Structure for reflection output.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
 
 
+   .. autolink-examples:: __init__
+      :collapse:
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for ReflectionOutput:
+   .. autolink-examples:: ReflectionOutput
+      :collapse:
 
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ReflectionOutput {
-        node [shape=record];
-        "ReflectionOutput" [label="ReflectionOutput"];
-        "pydantic.BaseModel" -> "ReflectionOutput";
-      }
-
-.. autopydantic_model:: agents.research.person.models.ReflectionOutput
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: is_satisfactory
+      :type:  bool
+      :value: None
 
 
 
+   .. py:attribute:: missing_fields
+      :type:  list[str]
+      :value: None
 
 
-.. rubric:: Related Links
 
-.. autolink-examples:: agents.research.person.models
-   :collapse:
-   
-.. autolink-skip:: next
+   .. py:attribute:: reasoning
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: search_queries
+      :type:  list[str]
+      :value: None
+
+
+

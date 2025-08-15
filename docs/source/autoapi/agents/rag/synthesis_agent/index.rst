@@ -1,14 +1,16 @@
-
-:py:mod:`agents.rag.synthesis_agent`
-====================================
+agents.rag.synthesis_agent
+==========================
 
 .. py:module:: agents.rag.synthesis_agent
 
-Synthesis Agent for RAG - SimpleAgentV3 that synthesizes multiple RAG results.
+.. autoapi-nested-parse::
+
+   Synthesis Agent for RAG - SimpleAgentV3 that synthesizes multiple RAG results.
 
 
-.. autolink-examples:: agents.rag.synthesis_agent
-   :collapse:
+   .. autolink-examples:: agents.rag.synthesis_agent
+      :collapse:
+
 
 Classes
 -------
@@ -21,33 +23,26 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: SynthesisAgent
+
+   Bases: :py:obj:`SimpleAgentV3`
+
+
+   SimpleAgentV3 configured for synthesizing results from multiple RAG sources.
+
+
+   .. autolink-examples:: SynthesisAgent
+      :collapse:
+
+   .. py:attribute:: engine
+      :type:  haive.core.engine.aug_llm.AugLLMConfig
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for SynthesisAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_SynthesisAgent {
-        node [shape=record];
-        "SynthesisAgent" [label="SynthesisAgent"];
-        "SimpleAgentV3" -> "SynthesisAgent";
-      }
-
-.. autoclass:: agents.rag.synthesis_agent.SynthesisAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. py:attribute:: prompt_template
+      :type:  langchain_core.prompts.ChatPromptTemplate
+      :value: None
 
 
 
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.rag.synthesis_agent
-   :collapse:
-   
-.. autolink-skip:: next

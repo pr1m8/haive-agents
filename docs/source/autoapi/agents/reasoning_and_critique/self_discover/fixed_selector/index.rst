@@ -1,14 +1,24 @@
-
-:py:mod:`agents.reasoning_and_critique.self_discover.fixed_selector`
-====================================================================
+agents.reasoning_and_critique.self_discover.fixed_selector
+==========================================================
 
 .. py:module:: agents.reasoning_and_critique.self_discover.fixed_selector
 
-Fixed SelfDiscoverSelector that properly handles prompt template variables.
+.. autoapi-nested-parse::
+
+   Fixed SelfDiscoverSelector that properly handles prompt template variables.
 
 
-.. autolink-examples:: agents.reasoning_and_critique.self_discover.fixed_selector
-   :collapse:
+   .. autolink-examples:: agents.reasoning_and_critique.self_discover.fixed_selector
+      :collapse:
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.reasoning_and_critique.self_discover.fixed_selector.logger
+
 
 Classes
 -------
@@ -16,69 +26,48 @@ Classes
 .. autoapisummary::
 
    agents.reasoning_and_critique.self_discover.fixed_selector.FixedSelfDiscoverSelector
-   agents.reasoning_and_critique.self_discover.fixed_selector.ModuleSelectionOutput
 
 
 Module Contents
 ---------------
 
+.. py:class:: FixedSelfDiscoverSelector
+
+   Bases: :py:obj:`SimpleAgentV3`
+
+
+   Fixed version of SelfDiscoverSelector that properly passes prompt variables.
+
+
+   .. autolink-examples:: FixedSelfDiscoverSelector
+      :collapse:
+
+   .. py:method:: _prepare_input(input_data: Any) -> Any
+
+      Override to properly format the prompt with all variables.
+
+
+      .. autolink-examples:: _prepare_input
+         :collapse:
+
+
+   .. py:attribute:: engine
+      :type:  haive.core.engine.aug_llm.AugLLMConfig
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for FixedSelfDiscoverSelector:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_FixedSelfDiscoverSelector {
-        node [shape=record];
-        "FixedSelfDiscoverSelector" [label="FixedSelfDiscoverSelector"];
-        "SimpleAgentV3" -> "FixedSelfDiscoverSelector";
-      }
-
-.. autoclass:: agents.reasoning_and_critique.self_discover.fixed_selector.FixedSelfDiscoverSelector
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-:orphan:
+   .. py:attribute:: name
+      :type:  str
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ModuleSelectionOutput:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ModuleSelectionOutput {
-        node [shape=record];
-        "ModuleSelectionOutput" [label="ModuleSelectionOutput"];
-        "pydantic.BaseModel" -> "ModuleSelectionOutput";
-      }
-
-.. autopydantic_model:: agents.reasoning_and_critique.self_discover.fixed_selector.ModuleSelectionOutput
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: prompt_template
+      :type:  langchain_core.prompts.ChatPromptTemplate
+      :value: None
 
 
 
+.. py:data:: logger
 
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.reasoning_and_critique.self_discover.fixed_selector
-   :collapse:
-   
-.. autolink-skip:: next

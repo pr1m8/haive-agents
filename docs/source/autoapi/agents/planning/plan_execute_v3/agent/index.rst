@@ -1,272 +1,171 @@
-
-:py:mod:`agents.planning.plan_execute_v3.agent`
-===============================================
+agents.planning.plan_execute_v3.agent
+=====================================
 
 .. py:module:: agents.planning.plan_execute_v3.agent
 
-Plan-and-Execute V3 Agent - Enhanced MultiAgent V3 Implementation.
+.. autoapi-nested-parse::
 
-This agent implements the Plan-and-Execute methodology using Enhanced MultiAgent V3,
-separating planning, execution, evaluation, and replanning into distinct sub-agents.
+   Plan-and-Execute V3 Agent - Enhanced MultiAgent V3 Implementation.
 
-Key Features:
-- SimpleAgent for planning with structured output (ExecutionPlan)
-- ReactAgent for step execution with tools
-- SimpleAgent for evaluation and decision-making (PlanEvaluation)
-- SimpleAgent for replanning when needed (RevisedPlan)
-- Enhanced MultiAgent V3 for coordination
-- Real component testing (no mocks)
+   This agent implements the Plan-and-Execute methodology using Enhanced MultiAgent V3,
+   separating planning, execution, evaluation, and replanning into distinct sub-agents.
+
+   Key Features:
+   - SimpleAgent for planning with structured output (ExecutionPlan)
+   - ReactAgent for step execution with tools
+   - SimpleAgent for evaluation and decision-making (PlanEvaluation)
+   - SimpleAgent for replanning when needed (RevisedPlan)
+   - Enhanced MultiAgent V3 for coordination
+   - Real component testing (no mocks)
 
 
-.. autolink-examples:: agents.planning.plan_execute_v3.agent
-   :collapse:
+   .. autolink-examples:: agents.planning.plan_execute_v3.agent
+      :collapse:
+
 
 Classes
 -------
 
 .. autoapisummary::
 
-   agents.planning.plan_execute_v3.agent.ExecutionPlan
-   agents.planning.plan_execute_v3.agent.PlanEvaluation
-   agents.planning.plan_execute_v3.agent.PlanExecuteInput
-   agents.planning.plan_execute_v3.agent.PlanExecuteOutput
    agents.planning.plan_execute_v3.agent.PlanExecuteV3Agent
-   agents.planning.plan_execute_v3.agent.PlanExecuteV3State
-   agents.planning.plan_execute_v3.agent.RevisedPlan
-   agents.planning.plan_execute_v3.agent.StepExecution
 
 
 Module Contents
 ---------------
 
-:orphan:
+.. py:class:: PlanExecuteV3Agent(name: str = 'plan_execute_v3', config: haive.core.engine.aug_llm.AugLLMConfig | None = None, tools: list[langchain_core.tools.Tool] | None = None, max_iterations: int = 5, max_steps_per_plan: int = 10)
 
+   Plan-and-Execute V3 Agent using Enhanced MultiAgent V3.
 
+   This agent separates planning and execution into distinct phases:
+   1. Planner: Creates detailed execution plans (SimpleAgent -> ExecutionPlan)
+   2. Executor: Executes individual steps with tools (ReactAgent -> StepExecution)
+   3. Evaluator: Evaluates progress and decides next action (SimpleAgent -> PlanEvaluation)
+   4. Replanner: Creates revised plans when needed (SimpleAgent -> RevisedPlan)
 
-.. toggle:: Show Inheritance Diagram
+   The Enhanced MultiAgent V3 coordinates these sub-agents using conditional routing
+   based on plan progress and evaluation decisions.
 
-   Inheritance diagram for ExecutionPlan:
+   .. attribute:: name
 
-   .. graphviz::
-      :align: center
+      Agent name
 
-      digraph inheritance_ExecutionPlan {
-        node [shape=record];
-        "ExecutionPlan" [label="ExecutionPlan"];
-        "pydantic.BaseModel" -> "ExecutionPlan";
-      }
+   .. attribute:: config
 
-.. autopydantic_model:: agents.planning.plan_execute_v3.agent.ExecutionPlan
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+      LLM configuration
 
+   .. attribute:: tools
 
-:orphan:
+      Available tools for execution
 
+   .. attribute:: max_iterations
 
+      Maximum planning iterations
 
-.. toggle:: Show Inheritance Diagram
+   .. attribute:: max_steps_per_plan
 
-   Inheritance diagram for PlanEvaluation:
+      Maximum steps per plan
 
-   .. graphviz::
-      :align: center
+   Initialize Plan-and-Execute V3 agent.
 
-      digraph inheritance_PlanEvaluation {
-        node [shape=record];
-        "PlanEvaluation" [label="PlanEvaluation"];
-        "pydantic.BaseModel" -> "PlanEvaluation";
-      }
+   :param name: Agent name
+   :param config: LLM configuration (uses default if None)
+   :param tools: Available tools for execution
+   :param max_iterations: Maximum planning iterations
+   :param max_steps_per_plan: Maximum steps per plan
 
-.. autopydantic_model:: agents.planning.plan_execute_v3.agent.PlanEvaluation
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
 
+   .. autolink-examples:: __init__
+      :collapse:
 
-:orphan:
 
+   .. autolink-examples:: PlanExecuteV3Agent
+      :collapse:
 
+   .. py:method:: _setup_routing() -> None
 
-.. toggle:: Show Inheritance Diagram
+      Set up conditional routing between sub-agents.
 
-   Inheritance diagram for PlanExecuteInput:
 
-   .. graphviz::
-      :align: center
+      .. autolink-examples:: _setup_routing
+         :collapse:
 
-      digraph inheritance_PlanExecuteInput {
-        node [shape=record];
-        "PlanExecuteInput" [label="PlanExecuteInput"];
-        "pydantic.BaseModel" -> "PlanExecuteInput";
-      }
 
-.. autopydantic_model:: agents.planning.plan_execute_v3.agent.PlanExecuteInput
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:method:: arun(input_data: str | dict[str, Any] | agents.planning.plan_execute_v3.models.PlanExecuteInput, state: agents.planning.plan_execute_v3.state.PlanExecuteV3State | None = None) -> agents.planning.plan_execute_v3.models.PlanExecuteOutput
+      :async:
 
 
-:orphan:
+      Execute the Plan-and-Execute agent asynchronously.
 
+      :param input_data: Input objective/request
+      :param state: Optional existing state (creates new if None)
 
+      :returns: PlanExecuteOutput with final results
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for PlanExecuteOutput:
+      .. autolink-examples:: arun
+         :collapse:
 
-   .. graphviz::
-      :align: center
 
-      digraph inheritance_PlanExecuteOutput {
-        node [shape=record];
-        "PlanExecuteOutput" [label="PlanExecuteOutput"];
-        "pydantic.BaseModel" -> "PlanExecuteOutput";
-      }
+   .. py:method:: get_capabilities() -> dict[str, Any]
 
-.. autopydantic_model:: agents.planning.plan_execute_v3.agent.PlanExecuteOutput
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+      Get agent capabilities description.
 
 
+      .. autolink-examples:: get_capabilities
+         :collapse:
 
 
+   .. py:method:: run(input_data: str | dict[str, Any] | agents.planning.plan_execute_v3.models.PlanExecuteInput, state: agents.planning.plan_execute_v3.state.PlanExecuteV3State | None = None) -> agents.planning.plan_execute_v3.models.PlanExecuteOutput
 
-.. toggle:: Show Inheritance Diagram
+      Execute the Plan-and-Execute agent synchronously.
 
-   Inheritance diagram for PlanExecuteV3Agent:
+      :param input_data: Input objective/request
+      :param state: Optional existing state
 
-   .. graphviz::
-      :align: center
+      :returns: PlanExecuteOutput with final results
 
-      digraph inheritance_PlanExecuteV3Agent {
-        node [shape=record];
-        "PlanExecuteV3Agent" [label="PlanExecuteV3Agent"];
-      }
 
-.. autoclass:: agents.planning.plan_execute_v3.agent.PlanExecuteV3Agent
-   :members:
-   :undoc-members:
-   :show-inheritance:
+      .. autolink-examples:: run
+         :collapse:
 
-:orphan:
 
+   .. py:attribute:: config
 
 
-.. toggle:: Show Inheritance Diagram
+   .. py:attribute:: evaluator
 
-   Inheritance diagram for PlanExecuteV3State:
 
-   .. graphviz::
-      :align: center
+   .. py:attribute:: executor
 
-      digraph inheritance_PlanExecuteV3State {
-        node [shape=record];
-        "PlanExecuteV3State" [label="PlanExecuteV3State"];
-        "haive.core.schema.prebuilt.messages_state.MessagesState" -> "PlanExecuteV3State";
-      }
 
-.. autoclass:: agents.planning.plan_execute_v3.agent.PlanExecuteV3State
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. py:attribute:: max_iterations
+      :value: 5
 
-:orphan:
 
 
+   .. py:attribute:: max_steps_per_plan
+      :value: 10
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for RevisedPlan:
 
-   .. graphviz::
-      :align: center
+   .. py:attribute:: multi_agent
 
-      digraph inheritance_RevisedPlan {
-        node [shape=record];
-        "RevisedPlan" [label="RevisedPlan"];
-        "pydantic.BaseModel" -> "RevisedPlan";
-      }
 
-.. autopydantic_model:: agents.planning.plan_execute_v3.agent.RevisedPlan
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: name
+      :value: 'plan_execute_v3'
 
 
-:orphan:
 
+   .. py:attribute:: planner
 
 
-.. toggle:: Show Inheritance Diagram
+   .. py:attribute:: replanner
 
-   Inheritance diagram for StepExecution:
 
-   .. graphviz::
-      :align: center
+   .. py:attribute:: tools
+      :value: []
 
-      digraph inheritance_StepExecution {
-        node [shape=record];
-        "StepExecution" [label="StepExecution"];
-        "pydantic.BaseModel" -> "StepExecution";
-      }
 
-.. autopydantic_model:: agents.planning.plan_execute_v3.agent.StepExecution
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
 
-
-
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.planning.plan_execute_v3.agent
-   :collapse:
-   
-.. autolink-skip:: next

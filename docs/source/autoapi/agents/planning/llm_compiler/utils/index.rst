@@ -1,9 +1,7 @@
-
-:py:mod:`agents.planning.llm_compiler.utils`
-============================================
+agents.planning.llm_compiler.utils
+==================================
 
 .. py:module:: agents.planning.llm_compiler.utils
-
 
 
 Functions
@@ -18,6 +16,10 @@ Functions
    agents.planning.llm_compiler.utils.schedule_pending_task
    agents.planning.llm_compiler.utils.schedule_task
    agents.planning.llm_compiler.utils.schedule_tasks
+
+
+Module Contents
+---------------
 
 .. py:function:: _execute_task(task, observations, config)
 
@@ -39,11 +41,3 @@ Functions
    .. autolink-examples:: schedule_tasks
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.planning.llm_compiler.utils
-   :collapse:
-   
-.. autolink-skip:: next

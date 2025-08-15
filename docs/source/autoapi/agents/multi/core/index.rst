@@ -1,15 +1,23 @@
-
-:py:mod:`agents.multi.core`
-===========================
+agents.multi.core
+=================
 
 .. py:module:: agents.multi.core
 
-Core multi-agent implementations.
+.. autoapi-nested-parse::
+
+   Core multi-agent implementations.
 
 
-.. autolink-examples:: agents.multi.core
-   :collapse:
+   .. autolink-examples:: agents.multi.core
+      :collapse:
 
 
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/agents/multi/core/clean_multi_agent/index
 
 

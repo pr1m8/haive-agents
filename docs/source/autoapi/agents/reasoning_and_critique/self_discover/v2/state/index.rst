@@ -1,14 +1,16 @@
-
-:py:mod:`agents.reasoning_and_critique.self_discover.v2.state`
-==============================================================
+agents.reasoning_and_critique.self_discover.v2.state
+====================================================
 
 .. py:module:: agents.reasoning_and_critique.self_discover.v2.state
 
-State schema for Self-Discovery reasoning system.
+.. autoapi-nested-parse::
+
+   State schema for Self-Discovery reasoning system.
 
 
-.. autolink-examples:: agents.reasoning_and_critique.self_discover.v2.state
-   :collapse:
+   .. autolink-examples:: agents.reasoning_and_critique.self_discover.v2.state
+      :collapse:
+
 
 Classes
 -------
@@ -21,33 +23,67 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: SelfDiscoveryState
+
+   Bases: :py:obj:`haive.core.schema.prebuilt.messages.messages_state.MessagesState`
+
+
+   State for self-discovery reasoning workflow.
+
+
+   .. autolink-examples:: SelfDiscoveryState
+      :collapse:
+
+   .. py:attribute:: __shared_fields__
+      :value: ['messages', 'reasoning_modules', 'task_description', 'selected_modules', 'adapted_modules',...
 
 
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for SelfDiscoveryState:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_SelfDiscoveryState {
-        node [shape=record];
-        "SelfDiscoveryState" [label="SelfDiscoveryState"];
-        "haive.core.schema.prebuilt.messages.messages_state.MessagesState" -> "SelfDiscoveryState";
-      }
-
-.. autoclass:: agents.reasoning_and_critique.self_discover.v2.state.SelfDiscoveryState
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. py:attribute:: adapted_modules
+      :type:  str | None
+      :value: None
 
 
 
+   .. py:attribute:: answer
+      :type:  str | None
+      :value: None
 
-.. rubric:: Related Links
 
-.. autolink-examples:: agents.reasoning_and_critique.self_discover.v2.state
-   :collapse:
-   
-.. autolink-skip:: next
+
+   .. py:attribute:: error
+      :type:  str | None
+      :value: None
+
+
+
+   .. py:attribute:: metadata
+      :type:  dict[str, Any]
+      :value: None
+
+
+
+   .. py:attribute:: reasoning_modules
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: reasoning_structure
+      :type:  str | None
+      :value: None
+
+
+
+   .. py:attribute:: selected_modules
+      :type:  str | None
+      :value: None
+
+
+
+   .. py:attribute:: task_description
+      :type:  str
+      :value: None
+
+
+

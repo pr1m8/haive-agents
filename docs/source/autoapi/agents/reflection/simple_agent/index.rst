@@ -1,14 +1,16 @@
-
-:py:mod:`agents.reflection.simple_agent`
-========================================
+agents.reflection.simple_agent
+==============================
 
 .. py:module:: agents.reflection.simple_agent
 
-Simple Reflection Agent using clean MultiAgent pattern.
+.. autoapi-nested-parse::
+
+   Simple Reflection Agent using clean MultiAgent pattern.
 
 
-.. autolink-examples:: agents.reflection.simple_agent
-   :collapse:
+   .. autolink-examples:: agents.reflection.simple_agent
+      :collapse:
+
 
 Classes
 -------
@@ -18,31 +20,6 @@ Classes
    agents.reflection.simple_agent.ReflectionAgent
 
 
-Module Contents
----------------
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ReflectionAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ReflectionAgent {
-        node [shape=record];
-        "ReflectionAgent" [label="ReflectionAgent"];
-        "haive.agents.multi.agent.MultiAgent" -> "ReflectionAgent";
-      }
-
-.. autoclass:: agents.reflection.simple_agent.ReflectionAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
 Functions
 ---------
 
@@ -50,6 +27,54 @@ Functions
 
    agents.reflection.simple_agent.create
    agents.reflection.simple_agent.enhance_agent
+
+
+Module Contents
+---------------
+
+.. py:class:: ReflectionAgent
+
+   Bases: :py:obj:`haive.agents.multi.agent.MultiAgent`
+
+
+   Simple reflection agent using clean MultiAgent pattern.
+
+
+   .. autolink-examples:: ReflectionAgent
+      :collapse:
+
+   .. py:method:: _run_sequential(input_data, **kwargs)
+      :async:
+
+
+      Custom sequential execution with reflection loop.
+
+
+      .. autolink-examples:: _run_sequential
+         :collapse:
+
+
+   .. py:method:: create(name: str = 'reflection_agent', max_iterations: int = 2, quality_threshold: float = 0.8, **kwargs) -> ReflectionAgent
+      :classmethod:
+
+
+      Create a simple reflection agent.
+
+
+      .. autolink-examples:: create
+         :collapse:
+
+
+   .. py:method:: enhance_agent(base_agent: Any, name: str | None = None, **kwargs) -> ReflectionAgent
+      :classmethod:
+
+
+      Enhance any agent with reflection capability.
+
+
+      .. autolink-examples:: enhance_agent
+         :collapse:
+
 
 .. py:function:: create(*args, **kwargs) -> ReflectionAgent
 
@@ -67,11 +92,3 @@ Functions
    .. autolink-examples:: enhance_agent
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.reflection.simple_agent
-   :collapse:
-   
-.. autolink-skip:: next

@@ -1,27 +1,35 @@
-
-:py:mod:`answer_generators`
-===========================
+answer_generators
+=================
 
 .. py:module:: answer_generators
 
-Answer Generators - TODO: Add brief description.
+.. autoapi-nested-parse::
 
-TODO: Add detailed description of module functionality
+   Answer Generators - TODO: Add brief description.
 
-
-
-.. rubric:: Example
-
-Basic usage::
-
-    from haive.answer_generators import module_function
-
-    # TODO: Add example
+   TODO: Add detailed description of module functionality
 
 
-.. autolink-examples:: answer_generators
-   :collapse:
+
+   .. rubric:: Example
+
+   Basic usage::
+
+       from haive.answer_generators import module_function
+
+       # TODO: Add example
 
 
+   .. autolink-examples:: answer_generators
+      :collapse:
+
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/answer_generators/prompts/index
 
 

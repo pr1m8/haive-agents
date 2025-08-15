@@ -1,22 +1,24 @@
-
-:py:mod:`agents.rag.multi_agent_rag.complete_rag_workflows`
-===========================================================
+agents.rag.multi_agent_rag.complete_rag_workflows
+=================================================
 
 .. py:module:: agents.rag.multi_agent_rag.complete_rag_workflows
 
-Complete RAG Workflows Implementation.
+.. autoapi-nested-parse::
 
-Implements all RAG architectures from rag-architectures-flows.md including:
-- Corrective RAG with web search fallback
-- Self-RAG with reflection tokens
-- Adaptive RAG with complexity routing
-- Multi-Query RAG and RAG Fusion
-- HYDE and Step-Back prompting
-- Hallucination detection and requerying
+   Complete RAG Workflows Implementation.
+
+   Implements all RAG architectures from rag-architectures-flows.md including:
+   - Corrective RAG with web search fallback
+   - Self-RAG with reflection tokens
+   - Adaptive RAG with complexity routing
+   - Multi-Query RAG and RAG Fusion
+   - HYDE and Step-Back prompting
+   - Hallucination detection and requerying
 
 
-.. autolink-examples:: agents.rag.multi_agent_rag.complete_rag_workflows
-   :collapse:
+   .. autolink-examples:: agents.rag.multi_agent_rag.complete_rag_workflows
+      :collapse:
+
 
 Classes
 -------
@@ -31,148 +33,6 @@ Classes
    agents.rag.multi_agent_rag.complete_rag_workflows.SelfRAGAgent
 
 
-Module Contents
----------------
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for AdaptiveRAGAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_AdaptiveRAGAgent {
-        node [shape=record];
-        "AdaptiveRAGAgent" [label="AdaptiveRAGAgent"];
-        "haive.agents.multi.base.ConditionalAgent" -> "AdaptiveRAGAgent";
-      }
-
-.. autoclass:: agents.rag.multi_agent_rag.complete_rag_workflows.AdaptiveRAGAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for CorrectiveRAGAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_CorrectiveRAGAgent {
-        node [shape=record];
-        "CorrectiveRAGAgent" [label="CorrectiveRAGAgent"];
-        "haive.agents.multi.base.ConditionalAgent" -> "CorrectiveRAGAgent";
-      }
-
-.. autoclass:: agents.rag.multi_agent_rag.complete_rag_workflows.CorrectiveRAGAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for HYDERAGAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_HYDERAGAgent {
-        node [shape=record];
-        "HYDERAGAgent" [label="HYDERAGAgent"];
-        "haive.agents.multi.base.SequentialAgent" -> "HYDERAGAgent";
-      }
-
-.. autoclass:: agents.rag.multi_agent_rag.complete_rag_workflows.HYDERAGAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for RAGQuality:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_RAGQuality {
-        node [shape=record];
-        "RAGQuality" [label="RAGQuality"];
-        "str" -> "RAGQuality";
-        "enum.Enum" -> "RAGQuality";
-      }
-
-.. autoclass:: agents.rag.multi_agent_rag.complete_rag_workflows.RAGQuality
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-   .. note::
-
-      **RAGQuality** is an Enum defined in ``agents.rag.multi_agent_rag.complete_rag_workflows``.
-
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ReflectionToken:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ReflectionToken {
-        node [shape=record];
-        "ReflectionToken" [label="ReflectionToken"];
-        "str" -> "ReflectionToken";
-        "enum.Enum" -> "ReflectionToken";
-      }
-
-.. autoclass:: agents.rag.multi_agent_rag.complete_rag_workflows.ReflectionToken
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-   .. note::
-
-      **ReflectionToken** is an Enum defined in ``agents.rag.multi_agent_rag.complete_rag_workflows``.
-
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for SelfRAGAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_SelfRAGAgent {
-        node [shape=record];
-        "SelfRAGAgent" [label="SelfRAGAgent"];
-        "haive.agents.multi.base.ConditionalAgent" -> "SelfRAGAgent";
-      }
-
-.. autoclass:: agents.rag.multi_agent_rag.complete_rag_workflows.SelfRAGAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
 Functions
 ---------
 
@@ -180,12 +40,244 @@ Functions
 
    agents.rag.multi_agent_rag.complete_rag_workflows.crag_relevance_check
    agents.rag.multi_agent_rag.complete_rag_workflows.create_complete_rag_workflow
-   agents.rag.multi_agent_rag.complete_rag_workflows.generate_multi_queries
    agents.rag.multi_agent_rag.complete_rag_workflows.hallucination_detection
-   agents.rag.multi_agent_rag.complete_rag_workflows.hyde_hypothesis_generation
-   agents.rag.multi_agent_rag.complete_rag_workflows.query_complexity_analysis
-   agents.rag.multi_agent_rag.complete_rag_workflows.self_rag_retrieval_decision
    agents.rag.multi_agent_rag.complete_rag_workflows.web_search_fallback
+
+
+Module Contents
+---------------
+
+.. py:class:: AdaptiveRAGAgent(documents: list[langchain_core.documents.Document] | None = None, **kwargs)
+
+   Bases: :py:obj:`haive.agents.multi.base.ConditionalAgent`
+
+
+   Adaptive RAG with complexity-based routing.
+
+
+   .. autolink-examples:: AdaptiveRAGAgent
+      :collapse:
+
+   .. py:method:: _build_analyzer_graph() -> haive.core.graph.state_graph.base_graph2.BaseGraph
+
+
+   .. py:method:: _create_multi_query_agent(documents: list[langchain_core.documents.Document] | None) -> haive.agents.base.agent.Agent
+
+      Create multi-query RAG agent.
+
+
+      .. autolink-examples:: _create_multi_query_agent
+         :collapse:
+
+
+   .. py:method:: _setup_adaptive_routing()
+
+      Set up adaptive routing based on complexity.
+
+
+      .. autolink-examples:: _setup_adaptive_routing
+         :collapse:
+
+
+   .. py:attribute:: analyzer_agent
+
+
+   .. py:attribute:: complex_rag_agent
+
+
+   .. py:attribute:: direct_agent
+
+
+   .. py:attribute:: multi_query_agent
+
+
+   .. py:attribute:: simple_rag_agent
+
+
+.. py:class:: CorrectiveRAGAgent(documents: list[langchain_core.documents.Document] | None = None, **kwargs)
+
+   Bases: :py:obj:`haive.agents.multi.base.ConditionalAgent`
+
+
+   Full Corrective RAG implementation with web search fallback.
+
+
+   .. autolink-examples:: CorrectiveRAGAgent
+      :collapse:
+
+   .. py:method:: _build_relevance_graph() -> haive.core.graph.state_graph.base_graph2.BaseGraph
+
+
+   .. py:method:: _build_web_search_graph() -> haive.core.graph.state_graph.base_graph2.BaseGraph
+
+
+   .. py:method:: _setup_crag_routing()
+
+      Set up CRAG conditional routing.
+
+
+      .. autolink-examples:: _setup_crag_routing
+         :collapse:
+
+
+   .. py:attribute:: answer_agent
+
+
+   .. py:attribute:: relevance_agent
+
+
+   .. py:attribute:: retrieval_agent
+
+
+   .. py:attribute:: web_search_agent
+
+
+.. py:class:: HYDERAGAgent(documents: list[langchain_core.documents.Document] | None = None, **kwargs)
+
+   Bases: :py:obj:`haive.agents.multi.base.SequentialAgent`
+
+
+   Enhanced HYDE RAG with hypothesis generation.
+
+
+   .. autolink-examples:: HYDERAGAgent
+      :collapse:
+
+   .. py:method:: _build_hypothesis_graph() -> haive.core.graph.state_graph.base_graph2.BaseGraph
+
+
+.. py:class:: RAGQuality
+
+   Bases: :py:obj:`str`, :py:obj:`enum.Enum`
+
+
+   Quality assessment for retrieved documents.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: RAGQuality
+      :collapse:
+
+   .. py:attribute:: AMBIGUOUS
+      :value: 'ambiguous'
+
+
+
+   .. py:attribute:: CORRECT
+      :value: 'correct'
+
+
+
+   .. py:attribute:: INCORRECT
+      :value: 'incorrect'
+
+
+
+.. py:class:: ReflectionToken
+
+   Bases: :py:obj:`str`, :py:obj:`enum.Enum`
+
+
+   Self-RAG reflection tokens.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: ReflectionToken
+      :collapse:
+
+   .. py:attribute:: ISREL_NOT_RELEVANT
+      :value: '[ISREL] Not Relevant'
+
+
+
+   .. py:attribute:: ISREL_RELEVANT
+      :value: '[ISREL] Relevant'
+
+
+
+   .. py:attribute:: ISSUP_NOT_SUPPORTED
+      :value: '[ISSUP] Not Supported'
+
+
+
+   .. py:attribute:: ISSUP_SUPPORTED
+      :value: '[ISSUP] Supported'
+
+
+
+   .. py:attribute:: ISUSE_NOT_USEFUL
+      :value: '[ISUSE] Not Useful'
+
+
+
+   .. py:attribute:: ISUSE_USEFUL
+      :value: '[ISUSE] Useful'
+
+
+
+   .. py:attribute:: NO_RETRIEVAL
+      :value: '[No Retrieval]'
+
+
+
+   .. py:attribute:: RETRIEVAL_YES
+      :value: '[Retrieval]'
+
+
+
+.. py:class:: SelfRAGAgent(documents: list[langchain_core.documents.Document] | None = None, **kwargs)
+
+   Bases: :py:obj:`haive.agents.multi.base.ConditionalAgent`
+
+
+   Self-RAG with reflection tokens and adaptive retrieval.
+
+
+   .. autolink-examples:: SelfRAGAgent
+      :collapse:
+
+   .. py:method:: _build_decision_graph() -> haive.core.graph.state_graph.base_graph2.BaseGraph
+
+
+   .. py:method:: _build_hallucination_graph() -> haive.core.graph.state_graph.base_graph2.BaseGraph
+
+
+   .. py:method:: _build_relevance_graph() -> haive.core.graph.state_graph.base_graph2.BaseGraph
+
+
+   .. py:method:: _setup_self_rag_routing()
+
+      Set up Self-RAG routing with reflection tokens.
+
+
+      .. autolink-examples:: _setup_self_rag_routing
+         :collapse:
+
+
+   .. py:attribute:: decision_agent
+
+
+   .. py:attribute:: generation_agent
+
+
+   .. py:attribute:: hallucination_agent
+
+
+   .. py:attribute:: relevance_agent
+
+
+   .. py:attribute:: retrieval_agent
+
 
 .. py:function:: crag_relevance_check(input_data: dict) -> dict
 
@@ -210,7 +302,6 @@ Functions
    .. autolink-examples:: create_complete_rag_workflow
       :collapse:
 
-
 .. py:function:: hallucination_detection(input_data: dict) -> dict
 
    Detect hallucination in generated response.
@@ -218,9 +309,6 @@ Functions
 
    .. autolink-examples:: hallucination_detection
       :collapse:
-
-
-
 
 .. py:function:: web_search_fallback(input_data: dict) -> dict
 
@@ -230,11 +318,3 @@ Functions
    .. autolink-examples:: web_search_fallback
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.rag.multi_agent_rag.complete_rag_workflows
-   :collapse:
-   
-.. autolink-skip:: next

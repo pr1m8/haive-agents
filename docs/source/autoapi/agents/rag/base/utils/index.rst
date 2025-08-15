@@ -1,10 +1,6 @@
-
-:py:mod:`agents.rag.base.utils`
-===============================
+agents.rag.base.utils
+=====================
 
 .. py:module:: agents.rag.base.utils
-
-
-
 
 

@@ -1,9 +1,24 @@
-
-:py:mod:`agents.reasoning_and_critique.lats.v2.agents`
-======================================================
+agents.reasoning_and_critique.lats.v2.agents
+============================================
 
 .. py:module:: agents.reasoning_and_critique.lats.v2.agents
 
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.reasoning_and_critique.lats.v2.agents.expansion_agent
+   agents.reasoning_and_critique.lats.v2.agents.expansion_engine
+   agents.reasoning_and_critique.lats.v2.agents.initial_agent
+   agents.reasoning_and_critique.lats.v2.agents.initial_engine
+   agents.reasoning_and_critique.lats.v2.agents.logger
+   agents.reasoning_and_critique.lats.v2.agents.reflection_agent
+   agents.reasoning_and_critique.lats.v2.agents.reflection_engine
+   agents.reasoning_and_critique.lats.v2.agents.selection_agent
+   agents.reasoning_and_critique.lats.v2.agents.selection_engine
+   agents.reasoning_and_critique.lats.v2.agents.tool_node
 
 
 Functions
@@ -20,6 +35,10 @@ Functions
    agents.reasoning_and_critique.lats.v2.agents.process_reflection
    agents.reasoning_and_critique.lats.v2.agents.should_continue_search
    agents.reasoning_and_critique.lats.v2.agents.should_execute_tools
+
+
+Module Contents
+---------------
 
 .. py:function:: backpropagate(nodes: dict[str, haive.agents.reasoning_and_critique.lats.v2.models.TreeNode], node_id: str, reward: float) -> dict[str, haive.agents.reasoning_and_critique.lats.v2.models.TreeNode]
 
@@ -93,11 +112,23 @@ Functions
    .. autolink-examples:: should_execute_tools
       :collapse:
 
+.. py:data:: expansion_agent
 
+.. py:data:: expansion_engine
 
-.. rubric:: Related Links
+.. py:data:: initial_agent
 
-.. autolink-examples:: agents.reasoning_and_critique.lats.v2.agents
-   :collapse:
-   
-.. autolink-skip:: next
+.. py:data:: initial_engine
+
+.. py:data:: logger
+
+.. py:data:: reflection_agent
+
+.. py:data:: reflection_engine
+
+.. py:data:: selection_agent
+
+.. py:data:: selection_engine
+
+.. py:data:: tool_node
+

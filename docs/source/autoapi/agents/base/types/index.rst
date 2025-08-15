@@ -1,16 +1,33 @@
-
-:py:mod:`agents.base.types`
-===========================
+agents.base.types
+=================
 
 .. py:module:: agents.base.types
 
-Core type system for the Haive agent framework.
+.. autoapi-nested-parse::
 
-Defines type variables, constraints, and base protocols for type-safe agent design.
+   Core type system for the Haive agent framework.
+
+   Defines type variables, constraints, and base protocols for type-safe agent design.
 
 
-.. autolink-examples:: agents.base.types
-   :collapse:
+   .. autolink-examples:: agents.base.types
+      :collapse:
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.base.types.HookFunction
+   agents.base.types.TConfig
+   agents.base.types.TEngine
+   agents.base.types.TInput
+   agents.base.types.TInvokableEngine
+   agents.base.types.TNode
+   agents.base.types.TOutput
+   agents.base.types.TState
+
 
 Classes
 -------
@@ -34,325 +51,440 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: Agent
 
+   Bases: :py:obj:`GraphProvider`\ [\ :py:obj:`TState`\ ], :py:obj:`StateProvider`\ [\ :py:obj:`TState`\ ], :py:obj:`Invokable`\ [\ :py:obj:`TInput`\ , :py:obj:`TOutput`\ ], :py:obj:`EngineProvider`\ [\ :py:obj:`TEngine`\ ], :py:obj:`Protocol`\ [\ :py:obj:`TEngine`\ , :py:obj:`TInput`\ , :py:obj:`TOutput`\ , :py:obj:`TState`\ ]
 
 
-.. toggle:: Show Inheritance Diagram
+   Complete agent protocol combining all capabilities.
 
-   Inheritance diagram for Agent:
 
-   .. graphviz::
-      :align: center
+   .. autolink-examples:: Agent
+      :collapse:
 
-      digraph inheritance_Agent {
-        node [shape=record];
-        "Agent" [label="Agent"];
-        "GraphProvider[TState]" -> "Agent";
-        "StateProvider[TState]" -> "Agent";
-        "Invokable[TInput, TOutput]" -> "Agent";
-        "EngineProvider[TEngine]" -> "Agent";
-        "Protocol[TEngine, TInput, TOutput, TState]" -> "Agent";
-      }
+.. py:class:: AgentInput(/, **data: Any)
 
-.. autoclass:: agents.base.types.Agent
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   Bases: :py:obj:`pydantic.BaseModel`
 
 
+   Default input schema for agents.
 
+   Create a new model by parsing and validating input data from keyword arguments.
 
-.. toggle:: Show Inheritance Diagram
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
 
-   Inheritance diagram for AgentInput:
+   `self` is explicitly positional-only to allow `self` as a field name.
 
-   .. graphviz::
-      :align: center
 
-      digraph inheritance_AgentInput {
-        node [shape=record];
-        "AgentInput" [label="AgentInput"];
-        "pydantic.BaseModel" -> "AgentInput";
-      }
+   .. autolink-examples:: __init__
+      :collapse:
 
-.. autopydantic_model:: agents.base.types.AgentInput
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
 
+   .. autolink-examples:: AgentInput
+      :collapse:
 
+   .. py:attribute:: messages
+      :type:  list[Any]
+      :value: []
 
 
 
-.. toggle:: Show Inheritance Diagram
+.. py:class:: AgentOutput(/, **data: Any)
 
-   Inheritance diagram for AgentOutput:
+   Bases: :py:obj:`pydantic.BaseModel`
 
-   .. graphviz::
-      :align: center
 
-      digraph inheritance_AgentOutput {
-        node [shape=record];
-        "AgentOutput" [label="AgentOutput"];
-        "pydantic.BaseModel" -> "AgentOutput";
-      }
+   Default output schema for agents.
 
-.. autopydantic_model:: agents.base.types.AgentOutput
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   Create a new model by parsing and validating input data from keyword arguments.
 
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
 
+   `self` is explicitly positional-only to allow `self` as a field name.
 
 
+   .. autolink-examples:: __init__
+      :collapse:
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for AgentState:
+   .. autolink-examples:: AgentOutput
+      :collapse:
 
-   .. graphviz::
-      :align: center
+   .. py:attribute:: messages
+      :type:  list[Any]
+      :value: []
 
-      digraph inheritance_AgentState {
-        node [shape=record];
-        "AgentState" [label="AgentState"];
-        "pydantic.BaseModel" -> "AgentState";
-      }
 
-.. autopydantic_model:: agents.base.types.AgentState
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
 
+.. py:class:: AgentState(/, **data: Any)
 
+   Bases: :py:obj:`pydantic.BaseModel`
 
 
+   Default state schema for agents.
 
-.. toggle:: Show Inheritance Diagram
+   Create a new model by parsing and validating input data from keyword arguments.
 
-   Inheritance diagram for EngineProvider:
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
 
-   .. graphviz::
-      :align: center
+   `self` is explicitly positional-only to allow `self` as a field name.
 
-      digraph inheritance_EngineProvider {
-        node [shape=record];
-        "EngineProvider" [label="EngineProvider"];
-        "Protocol[TEngine]" -> "EngineProvider";
-      }
 
-.. autoclass:: agents.base.types.EngineProvider
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. autolink-examples:: __init__
+      :collapse:
 
 
+   .. autolink-examples:: AgentState
+      :collapse:
 
+   .. py:attribute:: messages
+      :type:  list[Any]
+      :value: []
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for GraphProvider:
 
-   .. graphviz::
-      :align: center
+.. py:class:: EngineProvider
 
-      digraph inheritance_GraphProvider {
-        node [shape=record];
-        "GraphProvider" [label="GraphProvider"];
-        "Protocol[TState]" -> "GraphProvider";
-      }
+   Bases: :py:obj:`Protocol`\ [\ :py:obj:`TEngine`\ ]
 
-.. autoclass:: agents.base.types.GraphProvider
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
+   Protocol for objects that provide engines.
 
 
+   .. autolink-examples:: EngineProvider
+      :collapse:
 
-.. toggle:: Show Inheritance Diagram
+   .. py:property:: engine
+      :type: TEngine
 
-   Inheritance diagram for GraphSegment:
 
-   .. graphviz::
-      :align: center
+      Get the primary engine.
 
-      digraph inheritance_GraphSegment {
-        node [shape=record];
-        "GraphSegment" [label="GraphSegment"];
-        "pydantic.BaseModel" -> "GraphSegment";
-        "Generic[TState]" -> "GraphSegment";
-      }
+      .. autolink-examples:: engine
+         :collapse:
 
-.. autopydantic_model:: agents.base.types.GraphSegment
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
 
+   .. py:property:: engines
+      :type: dict[str, haive.core.engine.base.Engine]
 
 
+      Get all engines.
 
+      .. autolink-examples:: engines
+         :collapse:
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for HookContext:
+.. py:class:: GraphProvider
 
-   .. graphviz::
-      :align: center
+   Bases: :py:obj:`Protocol`\ [\ :py:obj:`TState`\ ]
 
-      digraph inheritance_HookContext {
-        node [shape=record];
-        "HookContext" [label="HookContext"];
-        "pydantic.BaseModel" -> "HookContext";
-        "Generic[TState]" -> "HookContext";
-      }
 
-.. autopydantic_model:: agents.base.types.HookContext
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   Protocol for objects that provide graphs.
 
 
+   .. autolink-examples:: GraphProvider
+      :collapse:
 
+   .. py:method:: build_graph() -> Any
 
+      Build and return the graph.
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for HookPoint:
+      .. autolink-examples:: build_graph
+         :collapse:
 
-   .. graphviz::
-      :align: center
 
-      digraph inheritance_HookPoint {
-        node [shape=record];
-        "HookPoint" [label="HookPoint"];
-        "str" -> "HookPoint";
-        "enum.Enum" -> "HookPoint";
-      }
+.. py:class:: GraphSegment(/, **data: Any)
 
-.. autoclass:: agents.base.types.HookPoint
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   Bases: :py:obj:`pydantic.BaseModel`, :py:obj:`Generic`\ [\ :py:obj:`TState`\ ]
 
-   .. note::
 
-      **HookPoint** is an Enum defined in ``agents.base.types``.
+   Represents a segment of a graph that can be composed.
 
+   Create a new model by parsing and validating input data from keyword arguments.
 
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
 
+   `self` is explicitly positional-only to allow `self` as a field name.
 
 
-.. toggle:: Show Inheritance Diagram
+   .. autolink-examples:: __init__
+      :collapse:
 
-   Inheritance diagram for Invokable:
 
-   .. graphviz::
-      :align: center
+   .. autolink-examples:: GraphSegment
+      :collapse:
 
-      digraph inheritance_Invokable {
-        node [shape=record];
-        "Invokable" [label="Invokable"];
-        "Protocol[TInput, TOutput]" -> "Invokable";
-      }
+   .. py:attribute:: edges
+      :type:  list[NodeConnection[TState]]
 
-.. autoclass:: agents.base.types.Invokable
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
+   .. py:attribute:: entry_point
+      :type:  str
 
 
+   .. py:attribute:: exit_points
+      :type:  list[str]
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for NodeConnection:
+   .. py:attribute:: metadata
+      :type:  dict[str, Any]
 
-   .. graphviz::
-      :align: center
 
-      digraph inheritance_NodeConnection {
-        node [shape=record];
-        "NodeConnection" [label="NodeConnection"];
-        "pydantic.BaseModel" -> "NodeConnection";
-        "Generic[TState]" -> "NodeConnection";
-      }
+   .. py:attribute:: nodes
+      :type:  dict[str, Any]
 
-.. autopydantic_model:: agents.base.types.NodeConnection
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
 
+.. py:class:: HookContext(/, **data: Any)
 
+   Bases: :py:obj:`pydantic.BaseModel`, :py:obj:`Generic`\ [\ :py:obj:`TState`\ ]
 
 
+   Context passed to hooks.
 
-.. toggle:: Show Inheritance Diagram
+   Create a new model by parsing and validating input data from keyword arguments.
 
-   Inheritance diagram for StateProvider:
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
 
-   .. graphviz::
-      :align: center
+   `self` is explicitly positional-only to allow `self` as a field name.
 
-      digraph inheritance_StateProvider {
-        node [shape=record];
-        "StateProvider" [label="StateProvider"];
-        "Protocol[TState]" -> "StateProvider";
-      }
 
-.. autoclass:: agents.base.types.StateProvider
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. autolink-examples:: __init__
+      :collapse:
 
 
+   .. autolink-examples:: HookContext
+      :collapse:
 
+   .. py:attribute:: agent_id
+      :type:  str
 
-.. rubric:: Related Links
 
-.. autolink-examples:: agents.base.types
-   :collapse:
-   
-.. autolink-skip:: next
+   .. py:attribute:: agent_type
+      :type:  str
+
+
+   .. py:attribute:: hook_point
+      :type:  HookPoint
+
+
+   .. py:attribute:: metadata
+      :type:  dict[str, Any]
+
+
+   .. py:attribute:: state_type
+      :type:  type[TState] | None
+      :value: None
+
+
+
+.. py:class:: HookPoint
+
+   Bases: :py:obj:`str`, :py:obj:`enum.Enum`
+
+
+   Standard hook points in agent lifecycle.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: HookPoint
+      :collapse:
+
+   .. py:attribute:: AFTER_GRAPH_BUILD
+      :value: 'after_graph_build'
+
+
+
+   .. py:attribute:: AFTER_GRAPH_COMPILE
+      :value: 'after_graph_compile'
+
+
+
+   .. py:attribute:: AFTER_INIT
+      :value: 'after_init'
+
+
+
+   .. py:attribute:: AFTER_INVOKE
+      :value: 'after_invoke'
+
+
+
+   .. py:attribute:: AFTER_NODE_ADD
+      :value: 'after_node_add'
+
+
+
+   .. py:attribute:: AFTER_SCHEMA_BUILD
+      :value: 'after_schema_build'
+
+
+
+   .. py:attribute:: AFTER_SETUP
+      :value: 'after_setup'
+
+
+
+   .. py:attribute:: AFTER_STATE_UPDATE
+      :value: 'after_state_update'
+
+
+
+   .. py:attribute:: BEFORE_GRAPH_BUILD
+      :value: 'before_graph_build'
+
+
+
+   .. py:attribute:: BEFORE_GRAPH_COMPILE
+      :value: 'before_graph_compile'
+
+
+
+   .. py:attribute:: BEFORE_INIT
+      :value: 'before_init'
+
+
+
+   .. py:attribute:: BEFORE_INVOKE
+      :value: 'before_invoke'
+
+
+
+   .. py:attribute:: BEFORE_NODE_ADD
+      :value: 'before_node_add'
+
+
+
+   .. py:attribute:: BEFORE_SCHEMA_BUILD
+      :value: 'before_schema_build'
+
+
+
+   .. py:attribute:: BEFORE_SETUP
+      :value: 'before_setup'
+
+
+
+   .. py:attribute:: BEFORE_STATE_UPDATE
+      :value: 'before_state_update'
+
+
+
+.. py:class:: Invokable
+
+   Bases: :py:obj:`Protocol`\ [\ :py:obj:`TInput`\ , :py:obj:`TOutput`\ ]
+
+
+   Protocol for objects that can be invoked.
+
+
+   .. autolink-examples:: Invokable
+      :collapse:
+
+   .. py:method:: ainvoke(input_data: TInput, config: dict[str, Any] | None = None) -> TOutput
+      :async:
+
+
+      Async invoke with input data.
+
+
+      .. autolink-examples:: ainvoke
+         :collapse:
+
+
+   .. py:method:: invoke(input_data: TInput, config: dict[str, Any] | None = None) -> TOutput
+
+      Invoke with input data.
+
+
+      .. autolink-examples:: invoke
+         :collapse:
+
+
+.. py:class:: NodeConnection(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`, :py:obj:`Generic`\ [\ :py:obj:`TState`\ ]
+
+
+   Represents a connection between nodes in a graph.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: NodeConnection
+      :collapse:
+
+   .. py:attribute:: condition
+      :type:  Any | None
+      :value: None
+
+
+
+   .. py:attribute:: metadata
+      :type:  dict[str, Any]
+
+
+   .. py:attribute:: source
+      :type:  str
+
+
+   .. py:attribute:: target
+      :type:  str
+
+
+.. py:class:: StateProvider
+
+   Bases: :py:obj:`Protocol`\ [\ :py:obj:`TState`\ ]
+
+
+   Protocol for objects that provide state schemas.
+
+
+   .. autolink-examples:: StateProvider
+      :collapse:
+
+   .. py:property:: state_schema
+      :type: type[TState]
+
+
+      Get the state schema type.
+
+      .. autolink-examples:: state_schema
+         :collapse:
+
+
+.. py:data:: HookFunction
+
+.. py:data:: TConfig
+
+.. py:data:: TEngine
+
+.. py:data:: TInput
+
+.. py:data:: TInvokableEngine
+
+.. py:data:: TNode
+
+.. py:data:: TOutput
+
+.. py:data:: TState
+

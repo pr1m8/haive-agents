@@ -1,322 +1,531 @@
-
-:py:mod:`agents.memory_v2.simple_memory_agent`
-==============================================
+agents.memory_v2.simple_memory_agent
+====================================
 
 .. py:module:: agents.memory_v2.simple_memory_agent
 
-SimpleMemoryAgent with token-aware memory management and summarization.
+.. autoapi-nested-parse::
 
-This agent follows V3 enhanced patterns with automatic summarization
-when approaching token limits, similar to LangMem's approach.
+   SimpleMemoryAgent with token-aware memory management and summarization.
+
+   This agent follows V3 enhanced patterns with automatic summarization
+   when approaching token limits, similar to LangMem's approach.
 
 
-.. autolink-examples:: agents.memory_v2.simple_memory_agent
-   :collapse:
+   .. autolink-examples:: agents.memory_v2.simple_memory_agent
+      :collapse:
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.memory_v2.simple_memory_agent.HAS_GRAPH_MODELS
+   agents.memory_v2.simple_memory_agent.MEMORY_REWRITE_PROMPT
+   agents.memory_v2.simple_memory_agent.MEMORY_SUMMARIZATION_PROMPT
+   agents.memory_v2.simple_memory_agent.RUNNING_SUMMARY_UPDATE_PROMPT
+   agents.memory_v2.simple_memory_agent.logger
+
 
 Classes
 -------
 
 .. autoapisummary::
 
-   agents.memory_v2.simple_memory_agent.EnhancedMemoryItem
-   agents.memory_v2.simple_memory_agent.ImportanceLevel
-   agents.memory_v2.simple_memory_agent.MemoryConfig
-   agents.memory_v2.simple_memory_agent.MemoryState
-   agents.memory_v2.simple_memory_agent.MemoryStateWithTokens
-   agents.memory_v2.simple_memory_agent.MemoryType
    agents.memory_v2.simple_memory_agent.SimpleMemoryAgent
    agents.memory_v2.simple_memory_agent.TokenAwareMemoryConfig
-   agents.memory_v2.simple_memory_agent.TokenThresholds
-   agents.memory_v2.simple_memory_agent.TokenTracker
 
 
 Module Contents
 ---------------
 
-:orphan:
+.. py:class:: SimpleMemoryAgent
 
+   Bases: :py:obj:`haive.agents.simple.enhanced_agent_v3.EnhancedSimpleAgent`
 
 
-.. toggle:: Show Inheritance Diagram
+   Memory agent with token tracking and automatic summarization.
 
-   Inheritance diagram for EnhancedMemoryItem:
+   This agent follows V3 enhanced patterns and implements LangMem-style
+   memory management with:
 
-   .. graphviz::
-      :align: center
+   - Automatic token tracking for all operations
+   - Progressive summarization when approaching limits
+   - Running summary maintenance
+   - Memory rewriting for compression
+   - Smart retrieval with token awareness
 
-      digraph inheritance_EnhancedMemoryItem {
-        node [shape=record];
-        "EnhancedMemoryItem" [label="EnhancedMemoryItem"];
-        "MemoryItem" -> "EnhancedMemoryItem";
-      }
+   The agent monitors token usage and automatically triggers summarization
+   or memory rewriting to stay within context limits while preserving
+   important information.
 
-.. autoclass:: agents.memory_v2.simple_memory_agent.EnhancedMemoryItem
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. rubric:: Examples
 
-:orphan:
+   Basic usage::
 
+       agent = SimpleMemoryAgent(
+           name="assistant_memory",
+           memory_config=TokenAwareMemoryConfig(
+               max_context_tokens=4000,
+               summarization_strategy="progressive"
+           )
+       )
 
+       # Store memories
+       agent.run("Remember that I prefer coffee over tea")
+       agent.run("My favorite coffee is Ethiopian single origin")
 
-.. toggle:: Show Inheritance Diagram
+       # Retrieve with token awareness
+       response = agent.run("What beverages do I like?")
 
-   Inheritance diagram for ImportanceLevel:
+   With custom thresholds::
 
-   .. graphviz::
-      :align: center
+       config = TokenAwareMemoryConfig(
+           max_context_tokens=8000,
+           warning_threshold=0.6,
+           critical_threshold=0.8,
+           preserve_recent_memories=20
+       )
 
-      digraph inheritance_ImportanceLevel {
-        node [shape=record];
-        "ImportanceLevel" [label="ImportanceLevel"];
-        "str" -> "ImportanceLevel";
-        "enum.Enum" -> "ImportanceLevel";
-      }
+       agent = SimpleMemoryAgent(
+           name="long_term_memory",
+           memory_config=config,
+           debug_mode=True
+       )
 
-.. autoclass:: agents.memory_v2.simple_memory_agent.ImportanceLevel
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
-   .. note::
+   .. autolink-examples:: SimpleMemoryAgent
+      :collapse:
 
-      **ImportanceLevel** is an Enum defined in ``agents.memory_v2.simple_memory_agent``.
+   .. py:method:: __repr__() -> str
 
+      String representation.
 
-:orphan:
 
+      .. autolink-examples:: __repr__
+         :collapse:
 
 
-.. toggle:: Show Inheritance Diagram
+   .. py:method:: _prepare_input(input_data: Any) -> dict[str, Any]
 
-   Inheritance diagram for MemoryConfig:
+      Prepare input for MemoryStateWithTokens.
 
-   .. graphviz::
-      :align: center
+      Override parent to ensure proper message format for our state schema.
 
-      digraph inheritance_MemoryConfig {
-        node [shape=record];
-        "MemoryConfig" [label="MemoryConfig"];
-        "pydantic.BaseModel" -> "MemoryConfig";
-      }
 
-.. autopydantic_model:: agents.memory_v2.simple_memory_agent.MemoryConfig
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+      .. autolink-examples:: _prepare_input
+         :collapse:
 
 
-:orphan:
+   .. py:method:: _setup_graph_prompts() -> None
 
+      Setup graph-specific prompts for entity and relationship extraction.
 
 
-.. toggle:: Show Inheritance Diagram
+      .. autolink-examples:: _setup_graph_prompts
+         :collapse:
 
-   Inheritance diagram for MemoryState:
 
-   .. graphviz::
-      :align: center
+   .. py:method:: _setup_graph_transformer() -> None
 
-      digraph inheritance_MemoryState {
-        node [shape=record];
-        "MemoryState" [label="MemoryState"];
-        "pydantic.BaseModel" -> "MemoryState";
-      }
+      Setup graph transformer for knowledge graph generation.
 
-.. autopydantic_model:: agents.memory_v2.simple_memory_agent.MemoryState
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
 
+      .. autolink-examples:: _setup_graph_transformer
+         :collapse:
 
-:orphan:
 
+   .. py:method:: _setup_summarization_prompts() -> None
 
+      Setup summarization prompts.
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for MemoryStateWithTokens:
+      .. autolink-examples:: _setup_summarization_prompts
+         :collapse:
 
-   .. graphviz::
-      :align: center
 
-      digraph inheritance_MemoryStateWithTokens {
-        node [shape=record];
-        "MemoryStateWithTokens" [label="MemoryStateWithTokens"];
-        "haive.core.schema.prebuilt.messages.messages_with_token_usage.MessagesStateWithTokenUsage" -> "MemoryStateWithTokens";
-      }
+   .. py:method:: build_graph() -> haive.core.graph.state_graph.base_graph2.BaseGraph
 
-.. autoclass:: agents.memory_v2.simple_memory_agent.MemoryStateWithTokens
-   :members:
-   :undoc-members:
-   :show-inheritance:
+      Build memory graph with pre-hook system and token-aware branching.
 
-:orphan:
+      The graph implements a pre-hook pattern:
+      1. Pre-hook node (checks tokens, decides routing)
+      2. Branching based on pre-hook decisions
+      3. Memory processing (store/retrieve/search)
+      4. Summarization (when triggered by pre-hook)
+      5. Running summary updates
 
+      Flow:
+          START -> pre_hook -> {process_memory, summarize_critical, summarize_warning}
+                            -> [optional: update_summary] -> END
 
 
-.. toggle:: Show Inheritance Diagram
+      .. autolink-examples:: build_graph
+         :collapse:
 
-   Inheritance diagram for MemoryType:
 
-   .. graphviz::
-      :align: center
+   .. py:method:: check_tokens_node(state: agents.memory_v2.memory_state_original.MemoryState) -> dict[str, Any]
 
-      digraph inheritance_MemoryType {
-        node [shape=record];
-        "MemoryType" [label="MemoryType"];
-        "str" -> "MemoryType";
-        "enum.Enum" -> "MemoryType";
-      }
+      Check token usage and determine if action needed.
 
-.. autoclass:: agents.memory_v2.simple_memory_agent.MemoryType
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
-   .. note::
+      .. autolink-examples:: check_tokens_node
+         :collapse:
 
-      **MemoryType** is an Enum defined in ``agents.memory_v2.simple_memory_agent``.
 
+   .. py:method:: consolidate_memories_node(state: agents.memory_v2.memory_state_with_tokens.MemoryStateWithTokens) -> langgraph.types.Command
 
+      Consolidate related memories to reduce count.
 
 
+      .. autolink-examples:: consolidate_memories_node
+         :collapse:
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for SimpleMemoryAgent:
+   .. py:method:: create_summary_node(state: agents.memory_v2.memory_state_with_tokens.MemoryStateWithTokens) -> langgraph.types.Command
 
-   .. graphviz::
-      :align: center
+      Create initial running summary.
 
-      digraph inheritance_SimpleMemoryAgent {
-        node [shape=record];
-        "SimpleMemoryAgent" [label="SimpleMemoryAgent"];
-        "haive.agents.simple.enhanced_agent_v3.EnhancedSimpleAgent" -> "SimpleMemoryAgent";
-      }
 
-.. autoclass:: agents.memory_v2.simple_memory_agent.SimpleMemoryAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
+      .. autolink-examples:: create_summary_node
+         :collapse:
 
 
+   .. py:method:: emergency_compress_node(state: agents.memory_v2.memory_state_with_tokens.MemoryStateWithTokens) -> langgraph.types.Command
 
+      Emergency compression when critically over limits.
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for TokenAwareMemoryConfig:
+      .. autolink-examples:: emergency_compress_node
+         :collapse:
 
-   .. graphviz::
-      :align: center
 
-      digraph inheritance_TokenAwareMemoryConfig {
-        node [shape=record];
-        "TokenAwareMemoryConfig" [label="TokenAwareMemoryConfig"];
-        "agents.memory_v2.memory_tools.MemoryConfig" -> "TokenAwareMemoryConfig";
-      }
+   .. py:method:: extract_entities_node(state: agents.memory_v2.memory_state_with_tokens.MemoryStateWithTokens) -> langgraph.types.Command
 
-.. autoclass:: agents.memory_v2.simple_memory_agent.TokenAwareMemoryConfig
-   :members:
-   :undoc-members:
-   :show-inheritance:
+      Extract entities from content using LLM.
 
-:orphan:
 
+      .. autolink-examples:: extract_entities_node
+         :collapse:
 
 
-.. toggle:: Show Inheritance Diagram
+   .. py:method:: extract_relationships_node(state: agents.memory_v2.memory_state_with_tokens.MemoryStateWithTokens) -> langgraph.types.Command
 
-   Inheritance diagram for TokenThresholds:
+      Extract relationships from content using LLM.
 
-   .. graphviz::
-      :align: center
 
-      digraph inheritance_TokenThresholds {
-        node [shape=record];
-        "TokenThresholds" [label="TokenThresholds"];
-        "pydantic.BaseModel" -> "TokenThresholds";
-      }
+      .. autolink-examples:: extract_relationships_node
+         :collapse:
 
-.. autopydantic_model:: agents.memory_v2.simple_memory_agent.TokenThresholds
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
 
+   .. py:method:: get_memory_status() -> dict[str, Any]
 
-:orphan:
+      Get comprehensive memory and token status.
 
 
+      .. autolink-examples:: get_memory_status
+         :collapse:
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for TokenTracker:
+   .. py:method:: pre_hook_node(state: agents.memory_v2.memory_state_with_tokens.MemoryStateWithTokens) -> langgraph.types.Command
 
-   .. graphviz::
-      :align: center
+      Pre-hook node that analyzes state and decides routing.
 
-      digraph inheritance_TokenTracker {
-        node [shape=record];
-        "TokenTracker" [label="TokenTracker"];
-        "pydantic.BaseModel" -> "TokenTracker";
-      }
+      This is the core of the pre-hook system. It:
+      1. Analyzes current token usage
+      2. Examines incoming messages
+      3. Decides the appropriate route
+      4. Prepares any necessary data for downstream nodes
 
-.. autopydantic_model:: agents.memory_v2.simple_memory_agent.TokenTracker
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+      :param state: Current memory state with token tracking
 
+      :returns: Command to update state with routing decisions
 
 
-Functions
----------
+      .. autolink-examples:: pre_hook_node
+         :collapse:
 
-.. autoapisummary::
 
-   agents.memory_v2.simple_memory_agent.classify_memory
-   agents.memory_v2.simple_memory_agent.get_memory_stats
-   agents.memory_v2.simple_memory_agent.retrieve_memory
-   agents.memory_v2.simple_memory_agent.search_memory
-   agents.memory_v2.simple_memory_agent.store_memory
+   .. py:method:: process_memory_node(state: agents.memory_v2.memory_state_with_tokens.MemoryStateWithTokens) -> langgraph.types.Command
 
+      Process memory operations (store/retrieve/search).
 
+      This is the main node that handles all memory operations based on
+      the user's input, using the appropriate memory tools.
 
 
+      .. autolink-examples:: process_memory_node
+         :collapse:
 
 
+   .. py:method:: rewrite_memories_node(state: agents.memory_v2.memory_state_original.MemoryState) -> dict[str, Any]
 
+      Rewrite memories for maximum compression.
 
-.. rubric:: Related Links
 
-.. autolink-examples:: agents.memory_v2.simple_memory_agent
-   :collapse:
-   
-.. autolink-skip:: next
+      .. autolink-examples:: rewrite_memories_node
+         :collapse:
+
+
+   .. py:method:: route_by_token_status(state: dict[str, Any]) -> str
+
+      Route based on token usage status.
+
+
+      .. autolink-examples:: route_by_token_status
+         :collapse:
+
+
+   .. py:method:: route_from_pre_hook(state: agents.memory_v2.memory_state_with_tokens.MemoryStateWithTokens) -> str
+
+      Route based on pre-hook analysis.
+
+      :param state: State with pre-hook analysis results
+
+      :returns: Route name for conditional edge routing
+
+
+      .. autolink-examples:: route_from_pre_hook
+         :collapse:
+
+
+   .. py:method:: setup_agent() -> None
+
+      Setup memory agent with token tracking and tools.
+
+
+      .. autolink-examples:: setup_agent
+         :collapse:
+
+
+   .. py:method:: summarize_critical_node(state: agents.memory_v2.memory_state_with_tokens.MemoryStateWithTokens) -> langgraph.types.Command
+
+      Critical summarization when approaching token limits.
+
+
+      .. autolink-examples:: summarize_critical_node
+         :collapse:
+
+
+   .. py:method:: summarize_memories_node(state: agents.memory_v2.memory_state_original.MemoryState) -> dict[str, Any]
+
+      Summarize memories to reduce token usage.
+
+
+      .. autolink-examples:: summarize_memories_node
+         :collapse:
+
+
+   .. py:method:: summarize_warning_node(state: agents.memory_v2.memory_state_with_tokens.MemoryStateWithTokens) -> langgraph.types.Command
+
+      Warning-level summarization for memory consolidation.
+
+
+      .. autolink-examples:: summarize_warning_node
+         :collapse:
+
+
+   .. py:method:: transform_to_graph_node(state: agents.memory_v2.memory_state_with_tokens.MemoryStateWithTokens) -> langgraph.types.Command
+
+      Transform memories and messages into a knowledge graph.
+
+
+      .. autolink-examples:: transform_to_graph_node
+         :collapse:
+
+
+   .. py:method:: update_graph_node(state: agents.memory_v2.memory_state_with_tokens.MemoryStateWithTokens) -> langgraph.types.Command
+
+      Update existing knowledge graph with new content.
+
+
+      .. autolink-examples:: update_graph_node
+         :collapse:
+
+
+   .. py:method:: update_running_summary_node(state: agents.memory_v2.memory_state_original.MemoryState) -> dict[str, Any]
+
+      Update the running summary with new memories.
+
+
+      .. autolink-examples:: update_running_summary_node
+         :collapse:
+
+
+   .. py:method:: update_summary_node(state: agents.memory_v2.memory_state_with_tokens.MemoryStateWithTokens) -> langgraph.types.Command
+
+      Update existing running summary.
+
+
+      .. autolink-examples:: update_summary_node
+         :collapse:
+
+
+   .. py:attribute:: entity_extraction_prompt
+      :type:  langchain_core.prompts.ChatPromptTemplate | None
+      :value: None
+
+
+
+   .. py:attribute:: graph_enabled
+      :type:  bool
+      :value: None
+
+
+
+   .. py:attribute:: graph_transformer
+      :type:  haive.agents.document_modifiers.kg.kg_base.models.GraphTransformer | None
+      :value: None
+
+
+
+   .. py:attribute:: last_summarization
+      :type:  dict[str, Any] | None
+      :value: None
+
+
+
+   .. py:attribute:: memory_config
+      :type:  TokenAwareMemoryConfig
+      :value: None
+
+
+
+   .. py:attribute:: memory_rewrite_prompt
+      :type:  langchain_core.prompts.ChatPromptTemplate | None
+      :value: None
+
+
+
+   .. py:attribute:: memory_summarization_prompt
+      :type:  langchain_core.prompts.ChatPromptTemplate | None
+      :value: None
+
+
+
+   .. py:attribute:: relationship_extraction_prompt
+      :type:  langchain_core.prompts.ChatPromptTemplate | None
+      :value: None
+
+
+
+   .. py:attribute:: running_summary
+      :type:  str | None
+      :value: None
+
+
+
+   .. py:attribute:: running_summary_prompt
+      :type:  langchain_core.prompts.ChatPromptTemplate | None
+      :value: None
+
+
+
+   .. py:attribute:: state_schema
+      :type:  type[haive.core.schema.StateSchema]
+      :value: None
+
+
+
+   .. py:attribute:: token_tracker
+      :type:  agents.memory_v2.token_tracker.TokenTracker
+      :value: None
+
+
+
+   .. py:attribute:: use_prebuilt_base
+      :type:  bool
+      :value: None
+
+
+
+.. py:class:: TokenAwareMemoryConfig(/, **data: Any)
+
+   Bases: :py:obj:`agents.memory_v2.memory_tools.MemoryConfig`
+
+
+   Configuration for token-aware memory management.
+
+   Extends base MemoryConfig with token tracking and summarization settings.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: TokenAwareMemoryConfig
+      :collapse:
+
+   .. py:attribute:: critical_threshold
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: enable_running_summary
+      :type:  bool
+      :value: None
+
+
+
+   .. py:attribute:: max_context_tokens
+      :type:  int
+      :value: None
+
+
+
+   .. py:attribute:: max_tokens_before_summary
+      :type:  int
+      :value: None
+
+
+
+   .. py:attribute:: preserve_recent_memories
+      :type:  int
+      :value: None
+
+
+
+   .. py:attribute:: running_summary_max_tokens
+      :type:  int
+      :value: None
+
+
+
+   .. py:attribute:: summarization_strategy
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: target_compression_ratio
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: warning_threshold
+      :type:  float
+      :value: None
+
+
+
+.. py:data:: HAS_GRAPH_MODELS
+   :value: True
+
+
+.. py:data:: MEMORY_REWRITE_PROMPT
+
+.. py:data:: MEMORY_SUMMARIZATION_PROMPT
+
+.. py:data:: RUNNING_SUMMARY_UPDATE_PROMPT
+
+.. py:data:: logger
+

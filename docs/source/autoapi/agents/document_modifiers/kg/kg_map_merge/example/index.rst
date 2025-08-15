@@ -1,9 +1,7 @@
-
-:py:mod:`agents.document_modifiers.kg.kg_map_merge.example`
-===========================================================
+agents.document_modifiers.kg.kg_map_merge.example
+=================================================
 
 .. py:module:: agents.document_modifiers.kg.kg_map_merge.example
-
 
 
 Functions
@@ -13,15 +11,11 @@ Functions
 
    agents.document_modifiers.kg.kg_map_merge.example.main
 
+
+Module Contents
+---------------
+
 .. py:function:: main()
    :async:
 
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.document_modifiers.kg.kg_map_merge.example
-   :collapse:
-   
-.. autolink-skip:: next

@@ -1,6 +1,5 @@
-
-:py:mod:`agents.rag.base.base_agent`
-====================================
+agents.rag.base.base_agent
+==========================
 
 .. py:module:: agents.rag.base.base_agent
 
@@ -16,33 +15,41 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: BaseRAGAgent
+
+   Bases: :py:obj:`haive.core.engine.agent.agent.Agent`\ [\ :py:obj:`haive.agents.rag.base.config.BaseRAGConfig`\ ]
 
 
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for BaseRAGAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_BaseRAGAgent {
-        node [shape=record];
-        "BaseRAGAgent" [label="BaseRAGAgent"];
-        "haive.core.engine.agent.agent.Agent[haive.agents.rag.base.config.BaseRAGConfig]" -> "BaseRAGAgent";
-      }
-
-.. autoclass:: agents.rag.base.base_agent.BaseRAGAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   Simple base RAG agent with retrieve and generate functionality.
 
 
+   .. autolink-examples:: BaseRAGAgent
+      :collapse:
+
+   .. py:method:: generate_answer(state: dict[str, Any])
+
+      Generate an answer based on retrieved documents.
 
 
-.. rubric:: Related Links
+      .. autolink-examples:: generate_answer
+         :collapse:
 
-.. autolink-examples:: agents.rag.base.base_agent
-   :collapse:
-   
-.. autolink-skip:: next
+
+   .. py:method:: retrieve(state: dict[str, Any])
+
+      Retrieve documents based on the query.
+
+
+      .. autolink-examples:: retrieve
+         :collapse:
+
+
+   .. py:method:: setup_workflow() -> None
+
+      Set up the RAG workflow for this agent.
+
+
+      .. autolink-examples:: setup_workflow
+         :collapse:
+
+

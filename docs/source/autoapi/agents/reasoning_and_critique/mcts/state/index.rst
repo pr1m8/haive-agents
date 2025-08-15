@@ -1,6 +1,5 @@
-
-:py:mod:`agents.reasoning_and_critique.mcts.state`
-==================================================
+agents.reasoning_and_critique.mcts.state
+========================================
 
 .. py:module:: agents.reasoning_and_critique.mcts.state
 
@@ -16,41 +15,37 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: TreeState(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   State schema for MCTS Agent.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: TreeState
+      :collapse:
+
+   .. py:attribute:: input
+      :type:  str
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for TreeState:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_TreeState {
-        node [shape=record];
-        "TreeState" [label="TreeState"];
-        "pydantic.BaseModel" -> "TreeState";
-      }
-
-.. autopydantic_model:: agents.reasoning_and_critique.mcts.state.TreeState
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: root
+      :type:  haive.agents.reasoning_and_critique.mcts.models.TreeNode
+      :value: None
 
 
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.reasoning_and_critique.mcts.state
-   :collapse:
-   
-.. autolink-skip:: next

@@ -1,15 +1,23 @@
-
-:py:mod:`agents.rag.memory_aware`
-=================================
+agents.rag.memory_aware
+=======================
 
 .. py:module:: agents.rag.memory_aware
 
-Module exports.
+.. autoapi-nested-parse::
+
+   Module exports.
 
 
-.. autolink-examples:: agents.rag.memory_aware
-   :collapse:
+   .. autolink-examples:: agents.rag.memory_aware
+      :collapse:
 
 
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/agents/rag/memory_aware/agent/index
 
 

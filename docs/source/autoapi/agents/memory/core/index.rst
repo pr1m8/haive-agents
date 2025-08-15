@@ -1,15 +1,25 @@
-
-:py:mod:`agents.memory.core`
-============================
+agents.memory.core
+==================
 
 .. py:module:: agents.memory.core
 
-Module exports.
+.. autoapi-nested-parse::
+
+   Module exports.
 
 
-.. autolink-examples:: agents.memory.core
-   :collapse:
+   .. autolink-examples:: agents.memory.core
+      :collapse:
 
 
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/agents/memory/core/classifier/index
+   /autoapi/agents/memory/core/stores/index
+   /autoapi/agents/memory/core/types/index
 
 

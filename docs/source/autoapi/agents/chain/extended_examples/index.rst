@@ -1,14 +1,15 @@
-
-:py:mod:`agents.chain.extended_examples`
-========================================
+agents.chain.extended_examples
+==============================
 
 .. py:module:: agents.chain.extended_examples
 
-Examples using ExtendedChainAgent for super easy chain building.
+.. autoapi-nested-parse::
+
+   Examples using ExtendedChainAgent for super easy chain building.
 
 
-.. autolink-examples:: agents.chain.extended_examples
-   :collapse:
+   .. autolink-examples:: agents.chain.extended_examples
+      :collapse:
 
 
 Functions
@@ -25,6 +26,10 @@ Functions
    agents.chain.extended_examples.example_with_agents_and_engines
    agents.chain.extended_examples.example_with_branching
    agents.chain.extended_examples.example_with_loop
+
+
+Module Contents
+---------------
 
 .. py:function:: example_custom_edges() -> haive.agents.chain.extended_chain.Any
 
@@ -98,11 +103,3 @@ Functions
    .. autolink-examples:: example_with_loop
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.chain.extended_examples
-   :collapse:
-   
-.. autolink-skip:: next

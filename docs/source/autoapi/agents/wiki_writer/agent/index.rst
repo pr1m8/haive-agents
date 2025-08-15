@@ -1,6 +1,5 @@
-
-:py:mod:`agents.wiki_writer.agent`
-==================================
+agents.wiki_writer.agent
+========================
 
 .. py:module:: agents.wiki_writer.agent
 
@@ -17,54 +16,48 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: WikiWriterAgent(config: WikiWriterAgentConfig = WikiWriterAgentConfig())
+
+   Bases: :py:obj:`haive.core.engine.agent.agent.AgentArchitecture`
+
+
+   An agent that writes a wiki page.
+
+
+   .. autolink-examples:: WikiWriterAgent
+      :collapse:
+
+   .. py:method:: call_agent(question: str) -> str | None
+      :async:
 
 
 
-.. toggle:: Show Inheritance Diagram
+.. py:class:: WikiWriterAgentConfig
 
-   Inheritance diagram for WikiWriterAgent:
+   Bases: :py:obj:`haive.core.engine.agent.agent.AgentArchitectureConfig`
 
-   .. graphviz::
-      :align: center
 
-      digraph inheritance_WikiWriterAgent {
-        node [shape=record];
-        "WikiWriterAgent" [label="WikiWriterAgent"];
-        "haive.core.engine.agent.agent.AgentArchitecture" -> "WikiWriterAgent";
-      }
+   Configuration for the Wiki Writer Agent.
 
-.. autoclass:: agents.wiki_writer.agent.WikiWriterAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
+
+   .. autolink-examples:: WikiWriterAgentConfig
+      :collapse:
+
+   .. py:attribute:: aug_llm_config
+      :type:  AugLLMConfig
+      :value: None
 
 
 
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for WikiWriterAgentConfig:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_WikiWriterAgentConfig {
-        node [shape=record];
-        "WikiWriterAgentConfig" [label="WikiWriterAgentConfig"];
-        "haive.core.engine.agent.agent.AgentArchitectureConfig" -> "WikiWriterAgentConfig";
-      }
-
-.. autoclass:: agents.wiki_writer.agent.WikiWriterAgentConfig
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. py:attribute:: runnable_config
+      :type:  RunnableConfig
+      :value: None
 
 
 
+   .. py:attribute:: state_schema
+      :type:  WikiWriterState
+      :value: None
 
-.. rubric:: Related Links
 
-.. autolink-examples:: agents.wiki_writer.agent
-   :collapse:
-   
-.. autolink-skip:: next
+

@@ -1,14 +1,15 @@
-
-:py:mod:`agents.conversation.collaberative.example`
-===================================================
+agents.conversation.collaberative.example
+=========================================
 
 .. py:module:: agents.conversation.collaberative.example
 
-Examples for collaborative conversation patterns where participants build shared content.
+.. autoapi-nested-parse::
+
+   Examples for collaborative conversation patterns where participants build shared content.
 
 
-.. autolink-examples:: agents.conversation.collaberative.example
-   :collapse:
+   .. autolink-examples:: agents.conversation.collaberative.example
+      :collapse:
 
 
 Functions
@@ -21,6 +22,10 @@ Functions
    agents.conversation.collaberative.example.example_creative_writing
    agents.conversation.collaberative.example.example_project_planning
    agents.conversation.collaberative.example.example_research_paper
+
+
+Module Contents
+---------------
 
 .. py:function:: example_brainstorming_session() -> None
 
@@ -62,11 +67,3 @@ Functions
    .. autolink-examples:: example_research_paper
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.conversation.collaberative.example
-   :collapse:
-   
-.. autolink-skip:: next

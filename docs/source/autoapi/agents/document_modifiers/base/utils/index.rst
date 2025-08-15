@@ -1,14 +1,15 @@
-
-:py:mod:`agents.document_modifiers.base.utils`
-==============================================
+agents.document_modifiers.base.utils
+====================================
 
 .. py:module:: agents.document_modifiers.base.utils
 
-Utility functions for document processing.
+.. autoapi-nested-parse::
+
+   Utility functions for document processing.
 
 
-.. autolink-examples:: agents.document_modifiers.base.utils
-   :collapse:
+   .. autolink-examples:: agents.document_modifiers.base.utils
+      :collapse:
 
 
 Functions
@@ -19,6 +20,10 @@ Functions
    agents.document_modifiers.base.utils.documents_to_strings
    agents.document_modifiers.base.utils.normalize_contents
    agents.document_modifiers.base.utils.strings_to_documents
+
+
+Module Contents
+---------------
 
 .. py:function:: documents_to_strings(documents: list[langchain_core.documents.Document]) -> list[str]
 
@@ -56,11 +61,3 @@ Functions
    .. autolink-examples:: strings_to_documents
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.document_modifiers.base.utils
-   :collapse:
-   
-.. autolink-skip:: next

@@ -1,17 +1,19 @@
-
-:py:mod:`agents.rag.multi_agent_rag.specialized_workflows_v2`
-=============================================================
+agents.rag.multi_agent_rag.specialized_workflows_v2
+===================================================
 
 .. py:module:: agents.rag.multi_agent_rag.specialized_workflows_v2
 
-Specialized Workflows V2 - Using Enhanced State Schemas.
+.. autoapi-nested-parse::
 
-Updated versions of FLARE, Dynamic RAG, Debate RAG, etc. using
-state schemas with built-in configuration support.
+   Specialized Workflows V2 - Using Enhanced State Schemas.
+
+   Updated versions of FLARE, Dynamic RAG, Debate RAG, etc. using
+   state schemas with built-in configuration support.
 
 
-.. autolink-examples:: agents.rag.multi_agent_rag.specialized_workflows_v2
-   :collapse:
+   .. autolink-examples:: agents.rag.multi_agent_rag.specialized_workflows_v2
+      :collapse:
+
 
 Classes
 -------
@@ -24,104 +26,152 @@ Classes
    agents.rag.multi_agent_rag.specialized_workflows_v2.FLAREAgentV2
 
 
-Module Contents
----------------
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for AdaptiveThresholdRAGAgentV2:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_AdaptiveThresholdRAGAgentV2 {
-        node [shape=record];
-        "AdaptiveThresholdRAGAgentV2" [label="AdaptiveThresholdRAGAgentV2"];
-        "haive.agents.multi.base.MultiAgent" -> "AdaptiveThresholdRAGAgentV2";
-        "haive.agents.rag.multi_agent_rag.enhanced_state_schemas.StateConfigMixin" -> "AdaptiveThresholdRAGAgentV2";
-      }
-
-.. autoclass:: agents.rag.multi_agent_rag.specialized_workflows_v2.AdaptiveThresholdRAGAgentV2
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for DebateRAGAgentV2:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_DebateRAGAgentV2 {
-        node [shape=record];
-        "DebateRAGAgentV2" [label="DebateRAGAgentV2"];
-        "haive.agents.multi.base.MultiAgent" -> "DebateRAGAgentV2";
-        "haive.agents.rag.multi_agent_rag.enhanced_state_schemas.StateConfigMixin" -> "DebateRAGAgentV2";
-      }
-
-.. autoclass:: agents.rag.multi_agent_rag.specialized_workflows_v2.DebateRAGAgentV2
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for DynamicRAGAgentV2:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_DynamicRAGAgentV2 {
-        node [shape=record];
-        "DynamicRAGAgentV2" [label="DynamicRAGAgentV2"];
-        "haive.agents.multi.base.MultiAgent" -> "DynamicRAGAgentV2";
-        "haive.agents.rag.multi_agent_rag.enhanced_state_schemas.StateConfigMixin" -> "DynamicRAGAgentV2";
-      }
-
-.. autoclass:: agents.rag.multi_agent_rag.specialized_workflows_v2.DynamicRAGAgentV2
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for FLAREAgentV2:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_FLAREAgentV2 {
-        node [shape=record];
-        "FLAREAgentV2" [label="FLAREAgentV2"];
-        "haive.agents.multi.base.MultiAgent" -> "FLAREAgentV2";
-        "haive.agents.rag.multi_agent_rag.enhanced_state_schemas.StateConfigMixin" -> "FLAREAgentV2";
-      }
-
-.. autoclass:: agents.rag.multi_agent_rag.specialized_workflows_v2.FLAREAgentV2
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
 Functions
 ---------
 
 .. autoapisummary::
 
    agents.rag.multi_agent_rag.specialized_workflows_v2.build_custom_graph
+
+
+Module Contents
+---------------
+
+.. py:class:: AdaptiveThresholdRAGAgentV2(initial_threshold: float = 0.7, threshold_step: float = 0.1, min_threshold: float = 0.3, max_threshold: float = 0.95, **kwargs)
+
+   Bases: :py:obj:`haive.agents.multi.base.MultiAgent`, :py:obj:`haive.agents.rag.multi_agent_rag.enhanced_state_schemas.StateConfigMixin`
+
+
+   Adaptive Threshold RAG V2 - Configuration in AdaptiveThresholdRAGState.
+
+
+   .. autolink-examples:: AdaptiveThresholdRAGAgentV2
+      :collapse:
+
+   .. py:method:: ainvoke(inputs: dict[str, Any]) -> dict[str, Any]
+      :async:
+
+
+      Inject configuration.
+
+
+      .. autolink-examples:: ainvoke
+         :collapse:
+
+
+   .. py:method:: build_custom_graph() -> Any
+
+      Build the custom graph for this workflow.
+
+
+      .. autolink-examples:: build_custom_graph
+         :collapse:
+
+
+   .. py:attribute:: _initial_config
+
+
+.. py:class:: DebateRAGAgentV2(position_names: list[str] | None = None, max_debate_rounds: int = 3, require_consensus: bool = False, enable_judge: bool = True, **kwargs)
+
+   Bases: :py:obj:`haive.agents.multi.base.MultiAgent`, :py:obj:`haive.agents.rag.multi_agent_rag.enhanced_state_schemas.StateConfigMixin`
+
+
+   Debate RAG V2 - Configuration in DebateRAGState.
+
+
+   .. autolink-examples:: DebateRAGAgentV2
+      :collapse:
+
+   .. py:method:: ainvoke(inputs: dict[str, Any]) -> dict[str, Any]
+      :async:
+
+
+      Inject configuration and initialize debate positions.
+
+
+      .. autolink-examples:: ainvoke
+         :collapse:
+
+
+   .. py:method:: build_custom_graph() -> Any
+
+      Build the custom graph for this workflow.
+
+
+      .. autolink-examples:: build_custom_graph
+         :collapse:
+
+
+   .. py:attribute:: _initial_config
+
+
+.. py:class:: DynamicRAGAgentV2(min_retrievers: int = 1, max_retrievers: int = 5, performance_threshold: float = 0.6, **kwargs)
+
+   Bases: :py:obj:`haive.agents.multi.base.MultiAgent`, :py:obj:`haive.agents.rag.multi_agent_rag.enhanced_state_schemas.StateConfigMixin`
+
+
+   Dynamic RAG V2 - Configuration in DynamicRAGState.
+
+
+   .. autolink-examples:: DynamicRAGAgentV2
+      :collapse:
+
+   .. py:method:: ainvoke(inputs: dict[str, Any]) -> dict[str, Any]
+      :async:
+
+
+      Inject configuration.
+
+
+      .. autolink-examples:: ainvoke
+         :collapse:
+
+
+   .. py:method:: build_custom_graph() -> Any
+
+      Build the custom graph for this workflow.
+
+
+      .. autolink-examples:: build_custom_graph
+         :collapse:
+
+
+   .. py:attribute:: _initial_config
+
+
+.. py:class:: FLAREAgentV2(uncertainty_threshold: float = 0.3, max_retrieval_rounds: int = 3, **kwargs)
+
+   Bases: :py:obj:`haive.agents.multi.base.MultiAgent`, :py:obj:`haive.agents.rag.multi_agent_rag.enhanced_state_schemas.StateConfigMixin`
+
+
+   FLARE V2 - Configuration stored in FLAREState.
+
+
+   .. autolink-examples:: FLAREAgentV2
+      :collapse:
+
+   .. py:method:: ainvoke(inputs: dict[str, Any]) -> dict[str, Any]
+      :async:
+
+
+      Inject configuration into state.
+
+
+      .. autolink-examples:: ainvoke
+         :collapse:
+
+
+   .. py:method:: build_custom_graph() -> Any
+
+      Build the custom graph for this workflow.
+
+
+      .. autolink-examples:: build_custom_graph
+         :collapse:
+
+
+   .. py:attribute:: _initial_config
+
 
 .. py:function:: build_custom_graph() -> Any
 
@@ -133,11 +183,3 @@ Functions
    .. autolink-examples:: build_custom_graph
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.rag.multi_agent_rag.specialized_workflows_v2
-   :collapse:
-   
-.. autolink-skip:: next

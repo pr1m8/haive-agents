@@ -1,9 +1,7 @@
-
-:py:mod:`agents.rag.self_rag2.nodes.decide_to_generate`
-=======================================================
+agents.rag.self_rag2.nodes.decide_to_generate
+=============================================
 
 .. py:module:: agents.rag.self_rag2.nodes.decide_to_generate
-
 
 
 Functions
@@ -12,6 +10,10 @@ Functions
 .. autoapisummary::
 
    agents.rag.self_rag2.nodes.decide_to_generate.decide_to_generate
+
+
+Module Contents
+---------------
 
 .. py:function:: decide_to_generate(state: dict[str, Any])
 
@@ -27,11 +29,3 @@ Functions
    .. autolink-examples:: decide_to_generate
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.rag.self_rag2.nodes.decide_to_generate
-   :collapse:
-   
-.. autolink-skip:: next

@@ -1,32 +1,33 @@
-
-:py:mod:`agents.dynamic_supervisor.tools`
-=========================================
+agents.dynamic_supervisor.tools
+===============================
 
 .. py:module:: agents.dynamic_supervisor.tools
 
-Dynamic tool generation for supervisor agent.
+.. autoapi-nested-parse::
 
-This module handles the creation of dynamic tools based on registered agents.
-It generates handoff tools for each agent and a choice validation tool.
+   Dynamic tool generation for supervisor agent.
 
-Functions:
-    create_agent_tools: Generate all tools from supervisor state
-    create_handoff_tool: Create a handoff tool for a specific agent
-    create_choice_tool: Create the agent choice validation tool
+   This module handles the creation of dynamic tools based on registered agents.
+   It generates handoff tools for each agent and a choice validation tool.
 
-.. rubric:: Example
+   Functions:
+       create_agent_tools: Generate all tools from supervisor state
+       create_handoff_tool: Create a handoff tool for a specific agent
+       create_choice_tool: Create the agent choice validation tool
 
-Generating tools from state::
+   .. rubric:: Example
 
-    state = SupervisorStateWithTools()
-    state.add_agent("search", agent, "Search expert")
+   Generating tools from state::
 
-    tools = create_agent_tools(state)
-    # Returns: [handoff_to_search, choose_agent]
+       state = SupervisorStateWithTools()
+       state.add_agent("search", agent, "Search expert")
+
+       tools = create_agent_tools(state)
+       # Returns: [handoff_to_search, choose_agent]
 
 
-.. autolink-examples:: agents.dynamic_supervisor.tools
-   :collapse:
+   .. autolink-examples:: agents.dynamic_supervisor.tools
+      :collapse:
 
 
 Functions
@@ -38,6 +39,10 @@ Functions
    agents.dynamic_supervisor.tools.create_agent_tools
    agents.dynamic_supervisor.tools.create_choice_tool
    agents.dynamic_supervisor.tools.create_handoff_tool
+
+
+Module Contents
+---------------
 
 .. py:function:: create_add_agent_tool() -> Any
 
@@ -131,11 +136,3 @@ Functions
    .. autolink-examples:: create_handoff_tool
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.dynamic_supervisor.tools
-   :collapse:
-   
-.. autolink-skip:: next

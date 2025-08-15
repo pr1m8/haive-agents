@@ -1,6 +1,5 @@
-
-:py:mod:`agents.rag.multi_strategy.state`
-=========================================
+agents.rag.multi_strategy.state
+===============================
 
 .. py:module:: agents.rag.multi_strategy.state
 
@@ -16,33 +15,44 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: MultiStrategyRAGState
+
+   Bases: :py:obj:`haive.agents.rag.self_corr.state.SelfCorrectiveRAGState`
+
+
+   State for multi-strategy RAG agents.
+
+
+   .. autolink-examples:: MultiStrategyRAGState
+      :collapse:
+
+   .. py:attribute:: query_type
+      :type:  str | None
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for MultiStrategyRAGState:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_MultiStrategyRAGState {
-        node [shape=record];
-        "MultiStrategyRAGState" [label="MultiStrategyRAGState"];
-        "haive.agents.rag.self_corr.state.SelfCorrectiveRAGState" -> "MultiStrategyRAGState";
-      }
-
-.. autoclass:: agents.rag.multi_strategy.state.MultiStrategyRAGState
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. py:attribute:: query_variations
+      :type:  list[str]
+      :value: None
 
 
 
+   .. py:attribute:: rewritten_query
+      :type:  str | None
+      :value: None
 
-.. rubric:: Related Links
 
-.. autolink-examples:: agents.rag.multi_strategy.state
-   :collapse:
-   
-.. autolink-skip:: next
+
+   .. py:attribute:: strategy_metrics
+      :type:  dict[str, Any]
+      :value: None
+
+
+
+   .. py:attribute:: strategy_name
+      :type:  str | None
+      :value: None
+
+
+

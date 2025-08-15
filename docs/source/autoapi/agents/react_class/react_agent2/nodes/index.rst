@@ -1,9 +1,7 @@
-
-:py:mod:`agents.react_class.react_agent2.nodes`
-===============================================
+agents.react_class.react_agent2.nodes
+=====================================
 
 .. py:module:: agents.react_class.react_agent2.nodes
-
 
 
 Functions
@@ -20,6 +18,10 @@ Functions
    agents.react_class.react_agent2.nodes.observe_node
    agents.react_class.react_agent2.nodes.route_by_status
    agents.react_class.react_agent2.nodes.think_node
+
+
+Module Contents
+---------------
 
 .. py:function:: act_node(state: dict[str, Any]) -> langgraph.types.Command
 
@@ -106,11 +108,3 @@ Functions
    .. autolink-examples:: think_node
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.react_class.react_agent2.nodes
-   :collapse:
-   
-.. autolink-skip:: next

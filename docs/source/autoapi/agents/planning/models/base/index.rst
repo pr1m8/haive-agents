@@ -1,24 +1,35 @@
-
-:py:mod:`agents.planning.models.base`
-=====================================
+agents.planning.models.base
+===========================
 
 .. py:module:: agents.planning.models.base
 
-Base models for the unified planning system.
+.. autoapi-nested-parse::
 
-This module provides the foundation for a flexible planning system that can support
-various planning patterns including Plan-and-Execute, ReWOO, LLM Compiler, FLARE RAG,
-and recursive planning capabilities.
+   Base models for the unified planning system.
 
-Key Design Principles:
-1. Composable: Different planning patterns can mix and match components
-2. Extensible: Easy to add new step types and planning patterns
-3. Type-safe: Comprehensive validation and type checking
-4. Resource-aware: Built-in support for resource tracking and constraints
+   This module provides the foundation for a flexible planning system that can support
+   various planning patterns including Plan-and-Execute, ReWOO, LLM Compiler, FLARE RAG,
+   and recursive planning capabilities.
+
+   Key Design Principles:
+   1. Composable: Different planning patterns can mix and match components
+   2. Extensible: Easy to add new step types and planning patterns
+   3. Type-safe: Comprehensive validation and type checking
+   4. Resource-aware: Built-in support for resource tracking and constraints
 
 
-.. autolink-examples:: agents.planning.models.base
-   :collapse:
+   .. autolink-examples:: agents.planning.models.base
+      :collapse:
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.planning.models.base.AnyStep
+   agents.planning.models.base.TPlan
+
 
 Classes
 -------
@@ -46,404 +57,1109 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: ActionStep(/, **data: Any)
 
+   Bases: :py:obj:`BaseStep`
 
 
-.. toggle:: Show Inheritance Diagram
+   Step that performs a specific action or tool call.
 
-   Inheritance diagram for ActionStep:
+   Create a new model by parsing and validating input data from keyword arguments.
 
-   .. graphviz::
-      :align: center
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
 
-      digraph inheritance_ActionStep {
-        node [shape=record];
-        "ActionStep" [label="ActionStep"];
-        "BaseStep" -> "ActionStep";
-      }
+   `self` is explicitly positional-only to allow `self` as a field name.
 
-.. autoclass:: agents.planning.models.base.ActionStep
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
+   .. autolink-examples:: __init__
+      :collapse:
 
 
+   .. autolink-examples:: ActionStep
+      :collapse:
 
-.. toggle:: Show Inheritance Diagram
+   .. py:attribute:: expected_output_schema
+      :type:  dict[str, Any] | None
+      :value: None
 
-   Inheritance diagram for AdaptivePlan:
 
-   .. graphviz::
-      :align: center
 
-      digraph inheritance_AdaptivePlan {
-        node [shape=record];
-        "AdaptivePlan" [label="AdaptivePlan"];
-        "BasePlan" -> "AdaptivePlan";
-      }
+   .. py:attribute:: step_type
+      :type:  StepType
+      :value: None
 
-.. autoclass:: agents.planning.models.base.AdaptivePlan
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
 
+   .. py:attribute:: tool_args
+      :type:  dict[str, Any] | None
+      :value: None
 
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for BasePlan:
+   .. py:attribute:: tool_name
+      :type:  str | None
+      :value: None
 
-   .. graphviz::
-      :align: center
 
-      digraph inheritance_BasePlan {
-        node [shape=record];
-        "BasePlan" [label="BasePlan"];
-        "pydantic.BaseModel" -> "BasePlan";
-      }
 
-.. autopydantic_model:: agents.planning.models.base.BasePlan
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+.. py:class:: AdaptivePlan(/, **data: Any)
 
+   Bases: :py:obj:`BasePlan`
 
 
+   Plan that can adapt during execution (FLARE style).
 
+   Create a new model by parsing and validating input data from keyword arguments.
 
-.. toggle:: Show Inheritance Diagram
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
 
-   Inheritance diagram for BaseStep:
+   `self` is explicitly positional-only to allow `self` as a field name.
 
-   .. graphviz::
-      :align: center
 
-      digraph inheritance_BaseStep {
-        node [shape=record];
-        "BaseStep" [label="BaseStep"];
-        "pydantic.BaseModel" -> "BaseStep";
-      }
+   .. autolink-examples:: __init__
+      :collapse:
 
-.. autopydantic_model:: agents.planning.models.base.BaseStep
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
 
+   .. autolink-examples:: AdaptivePlan
+      :collapse:
 
+   .. py:method:: adapt(context: dict[str, Any]) -> None
 
+      Adapt plan based on execution context.
 
 
-.. toggle:: Show Inheritance Diagram
+      .. autolink-examples:: adapt
+         :collapse:
 
-   Inheritance diagram for ConditionalStep:
 
-   .. graphviz::
-      :align: center
+   .. py:method:: should_adapt(context: dict[str, Any]) -> bool
 
-      digraph inheritance_ConditionalStep {
-        node [shape=record];
-        "ConditionalStep" [label="ConditionalStep"];
-        "BaseStep" -> "ConditionalStep";
-      }
+      Check if plan should adapt based on context.
 
-.. autoclass:: agents.planning.models.base.ConditionalStep
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
+      .. autolink-examples:: should_adapt
+         :collapse:
 
 
+   .. py:attribute:: adaptation_count
+      :type:  int
+      :value: None
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for DAGPlan:
 
-   .. graphviz::
-      :align: center
+   .. py:attribute:: adaptation_triggers
+      :type:  list[str]
+      :value: None
 
-      digraph inheritance_DAGPlan {
-        node [shape=record];
-        "DAGPlan" [label="DAGPlan"];
-        "BasePlan" -> "DAGPlan";
-      }
 
-.. autoclass:: agents.planning.models.base.DAGPlan
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
+   .. py:attribute:: max_adaptations
+      :type:  int
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
+.. py:class:: BasePlan(/, **data: Any)
 
-   Inheritance diagram for Dependency:
+   Bases: :py:obj:`pydantic.BaseModel`
 
-   .. graphviz::
-      :align: center
 
-      digraph inheritance_Dependency {
-        node [shape=record];
-        "Dependency" [label="Dependency"];
-        "pydantic.BaseModel" -> "Dependency";
-      }
+   Base class for all planning patterns.
 
-.. autopydantic_model:: agents.planning.models.base.Dependency
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   This provides core planning functionality while allowing different
+   planning strategies to extend and customize behavior.
 
+   Create a new model by parsing and validating input data from keyword arguments.
 
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
 
+   `self` is explicitly positional-only to allow `self` as a field name.
 
 
-.. toggle:: Show Inheritance Diagram
+   .. autolink-examples:: __init__
+      :collapse:
 
-   Inheritance diagram for DependencyType:
 
-   .. graphviz::
-      :align: center
+   .. autolink-examples:: BasePlan
+      :collapse:
 
-      digraph inheritance_DependencyType {
-        node [shape=record];
-        "DependencyType" [label="DependencyType"];
-        "str" -> "DependencyType";
-        "enum.Enum" -> "DependencyType";
-      }
+   .. py:method:: add_step(step: AnyStep) -> None
 
-.. autoclass:: agents.planning.models.base.DependencyType
-   :members:
-   :undoc-members:
-   :show-inheritance:
+      Add a step to the plan.
 
-   .. note::
 
-      **DependencyType** is an Enum defined in ``agents.planning.models.base``.
+      .. autolink-examples:: add_step
+         :collapse:
 
 
+   .. py:method:: get_execution_order() -> list[list[AnyStep]]
 
+      Get steps organized by execution order (batches for parallel execution).
 
 
-.. toggle:: Show Inheritance Diagram
+      .. autolink-examples:: get_execution_order
+         :collapse:
 
-   Inheritance diagram for ExecutionMode:
 
-   .. graphviz::
-      :align: center
+   .. py:method:: get_step(step_id: str) -> AnyStep | None
 
-      digraph inheritance_ExecutionMode {
-        node [shape=record];
-        "ExecutionMode" [label="ExecutionMode"];
-        "str" -> "ExecutionMode";
-        "enum.Enum" -> "ExecutionMode";
-      }
+      Get step by ID.
 
-.. autoclass:: agents.planning.models.base.ExecutionMode
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
-   .. note::
+      .. autolink-examples:: get_step
+         :collapse:
 
-      **ExecutionMode** is an Enum defined in ``agents.planning.models.base``.
 
+   .. py:method:: to_mermaid() -> str
 
+      Generate Mermaid diagram of plan.
 
 
+      .. autolink-examples:: to_mermaid
+         :collapse:
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for ParallelStep:
+   .. py:method:: to_prompt_format() -> str
 
-   .. graphviz::
-      :align: center
+      Format plan for inclusion in prompts.
 
-      digraph inheritance_ParallelStep {
-        node [shape=record];
-        "ParallelStep" [label="ParallelStep"];
-        "BaseStep" -> "ParallelStep";
-      }
 
-.. autoclass:: agents.planning.models.base.ParallelStep
-   :members:
-   :undoc-members:
-   :show-inheritance:
+      .. autolink-examples:: to_prompt_format
+         :collapse:
 
 
+   .. py:method:: update_ready_steps() -> list[AnyStep]
 
+      Update and return steps that are ready to execute.
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for RecursiveStep:
+      .. autolink-examples:: update_ready_steps
+         :collapse:
 
-   .. graphviz::
-      :align: center
 
-      digraph inheritance_RecursiveStep {
-        node [shape=record];
-        "RecursiveStep" [label="RecursiveStep"];
-        "BaseStep" -> "RecursiveStep";
-      }
+   .. py:property:: completed_steps
+      :type: list[AnyStep]
 
-.. autoclass:: agents.planning.models.base.RecursiveStep
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
+      Get completed steps.
 
+      .. autolink-examples:: completed_steps
+         :collapse:
 
 
-.. toggle:: Show Inheritance Diagram
+   .. py:attribute:: created_at
+      :type:  datetime.datetime
+      :value: None
 
-   Inheritance diagram for ResearchStep:
 
-   .. graphviz::
-      :align: center
 
-      digraph inheritance_ResearchStep {
-        node [shape=record];
-        "ResearchStep" [label="ResearchStep"];
-        "BaseStep" -> "ResearchStep";
-      }
+   .. py:property:: failed_steps
+      :type: list[AnyStep]
 
-.. autoclass:: agents.planning.models.base.ResearchStep
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
+      Get failed steps.
 
+      .. autolink-examples:: failed_steps
+         :collapse:
 
 
-.. toggle:: Show Inheritance Diagram
+   .. py:property:: has_failures
+      :type: bool
 
-   Inheritance diagram for SequentialPlan:
 
-   .. graphviz::
-      :align: center
+      Check if any steps failed.
 
-      digraph inheritance_SequentialPlan {
-        node [shape=record];
-        "SequentialPlan" [label="SequentialPlan"];
-        "BasePlan" -> "SequentialPlan";
-      }
+      .. autolink-examples:: has_failures
+         :collapse:
 
-.. autoclass:: agents.planning.models.base.SequentialPlan
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
+   .. py:attribute:: id
+      :type:  str
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
+   .. py:property:: is_complete
+      :type: bool
 
-   Inheritance diagram for StepMetadata:
 
-   .. graphviz::
-      :align: center
+      Check if plan is complete.
 
-      digraph inheritance_StepMetadata {
-        node [shape=record];
-        "StepMetadata" [label="StepMetadata"];
-        "pydantic.BaseModel" -> "StepMetadata";
-      }
+      .. autolink-examples:: is_complete
+         :collapse:
 
-.. autopydantic_model:: agents.planning.models.base.StepMetadata
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
 
+   .. py:attribute:: metadata
+      :type:  dict[str, Any]
+      :value: None
 
 
 
+   .. py:attribute:: model_config
 
-.. toggle:: Show Inheritance Diagram
+      Configuration for the model, should be a dictionary conforming to [`ConfigDict`][pydantic.config.ConfigDict].
 
-   Inheritance diagram for StepStatus:
+      .. autolink-examples:: model_config
+         :collapse:
 
-   .. graphviz::
-      :align: center
 
-      digraph inheritance_StepStatus {
-        node [shape=record];
-        "StepStatus" [label="StepStatus"];
-        "str" -> "StepStatus";
-        "enum.Enum" -> "StepStatus";
-      }
+   .. py:attribute:: name
+      :type:  str
+      :value: None
 
-.. autoclass:: agents.planning.models.base.StepStatus
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
-   .. note::
 
-      **StepStatus** is an Enum defined in ``agents.planning.models.base``.
+   .. py:attribute:: objective
+      :type:  str
+      :value: None
 
 
 
+   .. py:property:: pending_steps
+      :type: list[AnyStep]
 
 
-.. toggle:: Show Inheritance Diagram
+      Get pending steps.
 
-   Inheritance diagram for StepType:
+      .. autolink-examples:: pending_steps
+         :collapse:
 
-   .. graphviz::
-      :align: center
 
-      digraph inheritance_StepType {
-        node [shape=record];
-        "StepType" [label="StepType"];
-        "str" -> "StepType";
-        "enum.Enum" -> "StepType";
-      }
+   .. py:property:: progress_percentage
+      :type: float
 
-.. autoclass:: agents.planning.models.base.StepType
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
-   .. note::
+      Calculate completion percentage.
 
-      **StepType** is an Enum defined in ``agents.planning.models.base``.
+      .. autolink-examples:: progress_percentage
+         :collapse:
 
 
+   .. py:property:: ready_steps
+      :type: list[AnyStep]
 
 
+      Get steps ready to execute.
 
-.. rubric:: Related Links
+      .. autolink-examples:: ready_steps
+         :collapse:
 
-.. autolink-examples:: agents.planning.models.base
-   :collapse:
-   
-.. autolink-skip:: next
+
+   .. py:attribute:: steps
+      :type:  list[AnyStep]
+      :value: None
+
+
+
+   .. py:property:: total_steps
+      :type: int
+
+
+      Total number of steps.
+
+      .. autolink-examples:: total_steps
+         :collapse:
+
+
+   .. py:attribute:: updated_at
+      :type:  datetime.datetime
+      :value: None
+
+
+
+.. py:class:: BaseStep(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Base class for all planning steps.
+
+   This provides the core functionality that all step types share,
+   while being flexible enough to support various planning patterns.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: BaseStep
+      :collapse:
+
+   .. py:method:: add_dependency(step_id: str, dependency_type: DependencyType = DependencyType.HARD, condition: str | None = None, required_output: str | None = None) -> None
+
+      Add a dependency to this step.
+
+
+      .. autolink-examples:: add_dependency
+         :collapse:
+
+
+   .. py:method:: is_ready(completed_steps: dict[str, Any]) -> bool
+
+      Check if all dependencies are satisfied.
+
+
+      .. autolink-examples:: is_ready
+         :collapse:
+
+
+   .. py:method:: mark_completed(output: dict[str, Any] | None = None) -> None
+
+      Mark step as completed.
+
+
+      .. autolink-examples:: mark_completed
+         :collapse:
+
+
+   .. py:method:: mark_failed(error: str) -> None
+
+      Mark step as failed.
+
+
+      .. autolink-examples:: mark_failed
+         :collapse:
+
+
+   .. py:method:: mark_in_progress() -> None
+
+      Mark step as in progress.
+
+
+      .. autolink-examples:: mark_in_progress
+         :collapse:
+
+
+   .. py:method:: mark_ready() -> None
+
+      Mark step as ready to execute.
+
+
+      .. autolink-examples:: mark_ready
+         :collapse:
+
+
+   .. py:method:: to_prompt_format() -> str
+
+      Format step for inclusion in prompts.
+
+
+      .. autolink-examples:: to_prompt_format
+         :collapse:
+
+
+   .. py:method:: validate_unique_dependencies(v: list[Dependency]) -> list[Dependency]
+      :classmethod:
+
+
+      Ensure no duplicate dependencies.
+
+
+      .. autolink-examples:: validate_unique_dependencies
+         :collapse:
+
+
+   .. py:attribute:: dependencies
+      :type:  list[Dependency]
+      :value: None
+
+
+
+   .. py:attribute:: description
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: execution_mode
+      :type:  ExecutionMode
+      :value: None
+
+
+
+   .. py:attribute:: id
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: input_data
+      :type:  dict[str, Any] | None
+      :value: None
+
+
+
+   .. py:attribute:: metadata
+      :type:  StepMetadata
+      :value: None
+
+
+
+   .. py:attribute:: model_config
+
+      Configuration for the model, should be a dictionary conforming to [`ConfigDict`][pydantic.config.ConfigDict].
+
+      .. autolink-examples:: model_config
+         :collapse:
+
+
+   .. py:attribute:: name
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: output_data
+      :type:  dict[str, Any] | None
+      :value: None
+
+
+
+   .. py:attribute:: priority
+      :type:  int
+      :value: None
+
+
+
+   .. py:attribute:: status
+      :type:  StepStatus
+      :value: None
+
+
+
+   .. py:attribute:: step_type
+      :type:  StepType
+      :value: None
+
+
+
+.. py:class:: ConditionalStep(/, **data: Any)
+
+   Bases: :py:obj:`BaseStep`
+
+
+   Step with conditional execution paths.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: ConditionalStep
+      :collapse:
+
+   .. py:attribute:: condition
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: else_steps
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: step_type
+      :type:  StepType
+      :value: None
+
+
+
+   .. py:attribute:: then_steps
+      :type:  list[str]
+      :value: None
+
+
+
+.. py:class:: DAGPlan(/, **data: Any)
+
+   Bases: :py:obj:`BasePlan`
+
+
+   Plan with explicit DAG structure (LLM Compiler style).
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: DAGPlan
+      :collapse:
+
+   .. py:method:: validate_dag() -> bool
+
+      Validate that plan forms a valid DAG (no cycles).
+
+
+      .. autolink-examples:: validate_dag
+         :collapse:
+
+
+.. py:class:: Dependency(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Represents a dependency between steps.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: Dependency
+      :collapse:
+
+   .. py:method:: is_satisfied(step_results: dict[str, Any]) -> bool
+
+      Check if this dependency is satisfied.
+
+
+      .. autolink-examples:: is_satisfied
+         :collapse:
+
+
+   .. py:attribute:: condition
+      :type:  str | None
+      :value: None
+
+
+
+   .. py:attribute:: dependency_type
+      :type:  DependencyType
+      :value: None
+
+
+
+   .. py:attribute:: required_output
+      :type:  str | None
+      :value: None
+
+
+
+   .. py:attribute:: step_id
+      :type:  str
+      :value: None
+
+
+
+.. py:class:: DependencyType
+
+   Bases: :py:obj:`str`, :py:obj:`enum.Enum`
+
+
+   Type of dependency between steps.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: DependencyType
+      :collapse:
+
+   .. py:attribute:: CONDITIONAL
+      :value: 'conditional'
+
+
+
+   .. py:attribute:: DATA
+      :value: 'data'
+
+
+
+   .. py:attribute:: HARD
+      :value: 'hard'
+
+
+
+   .. py:attribute:: SOFT
+      :value: 'soft'
+
+
+
+.. py:class:: ExecutionMode
+
+   Bases: :py:obj:`str`, :py:obj:`enum.Enum`
+
+
+   How a step should be executed.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: ExecutionMode
+      :collapse:
+
+   .. py:attribute:: BATCH
+      :value: 'batch'
+
+
+
+   .. py:attribute:: PARALLEL
+      :value: 'parallel'
+
+
+
+   .. py:attribute:: SEQUENTIAL
+      :value: 'sequential'
+
+
+
+   .. py:attribute:: STREAM
+      :value: 'stream'
+
+
+
+.. py:class:: ParallelStep(/, **data: Any)
+
+   Bases: :py:obj:`BaseStep`
+
+
+   Container for steps that can execute in parallel.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: ParallelStep
+      :collapse:
+
+   .. py:attribute:: join_strategy
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: parallel_steps
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: step_type
+      :type:  StepType
+      :value: None
+
+
+
+.. py:class:: RecursiveStep(/, **data: Any)
+
+   Bases: :py:obj:`BaseStep`
+
+
+   Step that can spawn sub-plans recursively.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: RecursiveStep
+      :collapse:
+
+   .. py:attribute:: max_depth
+      :type:  int
+      :value: None
+
+
+
+   .. py:attribute:: step_type
+      :type:  StepType
+      :value: None
+
+
+
+   .. py:attribute:: sub_objective
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: sub_plan_id
+      :type:  str | None
+      :value: None
+
+
+
+.. py:class:: ResearchStep(/, **data: Any)
+
+   Bases: :py:obj:`BaseStep`
+
+
+   Step for information gathering and research.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: ResearchStep
+      :collapse:
+
+   .. py:attribute:: max_results
+      :type:  int
+      :value: None
+
+
+
+   .. py:attribute:: query
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: sources
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: step_type
+      :type:  StepType
+      :value: None
+
+
+
+.. py:class:: SequentialPlan(/, **data: Any)
+
+   Bases: :py:obj:`BasePlan`
+
+
+   Traditional sequential execution plan.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: SequentialPlan
+      :collapse:
+
+   .. py:method:: add_sequential_step(step: AnyStep, depends_on_previous: bool = True) -> None
+
+      Add step with automatic dependency on previous step.
+
+
+      .. autolink-examples:: add_sequential_step
+         :collapse:
+
+
+.. py:class:: StepMetadata(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Metadata for tracking step execution and debugging.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: StepMetadata
+      :collapse:
+
+   .. py:attribute:: api_calls_made
+      :type:  int | None
+      :value: None
+
+
+
+   .. py:attribute:: completed_at
+      :type:  datetime.datetime | None
+      :value: None
+
+
+
+   .. py:attribute:: created_at
+      :type:  datetime.datetime
+      :value: None
+
+
+
+   .. py:attribute:: custom_data
+      :type:  dict[str, Any]
+      :value: None
+
+
+
+   .. py:attribute:: error_count
+      :type:  int
+      :value: None
+
+
+
+   .. py:property:: execution_time
+      :type: float | None
+
+
+      Calculate execution time in seconds.
+
+      .. autolink-examples:: execution_time
+         :collapse:
+
+
+   .. py:attribute:: last_error
+      :type:  str | None
+      :value: None
+
+
+
+   .. py:attribute:: retry_count
+      :type:  int
+      :value: None
+
+
+
+   .. py:attribute:: started_at
+      :type:  datetime.datetime | None
+      :value: None
+
+
+
+   .. py:attribute:: tags
+      :type:  set[str]
+      :value: None
+
+
+
+   .. py:attribute:: tokens_used
+      :type:  int | None
+      :value: None
+
+
+
+   .. py:attribute:: updated_at
+      :type:  datetime.datetime
+      :value: None
+
+
+
+.. py:class:: StepStatus
+
+   Bases: :py:obj:`str`, :py:obj:`enum.Enum`
+
+
+   Universal status for any plan step.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: StepStatus
+      :collapse:
+
+   .. py:attribute:: BLOCKED
+      :value: 'blocked'
+
+
+
+   .. py:attribute:: CANCELLED
+      :value: 'cancelled'
+
+
+
+   .. py:attribute:: COMPLETED
+      :value: 'completed'
+
+
+
+   .. py:attribute:: FAILED
+      :value: 'failed'
+
+
+
+   .. py:attribute:: IN_PROGRESS
+      :value: 'in_progress'
+
+
+
+   .. py:attribute:: PENDING
+      :value: 'pending'
+
+
+
+   .. py:attribute:: READY
+      :value: 'ready'
+
+
+
+   .. py:attribute:: SKIPPED
+      :value: 'skipped'
+
+
+
+.. py:class:: StepType
+
+   Bases: :py:obj:`str`, :py:obj:`enum.Enum`
+
+
+   Type of plan step - extensible for different planning patterns.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: StepType
+      :collapse:
+
+   .. py:attribute:: ACTION
+      :value: 'action'
+
+
+
+   .. py:attribute:: ANALYSIS
+      :value: 'analysis'
+
+
+
+   .. py:attribute:: CONDITIONAL
+      :value: 'conditional'
+
+
+
+   .. py:attribute:: DECISION
+      :value: 'decision'
+
+
+
+   .. py:attribute:: EVIDENCE
+      :value: 'evidence'
+
+
+
+   .. py:attribute:: GENERATION
+      :value: 'generation'
+
+
+
+   .. py:attribute:: JOIN
+      :value: 'join'
+
+
+
+   .. py:attribute:: LOOP
+      :value: 'loop'
+
+
+
+   .. py:attribute:: PARALLEL
+      :value: 'parallel'
+
+
+
+   .. py:attribute:: RECURSIVE
+      :value: 'recursive'
+
+
+
+   .. py:attribute:: RESEARCH
+      :value: 'research'
+
+
+
+   .. py:attribute:: RETRIEVAL
+      :value: 'retrieval'
+
+
+
+   .. py:attribute:: SYNTHESIS
+      :value: 'synthesis'
+
+
+
+   .. py:attribute:: TOOL_CALL
+      :value: 'tool_call'
+
+
+
+   .. py:attribute:: VALIDATION
+      :value: 'validation'
+
+
+
+.. py:data:: AnyStep
+
+.. py:data:: TPlan
+

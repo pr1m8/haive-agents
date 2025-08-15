@@ -1,27 +1,39 @@
-
-:py:mod:`agents.reasoning_and_critique.logic.engines`
-=====================================================
+agents.reasoning_and_critique.logic.engines
+===========================================
 
 .. py:module:: agents.reasoning_and_critique.logic.engines
 
-Engines - TODO: Add brief description.
+.. autoapi-nested-parse::
 
-TODO: Add detailed description of module functionality
+   Engines - TODO: Add brief description.
 
-
-
-.. rubric:: Example
-
-Basic usage::
-
-    from haive.engines import module_function
-
-    # TODO: Add example
+   TODO: Add detailed description of module functionality
 
 
-.. autolink-examples:: agents.reasoning_and_critique.logic.engines
-   :collapse:
+
+   .. rubric:: Example
+
+   Basic usage::
+
+       from haive.engines import module_function
+
+       # TODO: Add example
 
 
+   .. autolink-examples:: agents.reasoning_and_critique.logic.engines
+      :collapse:
+
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/agents/reasoning_and_critique/logic/engines/bias_detector/index
+   /autoapi/agents/reasoning_and_critique/logic/engines/logical_reasoner/index
+   /autoapi/agents/reasoning_and_critique/logic/engines/premise_extractor/index
+   /autoapi/agents/reasoning_and_critique/logic/engines/synthesis_agent/index
+   /autoapi/agents/reasoning_and_critique/logic/engines/uncertainty_analyzer/index
 
 

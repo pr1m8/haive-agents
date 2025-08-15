@@ -1,17 +1,19 @@
-
-:py:mod:`agents.chain.extended_chain`
-=====================================
+agents.chain.extended_chain
+===========================
 
 .. py:module:: agents.chain.extended_chain
 
-Extended Chain Agent with simplified chain building capabilities.
+.. autoapi-nested-parse::
 
-This module provides the ExtendedChainAgent class and utilities for building
-complex multi-step agent workflows with easy-to-use chain syntax.
+   Extended Chain Agent with simplified chain building capabilities.
+
+   This module provides the ExtendedChainAgent class and utilities for building
+   complex multi-step agent workflows with easy-to-use chain syntax.
 
 
-.. autolink-examples:: agents.chain.extended_chain
-   :collapse:
+   .. autolink-examples:: agents.chain.extended_chain
+      :collapse:
+
 
 Classes
 -------
@@ -26,151 +28,6 @@ Classes
    agents.chain.extended_chain.ExtendedChainAgent
 
 
-Module Contents
----------------
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ChainBuilder:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ChainBuilder {
-        node [shape=record];
-        "ChainBuilder" [label="ChainBuilder"];
-      }
-
-.. autoclass:: agents.chain.extended_chain.ChainBuilder
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ChainConfig:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ChainConfig {
-        node [shape=record];
-        "ChainConfig" [label="ChainConfig"];
-        "haive.core.engine.agent.AgentConfig" -> "ChainConfig";
-      }
-
-.. autoclass:: agents.chain.extended_chain.ChainConfig
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ChainEdge:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ChainEdge {
-        node [shape=record];
-        "ChainEdge" [label="ChainEdge"];
-        "pydantic.BaseModel" -> "ChainEdge";
-      }
-
-.. autopydantic_model:: agents.chain.extended_chain.ChainEdge
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
-
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ChainNode:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ChainNode {
-        node [shape=record];
-        "ChainNode" [label="ChainNode"];
-        "pydantic.BaseModel" -> "ChainNode";
-      }
-
-.. autopydantic_model:: agents.chain.extended_chain.ChainNode
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
-
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ChainState:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ChainState {
-        node [shape=record];
-        "ChainState" [label="ChainState"];
-        "haive.core.schema.state_schema.StateSchema" -> "ChainState";
-      }
-
-.. autoclass:: agents.chain.extended_chain.ChainState
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ExtendedChainAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ExtendedChainAgent {
-        node [shape=record];
-        "ExtendedChainAgent" [label="ExtendedChainAgent"];
-        "haive.core.engine.agent.Agent" -> "ExtendedChainAgent";
-      }
-
-.. autoclass:: agents.chain.extended_chain.ExtendedChainAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
 Functions
 ---------
 
@@ -178,6 +35,266 @@ Functions
 
    agents.chain.extended_chain.chain
    agents.chain.extended_chain.chain_with_edges
+
+
+Module Contents
+---------------
+
+.. py:class:: ChainBuilder
+
+   Builder class for creating chain workflows.
+
+
+   .. autolink-examples:: ChainBuilder
+      :collapse:
+
+   .. py:method:: add_edge(from_node: str, to_node: str, condition: collections.abc.Callable | None = None) -> ChainBuilder
+
+      Add an edge between nodes.
+
+
+      .. autolink-examples:: add_edge
+         :collapse:
+
+
+   .. py:method:: add_node(name: str, agent: Any, config: dict[str, Any] | None = None) -> ChainBuilder
+
+      Add a node to the chain.
+
+
+      .. autolink-examples:: add_node
+         :collapse:
+
+
+   .. py:method:: build() -> ChainConfig
+
+      Build the chain configuration.
+
+
+      .. autolink-examples:: build
+         :collapse:
+
+
+   .. py:attribute:: edges
+      :type:  list[ChainEdge]
+      :value: []
+
+
+
+   .. py:attribute:: nodes
+      :type:  list[ChainNode]
+      :value: []
+
+
+
+.. py:class:: ChainConfig
+
+   Bases: :py:obj:`haive.core.engine.agent.AgentConfig`
+
+
+   Configuration for ExtendedChainAgent.
+
+
+   .. autolink-examples:: ChainConfig
+      :collapse:
+
+   .. py:attribute:: edges
+      :type:  list[ChainEdge]
+      :value: None
+
+
+
+   .. py:attribute:: execution_mode
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: max_iterations
+      :type:  int
+      :value: None
+
+
+
+   .. py:attribute:: nodes
+      :type:  list[ChainNode]
+      :value: None
+
+
+
+.. py:class:: ChainEdge(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   An edge connection between chain nodes.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: ChainEdge
+      :collapse:
+
+   .. py:attribute:: condition
+      :type:  collections.abc.Callable | None
+      :value: None
+
+
+
+   .. py:attribute:: from_node
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: to_node
+      :type:  str
+      :value: None
+
+
+
+.. py:class:: ChainNode(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   A node in a chain workflow.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: ChainNode
+      :collapse:
+
+   .. py:attribute:: agent
+      :type:  Any
+      :value: None
+
+
+
+   .. py:attribute:: config
+      :type:  dict[str, Any] | None
+      :value: None
+
+
+
+   .. py:attribute:: dependencies
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: name
+      :type:  str
+      :value: None
+
+
+
+.. py:class:: ChainState
+
+   Bases: :py:obj:`haive.core.schema.state_schema.StateSchema`
+
+
+   State schema for chain execution.
+
+
+   .. autolink-examples:: ChainState
+      :collapse:
+
+   .. py:attribute:: chain_complete
+      :type:  bool
+      :value: None
+
+
+
+   .. py:attribute:: completed_nodes
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: current_node
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: iteration_count
+      :type:  int
+      :value: None
+
+
+
+   .. py:attribute:: node_results
+      :type:  dict[str, Any]
+      :value: None
+
+
+
+.. py:class:: ExtendedChainAgent(config: ChainConfig)
+
+   Bases: :py:obj:`haive.core.engine.agent.Agent`
+
+
+   Extended chain agent for complex multi-step workflows.
+
+   This agent provides a simplified interface for building complex chains
+   of agents with dependencies, conditional execution, and state management.
+
+
+   .. autolink-examples:: ExtendedChainAgent
+      :collapse:
+
+   .. py:method:: execute_node(node_name: str, state: ChainState) -> Any
+
+      Execute a specific node in the chain.
+
+
+      .. autolink-examples:: execute_node
+         :collapse:
+
+
+   .. py:method:: get_next_nodes(current_node: str, state: ChainState) -> list[str]
+
+      Get the next nodes to execute based on current state.
+
+
+      .. autolink-examples:: get_next_nodes
+         :collapse:
+
+
+   .. py:method:: setup_workflow() -> None
+
+      Set up the chain workflow.
+
+
+      .. autolink-examples:: setup_workflow
+         :collapse:
+
+
+   .. py:attribute:: chain_config
+
+
+   .. py:attribute:: state_schema
+
 
 .. py:function:: chain(*agents: Any) -> ChainBuilder
 
@@ -204,11 +321,3 @@ Functions
    .. autolink-examples:: chain_with_edges
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.chain.extended_chain
-   :collapse:
-   
-.. autolink-skip:: next

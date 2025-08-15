@@ -1,19 +1,21 @@
-
-:py:mod:`agents.research.open_perplexity.models`
-================================================
+agents.research.open_perplexity.models
+======================================
 
 .. py:module:: agents.research.open_perplexity.models
 
-Models for the open_perplexity research agent.
+.. autoapi-nested-parse::
 
-from typing import Any
-This module defines data models used for representing, tracking, and evaluating
-research sources, findings, and summaries. It includes enumerations for categorizing
-data source types, content reliability, freshness, and research depth.
+   Models for the open_perplexity research agent.
+
+   from typing import Any
+   This module defines data models used for representing, tracking, and evaluating
+   research sources, findings, and summaries. It includes enumerations for categorizing
+   data source types, content reliability, freshness, and research depth.
 
 
-.. autolink-examples:: agents.research.open_perplexity.models
-   :collapse:
+   .. autolink-examples:: agents.research.open_perplexity.models
+      :collapse:
+
 
 Classes
 -------
@@ -33,236 +35,757 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: ContentFreshness
 
+   Bases: :py:obj:`str`, :py:obj:`enum.Enum`
 
 
-.. toggle:: Show Inheritance Diagram
+   Enumeration of content freshness levels.
 
-   Inheritance diagram for ContentFreshness:
+   Categorizes how recent or up-to-date the information content is.
 
-   .. graphviz::
-      :align: center
+   .. attribute:: VERY_RECENT
 
-      digraph inheritance_ContentFreshness {
-        node [shape=record];
-        "ContentFreshness" [label="ContentFreshness"];
-        "str" -> "ContentFreshness";
-        "enum.Enum" -> "ContentFreshness";
-      }
+      Content from the last few days
 
-.. autoclass:: agents.research.open_perplexity.models.ContentFreshness
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. attribute:: RECENT
 
-   .. note::
+      Content from the last few weeks
 
-      **ContentFreshness** is an Enum defined in ``agents.research.open_perplexity.models``.
+   .. attribute:: SOMEWHAT_RECENT
 
+      Content from the last few months
 
+   .. attribute:: OUTDATED
 
+      Content from years ago
 
+   .. attribute:: UNKNOWN
 
-.. toggle:: Show Inheritance Diagram
+      Content with unknown or unclear publication date
 
-   Inheritance diagram for ContentReliability:
+   Initialize self.  See help(type(self)) for accurate signature.
 
-   .. graphviz::
-      :align: center
 
-      digraph inheritance_ContentReliability {
-        node [shape=record];
-        "ContentReliability" [label="ContentReliability"];
-        "str" -> "ContentReliability";
-        "enum.Enum" -> "ContentReliability";
-      }
+   .. autolink-examples:: __init__
+      :collapse:
 
-.. autoclass:: agents.research.open_perplexity.models.ContentReliability
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
-   .. note::
+   .. autolink-examples:: ContentFreshness
+      :collapse:
 
-      **ContentReliability** is an Enum defined in ``agents.research.open_perplexity.models``.
+   .. py:attribute:: OUTDATED
+      :value: 'outdated'
 
 
 
+   .. py:attribute:: RECENT
+      :value: 'recent'
 
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for DataSourceConfig:
+   .. py:attribute:: SOMEWHAT_RECENT
+      :value: 'somewhat_recent'
 
-   .. graphviz::
-      :align: center
 
-      digraph inheritance_DataSourceConfig {
-        node [shape=record];
-        "DataSourceConfig" [label="DataSourceConfig"];
-        "pydantic.BaseModel" -> "DataSourceConfig";
-      }
 
-.. autopydantic_model:: agents.research.open_perplexity.models.DataSourceConfig
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: UNKNOWN
+      :value: 'unknown'
 
 
 
+   .. py:attribute:: VERY_RECENT
+      :value: 'very_recent'
 
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for DataSourceType:
+.. py:class:: ContentReliability
 
-   .. graphviz::
-      :align: center
+   Bases: :py:obj:`str`, :py:obj:`enum.Enum`
 
-      digraph inheritance_DataSourceType {
-        node [shape=record];
-        "DataSourceType" [label="DataSourceType"];
-        "str" -> "DataSourceType";
-        "enum.Enum" -> "DataSourceType";
-      }
 
-.. autoclass:: agents.research.open_perplexity.models.DataSourceType
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   Enumeration of content reliability levels.
 
-   .. note::
+   Categorizes the trustworthiness and reliability of information sources.
 
-      **DataSourceType** is an Enum defined in ``agents.research.open_perplexity.models``.
+   .. attribute:: HIGH
 
+      Highly reliable sources (peer-reviewed, authoritative)
 
+   .. attribute:: MEDIUM
 
+      Moderately reliable sources (reputable but not authoritative)
 
+   .. attribute:: LOW
 
-.. toggle:: Show Inheritance Diagram
+      Low reliability sources (potentially biased or unverified)
 
-   Inheritance diagram for ResearchDepth:
+   .. attribute:: UNKNOWN
 
-   .. graphviz::
-      :align: center
+      Sources with unknown or unclear reliability
 
-      digraph inheritance_ResearchDepth {
-        node [shape=record];
-        "ResearchDepth" [label="ResearchDepth"];
-        "str" -> "ResearchDepth";
-        "enum.Enum" -> "ResearchDepth";
-      }
+   Initialize self.  See help(type(self)) for accurate signature.
 
-.. autoclass:: agents.research.open_perplexity.models.ResearchDepth
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
-   .. note::
+   .. autolink-examples:: __init__
+      :collapse:
 
-      **ResearchDepth** is an Enum defined in ``agents.research.open_perplexity.models``.
 
+   .. autolink-examples:: ContentReliability
+      :collapse:
 
+   .. py:attribute:: HIGH
+      :value: 'high'
 
 
 
-.. toggle:: Show Inheritance Diagram
+   .. py:attribute:: LOW
+      :value: 'low'
 
-   Inheritance diagram for ResearchFinding:
 
-   .. graphviz::
-      :align: center
 
-      digraph inheritance_ResearchFinding {
-        node [shape=record];
-        "ResearchFinding" [label="ResearchFinding"];
-        "pydantic.BaseModel" -> "ResearchFinding";
-      }
+   .. py:attribute:: MEDIUM
+      :value: 'medium'
 
-.. autopydantic_model:: agents.research.open_perplexity.models.ResearchFinding
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
 
 
+   .. py:attribute:: UNKNOWN
+      :value: 'unknown'
 
 
 
-.. toggle:: Show Inheritance Diagram
+.. py:class:: DataSourceConfig(/, **data: Any)
 
-   Inheritance diagram for ResearchSource:
+   Bases: :py:obj:`pydantic.BaseModel`
 
-   .. graphviz::
-      :align: center
 
-      digraph inheritance_ResearchSource {
-        node [shape=record];
-        "ResearchSource" [label="ResearchSource"];
-        "pydantic.BaseModel" -> "ResearchSource";
-      }
+   Configuration for a data source.
 
-.. autopydantic_model:: agents.research.open_perplexity.models.ResearchSource
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   Specifies parameters for interacting with a particular data source,
+   including API keys and search parameters.
 
+   .. attribute:: name
 
+      Name of the data source
 
+   .. attribute:: source_type
 
+      Type of data source
 
-.. toggle:: Show Inheritance Diagram
+   .. attribute:: enabled
 
-   Inheritance diagram for ResearchSummary:
+      Whether this source is enabled
 
-   .. graphviz::
-      :align: center
+   .. attribute:: priority
 
-      digraph inheritance_ResearchSummary {
-        node [shape=record];
-        "ResearchSummary" [label="ResearchSummary"];
-        "pydantic.BaseModel" -> "ResearchSummary";
-      }
+      Priority (1-10, higher = more important)
 
-.. autopydantic_model:: agents.research.open_perplexity.models.ResearchSummary
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. attribute:: api_key
 
+      API key for the data source if required
 
+   .. attribute:: max_results
 
+      Maximum number of results to return
 
+   .. attribute:: search_params
 
-.. rubric:: Related Links
+      Custom search parameters
 
-.. autolink-examples:: agents.research.open_perplexity.models
-   :collapse:
-   
-.. autolink-skip:: next
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: DataSourceConfig
+      :collapse:
+
+   .. py:method:: validate_priority(v) -> Any
+      :classmethod:
+
+
+      Ensure priority is between 1 and 10.
+
+      :param v: The priority value to validate
+
+      :returns: The validated priority value, clamped between 1 and 10
+      :rtype: int
+
+
+      .. autolink-examples:: validate_priority
+         :collapse:
+
+
+   .. py:attribute:: api_key
+      :type:  str | None
+      :value: None
+
+
+
+   .. py:attribute:: enabled
+      :type:  bool
+      :value: None
+
+
+
+   .. py:attribute:: max_results
+      :type:  int
+      :value: None
+
+
+
+   .. py:attribute:: name
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: priority
+      :type:  int
+      :value: None
+
+
+
+   .. py:attribute:: search_params
+      :type:  dict[str, Any]
+      :value: None
+
+
+
+   .. py:attribute:: source_type
+      :type:  DataSourceType
+      :value: None
+
+
+
+.. py:class:: DataSourceType
+
+   Bases: :py:obj:`str`, :py:obj:`enum.Enum`
+
+
+   Enumeration of data source types.
+
+   Categorizes the different types of sources where research information can be found.
+
+   .. attribute:: WEB
+
+      General web content
+
+   .. attribute:: GITHUB
+
+      Code repositories and issues from GitHub
+
+   .. attribute:: ACADEMIC
+
+      Academic papers and research publications
+
+   .. attribute:: NEWS
+
+      News articles and press releases
+
+   .. attribute:: SOCIAL_MEDIA
+
+      Content from social media platforms
+
+   .. attribute:: DOCUMENTS
+
+      Uploaded or local documents
+
+   .. attribute:: API
+
+      Data retrieved from APIs
+
+   .. attribute:: OTHER
+
+      Any other source type not covered above
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: DataSourceType
+      :collapse:
+
+   .. py:attribute:: ACADEMIC
+      :value: 'academic'
+
+
+
+   .. py:attribute:: API
+      :value: 'api'
+
+
+
+   .. py:attribute:: DOCUMENTS
+      :value: 'documents'
+
+
+
+   .. py:attribute:: GITHUB
+      :value: 'github'
+
+
+
+   .. py:attribute:: NEWS
+      :value: 'news'
+
+
+
+   .. py:attribute:: OTHER
+      :value: 'other'
+
+
+
+   .. py:attribute:: SOCIAL_MEDIA
+      :value: 'social_media'
+
+
+
+   .. py:attribute:: WEB
+      :value: 'web'
+
+
+
+.. py:class:: ResearchDepth
+
+   Bases: :py:obj:`str`, :py:obj:`enum.Enum`
+
+
+   Enumeration of research depth levels.
+
+   Categorizes the comprehensiveness and thoroughness of the research.
+
+   .. attribute:: SUPERFICIAL
+
+      Basic overview with minimal sources
+
+   .. attribute:: INTERMEDIATE
+
+      Moderate depth with several sources
+
+   .. attribute:: DEEP
+
+      In-depth research with many high-quality sources
+
+   .. attribute:: COMPREHENSIVE
+
+      Exhaustive research with extensive sources
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: ResearchDepth
+      :collapse:
+
+   .. py:attribute:: COMPREHENSIVE
+      :value: 'comprehensive'
+
+
+
+   .. py:attribute:: DEEP
+      :value: 'deep'
+
+
+
+   .. py:attribute:: INTERMEDIATE
+      :value: 'intermediate'
+
+
+
+   .. py:attribute:: SUPERFICIAL
+      :value: 'superficial'
+
+
+
+.. py:class:: ResearchFinding(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Model for a specific research finding.
+
+   Represents an individual insight or finding from the research,
+   including supporting sources and confidence assessment.
+
+   .. attribute:: finding
+
+      The actual finding or insight
+
+   .. attribute:: confidence
+
+      Confidence level in this finding (0.0 - 1.0)
+
+   .. attribute:: sources
+
+      Sources supporting this finding
+
+   .. attribute:: explanation
+
+      Explanation of the finding's significance
+
+   .. attribute:: related_findings
+
+      Related findings
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: ResearchFinding
+      :collapse:
+
+   .. py:method:: validate_confidence(v) -> Any
+      :classmethod:
+
+
+      Ensure confidence is between 0 and 1.
+
+      :param v: The confidence value to validate
+
+      :returns: The validated confidence value, clamped between 0.0 and 1.0
+      :rtype: float
+
+
+      .. autolink-examples:: validate_confidence
+         :collapse:
+
+
+   .. py:attribute:: confidence
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: explanation
+      :type:  str | None
+      :value: None
+
+
+
+   .. py:attribute:: finding
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: related_findings
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: sources
+      :type:  list[ResearchSource]
+      :value: None
+
+
+
+.. py:class:: ResearchSource(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Model for tracking and evaluating research sources.
+
+   Represents a source of information used in research, including metadata
+   about its reliability, relevance, and content.
+
+   .. attribute:: url
+
+      URL of the source
+
+   .. attribute:: title
+
+      Title of the source
+
+   .. attribute:: source_type
+
+      Type of data source
+
+   .. attribute:: content_snippet
+
+      Snippet of relevant content
+
+   .. attribute:: reliability
+
+      Assessed reliability of the source
+
+   .. attribute:: freshness
+
+      Content freshness/recency
+
+   .. attribute:: relevance_score
+
+      Relevance score from 0.0 to 1.0
+
+   .. attribute:: citation
+
+      Formatted citation for the source
+
+   .. attribute:: access_timestamp
+
+      When the source was accessed
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: ResearchSource
+      :collapse:
+
+   .. py:method:: validate_relevance_score(v) -> Any
+      :classmethod:
+
+
+      Ensure relevance score is between 0 and 1.
+
+      :param v: The relevance score to validate
+
+      :returns: The validated relevance score, clamped between 0.0 and 1.0
+      :rtype: float
+
+
+      .. autolink-examples:: validate_relevance_score
+         :collapse:
+
+
+   .. py:attribute:: access_timestamp
+      :type:  str | None
+      :value: None
+
+
+
+   .. py:attribute:: citation
+      :type:  str | None
+      :value: None
+
+
+
+   .. py:attribute:: content_snippet
+      :type:  str | None
+      :value: None
+
+
+
+   .. py:attribute:: freshness
+      :type:  ContentFreshness
+      :value: None
+
+
+
+   .. py:attribute:: relevance_score
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: reliability
+      :type:  ContentReliability
+      :value: None
+
+
+
+   .. py:attribute:: source_type
+      :type:  DataSourceType
+      :value: None
+
+
+
+   .. py:attribute:: title
+      :type:  str | None
+      :value: None
+
+
+
+   .. py:attribute:: url
+      :type:  str | None
+      :value: None
+
+
+
+.. py:class:: ResearchSummary(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Summary of research findings and assessment.
+
+   Provides an overall summary of the research, including key findings,
+   assessment of source quality, and confidence evaluation.
+
+   .. attribute:: topic
+
+      Research topic
+
+   .. attribute:: question
+
+      Specific research question
+
+   .. attribute:: key_findings
+
+      Key findings from research
+
+   .. attribute:: sources_count
+
+      Total number of sources consulted
+
+   .. attribute:: high_reliability_sources
+
+      Number of high reliability sources
+
+   .. attribute:: recent_sources
+
+      Number of recent sources
+
+   .. attribute:: research_depth
+
+      Overall research depth
+
+   .. attribute:: contradictions
+
+      Contradictory findings identified
+
+   .. attribute:: confidence_score
+
+      Overall confidence score
+
+   .. attribute:: limitations
+
+      Research limitations
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: ResearchSummary
+      :collapse:
+
+   .. py:method:: assess_depth() -> ResearchDepth
+
+      Assess research depth based on source counts and diversity.
+
+      Evaluates the depth of research based on the number of sources
+      and the proportion of high reliability sources.
+
+      :returns: The assessed research depth level
+      :rtype: ResearchDepth
+
+
+      .. autolink-examples:: assess_depth
+         :collapse:
+
+
+   .. py:method:: validate_confidence_score(v) -> Any
+      :classmethod:
+
+
+      Ensure confidence score is between 0 and 1.
+
+      :param v: The confidence score to validate
+
+      :returns: The validated confidence score, clamped between 0.0 and 1.0
+      :rtype: float
+
+
+      .. autolink-examples:: validate_confidence_score
+         :collapse:
+
+
+   .. py:attribute:: confidence_score
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: contradictions
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: high_reliability_sources
+      :type:  int
+      :value: None
+
+
+
+   .. py:attribute:: key_findings
+      :type:  list[ResearchFinding]
+      :value: None
+
+
+
+   .. py:attribute:: limitations
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: question
+      :type:  str | None
+      :value: None
+
+
+
+   .. py:attribute:: recent_sources
+      :type:  int
+      :value: None
+
+
+
+   .. py:attribute:: research_depth
+      :type:  ResearchDepth
+      :value: None
+
+
+
+   .. py:attribute:: sources_count
+      :type:  int
+      :value: None
+
+
+
+   .. py:attribute:: topic
+      :type:  str
+      :value: None
+
+
+

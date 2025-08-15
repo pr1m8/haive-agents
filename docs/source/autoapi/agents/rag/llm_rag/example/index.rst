@@ -1,20 +1,30 @@
-
-:py:mod:`agents.rag.llm_rag.example`
-====================================
+agents.rag.llm_rag.example
+==========================
 
 .. py:module:: agents.rag.llm_rag.example
 
-Example usage of the LLM RAG Agent.
+.. autoapi-nested-parse::
 
-from typing import Any
-This script demonstrates how to:
-1. Create and configure an LLM RAG agent
-2. Run queries and access the results
-3. Customize the agent's behavior
+   Example usage of the LLM RAG Agent.
+
+   from typing import Any
+   This script demonstrates how to:
+   1. Create and configure an LLM RAG agent
+   2. Run queries and access the results
+   3. Customize the agent's behavior
 
 
-.. autolink-examples:: agents.rag.llm_rag.example
-   :collapse:
+   .. autolink-examples:: agents.rag.llm_rag.example
+      :collapse:
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.rag.llm_rag.example.SAMPLE_DOCUMENTS
+   agents.rag.llm_rag.example.logger
 
 
 Functions
@@ -26,6 +36,10 @@ Functions
    agents.rag.llm_rag.example.create_llm_rag_agent
    agents.rag.llm_rag.example.main
    agents.rag.llm_rag.example.run_example_queries
+
+
+Module Contents
+---------------
 
 .. py:function:: compare_agent_configurations() -> None
 
@@ -69,11 +83,7 @@ Functions
    .. autolink-examples:: run_example_queries
       :collapse:
 
+.. py:data:: SAMPLE_DOCUMENTS
 
+.. py:data:: logger
 
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.rag.llm_rag.example
-   :collapse:
-   
-.. autolink-skip:: next

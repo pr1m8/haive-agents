@@ -1,6 +1,5 @@
-
-:py:mod:`agents.reasoning_and_critique.lats.state`
-==================================================
+agents.reasoning_and_critique.lats.state
+========================================
 
 .. py:module:: agents.reasoning_and_critique.lats.state
 
@@ -16,33 +15,36 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: TreeState
+
+   Bases: :py:obj:`typing_extensions.TypedDict`
 
 
+   dict() -> new empty dictionary
+   dict(mapping) -> new dictionary initialized from a mapping object's
+       (key, value) pairs
+   dict(iterable) -> new dictionary initialized as if via:
+       d = {}
+       for k, v in iterable:
+           d[k] = v
+   dict(**kwargs) -> new dictionary initialized with the name=value pairs
+       in the keyword argument list.  For example:  dict(one=1, two=2)
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for TreeState:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_TreeState {
-        node [shape=record];
-        "TreeState" [label="TreeState"];
-        "typing_extensions.TypedDict" -> "TreeState";
-      }
-
-.. autoclass:: agents.reasoning_and_critique.lats.state.TreeState
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   Initialize self.  See help(type(self)) for accurate signature.
 
 
+   .. autolink-examples:: __init__
+      :collapse:
 
 
-.. rubric:: Related Links
+   .. autolink-examples:: TreeState
+      :collapse:
 
-.. autolink-examples:: agents.reasoning_and_critique.lats.state
-   :collapse:
-   
-.. autolink-skip:: next
+   .. py:attribute:: input
+      :type:  str
+
+
+   .. py:attribute:: root
+      :type:  haive.agents.reasoning_and_critique.lats.node.Node
+
+

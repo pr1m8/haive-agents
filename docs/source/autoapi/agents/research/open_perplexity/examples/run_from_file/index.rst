@@ -1,16 +1,25 @@
-
-:py:mod:`agents.research.open_perplexity.examples.run_from_file`
-================================================================
+agents.research.open_perplexity.examples.run_from_file
+======================================================
 
 .. py:module:: agents.research.open_perplexity.examples.run_from_file
 
-Example script that demonstrates running the open_perplexity research agent.
-from typing import Any
-with a research question loaded from a text file.
+.. autoapi-nested-parse::
+
+   Example script that demonstrates running the open_perplexity research agent.
+   from typing import Any
+   with a research question loaded from a text file.
 
 
-.. autolink-examples:: agents.research.open_perplexity.examples.run_from_file
-   :collapse:
+   .. autolink-examples:: agents.research.open_perplexity.examples.run_from_file
+      :collapse:
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.research.open_perplexity.examples.run_from_file.args
 
 
 Functions
@@ -22,6 +31,10 @@ Functions
    agents.research.open_perplexity.examples.run_from_file.parse_arguments
    agents.research.open_perplexity.examples.run_from_file.run_research
    agents.research.open_perplexity.examples.run_from_file.setup_logging
+
+
+Module Contents
+---------------
 
 .. py:function:: load_research_question(file_path) -> Any
 
@@ -62,11 +75,7 @@ Functions
    .. autolink-examples:: setup_logging
       :collapse:
 
+.. py:data:: args
+   :value: None
 
 
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.research.open_perplexity.examples.run_from_file
-   :collapse:
-   
-.. autolink-skip:: next

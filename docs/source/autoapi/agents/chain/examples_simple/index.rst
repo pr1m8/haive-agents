@@ -1,17 +1,18 @@
-
-:py:mod:`agents.chain.examples_simple`
-======================================
+agents.chain.examples_simple
+============================
 
 .. py:module:: agents.chain.examples_simple
 
-Simple examples of using ChainAgent.
+.. autoapi-nested-parse::
 
-from typing import Any, Dict
-Shows how easy it is to build chains.
+   Simple examples of using ChainAgent.
+
+   from typing import Any, Dict
+   Shows how easy it is to build chains.
 
 
-.. autolink-examples:: agents.chain.examples_simple
-   :collapse:
+   .. autolink-examples:: agents.chain.examples_simple
+      :collapse:
 
 
 Functions
@@ -25,6 +26,10 @@ Functions
    agents.chain.examples_simple.example_mixed
    agents.chain.examples_simple.example_rag_router
    agents.chain.examples_simple.example_routing
+
+
+Module Contents
+---------------
 
 .. py:function:: example_basic() -> Any
 
@@ -74,11 +79,3 @@ Functions
    .. autolink-examples:: example_routing
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.chain.examples_simple
-   :collapse:
-   
-.. autolink-skip:: next

@@ -1,6 +1,5 @@
-
-:py:mod:`agents.planning.plan_and_execute.config`
-=================================================
+agents.planning.plan_and_execute.config
+=======================================
 
 .. py:module:: agents.planning.plan_and_execute.config
 
@@ -16,33 +15,28 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: PlanAndExecuteConfig
+
+   Bases: :py:obj:`haive.core.engine.agent.config.AgentConfig`
+
+
+   .. py:attribute:: agent_executor_config
+      :type:  haive.agents.react.config.ReactAgentConfig
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for PlanAndExecuteConfig:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_PlanAndExecuteConfig {
-        node [shape=record];
-        "PlanAndExecuteConfig" [label="PlanAndExecuteConfig"];
-        "haive.core.engine.agent.config.AgentConfig" -> "PlanAndExecuteConfig";
-      }
-
-.. autoclass:: agents.planning.plan_and_execute.config.PlanAndExecuteConfig
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. py:attribute:: aug_llm_configs
+      :type:  dict[str, haive.core.engine.aug_llm.AugLLMConfig]
+      :value: None
 
 
 
+   .. py:attribute:: default_input_schema
+      :type:  dict[str, list]
 
-.. rubric:: Related Links
 
-.. autolink-examples:: agents.planning.plan_and_execute.config
-   :collapse:
-   
-.. autolink-skip:: next
+   .. py:attribute:: state_schema
+      :type:  type[pydantic.BaseModel] | list[pydantic.BaseModel]
+
+

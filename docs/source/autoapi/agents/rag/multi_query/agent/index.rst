@@ -1,17 +1,27 @@
-
-:py:mod:`agents.rag.multi_query.agent`
-======================================
+agents.rag.multi_query.agent
+============================
 
 .. py:module:: agents.rag.multi_query.agent
 
-Multi-Query RAG Agent.
+.. autoapi-nested-parse::
 
-Improves recall through query diversification.
-Generates multiple query variations and retrieves from all.
+   Multi-Query RAG Agent.
+
+   Improves recall through query diversification.
+   Generates multiple query variations and retrieves from all.
 
 
-.. autolink-examples:: agents.rag.multi_query.agent
-   :collapse:
+   .. autolink-examples:: agents.rag.multi_query.agent
+      :collapse:
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.rag.multi_query.agent.QUERY_EXPANSION_PROMPT
+
 
 Classes
 -------
@@ -26,83 +36,106 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: MultiQueryRAGAgent
+
+   Bases: :py:obj:`haive.agents.multi.enhanced_sequential_agent.SequentialAgent`
+
+
+   Multi-Query RAG with query expansion for improved recall.
+
+
+   .. autolink-examples:: MultiQueryRAGAgent
+      :collapse:
+
+   .. py:method:: from_documents(documents: list[langchain_core.documents.Document], llm_config: haive.core.models.llm.base.LLMConfig | None = None, embedding_model: str | None = None, **kwargs)
+      :classmethod:
+
+
+      Create Multi-Query RAG from documents.
+
+      :param documents: Documents to index
+      :param llm_config: Optional LLM configuration
+      :param embedding_model: Optional embedding model for vector store
+      :param \*\*kwargs: Additional arguments
+
+      :returns: MultiQueryRAGAgent instance
+
+
+      .. autolink-examples:: from_documents
+         :collapse:
+
+
+.. py:class:: MultiRetrievalAgent
+
+   Bases: :py:obj:`haive.agents.base.agent.Agent`
+
+
+   Agent that performs parallel retrieval with multiple queries.
+
+
+   .. autolink-examples:: MultiRetrievalAgent
+      :collapse:
+
+   .. py:method:: build_graph() -> haive.core.graph.state_graph.base_graph2.BaseGraph
+
+      Build graph that retrieves with multiple queries in parallel.
+
+
+      .. autolink-examples:: build_graph
+         :collapse:
+
+
+   .. py:attribute:: base_retriever
+      :type:  haive.agents.rag.base.agent.BaseRAGAgent
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for MultiQueryRAGAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_MultiQueryRAGAgent {
-        node [shape=record];
-        "MultiQueryRAGAgent" [label="MultiQueryRAGAgent"];
-        "haive.agents.multi.enhanced_sequential_agent.SequentialAgent" -> "MultiQueryRAGAgent";
-      }
-
-.. autoclass:: agents.rag.multi_query.agent.MultiQueryRAGAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. py:attribute:: name
+      :type:  str
+      :value: 'Multi-Query Retriever'
 
 
 
+.. py:class:: QueryVariations(/, **data: Any)
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for MultiRetrievalAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_MultiRetrievalAgent {
-        node [shape=record];
-        "MultiRetrievalAgent" [label="MultiRetrievalAgent"];
-        "haive.agents.base.agent.Agent" -> "MultiRetrievalAgent";
-      }
-
-.. autoclass:: agents.rag.multi_query.agent.MultiRetrievalAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   Bases: :py:obj:`pydantic.BaseModel`
 
 
+   Structured output for query variations.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
 
 
-.. toggle:: Show Inheritance Diagram
+   .. autolink-examples:: __init__
+      :collapse:
 
-   Inheritance diagram for QueryVariations:
 
-   .. graphviz::
-      :align: center
+   .. autolink-examples:: QueryVariations
+      :collapse:
 
-      digraph inheritance_QueryVariations {
-        node [shape=record];
-        "QueryVariations" [label="QueryVariations"];
-        "pydantic.BaseModel" -> "QueryVariations";
-      }
-
-.. autopydantic_model:: agents.rag.multi_query.agent.QueryVariations
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: alternative_query
+      :type:  str
+      :value: None
 
 
 
+   .. py:attribute:: broader_query
+      :type:  str
+      :value: None
 
 
-.. rubric:: Related Links
 
-.. autolink-examples:: agents.rag.multi_query.agent
-   :collapse:
-   
-.. autolink-skip:: next
+   .. py:attribute:: specific_query
+      :type:  str
+      :value: None
+
+
+
+.. py:data:: QUERY_EXPANSION_PROMPT
+

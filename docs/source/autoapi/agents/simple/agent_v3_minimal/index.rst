@@ -1,25 +1,45 @@
-
-:py:mod:`agents.simple.agent_v3_minimal`
-========================================
+agents.simple.agent_v3_minimal
+==============================
 
 .. py:module:: agents.simple.agent_v3_minimal
 
-SimpleAgent v3 implementation with minimal import overhead.
+.. autoapi-nested-parse::
 
-This implementation provides the same SimpleAgentV3 functionality but with
-lazy loading of all heavy dependencies to achieve sub-5 second import times.
+   SimpleAgent v3 implementation with minimal import overhead.
 
-Usage:
-    # Fast import - no heavy dependencies loaded
-    from haive.agents.simple.agent_v3_minimal import SimpleAgentV3Minimal as SimpleAgentV3
+   This implementation provides the same SimpleAgentV3 functionality but with
+   lazy loading of all heavy dependencies to achieve sub-5 second import times.
 
-    # Full functionality available when actually used
-    agent = SimpleAgent(name="test")
-    result = await agent.arun("Hello")
+   Usage:
+       # Fast import - no heavy dependencies loaded
+       from haive.agents.simple.agent_v3_minimal import SimpleAgentV3Minimal as SimpleAgentV3
+
+       # Full functionality available when actually used
+       agent = SimpleAgent(name="test")
+       result = await agent.arun("Hello")
 
 
-.. autolink-examples:: agents.simple.agent_v3_minimal
-   :collapse:
+   .. autolink-examples:: agents.simple.agent_v3_minimal
+      :collapse:
+
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/agents/simple/agent_v3_minimal/v2/index
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.simple.agent_v3_minimal.SimpleAgentV3
+   agents.simple.agent_v3_minimal._SimpleAgentV3
+
 
 Classes
 -------
@@ -32,32 +52,50 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: SimpleAgentV3Minimal
+
+   Minimal wrapper for SimpleAgentV3 with lazy loading.
+
+   Dynamically import and create the real SimpleAgentV3 instance.
+
+
+   .. autolink-examples:: __new__
+      :collapse:
+
+
+   .. autolink-examples:: SimpleAgentV3Minimal
+      :collapse:
+
+   .. py:method:: as_structured_tool(*args, **kwargs)
+      :classmethod:
+
+
+      Lazy loading for as_structured_tool class method.
+
+
+      .. autolink-examples:: as_structured_tool
+         :collapse:
+
+
+   .. py:method:: as_tool(*args, **kwargs)
+      :classmethod:
+
+
+      Lazy loading for as_tool class method.
+
+
+      .. autolink-examples:: as_tool
+         :collapse:
+
+
+   .. py:attribute:: _real_class
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
+.. py:data:: SimpleAgentV3
 
-   Inheritance diagram for SimpleAgentV3Minimal:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_SimpleAgentV3Minimal {
-        node [shape=record];
-        "SimpleAgentV3Minimal" [label="SimpleAgentV3Minimal"];
-      }
-
-.. autoclass:: agents.simple.agent_v3_minimal.SimpleAgentV3Minimal
-   :members:
-   :undoc-members:
-   :show-inheritance:
+.. py:data:: _SimpleAgentV3
+   :value: None
 
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.simple.agent_v3_minimal
-   :collapse:
-   
-.. autolink-skip:: next

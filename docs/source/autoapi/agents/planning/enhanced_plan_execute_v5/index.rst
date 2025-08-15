@@ -1,114 +1,130 @@
-
-:py:mod:`agents.planning.enhanced_plan_execute_v5`
-==================================================
+agents.planning.enhanced_plan_execute_v5
+========================================
 
 .. py:module:: agents.planning.enhanced_plan_execute_v5
 
-Enhanced Plan & Execute V5 - Modern Haive Implementation with Custom Models and Agents.
+.. autoapi-nested-parse::
 
-This module provides a completely redesigned Plan & Execute implementation using the latest
-Haive architecture patterns, enhanced agents, and modern multi-agent orchestration.
+   Enhanced Plan & Execute V5 - Modern Haive Implementation with Custom Models and Agents.
 
-## Key Features
+   This module provides a completely redesigned Plan & Execute implementation using the latest
+   Haive architecture patterns, enhanced agents, and modern multi-agent orchestration.
 
-- **MultiAgent**: Latest multi-agent orchestration with state management
-- **SimpleAgentV3**: Enhanced planning and replanning with hooks system
-- **ReactAgent**: Advanced tool-based execution with real-time feedback
-- **Custom Pydantic Models**: Structured output designed for planning workflows
-- **Modern Prompt Engineering**: Context-aware prompts with structured templates
-- **Comprehensive Monitoring**: Full hooks system for execution tracking
-- **Dynamic Recompilation**: Real-time agent updates and tool management
+   ## Key Features
 
-## Architecture
+   - **MultiAgent**: Latest multi-agent orchestration with state management
+   - **SimpleAgentV3**: Enhanced planning and replanning with hooks system
+   - **ReactAgent**: Advanced tool-based execution with real-time feedback
+   - **Custom Pydantic Models**: Structured output designed for planning workflows
+   - **Modern Prompt Engineering**: Context-aware prompts with structured templates
+   - **Comprehensive Monitoring**: Full hooks system for execution tracking
+   - **Dynamic Recompilation**: Real-time agent updates and tool management
 
-```
-PlannerAgentV3 (SimpleAgentV3)
-    ↓ (structured Plan model)
-ExecutorAgentV3 (ReactAgent) ←─┐
-    ↓ (execution results)       │
-Routing Logic ──→ Continue ────┘
-    ↓
-ReplannerAgentV3 (SimpleAgentV3)
-    ↓ (structured Decision model)
-Final Response or Loop Back
-```
+   ## Architecture
 
-## Usage
+   ```
+   PlannerAgentV3 (SimpleAgentV3)
+       ↓ (structured Plan model)
+   ExecutorAgentV3 (ReactAgent) ←─┐
+       ↓ (execution results)       │
+   Routing Logic ──→ Continue ────┘
+       ↓
+   ReplannerAgentV3 (SimpleAgentV3)
+       ↓ (structured Decision model)
+   Final Response or Loop Back
+   ```
 
-### Basic Usage
-```python
-from haive.agents.planning.enhanced_plan_execute_v5 import create_enhanced_plan_execute_v5
+   ## Usage
 
-# Create with default tools
-agent = create_enhanced_plan_execute_v5()
-result = await agent.arun("Calculate compound interest on $1000 at 5% for 10 years")
+   ### Basic Usage
+   ```python
+   from haive.agents.planning.enhanced_plan_execute_v5 import create_enhanced_plan_execute_v5
 
-# Create with custom tools
-from haive.tools import web_search_tool, calculator_tool
-agent = create_enhanced_plan_execute_v5(
-    name="research_planner",
-    tools=[web_search_tool, calculator_tool]
-)
-result = await agent.arun("Research Tesla stock performance and calculate ROI")
-```
+   # Create with default tools
+   agent = create_enhanced_plan_execute_v5()
+   result = await agent.arun("Calculate compound interest on $1000 at 5% for 10 years")
 
-### Advanced Configuration
-```python
-agent = create_enhanced_plan_execute_v5(
-    name="advanced_planner",
-    planner_config=AugLLMConfig(
-        model="gpt-4",
-        temperature=0.2,
-        system_message="You are an expert strategic planner."
-    ),
-    executor_config=AugLLMConfig(
-        model="gpt-4-turbo",
-        temperature=0.1
-    ),
-    tools=[custom_tool1, custom_tool2],
-    max_iterations=10,
-    enable_hooks=True
-)
+   # Create with custom tools
+   from haive.tools import web_search_tool, calculator_tool
+   agent = create_enhanced_plan_execute_v5(
+       name="research_planner",
+       tools=[web_search_tool, calculator_tool]
+   )
+   result = await agent.arun("Research Tesla stock performance and calculate ROI")
+   ```
 
-# Add custom hooks
-@agent.before_run
-def track_execution(context):
-    print(f"Starting planning workflow: {context.agent_name}")
+   ### Advanced Configuration
+   ```python
+   agent = create_enhanced_plan_execute_v5(
+       name="advanced_planner",
+       planner_config=AugLLMConfig(
+           model="gpt-4",
+           temperature=0.2,
+           system_message="You are an expert strategic planner."
+       ),
+       executor_config=AugLLMConfig(
+           model="gpt-4-turbo",
+           temperature=0.1
+       ),
+       tools=[custom_tool1, custom_tool2],
+       max_iterations=10,
+       enable_hooks=True
+   )
 
-result = await agent.arun("Complex multi-step research task")
-```
+   # Add custom hooks
+   @agent.before_run
+   def track_execution(context):
+       print(f"Starting planning workflow: {context.agent_name}")
 
-## Custom Models
+   result = await agent.arun("Complex multi-step research task")
+   ```
 
-The implementation uses custom Pydantic models designed specifically for planning:
+   ## Custom Models
 
-- **TaskPlan**: Structured plan with steps, priorities, and dependencies
-- **ExecutionStatus**: Rich execution tracking with success/failure states
-- **PlanningDecision**: Intelligent routing decisions with reasoning
-- **PlanExecuteState**: Enhanced state management for multi-agent coordination
+   The implementation uses custom Pydantic models designed specifically for planning:
 
-## When to Use
+   - **TaskPlan**: Structured plan with steps, priorities, and dependencies
+   - **ExecutionStatus**: Rich execution tracking with success/failure states
+   - **PlanningDecision**: Intelligent routing decisions with reasoning
+   - **PlanExecuteState**: Enhanced state management for multi-agent coordination
 
-✅ **Use this implementation when**:
-- You need modern Haive architecture patterns
-- Enhanced monitoring and debugging is important
-- You want structured output and type safety
-- Dynamic agent recompilation is needed
-- Production-ready error handling is required
+   ## When to Use
 
-❌ **Consider alternatives when**:
-- Simple tasks that don't need planning (use ReactAgent directly)
-- Legacy compatibility is required (use clean_plan_execute)
-- Minimal complexity is preferred (use SimpleAgent)
+   ✅ **Use this implementation when**:
+   - You need modern Haive architecture patterns
+   - Enhanced monitoring and debugging is important
+   - You want structured output and type safety
+   - Dynamic agent recompilation is needed
+   - Production-ready error handling is required
 
-## Status: Next-Generation Planning
+   ❌ **Consider alternatives when**:
+   - Simple tasks that don't need planning (use ReactAgent directly)
+   - Legacy compatibility is required (use clean_plan_execute)
+   - Minimal complexity is preferred (use SimpleAgent)
 
-This is the future of planning agents in Haive, showcasing the full power
-of the enhanced base agent pattern and modern multi-agent orchestration.
+   ## Status: Next-Generation Planning
+
+   This is the future of planning agents in Haive, showcasing the full power
+   of the enhanced base agent pattern and modern multi-agent orchestration.
 
 
-.. autolink-examples:: agents.planning.enhanced_plan_execute_v5
-   :collapse:
+   .. autolink-examples:: agents.planning.enhanced_plan_execute_v5
+      :collapse:
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.planning.enhanced_plan_execute_v5.EXECUTOR_PROMPT_TEMPLATE
+   agents.planning.enhanced_plan_execute_v5.EXECUTOR_SYSTEM_MESSAGE
+   agents.planning.enhanced_plan_execute_v5.PLANNER_PROMPT_TEMPLATE
+   agents.planning.enhanced_plan_execute_v5.PLANNER_SYSTEM_MESSAGE
+   agents.planning.enhanced_plan_execute_v5.REPLANNER_PROMPT_TEMPLATE
+   agents.planning.enhanced_plan_execute_v5.REPLANNER_SYSTEM_MESSAGE
+   agents.planning.enhanced_plan_execute_v5.logger
+
 
 Classes
 -------
@@ -120,147 +136,6 @@ Classes
    agents.planning.enhanced_plan_execute_v5.PlanningDecision
    agents.planning.enhanced_plan_execute_v5.TaskPlan
    agents.planning.enhanced_plan_execute_v5.TaskStep
-
-
-Module Contents
----------------
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for EnhancedPlanExecuteState:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_EnhancedPlanExecuteState {
-        node [shape=record];
-        "EnhancedPlanExecuteState" [label="EnhancedPlanExecuteState"];
-        "haive.core.schema.prebuilt.multi_agent_state.MultiAgentState" -> "EnhancedPlanExecuteState";
-      }
-
-.. autoclass:: agents.planning.enhanced_plan_execute_v5.EnhancedPlanExecuteState
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ExecutionResult:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ExecutionResult {
-        node [shape=record];
-        "ExecutionResult" [label="ExecutionResult"];
-        "pydantic.BaseModel" -> "ExecutionResult";
-      }
-
-.. autopydantic_model:: agents.planning.enhanced_plan_execute_v5.ExecutionResult
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
-
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for PlanningDecision:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_PlanningDecision {
-        node [shape=record];
-        "PlanningDecision" [label="PlanningDecision"];
-        "pydantic.BaseModel" -> "PlanningDecision";
-      }
-
-.. autopydantic_model:: agents.planning.enhanced_plan_execute_v5.PlanningDecision
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
-
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for TaskPlan:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_TaskPlan {
-        node [shape=record];
-        "TaskPlan" [label="TaskPlan"];
-        "pydantic.BaseModel" -> "TaskPlan";
-      }
-
-.. autopydantic_model:: agents.planning.enhanced_plan_execute_v5.TaskPlan
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
-
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for TaskStep:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_TaskStep {
-        node [shape=record];
-        "TaskStep" [label="TaskStep"];
-        "pydantic.BaseModel" -> "TaskStep";
-      }
-
-.. autopydantic_model:: agents.planning.enhanced_plan_execute_v5.TaskStep
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
-
 
 
 Functions
@@ -275,6 +150,331 @@ Functions
    agents.planning.enhanced_plan_execute_v5.get_next_step_id
    agents.planning.enhanced_plan_execute_v5.should_continue_enhanced
    agents.planning.enhanced_plan_execute_v5.test_enhanced_plan_execute
+
+
+Module Contents
+---------------
+
+.. py:class:: EnhancedPlanExecuteState
+
+   Bases: :py:obj:`haive.core.schema.prebuilt.multi_agent_state.MultiAgentState`
+
+
+   Enhanced state for plan and execute workflow with rich tracking.
+
+
+   .. autolink-examples:: EnhancedPlanExecuteState
+      :collapse:
+
+   .. py:attribute:: completed_steps
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: current_plan
+      :type:  TaskPlan | None
+      :value: None
+
+
+
+   .. py:attribute:: current_step_id
+      :type:  str | None
+      :value: None
+
+
+
+   .. py:attribute:: execution_results
+      :type:  list[ExecutionResult]
+      :value: None
+
+
+
+   .. py:attribute:: failed_steps
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: final_answer
+      :type:  str | None
+      :value: None
+
+
+
+   .. py:attribute:: iteration_count
+      :type:  int
+      :value: None
+
+
+
+   .. py:attribute:: last_decision
+      :type:  PlanningDecision | None
+      :value: None
+
+
+
+   .. py:attribute:: original_objective
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: planning_start_time
+      :type:  str | None
+      :value: None
+
+
+
+   .. py:attribute:: replan_count
+      :type:  int
+      :value: None
+
+
+
+   .. py:attribute:: total_execution_time
+      :type:  str | None
+      :value: None
+
+
+
+.. py:class:: ExecutionResult(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Rich execution result with detailed feedback.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: ExecutionResult
+      :collapse:
+
+   .. py:attribute:: execution_time
+      :type:  str | None
+      :value: None
+
+
+
+   .. py:attribute:: issues_encountered
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: output
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: recommendations
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: step_id
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: success
+      :type:  bool
+      :value: None
+
+
+
+   .. py:attribute:: tools_used
+      :type:  list[str]
+      :value: None
+
+
+
+.. py:class:: PlanningDecision(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Intelligent decision model for routing and replanning.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: PlanningDecision
+      :collapse:
+
+   .. py:attribute:: action
+      :type:  Literal['continue', 'replan', 'complete']
+      :value: None
+
+
+
+   .. py:attribute:: confidence
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: final_answer
+      :type:  str | None
+      :value: None
+
+
+
+   .. py:attribute:: new_plan
+      :type:  TaskPlan | None
+      :value: None
+
+
+
+   .. py:attribute:: next_step_id
+      :type:  str | None
+      :value: None
+
+
+
+   .. py:attribute:: reasoning
+      :type:  str
+      :value: None
+
+
+
+.. py:class:: TaskPlan(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Comprehensive task plan with metadata and tracking.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: TaskPlan
+      :collapse:
+
+   .. py:attribute:: estimated_total_time
+      :type:  str | None
+      :value: None
+
+
+
+   .. py:attribute:: objective
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: reasoning
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: steps
+      :type:  list[TaskStep]
+      :value: None
+
+
+
+   .. py:attribute:: success_criteria
+      :type:  str
+      :value: None
+
+
+
+.. py:class:: TaskStep(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Individual step in a task plan with rich metadata.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: TaskStep
+      :collapse:
+
+   .. py:attribute:: dependencies
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: description
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: estimated_time
+      :type:  str | None
+      :value: None
+
+
+
+   .. py:attribute:: expected_outcome
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: priority
+      :type:  Literal['high', 'medium', 'low']
+      :value: None
+
+
+
+   .. py:attribute:: step_id
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: tools_needed
+      :type:  list[str]
+      :value: None
+
+
 
 .. py:function:: _add_monitoring_hooks(workflow: haive.agents.multi.enhanced.multi_agent_v4.MultiAgent) -> None
 
@@ -362,11 +562,124 @@ Functions
    .. autolink-examples:: test_enhanced_plan_execute
       :collapse:
 
+.. py:data:: EXECUTOR_PROMPT_TEMPLATE
+
+.. py:data:: EXECUTOR_SYSTEM_MESSAGE
+   :value: Multiline-String
+
+   .. raw:: html
+
+      <details><summary>Show Value</summary>
+
+   .. code-block:: python
+
+      """You are a skilled task executor who specializes in carrying out specific steps in a larger plan with precision and attention to detail.
+      
+      Your role is to:
+      1. Execute the given step exactly as described
+      2. Use available tools effectively and appropriately
+      3. Provide clear, detailed output about what was accomplished
+      4. Note any issues or recommendations for future steps
+      5. Be thorough in documenting the execution process
+      
+      Key Principles:
+      - Focus on the specific step - don't try to do more than asked
+      - Use tools when they can help achieve better results
+      - Provide detailed output that others can build upon
+      - Note any problems or unexpected results
+      - Make recommendations for improving the process
+      
+      When using tools:
+      - Choose the most appropriate tool for the task
+      - Use tools efficiently and effectively
+      - Document what tools were used and why
+      - Report on the quality and usefulness of tool outputs
+      """
+
+   .. raw:: html
+
+      </details>
 
 
-.. rubric:: Related Links
 
-.. autolink-examples:: agents.planning.enhanced_plan_execute_v5
-   :collapse:
-   
-.. autolink-skip:: next
+.. py:data:: PLANNER_PROMPT_TEMPLATE
+
+.. py:data:: PLANNER_SYSTEM_MESSAGE
+   :value: Multiline-String
+
+   .. raw:: html
+
+      <details><summary>Show Value</summary>
+
+   .. code-block:: python
+
+      """You are an expert strategic planner specializing in breaking down complex objectives into actionable, well-structured plans.
+      
+      Your role is to:
+      1. Analyze the given objective thoroughly
+      2. Create a comprehensive, step-by-step plan
+      3. Ensure each step is specific, actionable, and measurable
+      4. Consider dependencies between steps
+      5. Estimate effort and identify required tools
+      
+      Key Principles:
+      - Be specific and actionable in step descriptions
+      - Consider what tools or resources each step needs
+      - Think about the logical order and dependencies
+      - Provide clear success criteria for the overall objective
+      - Include your reasoning for the planning approach
+      
+      Focus on creating plans that are:
+      - CLEAR: Each step is unambiguous
+      - COMPLETE: Nothing important is missed
+      - ACTIONABLE: Each step can be executed immediately
+      - MEASURABLE: Success can be determined objectively
+      """
+
+   .. raw:: html
+
+      </details>
+
+
+
+.. py:data:: REPLANNER_PROMPT_TEMPLATE
+
+.. py:data:: REPLANNER_SYSTEM_MESSAGE
+   :value: Multiline-String
+
+   .. raw:: html
+
+      <details><summary>Show Value</summary>
+
+   .. code-block:: python
+
+      """You are an expert planning analyst who specializes in evaluating progress and making intelligent decisions about next steps.
+      
+      Your role is to:
+      1. Analyze the current progress against the original plan
+      2. Determine if the objective has been achieved
+      3. Decide whether to continue, replan, or complete the task
+      4. Provide clear reasoning for your decisions
+      5. Create revised plans when necessary
+      
+      Key Principles:
+      - Consider the original objective - has it been achieved?
+      - Evaluate the quality and completeness of results so far
+      - Be realistic about what still needs to be done
+      - Don't continue unnecessarily if the objective is met
+      - Create better plans based on what you've learned
+      
+      Decision Guidelines:
+      - COMPLETE: The objective has been fully achieved
+      - CONTINUE: The plan is working, proceed with next step
+      - REPLAN: The current approach needs adjustment or improvement
+      """
+
+   .. raw:: html
+
+      </details>
+
+
+
+.. py:data:: logger
+

@@ -1,19 +1,29 @@
-
-:py:mod:`agent_v4`
-==================
+agent_v4
+========
 
 .. py:module:: agent_v4
 
-ReactAgent V4 - Simple loop pattern with proper inheritance.
+.. autoapi-nested-parse::
 
-Minimal ReactAgent that:
-1. Inherits properly from SimpleAgentV3
-2. Implements tool_node back to agent_node loop
-3. No fancy features, just the core pattern
+   ReactAgent V4 - Simple loop pattern with proper inheritance.
+
+   Minimal ReactAgent that:
+   1. Inherits properly from SimpleAgentV3
+   2. Implements tool_node back to agent_node loop
+   3. No fancy features, just the core pattern
 
 
-.. autolink-examples:: agent_v4
-   :collapse:
+   .. autolink-examples:: agent_v4
+      :collapse:
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agent_v4.logger
+
 
 Classes
 -------
@@ -26,33 +36,29 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: ReactAgentV4
+
+   Bases: :py:obj:`SimpleAgentV3`
 
 
+   ReactAgent with simple looping behavior.
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ReactAgentV4:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ReactAgentV4 {
-        node [shape=record];
-        "ReactAgentV4" [label="ReactAgentV4"];
-        "SimpleAgentV3" -> "ReactAgentV4";
-      }
-
-.. autoclass:: agent_v4.ReactAgentV4
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   Inherits all SimpleAgentV3 features and modifies graph to loop:
+   - tool_node goes back to agent_node (not END)
+   - parse_output goes back to agent_node (not END)
 
 
+   .. autolink-examples:: ReactAgentV4
+      :collapse:
+
+   .. py:method:: build_graph() -> haive.core.graph.state_graph.base_graph2.BaseGraph
+
+      Build graph with ReAct looping pattern.
 
 
-.. rubric:: Related Links
+      .. autolink-examples:: build_graph
+         :collapse:
 
-.. autolink-examples:: agent_v4
-   :collapse:
-   
-.. autolink-skip:: next
+
+.. py:data:: logger
+

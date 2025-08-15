@@ -1,14 +1,15 @@
-
-:py:mod:`agents.conversation.debate.example`
-============================================
+agents.conversation.debate.example
+==================================
 
 .. py:module:: agents.conversation.debate.example
 
-Examples for structured debate conversations.
+.. autoapi-nested-parse::
+
+   Examples for structured debate conversations.
 
 
-.. autolink-examples:: agents.conversation.debate.example
-   :collapse:
+   .. autolink-examples:: agents.conversation.debate.example
+      :collapse:
 
 
 Functions
@@ -20,6 +21,10 @@ Functions
    agents.conversation.debate.example.example_panel_debate
    agents.conversation.debate.example.example_simple_debate
    agents.conversation.debate.example.example_socratic_debate
+
+
+Module Contents
+---------------
 
 .. py:function:: example_oxford_debate() -> None
 
@@ -53,11 +58,3 @@ Functions
    .. autolink-examples:: example_socratic_debate
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.conversation.debate.example
-   :collapse:
-   
-.. autolink-skip:: next

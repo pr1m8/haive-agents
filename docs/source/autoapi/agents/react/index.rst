@@ -1,69 +1,80 @@
-
-:py:mod:`agents.react`
-======================
+agents.react
+============
 
 .. py:module:: agents.react
 
-React - ReAct agent implementation with enhanced v3 capabilities.
+.. autoapi-nested-parse::
 
-ReAct (Reasoning and Acting) agents that can use tools, reason about actions,
-and provide structured output with comprehensive debugging and observability.
+   React - ReAct agent implementation with enhanced v3 capabilities.
 
-Available Implementations:
-    - ReactAgent: Original implementation extending SimpleAgent
-    - ReactAgent: Enhanced implementation with structured output, hooks, and advanced features
+   ReAct (Reasoning and Acting) agents that can use tools, reason about actions,
+   and provide structured output with comprehensive debugging and observability.
 
-.. rubric:: Examples
+   Available Implementations:
+       - ReactAgent: Original implementation extending SimpleAgent
+       - ReactAgent: Enhanced implementation with structured output, hooks, and advanced features
 
-Basic ReactAgent usage::
+   .. rubric:: Examples
 
-    from haive.agents.react import ReactAgent
-    from haive.core.engine.aug_llm import AugLLMConfig
+   Basic ReactAgent usage::
 
-    agent = ReactAgent(name="react_agent", engine=AugLLMConfig())
+       from haive.agents.react import ReactAgent
+       from haive.core.engine.aug_llm import AugLLMConfig
 
-Enhanced ReactAgent with structured output::
+       agent = ReactAgent(name="react_agent", engine=AugLLMConfig())
 
-    from haive.agents.react import ReactAgent, create_react_agent
-    from langchain_core.tools import tool
-    from pydantic import BaseModel, Field
+   Enhanced ReactAgent with structured output::
 
-    @tool
-    def calculator(expr: str) -> str:
-        return str(eval(expr))
+       from haive.agents.react import ReactAgent, create_react_agent
+       from langchain_core.tools import tool
+       from pydantic import BaseModel, Field
 
-    class Analysis(BaseModel):
-        reasoning: str = Field(description="Step-by-step reasoning")
-        result: str = Field(description="Final answer")
+       @tool
+       def calculator(expr: str) -> str:
+           return str(eval(expr))
 
-    # Factory function approach
-    agent = create_react_agent(
-        name="enhanced_react",
-        tools=[calculator],
-        structured_output_model=Analysis,
-        max_iterations=8,
-        debug=True
-    )
+       class Analysis(BaseModel):
+           reasoning: str = Field(description="Step-by-step reasoning")
+           result: str = Field(description="Final answer")
 
-    # Direct instantiation approach
-    agent = ReactAgent(
-        name="direct_react",
-        engine=AugLLMConfig(
-            tools=[calculator],
-            structured_output_model=Analysis
-        ),
-        max_iterations=6
-    )
+       # Factory function approach
+       agent = create_react_agent(
+           name="enhanced_react",
+           tools=[calculator],
+           structured_output_model=Analysis,
+           max_iterations=8,
+           debug=True
+       )
 
-.. seealso::
+       # Direct instantiation approach
+       agent = ReactAgent(
+           name="direct_react",
+           engine=AugLLMConfig(
+               tools=[calculator],
+               structured_output_model=Analysis
+           ),
+           max_iterations=6
+       )
 
-   haive.agents.simple: SimpleAgent and SimpleAgentV3 implementations
-   haive.core.engine.aug_llm: AugLLMConfig for engine configuration
+   .. seealso::
 
-
-.. autolink-examples:: agents.react
-   :collapse:
+      haive.agents.simple: SimpleAgent and SimpleAgentV3 implementations
+      haive.core.engine.aug_llm: AugLLMConfig for engine configuration
 
 
+   .. autolink-examples:: agents.react
+      :collapse:
+
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/agents/react/agent/index
+   /autoapi/agents/react/config/index
+   /autoapi/agents/react/dynamic_react_agent/index
+   /autoapi/agents/react/state/index
 
 

@@ -1,17 +1,19 @@
-
-:py:mod:`agents.planning.plan_execute_v3.models`
-================================================
+agents.planning.plan_execute_v3.models
+======================================
 
 .. py:module:: agents.planning.plan_execute_v3.models
 
-Plan-and-Execute V3 Models - Structured Output Models for the agent.
+.. autoapi-nested-parse::
 
-Based on the Plan-and-Execute methodology where planning and execution
-are separated into distinct phases with structured outputs.
+   Plan-and-Execute V3 Models - Structured Output Models for the agent.
+
+   Based on the Plan-and-Execute methodology where planning and execution
+   are separated into distinct phases with structured outputs.
 
 
-.. autolink-examples:: agents.planning.plan_execute_v3.models
-   :collapse:
+   .. autolink-examples:: agents.planning.plan_execute_v3.models
+      :collapse:
+
 
 Classes
 -------
@@ -32,271 +34,608 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: ExecutionPlan(/, **data: Any)
 
+   Bases: :py:obj:`pydantic.BaseModel`
 
 
-.. toggle:: Show Inheritance Diagram
+   Complete execution plan with metadata.
 
-   Inheritance diagram for ExecutionPlan:
+   Create a new model by parsing and validating input data from keyword arguments.
 
-   .. graphviz::
-      :align: center
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
 
-      digraph inheritance_ExecutionPlan {
-        node [shape=record];
-        "ExecutionPlan" [label="ExecutionPlan"];
-        "pydantic.BaseModel" -> "ExecutionPlan";
-      }
+   `self` is explicitly positional-only to allow `self` as a field name.
 
-.. autopydantic_model:: agents.planning.plan_execute_v3.models.ExecutionPlan
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
 
+   .. autolink-examples:: __init__
+      :collapse:
 
 
+   .. autolink-examples:: ExecutionPlan
+      :collapse:
 
+   .. py:method:: get_next_step() -> PlanStep | None
 
-.. toggle:: Show Inheritance Diagram
+      Get the next step ready for execution.
 
-   Inheritance diagram for Plan:
 
-   .. graphviz::
-      :align: center
+      .. autolink-examples:: get_next_step
+         :collapse:
 
-      digraph inheritance_Plan {
-        node [shape=record];
-        "Plan" [label="Plan"];
-        "pydantic.BaseModel" -> "Plan";
-      }
 
-.. autopydantic_model:: agents.planning.plan_execute_v3.models.Plan
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:method:: get_progress_percentage() -> float
 
+      Calculate completion percentage.
 
 
+      .. autolink-examples:: get_progress_percentage
+         :collapse:
 
 
-.. toggle:: Show Inheritance Diagram
+   .. py:method:: has_failures() -> bool
 
-   Inheritance diagram for PlanEvaluation:
+      Check if any steps have failed.
 
-   .. graphviz::
-      :align: center
 
-      digraph inheritance_PlanEvaluation {
-        node [shape=record];
-        "PlanEvaluation" [label="PlanEvaluation"];
-        "pydantic.BaseModel" -> "PlanEvaluation";
-      }
+      .. autolink-examples:: has_failures
+         :collapse:
 
-.. autopydantic_model:: agents.planning.plan_execute_v3.models.PlanEvaluation
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
 
+   .. py:method:: is_complete() -> bool
 
+      Check if all steps are completed.
 
 
+      .. autolink-examples:: is_complete
+         :collapse:
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for PlanExecuteInput:
+   .. py:method:: update_total_steps()
 
-   .. graphviz::
-      :align: center
+      Ensure total_steps matches actual step count.
 
-      digraph inheritance_PlanExecuteInput {
-        node [shape=record];
-        "PlanExecuteInput" [label="PlanExecuteInput"];
-        "pydantic.BaseModel" -> "PlanExecuteInput";
-      }
 
-.. autopydantic_model:: agents.planning.plan_execute_v3.models.PlanExecuteInput
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+      .. autolink-examples:: update_total_steps
+         :collapse:
 
 
+   .. py:method:: validate_step_ids(v)
+      :classmethod:
 
 
+      Ensure step IDs are sequential starting from 1.
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for PlanExecuteOutput:
+      .. autolink-examples:: validate_step_ids
+         :collapse:
 
-   .. graphviz::
-      :align: center
 
-      digraph inheritance_PlanExecuteOutput {
-        node [shape=record];
-        "PlanExecuteOutput" [label="PlanExecuteOutput"];
-        "pydantic.BaseModel" -> "PlanExecuteOutput";
-      }
+   .. py:attribute:: created_at
+      :type:  datetime.datetime
+      :value: None
 
-.. autopydantic_model:: agents.planning.plan_execute_v3.models.PlanExecuteOutput
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
 
 
+   .. py:attribute:: estimated_duration
+      :type:  str | None
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
+   .. py:attribute:: objective
+      :type:  str
+      :value: None
 
-   Inheritance diagram for PlanStep:
 
-   .. graphviz::
-      :align: center
 
-      digraph inheritance_PlanStep {
-        node [shape=record];
-        "PlanStep" [label="PlanStep"];
-        "pydantic.BaseModel" -> "PlanStep";
-      }
+   .. py:attribute:: reasoning
+      :type:  str
+      :value: None
 
-.. autopydantic_model:: agents.planning.plan_execute_v3.models.PlanStep
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
 
 
+   .. py:attribute:: steps
+      :type:  list[PlanStep]
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
+   .. py:attribute:: total_steps
+      :type:  int
+      :value: None
 
-   Inheritance diagram for RevisedPlan:
 
-   .. graphviz::
-      :align: center
 
-      digraph inheritance_RevisedPlan {
-        node [shape=record];
-        "RevisedPlan" [label="RevisedPlan"];
-        "pydantic.BaseModel" -> "RevisedPlan";
-      }
+.. py:class:: Plan(/, **data: Any)
 
-.. autopydantic_model:: agents.planning.plan_execute_v3.models.RevisedPlan
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   Bases: :py:obj:`pydantic.BaseModel`
 
 
+   Simple plan model for basic planning operations.
 
+   Create a new model by parsing and validating input data from keyword arguments.
 
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
 
-.. toggle:: Show Inheritance Diagram
+   `self` is explicitly positional-only to allow `self` as a field name.
 
-   Inheritance diagram for StepExecution:
 
-   .. graphviz::
-      :align: center
+   .. autolink-examples:: __init__
+      :collapse:
 
-      digraph inheritance_StepExecution {
-        node [shape=record];
-        "StepExecution" [label="StepExecution"];
-        "pydantic.BaseModel" -> "StepExecution";
-      }
 
-.. autopydantic_model:: agents.planning.plan_execute_v3.models.StepExecution
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. autolink-examples:: Plan
+      :collapse:
 
+   .. py:method:: from_execution_plan(execution_plan: ExecutionPlan) -> Plan
+      :classmethod:
 
 
+      Create a simple Plan from an ExecutionPlan.
 
 
-.. toggle:: Show Inheritance Diagram
+      .. autolink-examples:: from_execution_plan
+         :collapse:
 
-   Inheritance diagram for StepStatus:
 
-   .. graphviz::
-      :align: center
+   .. py:attribute:: objective
+      :type:  str
+      :value: None
 
-      digraph inheritance_StepStatus {
-        node [shape=record];
-        "StepStatus" [label="StepStatus"];
-        "str" -> "StepStatus";
-        "enum.Enum" -> "StepStatus";
-      }
 
-.. autoclass:: agents.planning.plan_execute_v3.models.StepStatus
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
-   .. note::
+   .. py:attribute:: reasoning
+      :type:  str | None
+      :value: None
 
-      **StepStatus** is an Enum defined in ``agents.planning.plan_execute_v3.models``.
 
 
+   .. py:attribute:: steps
+      :type:  list[str]
+      :value: None
 
 
 
-.. rubric:: Related Links
+.. py:class:: PlanEvaluation(/, **data: Any)
 
-.. autolink-examples:: agents.planning.plan_execute_v3.models
-   :collapse:
-   
-.. autolink-skip:: next
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Evaluation of current plan progress and decision on next action.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: PlanEvaluation
+      :collapse:
+
+   .. py:method:: validate_decision_fields()
+
+      Ensure required fields are present based on decision.
+
+
+      .. autolink-examples:: validate_decision_fields
+         :collapse:
+
+
+   .. py:attribute:: current_progress
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: decision
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: final_answer
+      :type:  str | None
+      :value: None
+
+
+
+   .. py:attribute:: plan_status
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: reasoning
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: revision_notes
+      :type:  str | None
+      :value: None
+
+
+
+.. py:class:: PlanExecuteInput(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Input format for the Plan-and-Execute agent.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: PlanExecuteInput
+      :collapse:
+
+   .. py:attribute:: context
+      :type:  str | None
+      :value: None
+
+
+
+   .. py:attribute:: max_steps
+      :type:  int
+      :value: None
+
+
+
+   .. py:attribute:: objective
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: time_limit
+      :type:  int | None
+      :value: None
+
+
+
+.. py:class:: PlanExecuteOutput(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Final output from the Plan-and-Execute agent.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: PlanExecuteOutput
+      :collapse:
+
+   .. py:attribute:: confidence_score
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: execution_summary
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: final_answer
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: key_findings
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: objective
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: revisions_made
+      :type:  int
+      :value: None
+
+
+
+   .. py:attribute:: steps_completed
+      :type:  int
+      :value: None
+
+
+
+   .. py:attribute:: total_execution_time
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: total_steps
+      :type:  int
+      :value: None
+
+
+
+.. py:class:: PlanStep(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Individual step in an execution plan.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: PlanStep
+      :collapse:
+
+   .. py:method:: validate_dependencies(v, info)
+      :classmethod:
+
+
+      Ensure dependencies are valid step IDs.
+
+
+      .. autolink-examples:: validate_dependencies
+         :collapse:
+
+
+   .. py:attribute:: dependencies
+      :type:  list[int]
+      :value: None
+
+
+
+   .. py:attribute:: description
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: error
+      :type:  str | None
+      :value: None
+
+
+
+   .. py:attribute:: execution_time
+      :type:  float | None
+      :value: None
+
+
+
+   .. py:attribute:: expected_output
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: result
+      :type:  str | None
+      :value: None
+
+
+
+   .. py:attribute:: status
+      :type:  StepStatus
+      :value: None
+
+
+
+   .. py:attribute:: step_id
+      :type:  int
+      :value: None
+
+
+
+   .. py:attribute:: tools_required
+      :type:  list[str]
+      :value: None
+
+
+
+.. py:class:: RevisedPlan(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Revised execution plan based on evaluation.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: RevisedPlan
+      :collapse:
+
+   .. py:attribute:: changes_made
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: new_plan
+      :type:  ExecutionPlan
+      :value: None
+
+
+
+   .. py:attribute:: original_objective
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: retained_results
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: revision_reason
+      :type:  str
+      :value: None
+
+
+
+.. py:class:: StepExecution(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Result from executing a single step.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: StepExecution
+      :collapse:
+
+   .. py:attribute:: error
+      :type:  str | None
+      :value: None
+
+
+
+   .. py:attribute:: execution_time
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: observations
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: result
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: step_description
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: step_id
+      :type:  int
+      :value: None
+
+
+
+   .. py:attribute:: success
+      :type:  bool
+      :value: None
+
+
+
+   .. py:attribute:: tools_used
+      :type:  list[str]
+      :value: None
+
+
+
+.. py:class:: StepStatus
+
+   Bases: :py:obj:`str`, :py:obj:`enum.Enum`
+
+
+   Status of a plan step.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: StepStatus
+      :collapse:
+
+   .. py:attribute:: COMPLETED
+      :value: 'completed'
+
+
+
+   .. py:attribute:: FAILED
+      :value: 'failed'
+
+
+
+   .. py:attribute:: IN_PROGRESS
+      :value: 'in_progress'
+
+
+
+   .. py:attribute:: PENDING
+      :value: 'pending'
+
+
+
+   .. py:attribute:: SKIPPED
+      :value: 'skipped'
+
+
+

@@ -1,21 +1,30 @@
-
-:py:mod:`agents.memory_reorganized.api.memory_utils`
-====================================================
+agents.memory_reorganized.api.memory_utils
+==========================================
 
 .. py:module:: agents.memory_reorganized.api.memory_utils
 
-Memory_Utils utility module.
+.. autoapi-nested-parse::
 
-This module provides memory utils functionality for the Haive framework.
+   Memory_Utils utility module.
 
-Functions:
-    get_user_id_from_state: Get User Id From State functionality.
-    create_memory_vectorstore: Create Memory Vectorstore functionality.
-    save_unstructured_memories: Save Unstructured Memories functionality.
+   This module provides memory utils functionality for the Haive framework.
+
+   Functions:
+       get_user_id_from_state: Get User Id From State functionality.
+       create_memory_vectorstore: Create Memory Vectorstore functionality.
+       save_unstructured_memories: Save Unstructured Memories functionality.
 
 
-.. autolink-examples:: agents.memory_reorganized.api.memory_utils
-   :collapse:
+   .. autolink-examples:: agents.memory_reorganized.api.memory_utils
+      :collapse:
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.memory_reorganized.api.memory_utils.logger
 
 
 Functions
@@ -29,6 +38,10 @@ Functions
    agents.memory_reorganized.api.memory_utils.retrieve_memories
    agents.memory_reorganized.api.memory_utils.save_structured_memories
    agents.memory_reorganized.api.memory_utils.save_unstructured_memories
+
+
+Module Contents
+---------------
 
 .. py:function:: create_memory_tools(vector_store: langchain_core.vectorstores.VectorStore)
 
@@ -110,11 +123,5 @@ Functions
    .. autolink-examples:: save_unstructured_memories
       :collapse:
 
+.. py:data:: logger
 
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.memory_reorganized.api.memory_utils
-   :collapse:
-   
-.. autolink-skip:: next

@@ -1,18 +1,29 @@
-
-:py:mod:`agents.rag.multi_agent_rag.multi_rag`
-==============================================
+agents.rag.multi_agent_rag.multi_rag
+====================================
 
 .. py:module:: agents.rag.multi_agent_rag.multi_rag
 
-Multi-Agent RAG System Implementation.
+.. autoapi-nested-parse::
 
-from typing import Any
-This module provides complete multi-agent RAG workflows using the multi-agent framework
-with conditional routing, sequential processing, and parallel execution patterns.
+   Multi-Agent RAG System Implementation.
+
+   from typing import Any
+   This module provides complete multi-agent RAG workflows using the multi-agent framework
+   with conditional routing, sequential processing, and parallel execution patterns.
 
 
-.. autolink-examples:: agents.rag.multi_agent_rag.multi_rag
-   :collapse:
+   .. autolink-examples:: agents.rag.multi_agent_rag.multi_rag
+      :collapse:
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.rag.multi_agent_rag.multi_rag.agent_list
+   agents.rag.multi_agent_rag.multi_rag.base_rag_agent
+
 
 Classes
 -------
@@ -24,115 +35,6 @@ Classes
    agents.rag.multi_agent_rag.multi_rag.ConditionalRAGMultiAgent
    agents.rag.multi_agent_rag.multi_rag.IterativeRAGMultiAgent
    agents.rag.multi_agent_rag.multi_rag.ParallelRAGMultiAgent
-
-
-Module Contents
----------------
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for AdaptiveRAGMultiAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_AdaptiveRAGMultiAgent {
-        node [shape=record];
-        "AdaptiveRAGMultiAgent" [label="AdaptiveRAGMultiAgent"];
-        "haive.agents.multi.base.ConditionalAgent" -> "AdaptiveRAGMultiAgent";
-      }
-
-.. autoclass:: agents.rag.multi_agent_rag.multi_rag.AdaptiveRAGMultiAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for BaseRAGMultiAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_BaseRAGMultiAgent {
-        node [shape=record];
-        "BaseRAGMultiAgent" [label="BaseRAGMultiAgent"];
-        "haive.agents.multi.base.SequentialAgent" -> "BaseRAGMultiAgent";
-      }
-
-.. autoclass:: agents.rag.multi_agent_rag.multi_rag.BaseRAGMultiAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ConditionalRAGMultiAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ConditionalRAGMultiAgent {
-        node [shape=record];
-        "ConditionalRAGMultiAgent" [label="ConditionalRAGMultiAgent"];
-        "haive.agents.multi.base.ConditionalAgent" -> "ConditionalRAGMultiAgent";
-      }
-
-.. autoclass:: agents.rag.multi_agent_rag.multi_rag.ConditionalRAGMultiAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for IterativeRAGMultiAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_IterativeRAGMultiAgent {
-        node [shape=record];
-        "IterativeRAGMultiAgent" [label="IterativeRAGMultiAgent"];
-        "haive.agents.multi.base.SequentialAgent" -> "IterativeRAGMultiAgent";
-      }
-
-.. autoclass:: agents.rag.multi_agent_rag.multi_rag.IterativeRAGMultiAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ParallelRAGMultiAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ParallelRAGMultiAgent {
-        node [shape=record];
-        "ParallelRAGMultiAgent" [label="ParallelRAGMultiAgent"];
-        "haive.agents.multi.base.ParallelAgent" -> "ParallelRAGMultiAgent";
-      }
-
-.. autoclass:: agents.rag.multi_agent_rag.multi_rag.ParallelRAGMultiAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
 
 Functions
@@ -148,6 +50,119 @@ Functions
    agents.rag.multi_agent_rag.multi_rag.should_refine_query
    agents.rag.multi_agent_rag.multi_rag.test_agent_compatibility
    agents.rag.multi_agent_rag.multi_rag.validate_multi_agent_compatibility
+
+
+Module Contents
+---------------
+
+.. py:class:: AdaptiveRAGMultiAgent(simple_rag: BaseRAGMultiAgent | None = None, complex_rag: IterativeRAGMultiAgent | None = None, consensus_rag: ParallelRAGMultiAgent | None = None, **kwargs)
+
+   Bases: :py:obj:`haive.agents.multi.base.ConditionalAgent`
+
+
+   Advanced RAG system that adapts its strategy based on query complexity and results.
+
+   This system demonstrates sophisticated conditional routing with multiple
+   decision points and fallback strategies.
+
+
+   .. autolink-examples:: AdaptiveRAGMultiAgent
+      :collapse:
+
+   .. py:method:: _setup_adaptive_routing()
+
+      Set up adaptive routing based on query complexity and results.
+
+
+      .. autolink-examples:: _setup_adaptive_routing
+         :collapse:
+
+
+   .. py:attribute:: complex_rag
+
+
+   .. py:attribute:: consensus_rag
+
+
+   .. py:attribute:: simple_rag
+
+
+.. py:class:: BaseRAGMultiAgent(retrieval_agent: haive.agents.rag.multi_agent_rag.agents.SimpleRAGAgent | None = None, grading_agent: haive.agents.rag.multi_agent_rag.agents.DocumentGradingAgent | None = None, answer_agent: haive.agents.rag.multi_agent_rag.agents.SimpleRAGAnswerAgent | None = None, **kwargs)
+
+   Bases: :py:obj:`haive.agents.multi.base.SequentialAgent`
+
+
+   Base multi-agent RAG system with retrieve -> grade -> generate workflow.
+
+   This is the simple sequential RAG agent as mentioned in the user prompt.
+
+
+   .. autolink-examples:: BaseRAGMultiAgent
+      :collapse:
+
+.. py:class:: ConditionalRAGMultiAgent(retrieval_agent: haive.agents.rag.multi_agent_rag.agents.SimpleRAGAgent | None = None, grading_agent: haive.agents.rag.multi_agent_rag.agents.DocumentGradingAgent | None = None, answer_agent: haive.agents.rag.multi_agent_rag.agents.SimpleRAGAnswerAgent | None = None, query_refiner: Any | None = None, **kwargs)
+
+   Bases: :py:obj:`haive.agents.multi.base.ConditionalAgent`
+
+
+   Conditional multi-agent RAG system with smart routing based on document quality.
+
+   This system uses conditional routing to decide whether to grade documents,
+   refine queries, or generate answers based on the current state.
+
+
+   .. autolink-examples:: ConditionalRAGMultiAgent
+      :collapse:
+
+   .. py:method:: _setup_conditional_routing()
+
+      Set up conditional edges for smart routing.
+
+
+      .. autolink-examples:: _setup_conditional_routing
+         :collapse:
+
+
+   .. py:attribute:: answer_agent
+
+
+   .. py:attribute:: grading_agent
+
+
+   .. py:attribute:: query_refiner
+      :value: None
+
+
+
+   .. py:attribute:: retrieval_agent
+
+
+.. py:class:: IterativeRAGMultiAgent(retrieval_agent: haive.agents.rag.multi_agent_rag.agents.SimpleRAGAgent | None = None, iterative_grader: haive.agents.rag.multi_agent_rag.agents.IterativeDocumentGradingAgent | None = None, answer_agent: haive.agents.rag.multi_agent_rag.agents.SimpleRAGAnswerAgent | None = None, custom_grader_callable: collections.abc.Callable | None = None, **kwargs)
+
+   Bases: :py:obj:`haive.agents.multi.base.SequentialAgent`
+
+
+   Multi-agent RAG system with iterative document processing.
+
+   This system demonstrates iterating over retrieved documents and processing
+   each one individually, as mentioned in the user prompt.
+
+
+   .. autolink-examples:: IterativeRAGMultiAgent
+      :collapse:
+
+.. py:class:: ParallelRAGMultiAgent(rag_agents: list[BaseRAGMultiAgent] | None = None, **kwargs)
+
+   Bases: :py:obj:`haive.agents.multi.base.ParallelAgent`
+
+
+   Parallel multi-agent RAG system for consensus-based processing.
+
+   This system runs multiple RAG agents in parallel and aggregates their results.
+
+
+   .. autolink-examples:: ParallelRAGMultiAgent
+      :collapse:
 
 .. py:function:: create_conditional_rag_system(documents: list[langchain_core.documents.Document] | None = None, custom_grader: collections.abc.Callable | None = None) -> ConditionalRAGMultiAgent
 
@@ -233,11 +248,7 @@ Functions
    .. autolink-examples:: validate_multi_agent_compatibility
       :collapse:
 
+.. py:data:: agent_list
 
+.. py:data:: base_rag_agent
 
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.rag.multi_agent_rag.multi_rag
-   :collapse:
-   
-.. autolink-skip:: next

@@ -1,31 +1,32 @@
-
-:py:mod:`agents.document_processing.examples.comprehensive_query_example`
-=========================================================================
+agents.document_processing.examples.comprehensive_query_example
+===============================================================
 
 .. py:module:: agents.document_processing.examples.comprehensive_query_example
 
-Comprehensive example of using DocumentProcessingAgent with QueryState.
+.. autoapi-nested-parse::
 
-This example demonstrates the full capabilities of the document processing system
-including query state management, advanced retrieval strategies, and multi-query
-workflows.
+   Comprehensive example of using DocumentProcessingAgent with QueryState.
 
-.. rubric:: Examples
+   This example demonstrates the full capabilities of the document processing system
+   including query state management, advanced retrieval strategies, and multi-query
+   workflows.
 
-Basic usage::
+   .. rubric:: Examples
 
-    python comprehensive_query_example.py
+   Basic usage::
 
-With specific strategies::
+       python comprehensive_query_example.py
 
-    python comprehensive_query_example.py --strategy adaptive --query-type research
+   With specific strategies::
 
-Author: Claude (Haive AI Agent Framework)
-Version: 1.0.0
+       python comprehensive_query_example.py --strategy adaptive --query-type research
+
+   Author: Claude (Haive AI Agent Framework)
+   Version: 1.0.0
 
 
-.. autolink-examples:: agents.document_processing.examples.comprehensive_query_example
-   :collapse:
+   .. autolink-examples:: agents.document_processing.examples.comprehensive_query_example
+      :collapse:
 
 
 Functions
@@ -39,6 +40,10 @@ Functions
    agents.document_processing.examples.comprehensive_query_example.main
    agents.document_processing.examples.comprehensive_query_example.multi_source_example
    agents.document_processing.examples.comprehensive_query_example.structured_query_example
+
+
+Module Contents
+---------------
 
 .. py:function:: advanced_query_example()
    :async:
@@ -100,11 +105,3 @@ Functions
    .. autolink-examples:: structured_query_example
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.document_processing.examples.comprehensive_query_example
-   :collapse:
-   
-.. autolink-skip:: next

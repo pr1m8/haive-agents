@@ -1,14 +1,15 @@
-
-:py:mod:`agents.conversation.social_media.example`
-==================================================
+agents.conversation.social_media.example
+========================================
 
 .. py:module:: agents.conversation.social_media.example
 
-Examples for social media style conversations with engagement mechanics.
+.. autoapi-nested-parse::
+
+   Examples for social media style conversations with engagement mechanics.
 
 
-.. autolink-examples:: agents.conversation.social_media.example
-   :collapse:
+   .. autolink-examples:: agents.conversation.social_media.example
+      :collapse:
 
 
 Functions
@@ -21,6 +22,10 @@ Functions
    agents.conversation.social_media.example.example_tiktok_comments
    agents.conversation.social_media.example.example_twitter_thread
    agents.conversation.social_media.example.example_viral_moment
+
+
+Module Contents
+---------------
 
 .. py:function:: example_instagram_discussion() -> None
 
@@ -62,11 +67,3 @@ Functions
    .. autolink-examples:: example_viral_moment
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.conversation.social_media.example
-   :collapse:
-   
-.. autolink-skip:: next

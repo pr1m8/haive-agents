@@ -1,6 +1,5 @@
-
-:py:mod:`agents.wiki_writer.interview.agent`
-============================================
+agents.wiki_writer.interview.agent
+==================================
 
 .. py:module:: agents.wiki_writer.interview.agent
 
@@ -17,54 +16,46 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: InterviewAgent(config: InterviewAgentConfig = InterviewAgentConfig())
+
+   Bases: :py:obj:`haive.core.engine.agent.agent.AgentArchitecture`
+
+
+   An agent that conducts an interview with a Subject Matter Expert.
+
+
+   .. autolink-examples:: InterviewAgent
+      :collapse:
+
+   .. py:method:: setup_workflow() -> None
+
+      Setup the workflow for the agent.
+
+
+      .. autolink-examples:: setup_workflow
+         :collapse:
+
+
+.. py:class:: InterviewAgentConfig
+
+   Bases: :py:obj:`haive.core.engine.agent.agent.AgentArchitectureConfig`
+
+
+   Configuration for the Interview Agent.
+
+
+   .. autolink-examples:: InterviewAgentConfig
+      :collapse:
+
+   .. py:attribute:: aug_llm_configs
+      :type:  dict[str, haive.core.engine.aug_llm.AugLLMConfig]
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for InterviewAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_InterviewAgent {
-        node [shape=record];
-        "InterviewAgent" [label="InterviewAgent"];
-        "haive.core.engine.agent.agent.AgentArchitecture" -> "InterviewAgent";
-      }
-
-.. autoclass:: agents.wiki_writer.interview.agent.InterviewAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. py:attribute:: state_schema
+      :type:  haive.agents.wiki_writer.interview.state.InterviewState
+      :value: None
 
 
 
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for InterviewAgentConfig:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_InterviewAgentConfig {
-        node [shape=record];
-        "InterviewAgentConfig" [label="InterviewAgentConfig"];
-        "haive.core.engine.agent.agent.AgentArchitectureConfig" -> "InterviewAgentConfig";
-      }
-
-.. autoclass:: agents.wiki_writer.interview.agent.InterviewAgentConfig
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.wiki_writer.interview.agent
-   :collapse:
-   
-.. autolink-skip:: next

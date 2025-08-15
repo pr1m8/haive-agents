@@ -1,16 +1,18 @@
-
-:py:mod:`agents.rag.modular_chain`
-==================================
+agents.rag.modular_chain
+========================
 
 .. py:module:: agents.rag.modular_chain
 
-Modular RAG using ChainAgent.
+.. autoapi-nested-parse::
 
-Build configurable RAG pipelines with modular components.
+   Modular RAG using ChainAgent.
+
+   Build configurable RAG pipelines with modular components.
 
 
-.. autolink-examples:: agents.rag.modular_chain
-   :collapse:
+   .. autolink-examples:: agents.rag.modular_chain
+      :collapse:
+
 
 Classes
 -------
@@ -19,66 +21,6 @@ Classes
 
    agents.rag.modular_chain.ModularConfig
    agents.rag.modular_chain.RAGModule
-
-
-Module Contents
----------------
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ModularConfig:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ModularConfig {
-        node [shape=record];
-        "ModularConfig" [label="ModularConfig"];
-        "pydantic.BaseModel" -> "ModularConfig";
-      }
-
-.. autopydantic_model:: agents.rag.modular_chain.ModularConfig
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
-
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for RAGModule:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_RAGModule {
-        node [shape=record];
-        "RAGModule" [label="RAGModule"];
-        "str" -> "RAGModule";
-        "enum.Enum" -> "RAGModule";
-      }
-
-.. autoclass:: agents.rag.modular_chain.RAGModule
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-   .. note::
-
-      **RAGModule** is an Enum defined in ``agents.rag.modular_chain``.
-
 
 
 Functions
@@ -90,6 +32,97 @@ Functions
    agents.rag.modular_chain.create_custom_modular_rag
    agents.rag.modular_chain.create_modular_rag
    agents.rag.modular_chain.create_simple_modular_rag
+
+
+Module Contents
+---------------
+
+.. py:class:: ModularConfig(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Configuration for modular RAG.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: ModularConfig
+      :collapse:
+
+   .. py:attribute:: modules
+      :type:  list[RAGModule]
+      :value: None
+
+
+
+   .. py:attribute:: quality_gates
+      :type:  bool
+      :value: None
+
+
+
+   .. py:attribute:: routing_strategy
+      :type:  Literal['sequential', 'conditional', 'parallel']
+      :value: None
+
+
+
+.. py:class:: RAGModule
+
+   Bases: :py:obj:`str`, :py:obj:`enum.Enum`
+
+
+   Available RAG modules.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: RAGModule
+      :collapse:
+
+   .. py:attribute:: ANSWER_GENERATION
+      :value: 'answer_generation'
+
+
+
+   .. py:attribute:: ANSWER_VERIFICATION
+      :value: 'answer_verification'
+
+
+
+   .. py:attribute:: CONTEXT_RANKING
+      :value: 'context_ranking'
+
+
+
+   .. py:attribute:: DOCUMENT_FILTERING
+      :value: 'document_filtering'
+
+
+
+   .. py:attribute:: QUERY_EXPANSION
+      :value: 'query_expansion'
+
+
+
+   .. py:attribute:: RESPONSE_SYNTHESIS
+      :value: 'response_synthesis'
+
+
 
 .. py:function:: create_comprehensive_modular_rag(documents: list[langchain_core.documents.Document], llm_config: haive.core.models.llm.base.LLMConfig | None = None) -> haive.agents.chain.ChainAgent
 
@@ -123,11 +156,3 @@ Functions
    .. autolink-examples:: create_simple_modular_rag
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.rag.modular_chain
-   :collapse:
-   
-.. autolink-skip:: next

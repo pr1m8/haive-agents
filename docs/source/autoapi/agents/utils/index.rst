@@ -1,15 +1,23 @@
-
-:py:mod:`agents.utils`
-======================
+agents.utils
+============
 
 .. py:module:: agents.utils
 
-Module exports.
+.. autoapi-nested-parse::
+
+   Module exports.
 
 
-.. autolink-examples:: agents.utils
-   :collapse:
+   .. autolink-examples:: agents.utils
+      :collapse:
 
 
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/agents/utils/utils/index
 
 

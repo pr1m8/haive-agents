@@ -1,17 +1,26 @@
-
-:py:mod:`agents.reasoning_and_critique.tot.example`
-===================================================
+agents.reasoning_and_critique.tot.example
+=========================================
 
 .. py:module:: agents.reasoning_and_critique.tot.example
 
-Example demonstrating the use of the Tree of Thoughts agent.
+.. autoapi-nested-parse::
 
-This example shows how to instantiate and run the ToT agent
-with different problem types.
+   Example demonstrating the use of the Tree of Thoughts agent.
+
+   This example shows how to instantiate and run the ToT agent
+   with different problem types.
 
 
-.. autolink-examples:: agents.reasoning_and_critique.tot.example
-   :collapse:
+   .. autolink-examples:: agents.reasoning_and_critique.tot.example
+      :collapse:
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.reasoning_and_critique.tot.example.logger
 
 
 Functions
@@ -23,6 +32,10 @@ Functions
    agents.reasoning_and_critique.tot.example.run_basic_example
    agents.reasoning_and_critique.tot.example.run_complex_reasoning_example
    agents.reasoning_and_critique.tot.example.run_math_example
+
+
+Module Contents
+---------------
 
 .. py:function:: main()
    :async:
@@ -64,11 +77,5 @@ Functions
    .. autolink-examples:: run_math_example
       :collapse:
 
+.. py:data:: logger
 
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.reasoning_and_critique.tot.example
-   :collapse:
-   
-.. autolink-skip:: next

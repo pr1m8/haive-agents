@@ -1,14 +1,16 @@
-
-:py:mod:`agents.planning_v2.base.planner.models`
-================================================
+agents.planning_v2.base.planner.models
+======================================
 
 .. py:module:: agents.planning_v2.base.planner.models
 
-Concrete plan models for the planner agent.
+.. autoapi-nested-parse::
+
+   Concrete plan models for the planner agent.
 
 
-.. autolink-examples:: agents.planning_v2.base.planner.models
-   :collapse:
+   .. autolink-examples:: agents.planning_v2.base.planner.models
+      :collapse:
+
 
 Classes
 -------
@@ -21,33 +23,17 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: TaskPlan
+
+   Bases: :py:obj:`haive.agents.planning_v2.base.models.Plan`\ [\ :py:obj:`haive.agents.planning_v2.base.models.Task`\ ]
 
 
+   Concrete plan implementation using Task steps.
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for TaskPlan:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_TaskPlan {
-        node [shape=record];
-        "TaskPlan" [label="TaskPlan"];
-        "haive.agents.planning_v2.base.models.Plan[haive.agents.planning_v2.base.models.Task]" -> "TaskPlan";
-      }
-
-.. autoclass:: agents.planning_v2.base.planner.models.TaskPlan
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   This is needed because OpenAI's function calling doesn't accept
+   generic class names like Plan[Task] - it needs a simple name.
 
 
+   .. autolink-examples:: TaskPlan
+      :collapse:
 
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.planning_v2.base.planner.models
-   :collapse:
-   
-.. autolink-skip:: next

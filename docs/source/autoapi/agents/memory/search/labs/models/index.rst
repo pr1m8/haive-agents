@@ -1,14 +1,16 @@
-
-:py:mod:`agents.memory.search.labs.models`
-==========================================
+agents.memory.search.labs.models
+================================
 
 .. py:module:: agents.memory.search.labs.models
 
-Data models for Labs Agent.
+.. autoapi-nested-parse::
+
+   Data models for Labs Agent.
 
 
-.. autolink-examples:: agents.memory.search.labs.models
-   :collapse:
+   .. autolink-examples:: agents.memory.search.labs.models
+      :collapse:
+
 
 Classes
 -------
@@ -27,205 +29,525 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: AssetType
 
+   Bases: :py:obj:`str`, :py:obj:`enum.Enum`
 
 
-.. toggle:: Show Inheritance Diagram
+   Types of assets that can be created.
 
-   Inheritance diagram for AssetType:
+   Initialize self.  See help(type(self)) for accurate signature.
 
-   .. graphviz::
-      :align: center
 
-      digraph inheritance_AssetType {
-        node [shape=record];
-        "AssetType" [label="AssetType"];
-        "str" -> "AssetType";
-        "enum.Enum" -> "AssetType";
-      }
+   .. autolink-examples:: __init__
+      :collapse:
 
-.. autoclass:: agents.memory.search.labs.models.AssetType
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
-   .. note::
+   .. autolink-examples:: AssetType
+      :collapse:
 
-      **AssetType** is an Enum defined in ``agents.memory.search.labs.models``.
+   .. py:attribute:: APP
+      :value: 'app'
 
 
 
+   .. py:attribute:: CHART
+      :value: 'chart'
 
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for Config:
+   .. py:attribute:: CODE
+      :value: 'code'
 
-   .. graphviz::
-      :align: center
 
-      digraph inheritance_Config {
-        node [shape=record];
-        "Config" [label="Config"];
-        "pydantic.BaseModel" -> "Config";
-      }
 
-.. autopydantic_model:: agents.memory.search.labs.models.Config
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: CSV
+      :value: 'csv'
 
 
 
+   .. py:attribute:: DASHBOARD
+      :value: 'dashboard'
 
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for InteractiveApp:
+   .. py:attribute:: DATASET
+      :value: 'dataset'
 
-   .. graphviz::
-      :align: center
 
-      digraph inheritance_InteractiveApp {
-        node [shape=record];
-        "InteractiveApp" [label="InteractiveApp"];
-        "pydantic.BaseModel" -> "InteractiveApp";
-      }
 
-.. autopydantic_model:: agents.memory.search.labs.models.InteractiveApp
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: IMAGE
+      :value: 'image'
 
 
 
+   .. py:attribute:: REPORT
+      :value: 'report'
 
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for LabsRequest:
+.. py:class:: Config(/, **data: Any)
 
-   .. graphviz::
-      :align: center
+   Bases: :py:obj:`pydantic.BaseModel`
 
-      digraph inheritance_LabsRequest {
-        node [shape=record];
-        "LabsRequest" [label="LabsRequest"];
-        "pydantic.BaseModel" -> "LabsRequest";
-      }
 
-.. autopydantic_model:: agents.memory.search.labs.models.LabsRequest
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   Configuration for Labs Agent.
 
+   Create a new model by parsing and validating input data from keyword arguments.
 
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
 
+   `self` is explicitly positional-only to allow `self` as a field name.
 
 
-.. toggle:: Show Inheritance Diagram
+   .. autolink-examples:: __init__
+      :collapse:
 
-   Inheritance diagram for LabsResponse:
 
-   .. graphviz::
-      :align: center
+   .. autolink-examples:: Config
+      :collapse:
 
-      digraph inheritance_LabsResponse {
-        node [shape=record];
-        "LabsResponse" [label="LabsResponse"];
-        "haive.agents.memory.search.base.SearchResponse" -> "LabsResponse";
-      }
+   .. py:attribute:: enable_code_execution
+      :type:  bool
+      :value: None
 
-.. autoclass:: agents.memory.search.labs.models.LabsResponse
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
 
+   .. py:attribute:: enable_visualization
+      :type:  bool
+      :value: None
 
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for ProjectAsset:
+   .. py:attribute:: max_work_time
+      :type:  float
+      :value: None
 
-   .. graphviz::
-      :align: center
 
-      digraph inheritance_ProjectAsset {
-        node [shape=record];
-        "ProjectAsset" [label="ProjectAsset"];
-        "pydantic.BaseModel" -> "ProjectAsset";
-      }
 
-.. autopydantic_model:: agents.memory.search.labs.models.ProjectAsset
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: project_type
+      :type:  str
+      :value: None
 
 
 
+.. py:class:: InteractiveApp(/, **data: Any)
 
+   Bases: :py:obj:`pydantic.BaseModel`
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for WorkflowStep:
+   Model for interactive applications created in Labs.
 
-   .. graphviz::
-      :align: center
+   Create a new model by parsing and validating input data from keyword arguments.
 
-      digraph inheritance_WorkflowStep {
-        node [shape=record];
-        "WorkflowStep" [label="WorkflowStep"];
-        "pydantic.BaseModel" -> "WorkflowStep";
-      }
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
 
-.. autopydantic_model:: agents.memory.search.labs.models.WorkflowStep
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   `self` is explicitly positional-only to allow `self` as a field name.
 
 
+   .. autolink-examples:: __init__
+      :collapse:
 
 
+   .. autolink-examples:: InteractiveApp
+      :collapse:
 
-.. rubric:: Related Links
+   .. py:attribute:: app_id
+      :type:  str
+      :value: None
 
-.. autolink-examples:: agents.memory.search.labs.models
-   :collapse:
-   
-.. autolink-skip:: next
+
+
+   .. py:attribute:: app_type
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: css_styles
+      :type:  str | None
+      :value: None
+
+
+
+   .. py:attribute:: data_sources
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: deployment_url
+      :type:  str | None
+      :value: None
+
+
+
+   .. py:attribute:: description
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: html_content
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: interactive_elements
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: javascript_code
+      :type:  str | None
+      :value: None
+
+
+
+   .. py:attribute:: name
+      :type:  str
+      :value: None
+
+
+
+.. py:class:: LabsRequest(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Request model for Labs operations.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: LabsRequest
+      :collapse:
+
+   .. py:class:: Config
+
+      Pydantic configuration.
+
+
+      .. autolink-examples:: Config
+         :collapse:
+
+      .. py:attribute:: json_schema_extra
+
+
+
+   .. py:attribute:: create_interactive_app
+      :type:  bool
+      :value: None
+
+
+
+   .. py:attribute:: data_sources
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: enable_code_execution
+      :type:  bool
+      :value: None
+
+
+
+   .. py:attribute:: max_work_time
+      :type:  int
+      :value: None
+
+
+
+   .. py:attribute:: output_format
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: project_type
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: query
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: required_tools
+      :type:  list[str]
+      :value: None
+
+
+
+.. py:class:: LabsResponse
+
+   Bases: :py:obj:`haive.agents.memory.search.base.SearchResponse`
+
+
+   Response model for Labs operations.
+
+   Extends the base SearchResponse with Labs-specific fields.
+
+
+   .. autolink-examples:: LabsResponse
+      :collapse:
+
+   .. py:class:: Config
+
+      Pydantic configuration.
+
+
+      .. autolink-examples:: Config
+         :collapse:
+
+      .. py:attribute:: json_schema_extra
+
+
+
+   .. py:attribute:: assets_created
+      :type:  list[ProjectAsset]
+      :value: None
+
+
+
+   .. py:attribute:: code_execution_results
+      :type:  list[dict[str, Any]]
+      :value: None
+
+
+
+   .. py:attribute:: data_analysis_results
+      :type:  dict[str, Any]
+      :value: None
+
+
+
+   .. py:attribute:: interactive_apps
+      :type:  list[InteractiveApp]
+      :value: None
+
+
+
+   .. py:attribute:: next_steps
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: project_name
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: project_summary
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: search_type
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: tools_used
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: total_work_time
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: visualizations_created
+      :type:  int
+      :value: None
+
+
+
+   .. py:attribute:: workflow_steps
+      :type:  list[WorkflowStep]
+      :value: None
+
+
+
+.. py:class:: ProjectAsset(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Model for project assets created during workflow.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: ProjectAsset
+      :collapse:
+
+   .. py:attribute:: asset_id
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: content
+      :type:  str | None
+      :value: None
+
+
+
+   .. py:attribute:: created_at
+      :type:  datetime.datetime
+      :value: None
+
+
+
+   .. py:attribute:: description
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: downloadable
+      :type:  bool
+      :value: None
+
+
+
+   .. py:attribute:: file_path
+      :type:  str | None
+      :value: None
+
+
+
+   .. py:attribute:: metadata
+      :type:  dict[str, Any]
+      :value: None
+
+
+
+   .. py:attribute:: name
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: size_bytes
+      :type:  int
+      :value: None
+
+
+
+   .. py:attribute:: type
+      :type:  AssetType
+      :value: None
+
+
+
+.. py:class:: WorkflowStep(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Model for individual workflow steps.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: WorkflowStep
+      :collapse:
+
+   .. py:attribute:: description
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: duration_seconds
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: error_message
+      :type:  str | None
+      :value: None
+
+
+
+   .. py:attribute:: input_data
+      :type:  dict[str, Any]
+      :value: None
+
+
+
+   .. py:attribute:: name
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: output_data
+      :type:  dict[str, Any]
+      :value: None
+
+
+
+   .. py:attribute:: step_id
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: success
+      :type:  bool
+      :value: None
+
+
+
+   .. py:attribute:: tool_used
+      :type:  str | None
+      :value: None
+
+
+

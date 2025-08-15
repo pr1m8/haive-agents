@@ -1,6 +1,5 @@
-
-:py:mod:`agents.document_modifiers.complex_extraction.utils`
-============================================================
+agents.document_modifiers.complex_extraction.utils
+==================================================
 
 .. py:module:: agents.document_modifiers.complex_extraction.utils
 
@@ -11,31 +10,6 @@ Classes
 .. autoapisummary::
 
    agents.document_modifiers.complex_extraction.utils.RetryStrategy
-
-
-Module Contents
----------------
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for RetryStrategy:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_RetryStrategy {
-        node [shape=record];
-        "RetryStrategy" [label="RetryStrategy"];
-        "TypedDict" -> "RetryStrategy";
-      }
-
-.. autoclass:: agents.document_modifiers.complex_extraction.utils.RetryStrategy
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
 
 Functions
@@ -49,6 +23,49 @@ Functions
    agents.document_modifiers.complex_extraction.utils.dedict
    agents.document_modifiers.complex_extraction.utils.default_aggregator
    agents.document_modifiers.complex_extraction.utils.encode
+
+
+Module Contents
+---------------
+
+.. py:class:: RetryStrategy
+
+   Bases: :py:obj:`TypedDict`
+
+
+   The retry strategy for a tool call.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: RetryStrategy
+      :collapse:
+
+   .. py:attribute:: aggregate_messages
+      :type:  collections.abc.Callable[[collections.abc.Sequence[langchain_core.messages.AnyMessage]], langchain_core.messages.AIMessage] | None
+
+
+   .. py:attribute:: fallback
+      :type:  langchain_core.runnables.Runnable[collections.abc.Sequence[langchain_core.messages.AnyMessage], langchain_core.messages.AIMessage] | langchain_core.runnables.Runnable[collections.abc.Sequence[langchain_core.messages.AnyMessage], langchain_core.messages.BaseMessage] | collections.abc.Callable[[collections.abc.Sequence[langchain_core.messages.AnyMessage]], langchain_core.messages.AIMessage] | None
+
+      The function to use once validation fails.
+
+      .. autolink-examples:: fallback
+         :collapse:
+
+
+   .. py:attribute:: max_attempts
+      :type:  int
+
+      The maximum number of attempts to make.
+
+      .. autolink-examples:: max_attempts
+         :collapse:
+
 
 .. py:function:: add_or_overwrite_messages(left: list, right: list | dict) -> list
 
@@ -99,11 +116,3 @@ Functions
    .. autolink-examples:: encode
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.document_modifiers.complex_extraction.utils
-   :collapse:
-   
-.. autolink-skip:: next

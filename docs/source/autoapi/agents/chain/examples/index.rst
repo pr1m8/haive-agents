@@ -1,16 +1,18 @@
-
-:py:mod:`agents.chain.examples`
-===============================
+agents.chain.examples
+=====================
 
 .. py:module:: agents.chain.examples
 
-Examples of using DeclarativeChainAgent to build complex RAG flows.
+.. autoapi-nested-parse::
 
-Shows how to recreate our complex agents using declarative specifications.
+   Examples of using DeclarativeChainAgent to build complex RAG flows.
+
+   Shows how to recreate our complex agents using declarative specifications.
 
 
-.. autolink-examples:: agents.chain.examples
-   :collapse:
+   .. autolink-examples:: agents.chain.examples
+      :collapse:
+
 
 Classes
 -------
@@ -18,39 +20,6 @@ Classes
 .. autoapisummary::
 
    agents.chain.examples.StrategyDecision
-
-
-Module Contents
----------------
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for StrategyDecision:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_StrategyDecision {
-        node [shape=record];
-        "StrategyDecision" [label="StrategyDecision"];
-        "pydantic.BaseModel" -> "StrategyDecision";
-      }
-
-.. autopydantic_model:: agents.chain.examples.StrategyDecision
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
-
 
 
 Functions
@@ -69,6 +38,44 @@ Functions
    agents.chain.examples.improve_answer
    agents.chain.examples.reflect_and_critique
    agents.chain.examples.synthesize_results
+
+
+Module Contents
+---------------
+
+.. py:class:: StrategyDecision(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Strategy decision for RAG routing.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: StrategyDecision
+      :collapse:
+
+   .. py:attribute:: confidence
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: strategy
+      :type:  str
+      :value: None
+
+
 
 .. py:function:: create_agentic_router_declarative(documents: list[langchain_core.documents.Document])
 
@@ -158,11 +165,3 @@ Functions
    .. autolink-examples:: synthesize_results
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.chain.examples
-   :collapse:
-   
-.. autolink-skip:: next

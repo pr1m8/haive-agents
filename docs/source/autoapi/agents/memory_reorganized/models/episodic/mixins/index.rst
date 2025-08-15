@@ -1,24 +1,26 @@
-
-:py:mod:`agents.memory_reorganized.models.episodic.mixins`
-==========================================================
+agents.memory_reorganized.models.episodic.mixins
+================================================
 
 .. py:module:: agents.memory_reorganized.models.episodic.mixins
 
-Mixins model module.
+.. autoapi-nested-parse::
 
-This module provides mixins functionality for the Haive framework.
+   Mixins model module.
 
-Classes:
-    PerformanceMetrics: PerformanceMetrics implementation.
-    TaskExecution: TaskExecution implementation.
+   This module provides mixins functionality for the Haive framework.
 
-Functions:
-    validate_performance_logic: Validate Performance Logic functionality.
-    validate_execution_steps: Validate Execution Steps functionality.
+   Classes:
+       PerformanceMetrics: PerformanceMetrics implementation.
+       TaskExecution: TaskExecution implementation.
+
+   Functions:
+       validate_performance_logic: Validate Performance Logic functionality.
+       validate_execution_steps: Validate Execution Steps functionality.
 
 
-.. autolink-examples:: agents.memory_reorganized.models.episodic.mixins
-   :collapse:
+   .. autolink-examples:: agents.memory_reorganized.models.episodic.mixins
+      :collapse:
+
 
 Classes
 -------
@@ -32,70 +34,127 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: PerformanceMetrics(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Detailed performance tracking for episodic memories.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: PerformanceMetrics
+      :collapse:
+
+   .. py:method:: validate_performance_logic() -> PerformanceMetrics
+
+      Validate performance metric consistency.
+
+
+      .. autolink-examples:: validate_performance_logic
+         :collapse:
+
+
+   .. py:attribute:: completion_time
+      :type:  float
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for PerformanceMetrics:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_PerformanceMetrics {
-        node [shape=record];
-        "PerformanceMetrics" [label="PerformanceMetrics"];
-        "pydantic.BaseModel" -> "PerformanceMetrics";
-      }
-
-.. autopydantic_model:: agents.memory_reorganized.models.episodic.mixins.PerformanceMetrics
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: complexity_score
+      :type:  int
+      :value: None
 
 
 
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for TaskExecution:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_TaskExecution {
-        node [shape=record];
-        "TaskExecution" [label="TaskExecution"];
-        "pydantic.BaseModel" -> "TaskExecution";
-      }
-
-.. autopydantic_model:: agents.memory_reorganized.models.episodic.mixins.TaskExecution
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: error_frequency
+      :type:  float
+      :value: None
 
 
 
+   .. py:attribute:: success_rate
+      :type:  float
+      :value: None
 
 
-.. rubric:: Related Links
 
-.. autolink-examples:: agents.memory_reorganized.models.episodic.mixins
-   :collapse:
-   
-.. autolink-skip:: next
+   .. py:attribute:: user_satisfaction
+      :type:  float | None
+      :value: None
+
+
+
+.. py:class:: TaskExecution(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Detailed task execution context.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: TaskExecution
+      :collapse:
+
+   .. py:method:: validate_execution_steps(v: list[str]) -> list[str]
+      :classmethod:
+
+
+      Validate execution step format.
+
+
+      .. autolink-examples:: validate_execution_steps
+         :collapse:
+
+
+   .. py:attribute:: decision_points
+      :type:  list[dict[str, Any]]
+      :value: None
+
+
+
+   .. py:attribute:: execution_steps
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: input_parameters
+      :type:  dict[str, Any]
+      :value: None
+
+
+
+   .. py:attribute:: task_type
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: tools_used
+      :type:  list[str]
+      :value: None
+
+
+

@@ -1,24 +1,26 @@
-
-:py:mod:`agents.patterns.react_structured_agent_variants`
-=========================================================
+agents.patterns.react_structured_agent_variants
+===============================================
 
 .. py:module:: agents.patterns.react_structured_agent_variants
 
-React Structured Agent Variants - Building on base Agent patterns.
+.. autoapi-nested-parse::
 
-This module creates various ReactAgent → SimpleAgent patterns using the base
-agent.py architecture, as requested. Shows different ways to combine agents
-for structured workflows with reasoning and output formatting.
+   React Structured Agent Variants - Building on base Agent patterns.
 
-Variants include:
-1. Basic React → Simple structured flow
-2. Multi-stage reasoning with structured outputs
-3. Tool-enhanced React → Simple patterns
-4. Reflection-enabled variants
+   This module creates various ReactAgent → SimpleAgent patterns using the base
+   agent.py architecture, as requested. Shows different ways to combine agents
+   for structured workflows with reasoning and output formatting.
+
+   Variants include:
+   1. Basic React → Simple structured flow
+   2. Multi-stage reasoning with structured outputs
+   3. Tool-enhanced React → Simple patterns
+   4. Reflection-enabled variants
 
 
-.. autolink-examples:: agents.patterns.react_structured_agent_variants
-   :collapse:
+   .. autolink-examples:: agents.patterns.react_structured_agent_variants
+      :collapse:
+
 
 Classes
 -------
@@ -33,152 +35,6 @@ Classes
    agents.patterns.react_structured_agent_variants.ToolEnhancedStructuredAgent
 
 
-Module Contents
----------------
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for AnalysisResult:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_AnalysisResult {
-        node [shape=record];
-        "AnalysisResult" [label="AnalysisResult"];
-        "pydantic.BaseModel" -> "AnalysisResult";
-      }
-
-.. autopydantic_model:: agents.patterns.react_structured_agent_variants.AnalysisResult
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
-
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for MultiStageReasoningAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_MultiStageReasoningAgent {
-        node [shape=record];
-        "MultiStageReasoningAgent" [label="MultiStageReasoningAgent"];
-        "haive.agents.base.agent.Agent" -> "MultiStageReasoningAgent";
-      }
-
-.. autoclass:: agents.patterns.react_structured_agent_variants.MultiStageReasoningAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ReactToStructuredAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ReactToStructuredAgent {
-        node [shape=record];
-        "ReactToStructuredAgent" [label="ReactToStructuredAgent"];
-        "haive.agents.base.agent.Agent" -> "ReactToStructuredAgent";
-      }
-
-.. autoclass:: agents.patterns.react_structured_agent_variants.ReactToStructuredAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ReflectiveStructuredAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ReflectiveStructuredAgent {
-        node [shape=record];
-        "ReflectiveStructuredAgent" [label="ReflectiveStructuredAgent"];
-        "haive.agents.base.agent.Agent" -> "ReflectiveStructuredAgent";
-      }
-
-.. autoclass:: agents.patterns.react_structured_agent_variants.ReflectiveStructuredAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for StructuredSolution:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_StructuredSolution {
-        node [shape=record];
-        "StructuredSolution" [label="StructuredSolution"];
-        "pydantic.BaseModel" -> "StructuredSolution";
-      }
-
-.. autopydantic_model:: agents.patterns.react_structured_agent_variants.StructuredSolution
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
-
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ToolEnhancedStructuredAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ToolEnhancedStructuredAgent {
-        node [shape=record];
-        "ToolEnhancedStructuredAgent" [label="ToolEnhancedStructuredAgent"];
-        "ReactToStructuredAgent" -> "ToolEnhancedStructuredAgent";
-      }
-
-.. autoclass:: agents.patterns.react_structured_agent_variants.ToolEnhancedStructuredAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
 Functions
 ---------
 
@@ -191,6 +47,305 @@ Functions
    agents.patterns.react_structured_agent_variants.example_basic_react_structured
    agents.patterns.react_structured_agent_variants.example_multi_stage
    agents.patterns.react_structured_agent_variants.example_reflective
+
+
+Module Contents
+---------------
+
+.. py:class:: AnalysisResult(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Structured analysis from reasoning.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: AnalysisResult
+      :collapse:
+
+   .. py:attribute:: analysis_approach
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: confidence
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: findings
+      :type:  dict[str, Any]
+      :value: None
+
+
+
+   .. py:attribute:: key_factors
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: problem_statement
+      :type:  str
+      :value: None
+
+
+
+.. py:class:: MultiStageReasoningAgent
+
+   Bases: :py:obj:`haive.agents.base.agent.Agent`
+
+
+   Multi-stage reasoning with structured outputs at each stage.
+
+   This pattern chains multiple reasoning stages, each producing
+   structured outputs that feed into the next stage.
+
+
+   .. autolink-examples:: MultiStageReasoningAgent
+      :collapse:
+
+   .. py:method:: _create_validator_tool()
+
+      Create validation tool.
+
+
+      .. autolink-examples:: _create_validator_tool
+         :collapse:
+
+
+   .. py:method:: build_graph() -> haive.core.graph.state_graph.base_graph2.BaseGraph
+
+      Build multi-stage graph.
+
+
+      .. autolink-examples:: build_graph
+         :collapse:
+
+
+   .. py:method:: setup_agent() -> None
+
+      Setup multi-stage reasoning pipeline.
+
+
+      .. autolink-examples:: setup_agent
+         :collapse:
+
+
+   .. py:attribute:: stages
+      :type:  list[dict[str, Any]]
+      :value: None
+
+
+
+.. py:class:: ReactToStructuredAgent
+
+   Bases: :py:obj:`haive.agents.base.agent.Agent`
+
+
+   React → Structured output agent pattern.
+
+   This agent combines ReactAgent for reasoning with SimpleAgentV3 for
+   structured output generation, following the base Agent pattern.
+
+   .. rubric:: Example
+
+   >>> agent = ReactToStructuredAgent(
+   ...     name="analyzer",
+   ...     tools=[calculator, search_tool],
+   ...     output_model=AnalysisResult,
+   ...     debug=True
+   ... )
+   >>> result = await agent.arun("Analyze market trends")
+
+
+   .. autolink-examples:: ReactToStructuredAgent
+      :collapse:
+
+   .. py:method:: build_graph() -> haive.core.graph.state_graph.base_graph2.BaseGraph
+
+      Build React → Structured graph.
+
+
+      .. autolink-examples:: build_graph
+         :collapse:
+
+
+   .. py:method:: setup_agent() -> None
+
+      Setup React and Simple agents.
+
+
+      .. autolink-examples:: setup_agent
+         :collapse:
+
+
+   .. py:attribute:: output_model
+      :type:  type[pydantic.BaseModel]
+      :value: None
+
+
+
+   .. py:attribute:: react_agent
+      :type:  haive.agents.react.agent.ReactAgent
+      :value: None
+
+
+
+   .. py:attribute:: reasoning_temperature
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: structure_agent
+      :type:  SimpleAgentV3
+      :value: None
+
+
+
+   .. py:attribute:: structuring_temperature
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: tools
+      :type:  list[Any]
+      :value: None
+
+
+
+.. py:class:: ReflectiveStructuredAgent
+
+   Bases: :py:obj:`haive.agents.base.agent.Agent`
+
+
+   React → Structured → Reflection pattern.
+
+   This adds a reflection stage that reviews and improves the
+   structured output before final delivery.
+
+
+   .. autolink-examples:: ReflectiveStructuredAgent
+      :collapse:
+
+   .. py:method:: build_graph() -> haive.core.graph.state_graph.base_graph2.BaseGraph
+
+      Build graph with optional reflection.
+
+
+      .. autolink-examples:: build_graph
+         :collapse:
+
+
+   .. py:method:: setup_agent() -> None
+
+      Setup reasoning, structuring, and reflection agents.
+
+
+      .. autolink-examples:: setup_agent
+         :collapse:
+
+
+   .. py:attribute:: include_reflection
+      :type:  bool
+      :value: None
+
+
+
+   .. py:attribute:: output_model
+      :type:  type[pydantic.BaseModel]
+      :value: None
+
+
+
+.. py:class:: StructuredSolution(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Structured solution output.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: StructuredSolution
+      :collapse:
+
+   .. py:attribute:: implementation_steps
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: requirements
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: risks
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: solution_summary
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: success_metrics
+      :type:  list[str]
+      :value: None
+
+
+
+.. py:class:: ToolEnhancedStructuredAgent
+
+   Bases: :py:obj:`ReactToStructuredAgent`
+
+
+   Enhanced React → Structured agent with specialized tools.
+
+   This variant adds domain-specific tools for enhanced reasoning.
+
+
+   .. autolink-examples:: ToolEnhancedStructuredAgent
+      :collapse:
+
+   .. py:method:: setup_agent() -> None
+
+      Setup with enhanced tools.
+
+
+      .. autolink-examples:: setup_agent
+         :collapse:
+
 
 .. py:function:: create_multi_stage_reasoning_agent(name: str = 'multi_stage', stages: list[dict[str, Any]] | None = None, debug: bool = True) -> MultiStageReasoningAgent
 
@@ -254,11 +409,3 @@ Functions
    .. autolink-examples:: example_reflective
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.patterns.react_structured_agent_variants
-   :collapse:
-   
-.. autolink-skip:: next

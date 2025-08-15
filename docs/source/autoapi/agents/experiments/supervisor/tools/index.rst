@@ -1,17 +1,19 @@
-
-:py:mod:`agents.experiments.supervisor.tools`
-=============================================
+agents.experiments.supervisor.tools
+===================================
 
 .. py:module:: agents.experiments.supervisor.tools
 
-Tools for supervisor agents.
+.. autoapi-nested-parse::
 
-This module provides the tools that supervisor agents can use to manage
-other agents, delegate tasks, and coordinate multi-agent workflows.
+   Tools for supervisor agents.
+
+   This module provides the tools that supervisor agents can use to manage
+   other agents, delegate tasks, and coordinate multi-agent workflows.
 
 
-.. autolink-examples:: agents.experiments.supervisor.tools
-   :collapse:
+   .. autolink-examples:: agents.experiments.supervisor.tools
+      :collapse:
+
 
 Classes
 -------
@@ -21,97 +23,6 @@ Classes
    agents.experiments.supervisor.tools.AgentCreationInput
    agents.experiments.supervisor.tools.AgentHandoffInput
    agents.experiments.supervisor.tools.ListAgentsInput
-
-
-Module Contents
----------------
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for AgentCreationInput:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_AgentCreationInput {
-        node [shape=record];
-        "AgentCreationInput" [label="AgentCreationInput"];
-        "pydantic.BaseModel" -> "AgentCreationInput";
-      }
-
-.. autopydantic_model:: agents.experiments.supervisor.tools.AgentCreationInput
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
-
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for AgentHandoffInput:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_AgentHandoffInput {
-        node [shape=record];
-        "AgentHandoffInput" [label="AgentHandoffInput"];
-        "pydantic.BaseModel" -> "AgentHandoffInput";
-      }
-
-.. autopydantic_model:: agents.experiments.supervisor.tools.AgentHandoffInput
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
-
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ListAgentsInput:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ListAgentsInput {
-        node [shape=record];
-        "ListAgentsInput" [label="ListAgentsInput"];
-        "pydantic.BaseModel" -> "ListAgentsInput";
-      }
-
-.. autopydantic_model:: agents.experiments.supervisor.tools.ListAgentsInput
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
-
 
 
 Functions
@@ -125,6 +36,130 @@ Functions
    agents.experiments.supervisor.tools.create_list_agents_tool
    agents.experiments.supervisor.tools.create_supervisor_handoff_tool
    agents.experiments.supervisor.tools.sync_tools_with_state
+
+
+Module Contents
+---------------
+
+.. py:class:: AgentCreationInput(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Input model for agent creation tool.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: AgentCreationInput
+      :collapse:
+
+   .. py:attribute:: agent_type
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: config
+      :type:  dict[str, Any] | None
+      :value: None
+
+
+
+   .. py:attribute:: description
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: name
+      :type:  str
+      :value: None
+
+
+
+.. py:class:: AgentHandoffInput(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Input model for agent handoff tool.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: AgentHandoffInput
+      :collapse:
+
+   .. py:attribute:: agent_name
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: context
+      :type:  dict[str, Any] | None
+      :value: None
+
+
+
+   .. py:attribute:: task
+      :type:  str
+      :value: None
+
+
+
+.. py:class:: ListAgentsInput(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Input model for listing agents.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: ListAgentsInput
+      :collapse:
+
+   .. py:attribute:: filter_by_type
+      :type:  str | None
+      :value: None
+
+
+
+   .. py:attribute:: include_inactive
+      :type:  bool
+      :value: None
+
+
 
 .. py:function:: build_supervisor_tools(supervisor) -> list[langchain_core.tools.Tool]
 
@@ -199,11 +234,3 @@ Functions
    .. autolink-examples:: sync_tools_with_state
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.experiments.supervisor.tools
-   :collapse:
-   
-.. autolink-skip:: next

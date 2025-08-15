@@ -1,21 +1,33 @@
-
-:py:mod:`agents.memory_reorganized.integrations.langmem_schemas`
-================================================================
+agents.memory_reorganized.integrations.langmem_schemas
+======================================================
 
 .. py:module:: agents.memory_reorganized.integrations.langmem_schemas
 
-Memory_Schemas schema module.
+.. autoapi-nested-parse::
 
-This module provides memory schemas functionality for the Haive framework.
+   Memory_Schemas schema module.
 
-Classes:
-    Memory: Memory implementation.
-    UserPreference: UserPreference implementation.
-    FactualMemory: FactualMemory implementation.
+   This module provides memory schemas functionality for the Haive framework.
+
+   Classes:
+       Memory: Memory implementation.
+       UserPreference: UserPreference implementation.
+       FactualMemory: FactualMemory implementation.
 
 
-.. autolink-examples:: agents.memory_reorganized.integrations.langmem_schemas
-   :collapse:
+   .. autolink-examples:: agents.memory_reorganized.integrations.langmem_schemas
+      :collapse:
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.memory_reorganized.integrations.langmem_schemas.DEFAULT_MEMORY_SCHEMAS
+   agents.memory_reorganized.integrations.langmem_schemas.EXTENDED_MEMORY_SCHEMAS
+   agents.memory_reorganized.integrations.langmem_schemas.MINIMAL_MEMORY_SCHEMAS
+
 
 Classes
 -------
@@ -32,157 +44,221 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: ConversationalMemory(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   General conversational memory.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: ConversationalMemory
+      :collapse:
+
+   .. py:attribute:: action_items
+      :type:  list[str]
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ConversationalMemory:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ConversationalMemory {
-        node [shape=record];
-        "ConversationalMemory" [label="ConversationalMemory"];
-        "pydantic.BaseModel" -> "ConversationalMemory";
-      }
-
-.. autopydantic_model:: agents.memory_reorganized.integrations.langmem_schemas.ConversationalMemory
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: content
+      :type:  str
+      :value: None
 
 
 
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for FactualMemory:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_FactualMemory {
-        node [shape=record];
-        "FactualMemory" [label="FactualMemory"];
-        "pydantic.BaseModel" -> "FactualMemory";
-      }
-
-.. autopydantic_model:: agents.memory_reorganized.integrations.langmem_schemas.FactualMemory
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: emotional_tone
+      :type:  str | None
+      :value: None
 
 
 
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for Memory:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_Memory {
-        node [shape=record];
-        "Memory" [label="Memory"];
-        "pydantic.BaseModel" -> "Memory";
-      }
-
-.. autopydantic_model:: agents.memory_reorganized.integrations.langmem_schemas.Memory
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: topic
+      :type:  str
+      :value: None
 
 
 
+.. py:class:: FactualMemory(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
 
 
-.. toggle:: Show Inheritance Diagram
+   Factual information memory.
 
-   Inheritance diagram for PersonalContext:
+   Create a new model by parsing and validating input data from keyword arguments.
 
-   .. graphviz::
-      :align: center
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
 
-      digraph inheritance_PersonalContext {
-        node [shape=record];
-        "PersonalContext" [label="PersonalContext"];
-        "pydantic.BaseModel" -> "PersonalContext";
-      }
-
-.. autopydantic_model:: agents.memory_reorganized.integrations.langmem_schemas.PersonalContext
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   `self` is explicitly positional-only to allow `self` as a field name.
 
 
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: FactualMemory
+      :collapse:
+
+   .. py:attribute:: domain
+      :type:  str
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for UserPreference:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_UserPreference {
-        node [shape=record];
-        "UserPreference" [label="UserPreference"];
-        "pydantic.BaseModel" -> "UserPreference";
-      }
-
-.. autopydantic_model:: agents.memory_reorganized.integrations.langmem_schemas.UserPreference
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: fact
+      :type:  str
+      :value: None
 
 
 
+   .. py:attribute:: source
+      :type:  str | None
+      :value: None
 
 
-.. rubric:: Related Links
 
-.. autolink-examples:: agents.memory_reorganized.integrations.langmem_schemas
-   :collapse:
-   
-.. autolink-skip:: next
+   .. py:attribute:: verification_level
+      :type:  str
+      :value: None
+
+
+
+.. py:class:: Memory(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Basic memory schema following LangMem patterns.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: Memory
+      :collapse:
+
+   .. py:attribute:: content
+      :type:  str
+      :value: None
+
+
+
+.. py:class:: PersonalContext(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Personal context and relationship memory.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: PersonalContext
+      :collapse:
+
+   .. py:attribute:: context
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: importance
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: person
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: relationship
+      :type:  str
+      :value: None
+
+
+
+.. py:class:: UserPreference(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   User preference memory.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: UserPreference
+      :collapse:
+
+   .. py:attribute:: category
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: confidence
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: context
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: preference
+      :type:  str
+      :value: None
+
+
+
+.. py:data:: DEFAULT_MEMORY_SCHEMAS
+
+.. py:data:: EXTENDED_MEMORY_SCHEMAS
+
+.. py:data:: MINIMAL_MEMORY_SCHEMAS
+

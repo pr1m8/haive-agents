@@ -1,17 +1,41 @@
-
-:py:mod:`agents.document_modifiers.summarizer`
-==============================================
+agents.document_modifiers.summarizer
+====================================
 
 .. py:module:: agents.document_modifiers.summarizer
 
-Summarizer document modifiers.
+.. autoapi-nested-parse::
 
-This module provides tools for summarizing documents using various strategies.
+   Summarizer document modifiers.
 
-
-.. autolink-examples:: agents.document_modifiers.summarizer
-   :collapse:
+   This module provides tools for summarizing documents using various strategies.
 
 
+   .. autolink-examples:: agents.document_modifiers.summarizer
+      :collapse:
+
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/agents/document_modifiers/summarizer/iterative_refinement/index
+   /autoapi/agents/document_modifiers/summarizer/map_branch/index
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.document_modifiers.summarizer.IterativeSummarizer
+
+
+Package Contents
+----------------
+
+.. py:data:: IterativeSummarizer
+   :value: None
 
 

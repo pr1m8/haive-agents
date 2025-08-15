@@ -1,19 +1,21 @@
-
-:py:mod:`agents.memory_reorganized.base.state`
-==============================================
+agents.memory_reorganized.base.state
+====================================
 
 .. py:module:: agents.memory_reorganized.base.state
 
-State core module.
+.. autoapi-nested-parse::
 
-This module provides state functionality for the Haive framework.
+   State core module.
 
-Classes:
-    MemoryAgentState: MemoryAgentState implementation.
+   This module provides state functionality for the Haive framework.
+
+   Classes:
+       MemoryAgentState: MemoryAgentState implementation.
 
 
-.. autolink-examples:: agents.memory_reorganized.base.state
-   :collapse:
+   .. autolink-examples:: agents.memory_reorganized.base.state
+      :collapse:
+
 
 Classes
 -------
@@ -26,33 +28,49 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: MemoryAgentState
+
+   Bases: :py:obj:`agents.react.react.state.ReactAgentState`
+
+
+   State for Memory Agent, extending ReactAgentState.
+
+   Adds fields for storing and retrieving memories.
+
+
+   .. autolink-examples:: MemoryAgentState
+      :collapse:
+
+   .. py:attribute:: extracted_memories
+      :type:  list[agents.react.memory.models.MemoryItem | agents.react.memory.models.KnowledgeTriple]
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for MemoryAgentState:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_MemoryAgentState {
-        node [shape=record];
-        "MemoryAgentState" [label="MemoryAgentState"];
-        "agents.react.react.state.ReactAgentState" -> "MemoryAgentState";
-      }
-
-.. autoclass:: agents.memory_reorganized.base.state.MemoryAgentState
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. py:attribute:: memory_type
+      :type:  str
+      :value: None
 
 
 
+   .. py:attribute:: model_config
 
-.. rubric:: Related Links
 
-.. autolink-examples:: agents.memory_reorganized.base.state
-   :collapse:
-   
-.. autolink-skip:: next
+   .. py:attribute:: recall_memories
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: should_save_memories
+      :type:  bool
+      :value: None
+
+
+
+   .. py:attribute:: user_id
+      :type:  str | None
+      :value: None
+
+
+

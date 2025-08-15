@@ -1,9 +1,7 @@
-
-:py:mod:`agents.rag.self_rag2.nodes.grade_generation_v_documents_and_question`
-==============================================================================
+agents.rag.self_rag2.nodes.grade_generation_v_documents_and_question
+====================================================================
 
 .. py:module:: agents.rag.self_rag2.nodes.grade_generation_v_documents_and_question
-
 
 
 Functions
@@ -12,6 +10,10 @@ Functions
 .. autoapisummary::
 
    agents.rag.self_rag2.nodes.grade_generation_v_documents_and_question.grade_generation_v_documents_and_question
+
+
+Module Contents
+---------------
 
 .. py:function:: grade_generation_v_documents_and_question(state: dict[str, Any])
 
@@ -27,11 +29,3 @@ Functions
    .. autolink-examples:: grade_generation_v_documents_and_question
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.rag.self_rag2.nodes.grade_generation_v_documents_and_question
-   :collapse:
-   
-.. autolink-skip:: next

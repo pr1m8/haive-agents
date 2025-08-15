@@ -1,15 +1,23 @@
-
-:py:mod:`agents.document_loader.directory`
-==========================================
+agents.document_loader.directory
+================================
 
 .. py:module:: agents.document_loader.directory
 
-Module exports.
+.. autoapi-nested-parse::
+
+   Module exports.
 
 
-.. autolink-examples:: agents.document_loader.directory
-   :collapse:
+   .. autolink-examples:: agents.document_loader.directory
+      :collapse:
 
 
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/agents/document_loader/directory/agent/index
 
 

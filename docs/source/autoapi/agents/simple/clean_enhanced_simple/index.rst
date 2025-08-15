@@ -1,16 +1,35 @@
-
-:py:mod:`agents.simple.clean_enhanced_simple`
-=============================================
+agents.simple.clean_enhanced_simple
+===================================
 
 .. py:module:: agents.simple.clean_enhanced_simple
 
-Clean Enhanced SimpleAgent - SimpleAgent as Agent[AugLLMConfig].
+.. autoapi-nested-parse::
 
-This is the cleanest implementation showing SimpleAgent is just Agent[AugLLMConfig].
+   Clean Enhanced SimpleAgent - SimpleAgent as Agent[AugLLMConfig].
+
+   This is the cleanest implementation showing SimpleAgent is just Agent[AugLLMConfig].
 
 
-.. autolink-examples:: agents.simple.clean_enhanced_simple
-   :collapse:
+   .. autolink-examples:: agents.simple.clean_enhanced_simple
+      :collapse:
+
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/agents/simple/clean_enhanced_simple/v2/index
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.simple.clean_enhanced_simple.logger
+
 
 Classes
 -------
@@ -23,33 +42,77 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: SimpleAgent
+
+   Bases: :py:obj:`haive.agents.base.agent.Agent`\ [\ :py:obj:`haive.core.engine.aug_llm.AugLLMConfig`\ ]
+
+
+   SimpleAgent is just Agent[AugLLMConfig].
+
+   This is the entire implementation - SimpleAgent is nothing more than
+   an Agent with its engine type locked to AugLLMConfig. Everything else
+   comes from the enhanced base Agent class.
+
+   This demonstrates the power of engine-focused generics:
+   - SimpleAgent = Agent[AugLLMConfig]
+   - ReactAgent = Agent[AugLLMConfig] + looping
+   - RAGAgent = Agent[RetrieverEngine]
+   - etc.
+
+
+   .. autolink-examples:: SimpleAgent
+      :collapse:
+
+   .. py:method:: _has_tool_calls(state: dict[str, Any]) -> bool
+
+      Check if last message has tool calls.
+
+
+      .. autolink-examples:: _has_tool_calls
+         :collapse:
+
+
+   .. py:method:: build_graph() -> haive.core.graph.state_graph.base_graph2.BaseGraph
+
+      Build simple graph: START -> agent -> (tools?) -> END.
+
+
+      .. autolink-examples:: build_graph
+         :collapse:
+
+
+   .. py:method:: setup_agent() -> None
+
+      Setup by ensuring we have AugLLMConfig and syncing fields.
+
+
+      .. autolink-examples:: setup_agent
+         :collapse:
+
+
+   .. py:attribute:: max_tokens
+      :type:  int | None
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for SimpleAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_SimpleAgent {
-        node [shape=record];
-        "SimpleAgent" [label="SimpleAgent"];
-        "haive.agents.base.agent.Agent[haive.core.engine.aug_llm.AugLLMConfig]" -> "SimpleAgent";
-      }
-
-.. autoclass:: agents.simple.clean_enhanced_simple.SimpleAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. py:attribute:: system_message
+      :type:  str | None
+      :value: None
 
 
 
+   .. py:attribute:: temperature
+      :type:  float
+      :value: None
 
-.. rubric:: Related Links
 
-.. autolink-examples:: agents.simple.clean_enhanced_simple
-   :collapse:
-   
-.. autolink-skip:: next
+
+   .. py:attribute:: tools
+      :type:  list[Any]
+      :value: None
+
+
+
+.. py:data:: logger
+

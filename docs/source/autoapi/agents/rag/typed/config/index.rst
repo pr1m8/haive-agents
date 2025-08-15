@@ -1,6 +1,5 @@
-
-:py:mod:`agents.rag.typed.config`
-=================================
+agents.rag.typed.config
+=======================
 
 .. py:module:: agents.rag.typed.config
 
@@ -16,33 +15,38 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: TypedRAGConfig
+
+   Bases: :py:obj:`haive.agents.rag.base.config.BaseRAGConfig`
+
+
+   Configuration for Typed-RAG with specialized handlers.
+
+
+   .. autolink-examples:: TypedRAGConfig
+      :collapse:
+
+   .. py:attribute:: enable_subqueries
+      :type:  bool
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for TypedRAGConfig:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_TypedRAGConfig {
-        node [shape=record];
-        "TypedRAGConfig" [label="TypedRAGConfig"];
-        "haive.agents.rag.base.config.BaseRAGConfig" -> "TypedRAGConfig";
-      }
-
-.. autoclass:: agents.rag.typed.config.TypedRAGConfig
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. py:attribute:: query_classifier_config
+      :type:  haive.core.engine.aug_llm.AugLLMConfig
+      :value: None
 
 
 
+   .. py:attribute:: retriever_mapping
+      :type:  dict[str, Any]
+      :value: None
 
-.. rubric:: Related Links
 
-.. autolink-examples:: agents.rag.typed.config
-   :collapse:
-   
-.. autolink-skip:: next
+
+   .. py:attribute:: type_handlers
+      :type:  dict[str, haive.core.engine.aug_llm.AugLLMConfig]
+      :value: None
+
+
+

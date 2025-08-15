@@ -1,9 +1,15 @@
-
-:py:mod:`agents.reasoning_and_critique.tot.modular.example`
-===========================================================
+agents.reasoning_and_critique.tot.modular.example
+=================================================
 
 .. py:module:: agents.reasoning_and_critique.tot.modular.example
 
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.reasoning_and_critique.tot.modular.example.parser
 
 
 Functions
@@ -15,6 +21,10 @@ Functions
    agents.reasoning_and_critique.tot.modular.example.run_game24_example
    agents.reasoning_and_critique.tot.modular.example.run_math_example
    agents.reasoning_and_critique.tot.modular.example.run_tot_example
+
+
+Module Contents
+---------------
 
 .. py:function:: print_state(state: dict[str, Any], detailed: bool = False) -> None
 
@@ -48,11 +58,5 @@ Functions
    .. autolink-examples:: run_tot_example
       :collapse:
 
+.. py:data:: parser
 
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.reasoning_and_critique.tot.modular.example
-   :collapse:
-   
-.. autolink-skip:: next

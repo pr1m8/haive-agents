@@ -1,8 +1,15 @@
-
-:py:mod:`agents.reasoning_and_critique.mcts.agent`
-==================================================
+agents.reasoning_and_critique.mcts.agent
+========================================
 
 .. py:module:: agents.reasoning_and_critique.mcts.agent
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.reasoning_and_critique.mcts.agent.logger
 
 
 Classes
@@ -16,33 +23,64 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: MCTSAgent
+
+   Bases: :py:obj:`haive.agents.base.agent.Agent`
 
 
+   Monte Carlo Tree Search Agent implementation.
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for MCTSAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_MCTSAgent {
-        node [shape=record];
-        "MCTSAgent" [label="MCTSAgent"];
-        "haive.agents.base.agent.Agent" -> "MCTSAgent";
-      }
-
-.. autoclass:: agents.reasoning_and_critique.mcts.agent.MCTSAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   This agent uses a Monte Carlo Tree Search approach to iteratively explore
+   and find the best solution path.
 
 
+   .. autolink-examples:: MCTSAgent
+      :collapse:
+
+   .. py:method:: _expand(state: haive.agents.reasoning_and_critique.mcts.state.TreeState, config: langchain_core.runnables.RunnableConfig) -> dict[str, Any]
+
+      Expand the search tree by generating new candidates from the best node.
 
 
-.. rubric:: Related Links
+      .. autolink-examples:: _expand
+         :collapse:
 
-.. autolink-examples:: agents.reasoning_and_critique.mcts.agent
-   :collapse:
-   
-.. autolink-skip:: next
+
+   .. py:method:: _generate_initial_response(state: haive.agents.reasoning_and_critique.mcts.state.TreeState) -> dict[str, Any]
+
+      Generate the initial candidate response.
+
+
+      .. autolink-examples:: _generate_initial_response
+         :collapse:
+
+
+   .. py:method:: _setup_chains()
+
+      Set up the chains used by the agent.
+
+
+      .. autolink-examples:: _setup_chains
+         :collapse:
+
+
+   .. py:method:: _should_continue(state: haive.agents.reasoning_and_critique.mcts.state.TreeState) -> str
+
+      Determine whether to continue the tree search or exit.
+
+
+      .. autolink-examples:: _should_continue
+         :collapse:
+
+
+   .. py:method:: setup_workflow() -> None
+
+      Set up the workflow graph for the MCTS agent.
+
+
+      .. autolink-examples:: setup_workflow
+         :collapse:
+
+
+.. py:data:: logger
+

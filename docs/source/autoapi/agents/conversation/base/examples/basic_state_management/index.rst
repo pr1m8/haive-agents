@@ -1,18 +1,19 @@
-
-:py:mod:`agents.conversation.base.examples.basic_state_management`
-==================================================================
+agents.conversation.base.examples.basic_state_management
+========================================================
 
 .. py:module:: agents.conversation.base.examples.basic_state_management
 
-Basic State Management Example for Base Conversation Agents.
+.. autoapi-nested-parse::
 
-This example demonstrates the core state management capabilities of the base
-conversation system, including automatic tracking, computed properties, and
-reducer-based state updates.
+   Basic State Management Example for Base Conversation Agents.
+
+   This example demonstrates the core state management capabilities of the base
+   conversation system, including automatic tracking, computed properties, and
+   reducer-based state updates.
 
 
-.. autolink-examples:: agents.conversation.base.examples.basic_state_management
-   :collapse:
+   .. autolink-examples:: agents.conversation.base.examples.basic_state_management
+      :collapse:
 
 
 Functions
@@ -30,6 +31,10 @@ Functions
    agents.conversation.base.examples.basic_state_management.get_conversation_progress
    agents.conversation.base.examples.basic_state_management.main
    agents.conversation.base.examples.basic_state_management.validate_conversation_participants
+
+
+Module Contents
+---------------
 
 .. py:function:: create_conversation_state(participants, topic, max_rounds=10)
 
@@ -113,11 +118,3 @@ Functions
    .. autolink-examples:: validate_conversation_participants
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.conversation.base.examples.basic_state_management
-   :collapse:
-   
-.. autolink-skip:: next

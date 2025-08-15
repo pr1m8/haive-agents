@@ -1,34 +1,43 @@
-
-:py:mod:`agents.document_modifiers.tnt.utils`
-=============================================
+agents.document_modifiers.tnt.utils
+===================================
 
 .. py:module:: agents.document_modifiers.tnt.utils
 
-Utility functions for taxonomy generation and document processing.
+.. autoapi-nested-parse::
 
-This module provides utility functions for parsing, formatting, and managing
-taxonomy-related data structures. It includes functions for handling XML-formatted
-outputs, document summaries, and taxonomy clusters.
+   Utility functions for taxonomy generation and document processing.
 
-.. note::
+   This module provides utility functions for parsing, formatting, and managing
+   taxonomy-related data structures. It includes functions for handling XML-formatted
+   outputs, document summaries, and taxonomy clusters.
 
-   All XML parsing functions assume well-formed XML input with specific expected tags.
-   Malformed XML may raise parsing errors.
+   .. note::
 
-.. rubric:: Example
+      All XML parsing functions assume well-formed XML input with specific expected tags.
+      Malformed XML may raise parsing errors.
 
-Basic usage for taxonomy parsing::
+   .. rubric:: Example
 
-    xml_output = '''
-        <id>1</id>
-        <name>Category A</name>
-        <description>Description text</description>
-    '''
-    taxonomy = parse_taxonomy(xml_output)
+   Basic usage for taxonomy parsing::
+
+       xml_output = '''
+           <id>1</id>
+           <name>Category A</name>
+           <description>Description text</description>
+       '''
+       taxonomy = parse_taxonomy(xml_output)
 
 
-.. autolink-examples:: agents.document_modifiers.tnt.utils
-   :collapse:
+   .. autolink-examples:: agents.document_modifiers.tnt.utils
+      :collapse:
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.document_modifiers.tnt.utils.logger
 
 
 Functions
@@ -44,6 +53,10 @@ Functions
    agents.document_modifiers.tnt.utils.parse_summary
    agents.document_modifiers.tnt.utils.parse_taxonomy
    agents.document_modifiers.tnt.utils.reduce_summaries
+
+
+Module Contents
+---------------
 
 .. py:function:: format_docs(docs: list[langchain_core.documents.Document]) -> str
 
@@ -268,11 +281,5 @@ Functions
    .. autolink-examples:: reduce_summaries
       :collapse:
 
+.. py:data:: logger
 
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.document_modifiers.tnt.utils
-   :collapse:
-   
-.. autolink-skip:: next

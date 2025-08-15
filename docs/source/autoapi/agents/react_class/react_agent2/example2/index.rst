@@ -1,9 +1,15 @@
-
-:py:mod:`agents.react_class.react_agent2.example2`
-==================================================
+agents.react_class.react_agent2.example2
+========================================
 
 .. py:module:: agents.react_class.react_agent2.example2
 
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.react_class.react_agent2.example2.logger
 
 
 Functions
@@ -18,6 +24,10 @@ Functions
    agents.react_class.react_agent2.example2.interactive_chat
    agents.react_class.react_agent2.example2.print_latest_message
    agents.react_class.react_agent2.example2.run_examples
+
+
+Module Contents
+---------------
 
 .. py:function:: example_basic_react_agent() -> Any
 
@@ -75,11 +85,5 @@ Functions
    .. autolink-examples:: run_examples
       :collapse:
 
+.. py:data:: logger
 
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.react_class.react_agent2.example2
-   :collapse:
-   
-.. autolink-skip:: next

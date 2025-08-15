@@ -1,14 +1,24 @@
-
-:py:mod:`agents.planning.llm_compiler_v3.prompts`
-=================================================
+agents.planning.llm_compiler_v3.prompts
+=======================================
 
 .. py:module:: agents.planning.llm_compiler_v3.prompts
 
-Prompt templates for LLM Compiler V3 Agent.
+.. autoapi-nested-parse::
+
+   Prompt templates for LLM Compiler V3 Agent.
 
 
-.. autolink-examples:: agents.planning.llm_compiler_v3.prompts
-   :collapse:
+   .. autolink-examples:: agents.planning.llm_compiler_v3.prompts
+      :collapse:
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.planning.llm_compiler_v3.prompts.EXECUTION_SCENARIO_PROMPTS
+   agents.planning.llm_compiler_v3.prompts.LLM_COMPILER_V3_PROMPTS
 
 
 Functions
@@ -20,6 +30,10 @@ Functions
    agents.planning.llm_compiler_v3.prompts.get_joiner_prompt
    agents.planning.llm_compiler_v3.prompts.get_planner_prompt
    agents.planning.llm_compiler_v3.prompts.get_task_fetcher_prompt
+
+
+Module Contents
+---------------
 
 .. py:function:: get_executor_prompt(current_task: dict, tool_name: str, resolved_arguments: dict, available_tools: list) -> str
 
@@ -53,11 +67,7 @@ Functions
    .. autolink-examples:: get_task_fetcher_prompt
       :collapse:
 
+.. py:data:: EXECUTION_SCENARIO_PROMPTS
 
+.. py:data:: LLM_COMPILER_V3_PROMPTS
 
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.planning.llm_compiler_v3.prompts
-   :collapse:
-   
-.. autolink-skip:: next

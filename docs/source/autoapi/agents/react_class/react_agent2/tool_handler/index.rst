@@ -1,9 +1,7 @@
-
-:py:mod:`agents.react_class.react_agent2.tool_handler`
-======================================================
+agents.react_class.react_agent2.tool_handler
+============================================
 
 .. py:module:: agents.react_class.react_agent2.tool_handler
-
 
 
 Functions
@@ -13,6 +11,10 @@ Functions
 
    agents.react_class.react_agent2.tool_handler.normalize_tool_message
    agents.react_class.react_agent2.tool_handler.process_messages
+
+
+Module Contents
+---------------
 
 .. py:function:: normalize_tool_message(message: dict[str, Any]) -> dict[str, Any]
 
@@ -38,11 +40,3 @@ Functions
    .. autolink-examples:: process_messages
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.react_class.react_agent2.tool_handler
-   :collapse:
-   
-.. autolink-skip:: next

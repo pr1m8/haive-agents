@@ -1,16 +1,17 @@
-
-:py:mod:`agents.rag.agentic.document_grader`
-============================================
+agents.rag.agentic.document_grader
+==================================
 
 .. py:module:: agents.rag.agentic.document_grader
 
-Document Grading Agent for Agentic RAG.
+.. autoapi-nested-parse::
 
-This agent evaluates retrieved documents for relevance using existing models from common.
+   Document Grading Agent for Agentic RAG.
+
+   This agent evaluates retrieved documents for relevance using existing models from common.
 
 
-.. autolink-examples:: agents.rag.agentic.document_grader
-   :collapse:
+   .. autolink-examples:: agents.rag.agentic.document_grader
+      :collapse:
 
 
 Functions
@@ -20,6 +21,10 @@ Functions
 
    agents.rag.agentic.document_grader.create_document_grader_agent
    agents.rag.agentic.document_grader.grade_documents
+
+
+Module Contents
+---------------
 
 .. py:function:: create_document_grader_agent(name: str = 'document_grader', temperature: float = 0.0, **kwargs) -> haive.agents.simple.SimpleAgent
 
@@ -75,11 +80,3 @@ Functions
    .. autolink-examples:: grade_documents
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.rag.agentic.document_grader
-   :collapse:
-   
-.. autolink-skip:: next

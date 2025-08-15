@@ -1,15 +1,24 @@
-
-:py:mod:`agents.supervisor.core`
-================================
+agents.supervisor.core
+======================
 
 .. py:module:: agents.supervisor.core
 
-Core supervisor implementations.
+.. autoapi-nested-parse::
+
+   Core supervisor implementations.
 
 
-.. autolink-examples:: agents.supervisor.core
-   :collapse:
+   .. autolink-examples:: agents.supervisor.core
+      :collapse:
 
 
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/agents/supervisor/core/simple_supervisor/index
+   /autoapi/agents/supervisor/core/supervisor_agent/index
 
 

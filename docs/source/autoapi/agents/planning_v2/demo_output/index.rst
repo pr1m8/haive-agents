@@ -1,14 +1,15 @@
-
-:py:mod:`agents.planning_v2.demo_output`
-========================================
+agents.planning_v2.demo_output
+==============================
 
 .. py:module:: agents.planning_v2.demo_output
 
-Demonstrate the planner agent output structure.
+.. autoapi-nested-parse::
+
+   Demonstrate the planner agent output structure.
 
 
-.. autolink-examples:: agents.planning_v2.demo_output
-   :collapse:
+   .. autolink-examples:: agents.planning_v2.demo_output
+      :collapse:
 
 
 Functions
@@ -20,6 +21,10 @@ Functions
    agents.planning_v2.demo_output.show_agent_configuration
    agents.planning_v2.demo_output.show_example_output
    agents.planning_v2.demo_output.show_prompt_details
+
+
+Module Contents
+---------------
 
 .. py:function:: main()
 
@@ -53,11 +58,3 @@ Functions
    .. autolink-examples:: show_prompt_details
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.planning_v2.demo_output
-   :collapse:
-   
-.. autolink-skip:: next

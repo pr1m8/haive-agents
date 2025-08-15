@@ -1,18 +1,20 @@
-
-:py:mod:`agents.memory_v2.memory_state_original`
-================================================
+agents.memory_v2.memory_state_original
+======================================
 
 .. py:module:: agents.memory_v2.memory_state_original
 
-Memory state models for Memory V2 system using original Haive memory models.
+.. autoapi-nested-parse::
 
-This module integrates the proven memory models from haive.agents.memory.models
-and haive.agents.ltm.memory_schemas with our V2 enhancements for token tracking,
-graph integration, and advanced memory management.
+   Memory state models for Memory V2 system using original Haive memory models.
+
+   This module integrates the proven memory models from haive.agents.memory.models
+   and haive.agents.ltm.memory_schemas with our V2 enhancements for token tracking,
+   graph integration, and advanced memory management.
 
 
-.. autolink-examples:: agents.memory_v2.memory_state_original
-   :collapse:
+   .. autolink-examples:: agents.memory_v2.memory_state_original
+      :collapse:
+
 
 Classes
 -------
@@ -33,253 +35,667 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: EnhancedKnowledgeTriple
 
+   Bases: :py:obj:`agents.memory_v2.memory_models_standalone.KnowledgeTriple`
 
 
-.. toggle:: Show Inheritance Diagram
+   Enhanced KnowledgeTriple with V2 capabilities.
 
-   Inheritance diagram for EnhancedKnowledgeTriple:
 
-   .. graphviz::
-      :align: center
+   .. autolink-examples:: EnhancedKnowledgeTriple
+      :collapse:
 
-      digraph inheritance_EnhancedKnowledgeTriple {
-        node [shape=record];
-        "EnhancedKnowledgeTriple" [label="EnhancedKnowledgeTriple"];
-        "agents.memory_v2.memory_models_standalone.KnowledgeTriple" -> "EnhancedKnowledgeTriple";
-      }
+   .. py:attribute:: access_count
+      :type:  int
+      :value: None
 
-.. autoclass:: agents.memory_v2.memory_state_original.EnhancedKnowledgeTriple
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
 
+   .. py:attribute:: context
+      :type:  str | None
+      :value: None
 
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for EnhancedMemoryItem:
+   .. py:attribute:: created_at
+      :type:  datetime.datetime
+      :value: None
 
-   .. graphviz::
-      :align: center
 
-      digraph inheritance_EnhancedMemoryItem {
-        node [shape=record];
-        "EnhancedMemoryItem" [label="EnhancedMemoryItem"];
-        "MemoryItem" -> "EnhancedMemoryItem";
-      }
 
-.. autoclass:: agents.memory_v2.memory_state_original.EnhancedMemoryItem
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. py:attribute:: id
+      :type:  str
+      :value: None
 
 
 
+   .. py:attribute:: importance
+      :type:  agents.memory_v2.memory_models_standalone.ImportanceLevel
+      :value: None
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for ImportanceLevel:
 
-   .. graphviz::
-      :align: center
+   .. py:attribute:: last_accessed
+      :type:  datetime.datetime | None
+      :value: None
 
-      digraph inheritance_ImportanceLevel {
-        node [shape=record];
-        "ImportanceLevel" [label="ImportanceLevel"];
-        "str" -> "ImportanceLevel";
-        "enum.Enum" -> "ImportanceLevel";
-      }
 
-.. autoclass:: agents.memory_v2.memory_state_original.ImportanceLevel
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
-   .. note::
+   .. py:attribute:: supporting_evidence
+      :type:  str | None
+      :value: None
 
-      **ImportanceLevel** is an Enum defined in ``agents.memory_v2.memory_state_original``.
 
 
+.. py:class:: EnhancedMemoryItem(/, **data: Any)
 
+   Bases: :py:obj:`MemoryItem`
 
 
-.. toggle:: Show Inheritance Diagram
+   Enhanced memory item with V2 features.
 
-   Inheritance diagram for KnowledgeTriple:
+   Create a new model by parsing and validating input data from keyword arguments.
 
-   .. graphviz::
-      :align: center
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
 
-      digraph inheritance_KnowledgeTriple {
-        node [shape=record];
-        "KnowledgeTriple" [label="KnowledgeTriple"];
-        "pydantic.BaseModel" -> "KnowledgeTriple";
-      }
+   `self` is explicitly positional-only to allow `self` as a field name.
 
-.. autopydantic_model:: agents.memory_v2.memory_state_original.KnowledgeTriple
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
 
+   .. autolink-examples:: __init__
+      :collapse:
 
 
+   .. autolink-examples:: EnhancedMemoryItem
+      :collapse:
 
+   .. py:attribute:: access_count
+      :type:  int
+      :value: 0
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for MemoryItem:
 
-   .. graphviz::
-      :align: center
+   .. py:attribute:: confidence
+      :type:  float
+      :value: None
 
-      digraph inheritance_MemoryItem {
-        node [shape=record];
-        "MemoryItem" [label="MemoryItem"];
-        "pydantic.BaseModel" -> "MemoryItem";
-      }
 
-.. autopydantic_model:: agents.memory_v2.memory_state_original.MemoryItem
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
 
+   .. py:attribute:: created_at
+      :type:  datetime.datetime
+      :value: None
 
 
 
+   .. py:attribute:: embedding
+      :type:  list[float] | None
+      :value: None
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for MemoryState:
 
-   .. graphviz::
-      :align: center
+   .. py:attribute:: id
+      :type:  str
+      :value: None
 
-      digraph inheritance_MemoryState {
-        node [shape=record];
-        "MemoryState" [label="MemoryState"];
-        "pydantic.BaseModel" -> "MemoryState";
-      }
 
-.. autopydantic_model:: agents.memory_v2.memory_state_original.MemoryState
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
 
+   .. py:attribute:: importance
+      :type:  ImportanceLevel
+      :value: None
 
 
 
+   .. py:attribute:: last_accessed
+      :type:  datetime.datetime | None
+      :value: None
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for MemoryStats:
 
-   .. graphviz::
-      :align: center
+   .. py:attribute:: relevance_scores
+      :type:  dict[str, float]
+      :value: None
 
-      digraph inheritance_MemoryStats {
-        node [shape=record];
-        "MemoryStats" [label="MemoryStats"];
-        "pydantic.BaseModel" -> "MemoryStats";
-      }
 
-.. autopydantic_model:: agents.memory_v2.memory_state_original.MemoryStats
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
 
+   .. py:attribute:: source
+      :type:  str | None
+      :value: None
 
 
 
+   .. py:attribute:: tags
+      :type:  list[str]
+      :value: None
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for MemoryType:
 
-   .. graphviz::
-      :align: center
+   .. py:attribute:: user_id
+      :type:  str | None
+      :value: None
 
-      digraph inheritance_MemoryType {
-        node [shape=record];
-        "MemoryType" [label="MemoryType"];
-        "str" -> "MemoryType";
-        "enum.Enum" -> "MemoryType";
-      }
 
-.. autoclass:: agents.memory_v2.memory_state_original.MemoryType
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
-   .. note::
+   .. py:attribute:: vector_id
+      :type:  str | None
+      :value: None
 
-      **MemoryType** is an Enum defined in ``agents.memory_v2.memory_state_original``.
 
 
+.. py:class:: ImportanceLevel
 
+   Bases: :py:obj:`str`, :py:obj:`enum.Enum`
 
 
-.. toggle:: Show Inheritance Diagram
+   Importance levels for memory prioritization.
 
-   Inheritance diagram for UnifiedMemoryEntry:
+   Initialize self.  See help(type(self)) for accurate signature.
 
-   .. graphviz::
-      :align: center
 
-      digraph inheritance_UnifiedMemoryEntry {
-        node [shape=record];
-        "UnifiedMemoryEntry" [label="UnifiedMemoryEntry"];
-        "pydantic.BaseModel" -> "UnifiedMemoryEntry";
-      }
+   .. autolink-examples:: __init__
+      :collapse:
 
-.. autopydantic_model:: agents.memory_v2.memory_state_original.UnifiedMemoryEntry
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
 
+   .. autolink-examples:: ImportanceLevel
+      :collapse:
 
+   .. py:attribute:: CRITICAL
+      :value: 'critical'
 
 
 
-.. rubric:: Related Links
+   .. py:attribute:: HIGH
+      :value: 'high'
 
-.. autolink-examples:: agents.memory_v2.memory_state_original
-   :collapse:
-   
-.. autolink-skip:: next
+
+
+   .. py:attribute:: LOW
+      :value: 'low'
+
+
+
+   .. py:attribute:: MEDIUM
+      :value: 'medium'
+
+
+
+.. py:class:: KnowledgeTriple(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Knowledge graph triple.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: KnowledgeTriple
+      :collapse:
+
+   .. py:attribute:: confidence
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: metadata
+      :type:  dict[str, Any]
+      :value: None
+
+
+
+   .. py:attribute:: object
+      :type:  str
+
+
+   .. py:attribute:: predicate
+      :type:  str
+
+
+   .. py:attribute:: subject
+      :type:  str
+
+
+.. py:class:: MemoryItem(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Individual memory item.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: MemoryItem
+      :collapse:
+
+   .. py:attribute:: content
+      :type:  str
+
+
+   .. py:attribute:: importance
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: memory_type
+      :type:  MemoryType
+
+
+   .. py:attribute:: metadata
+      :type:  dict[str, Any]
+      :value: None
+
+
+
+   .. py:attribute:: timestamp
+      :type:  datetime.datetime
+      :value: None
+
+
+
+.. py:class:: MemoryState(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Memory state using original models with V2 enhancements.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: MemoryState
+      :collapse:
+
+   .. py:method:: _update_stats() -> None
+
+      Update memory statistics.
+
+
+      .. autolink-examples:: _update_stats
+         :collapse:
+
+
+   .. py:method:: add_knowledge_triple(triple: EnhancedKnowledgeTriple) -> None
+
+      Add a knowledge triple to the state.
+
+
+      .. autolink-examples:: add_knowledge_triple
+         :collapse:
+
+
+   .. py:method:: add_memory_item(memory_item: agents.memory_v2.memory_models_standalone.EnhancedMemoryItem) -> None
+
+      Add a memory item to the state.
+
+
+      .. autolink-examples:: add_memory_item
+         :collapse:
+
+
+   .. py:method:: add_schema_memory(schema_memory: pydantic.BaseModel, memory_type: MemoryType) -> None
+
+      Add memory from original schema.
+
+
+      .. autolink-examples:: add_schema_memory
+         :collapse:
+
+
+   .. py:method:: get_knowledge_triples() -> list[EnhancedKnowledgeTriple]
+
+      Get all knowledge triples.
+
+
+      .. autolink-examples:: get_knowledge_triples
+         :collapse:
+
+
+   .. py:method:: get_memories_by_type(memory_type: MemoryType) -> list[UnifiedMemoryEntry]
+
+      Get memories of specific type.
+
+
+      .. autolink-examples:: get_memories_by_type
+         :collapse:
+
+
+   .. py:method:: get_memory_items() -> list[agents.memory_v2.memory_models_standalone.EnhancedMemoryItem]
+
+      Get all memory items.
+
+
+      .. autolink-examples:: get_memory_items
+         :collapse:
+
+
+   .. py:method:: search_memories(query: str, limit: int = 10) -> list[UnifiedMemoryEntry]
+
+      Simple text-based memory search.
+
+
+      .. autolink-examples:: search_memories
+         :collapse:
+
+
+   .. py:attribute:: auto_cleanup
+      :type:  bool
+      :value: None
+
+
+
+   .. py:attribute:: max_memories
+      :type:  int
+      :value: None
+
+
+
+   .. py:attribute:: memories
+      :type:  list[UnifiedMemoryEntry]
+      :value: None
+
+
+
+   .. py:attribute:: session_id
+      :type:  str | None
+      :value: None
+
+
+
+   .. py:attribute:: stats
+      :type:  MemoryStats
+      :value: None
+
+
+
+   .. py:attribute:: supported_schemas
+      :type:  list[type]
+      :value: None
+
+
+
+   .. py:attribute:: user_id
+      :type:  str | None
+      :value: None
+
+
+
+.. py:class:: MemoryStats(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Statistics about memory usage and performance.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: MemoryStats
+      :collapse:
+
+   .. py:attribute:: average_relevance_score
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: last_update
+      :type:  datetime.datetime
+      :value: None
+
+
+
+   .. py:attribute:: memories_by_importance
+      :type:  dict[agents.memory_v2.memory_models_standalone.ImportanceLevel, int]
+      :value: None
+
+
+
+   .. py:attribute:: memories_by_type
+      :type:  dict[MemoryType, int]
+      :value: None
+
+
+
+   .. py:attribute:: processing_times
+      :type:  dict[str, float]
+      :value: None
+
+
+
+   .. py:attribute:: total_knowledge_triples
+      :type:  int
+      :value: None
+
+
+
+   .. py:attribute:: total_memories
+      :type:  int
+      :value: None
+
+
+
+   .. py:attribute:: total_memory_items
+      :type:  int
+      :value: None
+
+
+
+   .. py:attribute:: total_operations
+      :type:  int
+      :value: None
+
+
+
+   .. py:attribute:: total_retrievals
+      :type:  int
+      :value: None
+
+
+
+.. py:class:: MemoryType
+
+   Bases: :py:obj:`str`, :py:obj:`enum.Enum`
+
+
+   Memory types compatible with original models plus V2 enhancements.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: MemoryType
+      :collapse:
+
+   .. py:attribute:: BASIC
+      :value: 'basic'
+
+
+
+   .. py:attribute:: CONVERSATIONAL
+      :value: 'conversational'
+
+
+
+   .. py:attribute:: EPISODIC
+      :value: 'episodic'
+
+
+
+   .. py:attribute:: FACTUAL
+      :value: 'factual'
+
+
+
+   .. py:attribute:: GRAPH_TRIPLE
+      :value: 'graph_triple'
+
+
+
+   .. py:attribute:: META
+      :value: 'meta'
+
+
+
+   .. py:attribute:: PERSONAL_CONTEXT
+      :value: 'personal_context'
+
+
+
+   .. py:attribute:: PREFERENCE
+      :value: 'preference'
+
+
+
+   .. py:attribute:: PROCEDURAL
+      :value: 'procedural'
+
+
+
+   .. py:attribute:: SEMANTIC
+      :value: 'semantic'
+
+
+
+   .. py:attribute:: SUMMARY
+      :value: 'summary'
+
+
+
+.. py:class:: UnifiedMemoryEntry(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Unified memory entry that can hold both MemoryItem and KnowledgeTriple data.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: UnifiedMemoryEntry
+      :collapse:
+
+   .. py:method:: from_knowledge_triple(triple: EnhancedKnowledgeTriple) -> UnifiedMemoryEntry
+      :classmethod:
+
+
+      Create from knowledge triple.
+
+
+      .. autolink-examples:: from_knowledge_triple
+         :collapse:
+
+
+   .. py:method:: from_memory_item(memory_item: agents.memory_v2.memory_models_standalone.EnhancedMemoryItem) -> UnifiedMemoryEntry
+      :classmethod:
+
+
+      Create from memory item.
+
+
+      .. autolink-examples:: from_memory_item
+         :collapse:
+
+
+   .. py:property:: content
+      :type: str
+
+
+      Get content regardless of entry type.
+
+      .. autolink-examples:: content
+         :collapse:
+
+
+   .. py:attribute:: created_at
+      :type:  datetime.datetime
+      :value: None
+
+
+
+   .. py:attribute:: entry_type
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: id
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: importance
+      :type:  agents.memory_v2.memory_models_standalone.ImportanceLevel
+      :value: None
+
+
+
+   .. py:attribute:: knowledge_triple
+      :type:  EnhancedKnowledgeTriple | None
+      :value: None
+
+
+
+   .. py:attribute:: memory_item
+      :type:  agents.memory_v2.memory_models_standalone.EnhancedMemoryItem | None
+      :value: None
+
+
+
+   .. py:attribute:: memory_type
+      :type:  MemoryType
+      :value: None
+
+
+

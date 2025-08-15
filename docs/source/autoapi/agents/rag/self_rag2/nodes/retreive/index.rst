@@ -1,9 +1,7 @@
-
-:py:mod:`agents.rag.self_rag2.nodes.retreive`
-=============================================
+agents.rag.self_rag2.nodes.retreive
+===================================
 
 .. py:module:: agents.rag.self_rag2.nodes.retreive
-
 
 
 Functions
@@ -12,6 +10,10 @@ Functions
 .. autoapisummary::
 
    agents.rag.self_rag2.nodes.retreive.retrieve
+
+
+Module Contents
+---------------
 
 .. py:function:: retrieve(state: dict[str, Any])
 
@@ -27,11 +29,3 @@ Functions
    .. autolink-examples:: retrieve
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.rag.self_rag2.nodes.retreive
-   :collapse:
-   
-.. autolink-skip:: next

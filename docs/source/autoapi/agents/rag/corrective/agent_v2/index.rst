@@ -1,19 +1,30 @@
-
-:py:mod:`agents.rag.corrective.agent_v2`
-========================================
+agents.rag.corrective.agent_v2
+==============================
 
 .. py:module:: agents.rag.corrective.agent_v2
 
-Corrective RAG (CRAG) Agent V2.
+.. autoapi-nested-parse::
 
-from typing import Any
-Self-correcting retrieval with proper quality assessment.
-Implements architecture from rag-architectures-flows.md:
-Retrieval → Relevance Check → Knowledge Refinement/Web Search/Combine
+   Corrective RAG (CRAG) Agent V2.
+
+   from typing import Any
+   Self-correcting retrieval with proper quality assessment.
+   Implements architecture from rag-architectures-flows.md:
+   Retrieval → Relevance Check → Knowledge Refinement/Web Search/Combine
 
 
-.. autolink-examples:: agents.rag.corrective.agent_v2
-   :collapse:
+   .. autolink-examples:: agents.rag.corrective.agent_v2
+      :collapse:
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.rag.corrective.agent_v2.REFINE_DOCS_PROMPT
+   agents.rag.corrective.agent_v2.WEB_SEARCH_PROMPT
+
 
 Classes
 -------
@@ -26,33 +37,36 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: CorrectiveRAGAgentV2
+
+   Bases: :py:obj:`haive.agents.multi.base.ConditionalAgent`
 
 
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for CorrectiveRAGAgentV2:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_CorrectiveRAGAgentV2 {
-        node [shape=record];
-        "CorrectiveRAGAgentV2" [label="CorrectiveRAGAgentV2"];
-        "haive.agents.multi.base.ConditionalAgent" -> "CorrectiveRAGAgentV2";
-      }
-
-.. autoclass:: agents.rag.corrective.agent_v2.CorrectiveRAGAgentV2
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   Corrective RAG with proper self-correcting retrieval.
 
 
+   .. autolink-examples:: CorrectiveRAGAgentV2
+      :collapse:
+
+   .. py:method:: from_documents(documents: list[langchain_core.documents.Document], llm_config: haive.core.models.llm.base.LLMConfig | None = None, relevance_threshold: float = 0.7, **kwargs)
+      :classmethod:
 
 
-.. rubric:: Related Links
+      Create Corrective RAG from documents.
 
-.. autolink-examples:: agents.rag.corrective.agent_v2
-   :collapse:
-   
-.. autolink-skip:: next
+      :param documents: Documents to index
+      :param llm_config: Optional LLM configuration
+      :param relevance_threshold: Threshold for document relevance (0-1)
+      :param \*\*kwargs: Additional arguments
+
+      :returns: CorrectiveRAGAgentV2 instance
+
+
+      .. autolink-examples:: from_documents
+         :collapse:
+
+
+.. py:data:: REFINE_DOCS_PROMPT
+
+.. py:data:: WEB_SEARCH_PROMPT
+

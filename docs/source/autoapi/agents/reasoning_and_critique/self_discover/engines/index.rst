@@ -1,9 +1,7 @@
-
-:py:mod:`agents.reasoning_and_critique.self_discover.engines`
-=============================================================
+agents.reasoning_and_critique.self_discover.engines
+===================================================
 
 .. py:module:: agents.reasoning_and_critique.self_discover.engines
-
 
 
 Functions
@@ -16,6 +14,10 @@ Functions
    agents.reasoning_and_critique.self_discover.engines.create_select_engine
    agents.reasoning_and_critique.self_discover.engines.create_selfdiscover_engines
    agents.reasoning_and_critique.self_discover.engines.create_structure_engine
+
+
+Module Contents
+---------------
 
 .. py:function:: create_adapt_engine(model: str = 'gpt-4o', temperature: float = 0.0, custom_prompt: str | langchain_core.prompts.ChatPromptTemplate | None = None, **kwargs) -> haive.core.engine.aug_llm.AugLLMConfig
 
@@ -95,11 +97,3 @@ Functions
    .. autolink-examples:: create_structure_engine
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.reasoning_and_critique.self_discover.engines
-   :collapse:
-   
-.. autolink-skip:: next

@@ -1,8 +1,16 @@
-
-:py:mod:`agents.react.config`
-=============================
+agents.react.config
+===================
 
 .. py:module:: agents.react.config
+
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/agents/react/config/v2/index
 
 
 Classes
@@ -16,33 +24,38 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: ReactAgentConfig
+
+   Bases: :py:obj:`haive.agents.simple.config.SimpleAgentConfig`
+
+
+   Configuration for the React Agent.
+
+
+   .. autolink-examples:: ReactAgentConfig
+      :collapse:
+
+   .. py:attribute:: continuation_branch
+      :type:  haive.core.graph.branches.branch.Branch
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ReactAgentConfig:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ReactAgentConfig {
-        node [shape=record];
-        "ReactAgentConfig" [label="ReactAgentConfig"];
-        "haive.agents.simple.config.SimpleAgentConfig" -> "ReactAgentConfig";
-      }
-
-.. autoclass:: agents.react.config.ReactAgentConfig
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. py:attribute:: max_iterations
+      :type:  int
+      :value: None
 
 
 
+   .. py:attribute:: retry_policy
+      :type:  langgraph.types.RetryPolicy
+      :value: None
 
-.. rubric:: Related Links
 
-.. autolink-examples:: agents.react.config
-   :collapse:
-   
-.. autolink-skip:: next
+
+   .. py:attribute:: tools
+      :type:  list[langchain_core.tools.BaseTool]
+      :value: None
+
+
+

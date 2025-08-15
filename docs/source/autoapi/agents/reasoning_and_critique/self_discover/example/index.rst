@@ -1,9 +1,15 @@
-
-:py:mod:`agents.reasoning_and_critique.self_discover.example`
-=============================================================
+agents.reasoning_and_critique.self_discover.example
+===================================================
 
 .. py:module:: agents.reasoning_and_critique.self_discover.example
 
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.reasoning_and_critique.self_discover.example.logger
 
 
 Functions
@@ -19,6 +25,10 @@ Functions
    agents.reasoning_and_critique.self_discover.example.example_math_problem
    agents.reasoning_and_critique.self_discover.example.example_svg_interpretation
    agents.reasoning_and_critique.self_discover.example.run_batch_problems
+
+
+Module Contents
+---------------
 
 .. py:function:: analyze_reasoning_process(agent_results: list[dict], output_file: str | None = None)
 
@@ -97,11 +107,5 @@ Functions
    .. autolink-examples:: run_batch_problems
       :collapse:
 
+.. py:data:: logger
 
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.reasoning_and_critique.self_discover.example
-   :collapse:
-   
-.. autolink-skip:: next

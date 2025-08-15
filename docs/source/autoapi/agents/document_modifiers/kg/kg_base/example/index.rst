@@ -1,17 +1,18 @@
-
-:py:mod:`agents.document_modifiers.kg.kg_base.example`
-======================================================
+agents.document_modifiers.kg.kg_base.example
+============================================
 
 .. py:module:: agents.document_modifiers.kg.kg_base.example
 
-Example usage of the GraphTransformer class.
+.. autoapi-nested-parse::
 
-This script demonstrates how to use the GraphTransformer to extract
-knowledge graphs from documents with various configurations.
+   Example usage of the GraphTransformer class.
+
+   This script demonstrates how to use the GraphTransformer to extract
+   knowledge graphs from documents with various configurations.
 
 
-.. autolink-examples:: agents.document_modifiers.kg.kg_base.example
-   :collapse:
+   .. autolink-examples:: agents.document_modifiers.kg.kg_base.example
+      :collapse:
 
 
 Functions
@@ -23,6 +24,10 @@ Functions
    agents.document_modifiers.kg.kg_base.example.basic_example
    agents.document_modifiers.kg.kg_base.example.schema_validation_example
    agents.document_modifiers.kg.kg_base.example.type_hints_example
+
+
+Module Contents
+---------------
 
 .. py:function:: advanced_example() -> None
 
@@ -56,11 +61,3 @@ Functions
    .. autolink-examples:: type_hints_example
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.document_modifiers.kg.kg_base.example
-   :collapse:
-   
-.. autolink-skip:: next

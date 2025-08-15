@@ -1,15 +1,25 @@
-
-:py:mod:`agents.structured`
-===========================
+agents.structured
+=================
 
 .. py:module:: agents.structured
 
-Module exports.
+.. autoapi-nested-parse::
+
+   Module exports.
 
 
-.. autolink-examples:: agents.structured
-   :collapse:
+   .. autolink-examples:: agents.structured
+      :collapse:
 
 
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/agents/structured/agent/index
+   /autoapi/agents/structured/models/index
+   /autoapi/agents/structured/prompts/index
 
 

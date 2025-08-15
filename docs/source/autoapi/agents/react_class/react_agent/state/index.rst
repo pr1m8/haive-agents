@@ -1,6 +1,5 @@
-
-:py:mod:`agents.react_class.react_agent.state`
-==============================================
+agents.react_class.react_agent.state
+====================================
 
 .. py:module:: agents.react_class.react_agent.state
 
@@ -16,33 +15,24 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: ReactAgentState
+
+   Bases: :py:obj:`typing_extensions.TypedDict`
 
 
+   The state of the agent.
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ReactAgentState:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ReactAgentState {
-        node [shape=record];
-        "ReactAgentState" [label="ReactAgentState"];
-        "typing_extensions.TypedDict" -> "ReactAgentState";
-      }
-
-.. autoclass:: agents.react_class.react_agent.state.ReactAgentState
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   Initialize self.  See help(type(self)) for accurate signature.
 
 
+   .. autolink-examples:: __init__
+      :collapse:
 
 
-.. rubric:: Related Links
+   .. autolink-examples:: ReactAgentState
+      :collapse:
 
-.. autolink-examples:: agents.react_class.react_agent.state
-   :collapse:
-   
-.. autolink-skip:: next
+   .. py:attribute:: messages
+      :type:  Annotated[collections.abc.Sequence[langchain_core.messages.BaseMessage], langgraph.graph.add_messages]
+
+

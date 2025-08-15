@@ -1,24 +1,26 @@
-
-:py:mod:`agents.patterns.react_with_structured_output`
-======================================================
+agents.patterns.react_with_structured_output
+============================================
 
 .. py:module:: agents.patterns.react_with_structured_output
 
-ReactAgent with Structured Output Pattern.
+.. autoapi-nested-parse::
 
-This pattern demonstrates ReactAgent → SimpleAgentV3 sequential execution
-using the generalized hook system for structured output workflows.
+   ReactAgent with Structured Output Pattern.
 
-Pattern: ReactAgent (reasoning/tools) → SimpleAgent (structured output)
-Use Cases:
-- Analysis with structured results
-- Research with formatted reports
-- Problem-solving with structured solutions
-- Tool-based workflows with typed outputs
+   This pattern demonstrates ReactAgent → SimpleAgentV3 sequential execution
+   using the generalized hook system for structured output workflows.
+
+   Pattern: ReactAgent (reasoning/tools) → SimpleAgent (structured output)
+   Use Cases:
+   - Analysis with structured results
+   - Research with formatted reports
+   - Problem-solving with structured solutions
+   - Tool-based workflows with typed outputs
 
 
-.. autolink-examples:: agents.patterns.react_with_structured_output
-   :collapse:
+   .. autolink-examples:: agents.patterns.react_with_structured_output
+      :collapse:
+
 
 Classes
 -------
@@ -29,118 +31,6 @@ Classes
    agents.patterns.react_with_structured_output.ProblemSolution
    agents.patterns.react_with_structured_output.ReactWithStructuredOutput
    agents.patterns.react_with_structured_output.ResearchReport
-
-
-Module Contents
----------------
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for AnalysisResult:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_AnalysisResult {
-        node [shape=record];
-        "AnalysisResult" [label="AnalysisResult"];
-        "pydantic.BaseModel" -> "AnalysisResult";
-      }
-
-.. autopydantic_model:: agents.patterns.react_with_structured_output.AnalysisResult
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
-
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ProblemSolution:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ProblemSolution {
-        node [shape=record];
-        "ProblemSolution" [label="ProblemSolution"];
-        "pydantic.BaseModel" -> "ProblemSolution";
-      }
-
-.. autopydantic_model:: agents.patterns.react_with_structured_output.ProblemSolution
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
-
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ReactWithStructuredOutput:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ReactWithStructuredOutput {
-        node [shape=record];
-        "ReactWithStructuredOutput" [label="ReactWithStructuredOutput"];
-        "haive.agents.multi.agent.MultiAgent" -> "ReactWithStructuredOutput";
-      }
-
-.. autoclass:: agents.patterns.react_with_structured_output.ReactWithStructuredOutput
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ResearchReport:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ResearchReport {
-        node [shape=record];
-        "ResearchReport" [label="ResearchReport"];
-        "pydantic.BaseModel" -> "ResearchReport";
-      }
-
-.. autopydantic_model:: agents.patterns.react_with_structured_output.ResearchReport
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
-
 
 
 Functions
@@ -158,6 +48,283 @@ Functions
    agents.patterns.react_with_structured_output.example_research_workflow
    agents.patterns.react_with_structured_output.main
    agents.patterns.react_with_structured_output.web_search
+
+
+Module Contents
+---------------
+
+.. py:class:: AnalysisResult(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Structured analysis result.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: AnalysisResult
+      :collapse:
+
+   .. py:attribute:: confidence_score
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: key_findings
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: recommendations
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: summary
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: supporting_evidence
+      :type:  list[str]
+      :value: None
+
+
+
+.. py:class:: ProblemSolution(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Structured problem solution.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: ProblemSolution
+      :collapse:
+
+   .. py:attribute:: implementation_steps
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: problem_statement
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: proposed_solutions
+      :type:  list[dict[str, Any]]
+      :value: None
+
+
+
+   .. py:attribute:: risks_and_mitigation
+      :type:  list[dict[str, str]]
+      :value: None
+
+
+
+   .. py:attribute:: root_causes
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: success_metrics
+      :type:  list[str]
+      :value: None
+
+
+
+.. py:class:: ReactWithStructuredOutput(**data)
+
+   Bases: :py:obj:`haive.agents.multi.agent.MultiAgent`
+
+
+   ReactAgent → SimpleAgentV3 with structured output pattern.
+
+   This pattern uses ReactAgent for reasoning and tool usage, then
+   SimpleAgentV3 for converting the results to structured output.
+
+   Initialize the pattern with agents.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: ReactWithStructuredOutput
+      :collapse:
+
+   .. py:method:: _setup_pattern_hooks()
+
+      Set up hooks for monitoring the pattern execution.
+
+
+      .. autolink-examples:: _setup_pattern_hooks
+         :collapse:
+
+
+   .. py:method:: create_analysis_pattern(name: str = 'analysis_workflow', tools: list | None = None, reasoning_config: haive.core.engine.aug_llm.AugLLMConfig | None = None, structuring_config: haive.core.engine.aug_llm.AugLLMConfig | None = None) -> ReactWithStructuredOutput
+      :classmethod:
+
+
+      Create a ReactAgent → StructuredOutput pattern for analysis tasks.
+
+      :param name: Name for the workflow
+      :param tools: Tools for the ReactAgent
+      :param reasoning_config: Configuration for reasoning agent
+      :param structuring_config: Configuration for structuring agent
+
+      :returns: Configured ReactWithStructuredOutput instance
+
+
+      .. autolink-examples:: create_analysis_pattern
+         :collapse:
+
+
+   .. py:method:: create_problem_solving_pattern(name: str = 'problem_solving_workflow', tools: list | None = None, reasoning_config: haive.core.engine.aug_llm.AugLLMConfig | None = None, structuring_config: haive.core.engine.aug_llm.AugLLMConfig | None = None) -> ReactWithStructuredOutput
+      :classmethod:
+
+
+      Create a ReactAgent → StructuredOutput pattern for problem-solving tasks.
+
+
+      .. autolink-examples:: create_problem_solving_pattern
+         :collapse:
+
+
+   .. py:method:: create_research_pattern(name: str = 'research_workflow', tools: list | None = None, reasoning_config: haive.core.engine.aug_llm.AugLLMConfig | None = None, structuring_config: haive.core.engine.aug_llm.AugLLMConfig | None = None) -> ReactWithStructuredOutput
+      :classmethod:
+
+
+      Create a ReactAgent → StructuredOutput pattern for research tasks.
+
+
+      .. autolink-examples:: create_research_pattern
+         :collapse:
+
+
+   .. py:attribute:: include_tool_calls
+      :type:  bool
+      :value: None
+
+
+
+   .. py:attribute:: preserve_reasoning
+      :type:  bool
+      :value: None
+
+
+
+   .. py:attribute:: reasoning_agent
+      :type:  haive.agents.react.agent.ReactAgent
+      :value: None
+
+
+
+   .. py:attribute:: structured_output_model
+      :type:  type[pydantic.BaseModel]
+      :value: None
+
+
+
+   .. py:attribute:: structuring_agent
+      :type:  SimpleAgentV3
+      :value: None
+
+
+
+.. py:class:: ResearchReport(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Structured research report.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: ResearchReport
+      :collapse:
+
+   .. py:attribute:: conclusions
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: confidence_level
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: executive_summary
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: findings
+      :type:  list[dict[str, Any]]
+      :value: None
+
+
+
+   .. py:attribute:: methodology
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: sources
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: title
+      :type:  str
+      :value: None
+
+
 
 .. py:function:: calculator(expression: str) -> str
 
@@ -262,11 +429,3 @@ Functions
    .. autolink-examples:: web_search
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.patterns.react_with_structured_output
-   :collapse:
-   
-.. autolink-skip:: next

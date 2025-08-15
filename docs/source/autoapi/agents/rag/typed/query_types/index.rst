@@ -1,6 +1,5 @@
-
-:py:mod:`agents.rag.typed.query_types`
-======================================
+agents.rag.typed.query_types
+============================
 
 .. py:module:: agents.rag.typed.query_types
 
@@ -16,39 +15,60 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: QueryCategory
+
+   Bases: :py:obj:`str`, :py:obj:`enum.Enum`
+
+
+   Categories of queries for specialized handling.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: QueryCategory
+      :collapse:
+
+   .. py:attribute:: CAUSAL
+      :value: 'causal'
 
 
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for QueryCategory:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_QueryCategory {
-        node [shape=record];
-        "QueryCategory" [label="QueryCategory"];
-        "str" -> "QueryCategory";
-        "enum.Enum" -> "QueryCategory";
-      }
-
-.. autoclass:: agents.rag.typed.query_types.QueryCategory
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-   .. note::
-
-      **QueryCategory** is an Enum defined in ``agents.rag.typed.query_types``.
+   .. py:attribute:: COMPARATIVE
+      :value: 'comparative'
 
 
 
+   .. py:attribute:: COUNTERFACTUAL
+      :value: 'counterfactual'
 
 
-.. rubric:: Related Links
 
-.. autolink-examples:: agents.rag.typed.query_types
-   :collapse:
-   
-.. autolink-skip:: next
+   .. py:attribute:: DEFINITIONAL
+      :value: 'definitional'
+
+
+
+   .. py:attribute:: FACTOID
+      :value: 'factoid'
+
+
+
+   .. py:attribute:: PROCEDURAL
+      :value: 'procedural'
+
+
+
+   .. py:attribute:: QUANTITATIVE
+      :value: 'quantitative'
+
+
+
+   .. py:attribute:: TEMPORAL
+      :value: 'temporal'
+
+
+

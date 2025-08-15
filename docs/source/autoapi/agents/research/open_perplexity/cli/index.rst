@@ -1,18 +1,27 @@
-
-:py:mod:`agents.research.open_perplexity.cli`
-=============================================
+agents.research.open_perplexity.cli
+===================================
 
 .. py:module:: agents.research.open_perplexity.cli
 
-CLI tool for running the open_perplexity research agent.
+.. autoapi-nested-parse::
 
-This module provides command-line utilities for running research tasks
-and visualizing research states. It supports loading research questions
-from text files, configuring research parameters, and generating reports.
+   CLI tool for running the open_perplexity research agent.
+
+   This module provides command-line utilities for running research tasks
+   and visualizing research states. It supports loading research questions
+   from text files, configuring research parameters, and generating reports.
 
 
-.. autolink-examples:: agents.research.open_perplexity.cli
-   :collapse:
+   .. autolink-examples:: agents.research.open_perplexity.cli
+      :collapse:
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.research.open_perplexity.cli.logger
 
 
 Functions
@@ -23,6 +32,10 @@ Functions
    agents.research.open_perplexity.cli.main
    agents.research.open_perplexity.cli.run_research
    agents.research.open_perplexity.cli.visualize_state
+
+
+Module Contents
+---------------
 
 .. py:function:: main() -> None
 
@@ -70,11 +83,5 @@ Functions
    .. autolink-examples:: visualize_state
       :collapse:
 
+.. py:data:: logger
 
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.research.open_perplexity.cli
-   :collapse:
-   
-.. autolink-skip:: next

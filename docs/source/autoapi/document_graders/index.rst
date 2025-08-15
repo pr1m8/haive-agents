@@ -1,14 +1,27 @@
-
-:py:mod:`document_graders`
-==========================
+document_graders
+================
 
 .. py:module:: document_graders
 
-Module exports.
+.. autoapi-nested-parse::
+
+   Module exports.
 
 
-.. autolink-examples:: document_graders
-   :collapse:
+   .. autolink-examples:: document_graders
+      :collapse:
+
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/document_graders/binary_grader/index
+   /autoapi/document_graders/comprehensive_grader/index
+   /autoapi/document_graders/models/index
+
 
 Classes
 -------
@@ -21,131 +34,206 @@ Classes
    document_graders.DocumentRelevanceScore
 
 
-Module Contents
----------------
+Package Contents
+----------------
+
+.. py:class:: DocumentBinaryGrading(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Binary pass/fail document grading.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: DocumentBinaryGrading
+      :collapse:
+
+   .. py:attribute:: confidence
+      :type:  float
+      :value: None
 
 
 
+   .. py:attribute:: decision
+      :type:  Literal['pass', 'fail']
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for DocumentBinaryGrading:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_DocumentBinaryGrading {
-        node [shape=record];
-        "DocumentBinaryGrading" [label="DocumentBinaryGrading"];
-        "pydantic.BaseModel" -> "DocumentBinaryGrading";
-      }
-
-.. autopydantic_model:: document_graders.DocumentBinaryGrading
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: document_id
+      :type:  str
+      :value: None
 
 
 
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for DocumentBinaryResponse:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_DocumentBinaryResponse {
-        node [shape=record];
-        "DocumentBinaryResponse" [label="DocumentBinaryResponse"];
-        "pydantic.BaseModel" -> "DocumentBinaryResponse";
-      }
-
-.. autopydantic_model:: document_graders.DocumentBinaryResponse
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: justification
+      :type:  str
+      :value: None
 
 
 
+.. py:class:: DocumentBinaryResponse(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
 
 
-.. toggle:: Show Inheritance Diagram
+   Response for binary document grading.
 
-   Inheritance diagram for DocumentGradingResponse:
+   Create a new model by parsing and validating input data from keyword arguments.
 
-   .. graphviz::
-      :align: center
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
 
-      digraph inheritance_DocumentGradingResponse {
-        node [shape=record];
-        "DocumentGradingResponse" [label="DocumentGradingResponse"];
-        "pydantic.BaseModel" -> "DocumentGradingResponse";
-      }
-
-.. autopydantic_model:: document_graders.DocumentGradingResponse
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   `self` is explicitly positional-only to allow `self` as a field name.
 
 
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: DocumentBinaryResponse
+      :collapse:
+
+   .. py:attribute:: document_decisions
+      :type:  list[DocumentBinaryGrading]
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for DocumentRelevanceScore:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_DocumentRelevanceScore {
-        node [shape=record];
-        "DocumentRelevanceScore" [label="DocumentRelevanceScore"];
-        "pydantic.BaseModel" -> "DocumentRelevanceScore";
-      }
-
-.. autopydantic_model:: document_graders.DocumentRelevanceScore
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: query
+      :type:  str
+      :value: None
 
 
 
+   .. py:attribute:: summary
+      :type:  str
+      :value: None
 
 
-.. rubric:: Related Links
 
-.. autolink-examples:: document_graders
-   :collapse:
-   
-.. autolink-skip:: next
+.. py:class:: DocumentGradingResponse(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Comprehensive document grading response.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: DocumentGradingResponse
+      :collapse:
+
+   .. py:attribute:: coverage_analysis
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: document_scores
+      :type:  list[DocumentRelevanceScore]
+      :value: None
+
+
+
+   .. py:attribute:: overall_assessment
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: query
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: recommendations
+      :type:  list[str]
+      :value: None
+
+
+
+.. py:class:: DocumentRelevanceScore(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Individual document relevance assessment.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: DocumentRelevanceScore
+      :collapse:
+
+   .. py:attribute:: confidence
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: document_id
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: document_title
+      :type:  str | None
+      :value: None
+
+
+
+   .. py:attribute:: justification
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: key_information
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: limitations
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: relevance_score
+      :type:  float
+      :value: None
+
+
+

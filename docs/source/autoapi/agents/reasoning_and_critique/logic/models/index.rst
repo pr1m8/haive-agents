@@ -1,6 +1,5 @@
-
-:py:mod:`agents.reasoning_and_critique.logic.models`
-====================================================
+agents.reasoning_and_critique.logic.models
+==========================================
 
 .. py:module:: agents.reasoning_and_critique.logic.models
 
@@ -34,551 +33,1279 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: ArgumentStrength
 
+   Bases: :py:obj:`str`, :py:obj:`enum.Enum`
 
 
-.. toggle:: Show Inheritance Diagram
+   Strength of logical arguments.
 
-   Inheritance diagram for ArgumentStrength:
+   Initialize self.  See help(type(self)) for accurate signature.
 
-   .. graphviz::
-      :align: center
 
-      digraph inheritance_ArgumentStrength {
-        node [shape=record];
-        "ArgumentStrength" [label="ArgumentStrength"];
-        "str" -> "ArgumentStrength";
-        "enum.Enum" -> "ArgumentStrength";
-      }
+   .. autolink-examples:: __init__
+      :collapse:
 
-.. autoclass:: agents.reasoning_and_critique.logic.models.ArgumentStrength
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
-   .. note::
+   .. autolink-examples:: ArgumentStrength
+      :collapse:
 
-      **ArgumentStrength** is an Enum defined in ``agents.reasoning_and_critique.logic.models``.
+   .. py:attribute:: CONCLUSIVE
+      :value: 'conclusive'
 
 
 
+   .. py:attribute:: FALLACIOUS
+      :value: 'fallacious'
 
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for ArgumentStructure:
+   .. py:attribute:: MODERATE
+      :value: 'moderate'
 
-   .. graphviz::
-      :align: center
 
-      digraph inheritance_ArgumentStructure {
-        node [shape=record];
-        "ArgumentStructure" [label="ArgumentStructure"];
-        "pydantic.BaseModel" -> "ArgumentStructure";
-      }
 
-.. autopydantic_model:: agents.reasoning_and_critique.logic.models.ArgumentStructure
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: STRONG
+      :value: 'strong'
 
 
 
+   .. py:attribute:: VERY_STRONG
+      :value: 'very_strong'
 
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for Assumption:
+   .. py:attribute:: VERY_WEAK
+      :value: 'very_weak'
 
-   .. graphviz::
-      :align: center
 
-      digraph inheritance_Assumption {
-        node [shape=record];
-        "Assumption" [label="Assumption"];
-        "pydantic.BaseModel" -> "Assumption";
-      }
 
-.. autopydantic_model:: agents.reasoning_and_critique.logic.models.Assumption
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: WEAK
+      :value: 'weak'
 
 
 
+.. py:class:: ArgumentStructure(/, **data: Any)
 
+   Bases: :py:obj:`pydantic.BaseModel`
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for BiasAssessment:
+   Structure analysis of an argument.
 
-   .. graphviz::
-      :align: center
+   Create a new model by parsing and validating input data from keyword arguments.
 
-      digraph inheritance_BiasAssessment {
-        node [shape=record];
-        "BiasAssessment" [label="BiasAssessment"];
-        "pydantic.BaseModel" -> "BiasAssessment";
-      }
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
 
-.. autopydantic_model:: agents.reasoning_and_critique.logic.models.BiasAssessment
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   `self` is explicitly positional-only to allow `self` as a field name.
 
 
+   .. autolink-examples:: __init__
+      :collapse:
 
 
+   .. autolink-examples:: ArgumentStructure
+      :collapse:
 
-.. toggle:: Show Inheritance Diagram
+   .. py:attribute:: breadth
+      :type:  int
+      :value: None
 
-   Inheritance diagram for BiasType:
 
-   .. graphviz::
-      :align: center
 
-      digraph inheritance_BiasType {
-        node [shape=record];
-        "BiasType" [label="BiasType"];
-        "str" -> "BiasType";
-        "enum.Enum" -> "BiasType";
-      }
+   .. py:attribute:: circular_dependencies
+      :type:  list[list[int]]
+      :value: None
 
-.. autoclass:: agents.reasoning_and_critique.logic.models.BiasType
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
-   .. note::
 
-      **BiasType** is an Enum defined in ``agents.reasoning_and_critique.logic.models``.
+   .. py:attribute:: critical_premises
+      :type:  list[int]
+      :value: None
 
 
 
+   .. py:attribute:: depth
+      :type:  int
+      :value: None
 
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for CertaintyLevel:
+   .. py:attribute:: premise_count
+      :type:  int
+      :value: None
 
-   .. graphviz::
-      :align: center
 
-      digraph inheritance_CertaintyLevel {
-        node [shape=record];
-        "CertaintyLevel" [label="CertaintyLevel"];
-        "str" -> "CertaintyLevel";
-        "enum.Enum" -> "CertaintyLevel";
-      }
 
-.. autoclass:: agents.reasoning_and_critique.logic.models.CertaintyLevel
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. py:attribute:: premise_dependencies
+      :type:  dict[str, list[str]]
+      :value: None
 
-   .. note::
 
-      **CertaintyLevel** is an Enum defined in ``agents.reasoning_and_critique.logic.models``.
 
+   .. py:attribute:: reasoning_patterns
+      :type:  list[str]
+      :value: None
 
 
 
+   .. py:attribute:: structure_type
+      :type:  Literal['deductive', 'inductive', 'abductive', 'analogical', 'pragmatic', 'mixed']
+      :value: None
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for CounterArgument:
 
-   .. graphviz::
-      :align: center
+.. py:class:: Assumption(/, **data: Any)
 
-      digraph inheritance_CounterArgument {
-        node [shape=record];
-        "CounterArgument" [label="CounterArgument"];
-        "pydantic.BaseModel" -> "CounterArgument";
-      }
+   Bases: :py:obj:`pydantic.BaseModel`
 
-.. autopydantic_model:: agents.reasoning_and_critique.logic.models.CounterArgument
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
 
+   An assumption made during reasoning.
 
+   Create a new model by parsing and validating input data from keyword arguments.
 
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
 
+   `self` is explicitly positional-only to allow `self` as a field name.
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for Evidence:
+   .. autolink-examples:: __init__
+      :collapse:
 
-   .. graphviz::
-      :align: center
 
-      digraph inheritance_Evidence {
-        node [shape=record];
-        "Evidence" [label="Evidence"];
-        "pydantic.BaseModel" -> "Evidence";
-      }
+   .. autolink-examples:: Assumption
+      :collapse:
 
-.. autopydantic_model:: agents.reasoning_and_critique.logic.models.Evidence
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: alternatives
+      :type:  list[str]
+      :value: None
 
 
 
+   .. py:attribute:: impact
+      :type:  Literal['critical', 'significant', 'moderate', 'minor']
+      :value: None
 
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for EvidenceType:
+   .. py:attribute:: justification
+      :type:  str
+      :value: None
 
-   .. graphviz::
-      :align: center
 
-      digraph inheritance_EvidenceType {
-        node [shape=record];
-        "EvidenceType" [label="EvidenceType"];
-        "str" -> "EvidenceType";
-        "enum.Enum" -> "EvidenceType";
-      }
 
-.. autoclass:: agents.reasoning_and_critique.logic.models.EvidenceType
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. py:attribute:: statement
+      :type:  str
+      :value: None
 
-   .. note::
 
-      **EvidenceType** is an Enum defined in ``agents.reasoning_and_critique.logic.models``.
 
+   .. py:attribute:: testable
+      :type:  bool
+      :value: None
 
 
 
+.. py:class:: BiasAssessment(/, **data: Any)
 
-.. toggle:: Show Inheritance Diagram
+   Bases: :py:obj:`pydantic.BaseModel`
 
-   Inheritance diagram for FallacyDetection:
 
-   .. graphviz::
-      :align: center
+   Assessment of potential biases.
 
-      digraph inheritance_FallacyDetection {
-        node [shape=record];
-        "FallacyDetection" [label="FallacyDetection"];
-        "pydantic.BaseModel" -> "FallacyDetection";
-      }
+   Create a new model by parsing and validating input data from keyword arguments.
 
-.. autopydantic_model:: agents.reasoning_and_critique.logic.models.FallacyDetection
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
 
+   `self` is explicitly positional-only to allow `self` as a field name.
 
 
+   .. autolink-examples:: __init__
+      :collapse:
 
 
-.. toggle:: Show Inheritance Diagram
+   .. autolink-examples:: BiasAssessment
+      :collapse:
 
-   Inheritance diagram for LogicalFallacy:
+   .. py:attribute:: bias_type
+      :type:  BiasType
 
-   .. graphviz::
-      :align: center
 
-      digraph inheritance_LogicalFallacy {
-        node [shape=record];
-        "LogicalFallacy" [label="LogicalFallacy"];
-        "str" -> "LogicalFallacy";
-        "enum.Enum" -> "LogicalFallacy";
-      }
+   .. py:attribute:: description
+      :type:  str
+      :value: None
 
-.. autoclass:: agents.reasoning_and_critique.logic.models.LogicalFallacy
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
-   .. note::
 
-      **LogicalFallacy** is an Enum defined in ``agents.reasoning_and_critique.logic.models``.
+   .. py:attribute:: evidence
+      :type:  list[str]
+      :value: None
 
 
 
+   .. py:attribute:: mitigation
+      :type:  str
+      :value: None
 
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for LogicalStep:
+   .. py:attribute:: severity
+      :type:  Literal['high', 'medium', 'low']
+      :value: None
 
-   .. graphviz::
-      :align: center
 
-      digraph inheritance_LogicalStep {
-        node [shape=record];
-        "LogicalStep" [label="LogicalStep"];
-        "pydantic.BaseModel" -> "LogicalStep";
-      }
 
-.. autopydantic_model:: agents.reasoning_and_critique.logic.models.LogicalStep
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+.. py:class:: BiasType
 
+   Bases: :py:obj:`str`, :py:obj:`enum.Enum`
 
 
+   Common cognitive biases that affect reasoning.
 
+   Initialize self.  See help(type(self)) for accurate signature.
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for Premise:
+   .. autolink-examples:: __init__
+      :collapse:
 
-   .. graphviz::
-      :align: center
 
-      digraph inheritance_Premise {
-        node [shape=record];
-        "Premise" [label="Premise"];
-        "pydantic.BaseModel" -> "Premise";
-      }
+   .. autolink-examples:: BiasType
+      :collapse:
 
-.. autopydantic_model:: agents.reasoning_and_critique.logic.models.Premise
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: ANCHORING
+      :value: 'anchoring'
 
 
 
+   .. py:attribute:: AVAILABILITY
+      :value: 'availability'
 
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for ReasoningAnalysis:
+   .. py:attribute:: CONFIRMATION
+      :value: 'confirmation'
 
-   .. graphviz::
-      :align: center
 
-      digraph inheritance_ReasoningAnalysis {
-        node [shape=record];
-        "ReasoningAnalysis" [label="ReasoningAnalysis"];
-        "pydantic.BaseModel" -> "ReasoningAnalysis";
-      }
 
-.. autopydantic_model:: agents.reasoning_and_critique.logic.models.ReasoningAnalysis
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: DUNNING_KRUGER
+      :value: 'dunning_kruger'
 
 
 
+   .. py:attribute:: FRAMING
+      :value: 'framing'
 
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for ReasoningChain:
+   .. py:attribute:: HINDSIGHT
+      :value: 'hindsight'
 
-   .. graphviz::
-      :align: center
 
-      digraph inheritance_ReasoningChain {
-        node [shape=record];
-        "ReasoningChain" [label="ReasoningChain"];
-        "pydantic.BaseModel" -> "ReasoningChain";
-      }
 
-.. autopydantic_model:: agents.reasoning_and_critique.logic.models.ReasoningChain
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: SELECTION
+      :value: 'selection'
 
 
 
+   .. py:attribute:: SUNK_COST
+      :value: 'sunk_cost'
 
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for ReasoningQuality:
+.. py:class:: CertaintyLevel
 
-   .. graphviz::
-      :align: center
+   Bases: :py:obj:`str`, :py:obj:`enum.Enum`
 
-      digraph inheritance_ReasoningQuality {
-        node [shape=record];
-        "ReasoningQuality" [label="ReasoningQuality"];
-        "pydantic.BaseModel" -> "ReasoningQuality";
-      }
 
-.. autopydantic_model:: agents.reasoning_and_critique.logic.models.ReasoningQuality
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   Degree of certainty in conclusions.
 
+   Initialize self.  See help(type(self)) for accurate signature.
 
 
+   .. autolink-examples:: __init__
+      :collapse:
 
 
-.. toggle:: Show Inheritance Diagram
+   .. autolink-examples:: CertaintyLevel
+      :collapse:
 
-   Inheritance diagram for ReasoningReport:
+   .. py:attribute:: CERTAIN
+      :value: 'certain'
 
-   .. graphviz::
-      :align: center
 
-      digraph inheritance_ReasoningReport {
-        node [shape=record];
-        "ReasoningReport" [label="ReasoningReport"];
-        "pydantic.BaseModel" -> "ReasoningReport";
-      }
 
-.. autopydantic_model:: agents.reasoning_and_critique.logic.models.ReasoningReport
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: HIGHLY_LIKELY
+      :value: 'highly_likely'
 
 
 
+   .. py:attribute:: HIGHLY_UNLIKELY
+      :value: 'highly_unlikely'
 
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for ReasoningType:
+   .. py:attribute:: IMPOSSIBLE
+      :value: 'impossible'
 
-   .. graphviz::
-      :align: center
 
-      digraph inheritance_ReasoningType {
-        node [shape=record];
-        "ReasoningType" [label="ReasoningType"];
-        "str" -> "ReasoningType";
-        "enum.Enum" -> "ReasoningType";
-      }
 
-.. autoclass:: agents.reasoning_and_critique.logic.models.ReasoningType
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. py:attribute:: LIKELY
+      :value: 'likely'
 
-   .. note::
 
-      **ReasoningType** is an Enum defined in ``agents.reasoning_and_critique.logic.models``.
 
+   .. py:attribute:: POSSIBLE
+      :value: 'possible'
 
 
 
+   .. py:attribute:: UNLIKELY
+      :value: 'unlikely'
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for UncertaintyAnalysis:
 
-   .. graphviz::
-      :align: center
+.. py:class:: CounterArgument(/, **data: Any)
 
-      digraph inheritance_UncertaintyAnalysis {
-        node [shape=record];
-        "UncertaintyAnalysis" [label="UncertaintyAnalysis"];
-        "pydantic.BaseModel" -> "UncertaintyAnalysis";
-      }
+   Bases: :py:obj:`pydantic.BaseModel`
 
-.. autopydantic_model:: agents.reasoning_and_critique.logic.models.UncertaintyAnalysis
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
 
+   A counter-argument to consider.
 
+   Create a new model by parsing and validating input data from keyword arguments.
 
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
 
+   `self` is explicitly positional-only to allow `self` as a field name.
 
-.. rubric:: Related Links
 
-.. autolink-examples:: agents.reasoning_and_critique.logic.models
-   :collapse:
-   
-.. autolink-skip:: next
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: CounterArgument
+      :collapse:
+
+   .. py:attribute:: argument
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: rebuttal
+      :type:  str | None
+      :value: None
+
+
+
+   .. py:attribute:: strength
+      :type:  ArgumentStrength
+      :value: None
+
+
+
+   .. py:attribute:: unresolved
+      :type:  bool
+      :value: None
+
+
+
+.. py:class:: Evidence(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Evidence supporting a claim or premise.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: Evidence
+      :collapse:
+
+   .. py:attribute:: date_collected
+      :type:  datetime.datetime | None
+      :value: None
+
+
+
+   .. py:attribute:: description
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: evidence_type
+      :type:  EvidenceType
+
+
+   .. py:attribute:: limitations
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: relevance
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: reliability
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: source
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: strength
+      :type:  ArgumentStrength
+      :value: None
+
+
+
+.. py:class:: EvidenceType
+
+   Bases: :py:obj:`str`, :py:obj:`enum.Enum`
+
+
+   Types of evidence that support reasoning.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: EvidenceType
+      :collapse:
+
+   .. py:attribute:: ANALOGICAL
+      :value: 'analogical'
+
+
+
+   .. py:attribute:: DOCUMENTARY
+      :value: 'documentary'
+
+
+
+   .. py:attribute:: EMPIRICAL
+      :value: 'empirical'
+
+
+
+   .. py:attribute:: EXPERIENTIAL
+      :value: 'experiential'
+
+
+
+   .. py:attribute:: LOGICAL
+      :value: 'logical'
+
+
+
+   .. py:attribute:: STATISTICAL
+      :value: 'statistical'
+
+
+
+   .. py:attribute:: TESTIMONIAL
+      :value: 'testimonial'
+
+
+
+   .. py:attribute:: THEORETICAL
+      :value: 'theoretical'
+
+
+
+.. py:class:: FallacyDetection(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Detection of logical fallacies.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: FallacyDetection
+      :collapse:
+
+   .. py:attribute:: correction
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: description
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: fallacy_type
+      :type:  LogicalFallacy
+
+
+   .. py:attribute:: impact
+      :type:  ArgumentStrength
+      :value: None
+
+
+
+   .. py:attribute:: location
+      :type:  str
+      :value: None
+
+
+
+.. py:class:: LogicalFallacy
+
+   Bases: :py:obj:`str`, :py:obj:`enum.Enum`
+
+
+   Common logical fallacies to detect.
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: LogicalFallacy
+      :collapse:
+
+   .. py:attribute:: AD_HOMINEM
+      :value: 'ad_hominem'
+
+
+
+   .. py:attribute:: APPEAL_TO_AUTHORITY
+      :value: 'appeal_to_authority'
+
+
+
+   .. py:attribute:: BANDWAGON
+      :value: 'bandwagon'
+
+
+
+   .. py:attribute:: CIRCULAR_REASONING
+      :value: 'circular_reasoning'
+
+
+
+   .. py:attribute:: FALSE_CAUSE
+      :value: 'false_cause'
+
+
+
+   .. py:attribute:: FALSE_DILEMMA
+      :value: 'false_dilemma'
+
+
+
+   .. py:attribute:: HASTY_GENERALIZATION
+      :value: 'hasty_generalization'
+
+
+
+   .. py:attribute:: POST_HOC
+      :value: 'post_hoc'
+
+
+
+   .. py:attribute:: SLIPPERY_SLOPE
+      :value: 'slippery_slope'
+
+
+
+   .. py:attribute:: STRAW_MAN
+      :value: 'straw_man'
+
+
+
+.. py:class:: LogicalStep(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   A single step in a reasoning chain.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: LogicalStep
+      :collapse:
+
+   .. py:attribute:: alternative_conclusions
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: conclusion
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: confidence
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: from_premises
+      :type:  list[int]
+      :value: None
+
+
+
+   .. py:attribute:: inference_rule
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: reasoning_type
+      :type:  ReasoningType
+      :value: None
+
+
+
+   .. py:attribute:: step_number
+      :type:  int
+      :value: None
+
+
+
+.. py:class:: Premise(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   A single premise in a logical argument.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: Premise
+      :collapse:
+
+   .. py:attribute:: certainty
+      :type:  CertaintyLevel
+      :value: None
+
+
+
+   .. py:attribute:: evidence
+      :type:  list[Evidence]
+      :value: None
+
+
+
+   .. py:attribute:: is_contested
+      :type:  bool
+      :value: None
+
+
+
+   .. py:attribute:: premise_type
+      :type:  Literal['fact', 'assumption', 'axiom', 'hypothesis']
+      :value: None
+
+
+
+   .. py:attribute:: source
+      :type:  str | None
+      :value: None
+
+
+
+   .. py:attribute:: statement
+      :type:  str
+      :value: None
+
+
+
+.. py:class:: ReasoningAnalysis(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Complete analysis of a reasoning chain.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: ReasoningAnalysis
+      :collapse:
+
+   .. py:attribute:: additional_evidence_needed
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: alternative_framings
+      :type:  list[dict[str, Any]]
+      :value: None
+
+
+
+   .. py:attribute:: argument_structure
+      :type:  ArgumentStructure
+      :value: None
+
+
+
+   .. py:attribute:: detected_biases
+      :type:  list[BiasAssessment]
+      :value: None
+
+
+
+   .. py:attribute:: detected_fallacies
+      :type:  list[FallacyDetection]
+      :value: None
+
+
+
+   .. py:attribute:: dialectical_synthesis
+      :type:  str | None
+      :value: None
+
+
+
+   .. py:attribute:: missing_considerations
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: quality_assessment
+      :type:  ReasoningQuality
+      :value: None
+
+
+
+   .. py:attribute:: reasoning_chain
+      :type:  ReasoningChain
+      :value: None
+
+
+
+   .. py:attribute:: strengthening_suggestions
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: uncertainty_analysis
+      :type:  UncertaintyAnalysis
+      :value: None
+
+
+
+.. py:class:: ReasoningChain(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   A complete chain of reasoning from premises to conclusion.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: ReasoningChain
+      :collapse:
+
+   .. py:attribute:: alternative_conclusions
+      :type:  list[dict[str, Any]]
+      :value: None
+
+
+
+   .. py:attribute:: assumptions
+      :type:  list[Assumption]
+      :value: None
+
+
+
+   .. py:attribute:: certainty_level
+      :type:  CertaintyLevel
+      :value: None
+
+
+
+   .. py:attribute:: chain_id
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: completeness
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: conclusion
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: conclusion_strength
+      :type:  ArgumentStrength
+      :value: None
+
+
+
+   .. py:attribute:: context
+      :type:  dict[str, Any]
+      :value: None
+
+
+
+   .. py:attribute:: counter_arguments
+      :type:  list[CounterArgument]
+      :value: None
+
+
+
+   .. py:attribute:: logical_steps
+      :type:  list[LogicalStep]
+      :value: None
+
+
+
+   .. py:attribute:: logical_validity
+      :type:  bool
+      :value: None
+
+
+
+   .. py:property:: max_inference_chain
+      :type: int
+
+
+      Longest chain of inferences.
+
+      .. autolink-examples:: max_inference_chain
+         :collapse:
+
+
+   .. py:property:: num_steps
+      :type: int
+
+
+      Number of reasoning steps.
+
+      .. autolink-examples:: num_steps
+         :collapse:
+
+
+   .. py:attribute:: premises
+      :type:  list[Premise]
+      :value: None
+
+
+
+   .. py:attribute:: question
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: soundness
+      :type:  bool | None
+      :value: None
+
+
+
+.. py:class:: ReasoningQuality(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Overall quality assessment of reasoning.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: ReasoningQuality
+      :collapse:
+
+   .. py:attribute:: alternative_exploration
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: bias_score
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: confidence_in_assessment
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: consideration_breadth
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: evidence_coverage
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: evidence_quality
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: fallacy_score
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: overall_quality
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: soundness_score
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: validity_score
+      :type:  float
+      :value: None
+
+
+
+.. py:class:: ReasoningReport(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Comprehensive reasoning analysis report.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: ReasoningReport
+      :collapse:
+
+   .. py:attribute:: alternative_chains
+      :type:  list[ReasoningChain]
+      :value: None
+
+
+
+   .. py:attribute:: analysis
+      :type:  ReasoningAnalysis
+      :value: None
+
+
+
+   .. py:attribute:: confidence_level
+      :type:  CertaintyLevel
+      :value: None
+
+
+
+   .. py:attribute:: context
+      :type:  dict[str, Any]
+      :value: None
+
+
+
+   .. py:attribute:: decision_recommendation
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: executive_summary
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: follow_up_questions
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: key_insights
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: key_uncertainties
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: primary_chain
+      :type:  ReasoningChain
+      :value: None
+
+
+
+   .. py:attribute:: question
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: synthesized_conclusion
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: timestamp
+      :type:  datetime.datetime
+      :value: None
+
+
+
+.. py:class:: ReasoningType
+
+   Bases: :py:obj:`str`, :py:obj:`enum.Enum`
+
+
+   Fundamental patterns of reasoning.
+
+   These represent core ways humans and AI systems process information:
+   - DEDUCTIVE: From general principles to specific conclusions
+   - INDUCTIVE: From specific observations to general principles
+   - ABDUCTIVE: Best explanation for observations
+   - ANALOGICAL: Reasoning by comparison/similarity
+   - CAUSAL: Understanding cause-effect relationships
+   - PROBABILISTIC: Reasoning under uncertainty
+   - COUNTERFACTUAL: What-if analysis
+   - DIALECTICAL: Thesis-antithesis-synthesis
+
+   Initialize self.  See help(type(self)) for accurate signature.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: ReasoningType
+      :collapse:
+
+   .. py:attribute:: ABDUCTIVE
+      :value: 'abductive'
+
+
+
+   .. py:attribute:: ANALOGICAL
+      :value: 'analogical'
+
+
+
+   .. py:attribute:: CAUSAL
+      :value: 'causal'
+
+
+
+   .. py:attribute:: COUNTERFACTUAL
+      :value: 'counterfactual'
+
+
+
+   .. py:attribute:: DEDUCTIVE
+      :value: 'deductive'
+
+
+
+   .. py:attribute:: DIALECTICAL
+      :value: 'dialectical'
+
+
+
+   .. py:attribute:: INDUCTIVE
+      :value: 'inductive'
+
+
+
+   .. py:attribute:: PROBABILISTIC
+      :value: 'probabilistic'
+
+
+
+.. py:class:: UncertaintyAnalysis(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Analysis of uncertainty in reasoning.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: UncertaintyAnalysis
+      :collapse:
+
+   .. py:attribute:: aleatory_uncertainty
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: conclusion_uncertainty
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: confidence_interval
+      :type:  tuple[float, float]
+      :value: None
+
+
+
+   .. py:attribute:: epistemic_uncertainty
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: inference_uncertainty
+      :type:  dict[int, float]
+      :value: None
+
+
+
+   .. py:attribute:: premise_uncertainty
+      :type:  dict[int, float]
+      :value: None
+
+
+
+   .. py:attribute:: robustness_score
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: sensitive_assumptions
+      :type:  list[str]
+      :value: None
+
+
+

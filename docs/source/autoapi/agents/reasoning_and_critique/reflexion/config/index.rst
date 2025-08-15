@@ -1,6 +1,5 @@
-
-:py:mod:`agents.reasoning_and_critique.reflexion.config`
-========================================================
+agents.reasoning_and_critique.reflexion.config
+==============================================
 
 .. py:module:: agents.reasoning_and_critique.reflexion.config
 
@@ -16,33 +15,47 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: ReflexionConfig
+
+   Bases: :py:obj:`haive.core.engine.agent.agent.AgentConfig`
+
+
+   Configuration for the Reflexion agent.
+
+
+   .. autolink-examples:: ReflexionConfig
+      :collapse:
+
+   .. py:method:: create_agent() -> Any
+      :classmethod:
 
 
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ReflexionConfig:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ReflexionConfig {
-        node [shape=record];
-        "ReflexionConfig" [label="ReflexionConfig"];
-        "haive.core.engine.agent.agent.AgentConfig" -> "ReflexionConfig";
-      }
-
-.. autoclass:: agents.reasoning_and_critique.reflexion.config.ReflexionConfig
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. py:attribute:: attempts
+      :type:  int
+      :value: 3
 
 
 
+   .. py:attribute:: engines
+      :type:  dict[str, haive.core.engine.aug_llm.AugLLMConfig]
 
-.. rubric:: Related Links
 
-.. autolink-examples:: agents.reasoning_and_critique.reflexion.config
-   :collapse:
-   
-.. autolink-skip:: next
+   .. py:attribute:: max_iterations
+      :type:  int
+      :value: 5
+
+
+
+   .. py:attribute:: models
+      :type:  list[pydantic.BaseModel]
+
+
+   .. py:attribute:: state_schema
+      :type:  pydantic.BaseModel
+
+
+   .. py:attribute:: tools
+      :type:  list[langchain_core.tools.BaseTool | collections.abc.Callable]
+
+

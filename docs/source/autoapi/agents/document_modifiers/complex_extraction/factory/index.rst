@@ -1,9 +1,7 @@
-
-:py:mod:`agents.document_modifiers.complex_extraction.factory`
-==============================================================
+agents.document_modifiers.complex_extraction.factory
+====================================================
 
 .. py:module:: agents.document_modifiers.complex_extraction.factory
-
 
 
 Functions
@@ -12,6 +10,10 @@ Functions
 .. autoapisummary::
 
    agents.document_modifiers.complex_extraction.factory.create_complex_extraction_agent
+
+
+Module Contents
+---------------
 
 .. py:function:: create_complex_extraction_agent(extraction_model: type[pydantic.BaseModel], system_prompt: str | None = None, model: str = 'gpt-4o', max_retries: int = 3, force_tool_choice: bool = True, use_jsonpatch: bool = True, parse_pydantic: bool = False, **kwargs) -> haive.agents.document_modifiers.complex_extraction.agent.ComplexExtractionAgent
 
@@ -32,11 +34,3 @@ Functions
    .. autolink-examples:: create_complex_extraction_agent
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.document_modifiers.complex_extraction.factory
-   :collapse:
-   
-.. autolink-skip:: next

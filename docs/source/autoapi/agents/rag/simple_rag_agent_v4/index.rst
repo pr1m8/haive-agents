@@ -1,14 +1,16 @@
-
-:py:mod:`agents.rag.simple_rag_agent_v4`
-========================================
+agents.rag.simple_rag_agent_v4
+==============================
 
 .. py:module:: agents.rag.simple_rag_agent_v4
 
-SimpleRAGAgentV4 - Simple RAG with retrieved documents in prompt.
+.. autoapi-nested-parse::
+
+   SimpleRAGAgentV4 - Simple RAG with retrieved documents in prompt.
 
 
-.. autolink-examples:: agents.rag.simple_rag_agent_v4
-   :collapse:
+   .. autolink-examples:: agents.rag.simple_rag_agent_v4
+      :collapse:
+
 
 Classes
 -------
@@ -21,33 +23,47 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: SimpleRAGAgentV4
+
+   Bases: :py:obj:`haive.agents.multi.agent.MultiAgent`
+
+
+   Simple RAG = MultiAgent([BaseRAGAgent, AnswerAgent], mode="sequential").
+
+
+   .. autolink-examples:: SimpleRAGAgentV4
+      :collapse:
+
+   .. py:method:: model_post_init(__context)
+
+      Set up the agents with the configs.
+
+
+      .. autolink-examples:: model_post_init
+         :collapse:
+
+
+   .. py:attribute:: agents
+      :type:  list
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for SimpleRAGAgentV4:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_SimpleRAGAgentV4 {
-        node [shape=record];
-        "SimpleRAGAgentV4" [label="SimpleRAGAgentV4"];
-        "haive.agents.multi.agent.MultiAgent" -> "SimpleRAGAgentV4";
-      }
-
-.. autoclass:: agents.rag.simple_rag_agent_v4.SimpleRAGAgentV4
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. py:attribute:: execution_mode
+      :type:  str
+      :value: None
 
 
 
+   .. py:attribute:: llm_config
+      :type:  haive.core.engine.aug_llm.AugLLMConfig
+      :value: None
 
-.. rubric:: Related Links
 
-.. autolink-examples:: agents.rag.simple_rag_agent_v4
-   :collapse:
-   
-.. autolink-skip:: next
+
+   .. py:attribute:: vector_store_config
+      :type:  haive.core.engine.vectorstore.vectorstore.VectorStoreConfig
+      :value: None
+
+
+

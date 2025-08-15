@@ -1,6 +1,5 @@
-
-:py:mod:`agents.rag.dynamic.state`
-==================================
+agents.rag.dynamic.state
+========================
 
 .. py:module:: agents.rag.dynamic.state
 
@@ -16,33 +15,38 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: DynamicRAGState
+
+   Bases: :py:obj:`haive.agents.rag.base.state.BaseRAGState`
+
+
+   State for Dynamic RAG.
+
+
+   .. autolink-examples:: DynamicRAGState
+      :collapse:
+
+   .. py:attribute:: routing_explanation
+      :type:  str | None
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for DynamicRAGState:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_DynamicRAGState {
-        node [shape=record];
-        "DynamicRAGState" [label="DynamicRAGState"];
-        "haive.agents.rag.base.state.BaseRAGState" -> "DynamicRAGState";
-      }
-
-.. autoclass:: agents.rag.dynamic.state.DynamicRAGState
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   .. py:attribute:: selected_sources
+      :type:  list[str]
+      :value: None
 
 
 
+   .. py:attribute:: source_documents
+      :type:  dict[str, list[langchain.schema.Document]]
+      :value: None
 
-.. rubric:: Related Links
 
-.. autolink-examples:: agents.rag.dynamic.state
-   :collapse:
-   
-.. autolink-skip:: next
+
+   .. py:attribute:: source_metrics
+      :type:  dict[str, dict[str, Any]]
+      :value: None
+
+
+

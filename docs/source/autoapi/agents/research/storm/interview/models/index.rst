@@ -1,14 +1,16 @@
-
-:py:mod:`agents.research.storm.interview.models`
-================================================
+agents.research.storm.interview.models
+======================================
 
 .. py:module:: agents.research.storm.interview.models
 
-Models for STORM interview functionality.
+.. autoapi-nested-parse::
+
+   Models for STORM interview functionality.
 
 
-.. autolink-examples:: agents.research.storm.interview.models
-   :collapse:
+   .. autolink-examples:: agents.research.storm.interview.models
+      :collapse:
+
 
 Classes
 -------
@@ -21,41 +23,63 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: InterviewState(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
 
 
+   State for interview process in STORM research.
 
-.. toggle:: Show Inheritance Diagram
+   Create a new model by parsing and validating input data from keyword arguments.
 
-   Inheritance diagram for InterviewState:
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
 
-   .. graphviz::
-      :align: center
+   `self` is explicitly positional-only to allow `self` as a field name.
 
-      digraph inheritance_InterviewState {
-        node [shape=record];
-        "InterviewState" [label="InterviewState"];
-        "pydantic.BaseModel" -> "InterviewState";
-      }
 
-.. autopydantic_model:: agents.research.storm.interview.models.InterviewState
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. autolink-examples:: __init__
+      :collapse:
 
+
+   .. autolink-examples:: InterviewState
+      :collapse:
+
+   .. py:class:: Config
+
+      .. py:attribute:: arbitrary_types_allowed
+         :value: True
 
 
 
 
-.. rubric:: Related Links
+   .. py:attribute:: answers
+      :type:  list[str]
+      :value: None
 
-.. autolink-examples:: agents.research.storm.interview.models
-   :collapse:
-   
-.. autolink-skip:: next
+
+
+   .. py:attribute:: interviewee
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: interviewer
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: metadata
+      :type:  dict[str, Any]
+      :value: None
+
+
+
+   .. py:attribute:: questions
+      :type:  list[str]
+      :value: None
+
+
+

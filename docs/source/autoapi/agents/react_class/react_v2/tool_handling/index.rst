@@ -1,8 +1,15 @@
-
-:py:mod:`agents.react_class.react_v2.tool_handling`
-===================================================
+agents.react_class.react_v2.tool_handling
+=========================================
 
 .. py:module:: agents.react_class.react_v2.tool_handling
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.react_class.react_v2.tool_handling.logger
 
 
 Classes
@@ -13,30 +20,6 @@ Classes
    agents.react_class.react_v2.tool_handling.GeneralizedToolNode
 
 
-Module Contents
----------------
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for GeneralizedToolNode:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_GeneralizedToolNode {
-        node [shape=record];
-        "GeneralizedToolNode" [label="GeneralizedToolNode"];
-      }
-
-.. autoclass:: agents.react_class.react_v2.tool_handling.GeneralizedToolNode
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
 Functions
 ---------
 
@@ -44,6 +27,58 @@ Functions
 
    agents.react_class.react_v2.tool_handling.create_human_assistance_tool
    agents.react_class.react_v2.tool_handling.human_input_node
+
+
+Module Contents
+---------------
+
+.. py:class:: GeneralizedToolNode(tools: list[langchain_core.tools.BaseTool], parallel: bool = True)
+
+   A generalized tool node that supports both standard tools and human interaction.
+
+   This node processes tool calls from the LLM and either:
+   1. Executes standard tools using LangGraph's ToolNode
+   2. Flags the state for human input when the "request_human_assistance" tool is called
+
+   Initialize the generalized tool node.
+
+   :param tools: List of tools that can be executed
+   :param parallel: Whether to run tools in parallel
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: GeneralizedToolNode
+      :collapse:
+
+   .. py:method:: __call__(state: dict[str, Any]) -> dict[str, Any]
+
+      Process tool calls and update state with results or flag for human input.
+
+      :param state: Current agent state
+
+      :returns: Updated state with tool results or human input flag
+
+
+      .. autolink-examples:: __call__
+         :collapse:
+
+
+   .. py:attribute:: human_tool_names
+
+
+   .. py:attribute:: parallel
+      :value: True
+
+
+
+   .. py:attribute:: tool_node
+
+
+   .. py:attribute:: tools_by_name
+
 
 .. py:function:: create_human_assistance_tool(name: str = 'request_human_assistance') -> langchain_core.tools.BaseTool
 
@@ -72,11 +107,5 @@ Functions
    .. autolink-examples:: human_input_node
       :collapse:
 
+.. py:data:: logger
 
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.react_class.react_v2.tool_handling
-   :collapse:
-   
-.. autolink-skip:: next

@@ -1,15 +1,24 @@
-
-:py:mod:`agents.research.storm.example`
-=======================================
+agents.research.storm.example
+=============================
 
 .. py:module:: agents.research.storm.example
 
-Example demonstrating how to use the STORM agent to generate.
-a comprehensive Wikipedia-style article on a given topic.
+.. autoapi-nested-parse::
+
+   Example demonstrating how to use the STORM agent to generate.
+   a comprehensive Wikipedia-style article on a given topic.
 
 
-.. autolink-examples:: agents.research.storm.example
-   :collapse:
+   .. autolink-examples:: agents.research.storm.example
+      :collapse:
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.research.storm.example.logger
 
 
 Functions
@@ -20,6 +29,10 @@ Functions
    agents.research.storm.example.main
    agents.research.storm.example.run_storm_agent
    agents.research.storm.example.setup_environment
+
+
+Module Contents
+---------------
 
 .. py:function:: main() -> None
 
@@ -53,11 +66,5 @@ Functions
    .. autolink-examples:: setup_environment
       :collapse:
 
+.. py:data:: logger
 
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.research.storm.example
-   :collapse:
-   
-.. autolink-skip:: next

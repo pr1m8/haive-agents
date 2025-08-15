@@ -1,17 +1,27 @@
-
-:py:mod:`agents.planning.smart_parsing_example`
-===============================================
+agents.planning.smart_parsing_example
+=====================================
 
 .. py:module:: agents.planning.smart_parsing_example
 
-Smart Output Parsing Integration Example for Planning Agents.
+.. autoapi-nested-parse::
 
-This example demonstrates how to use smart output parsing with post-hooks
-to handle different types of agent outputs intelligently.
+   Smart Output Parsing Integration Example for Planning Agents.
+
+   This example demonstrates how to use smart output parsing with post-hooks
+   to handle different types of agent outputs intelligently.
 
 
-.. autolink-examples:: agents.planning.smart_parsing_example
-   :collapse:
+   .. autolink-examples:: agents.planning.smart_parsing_example
+      :collapse:
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   agents.planning.smart_parsing_example.logger
+
 
 Classes
 -------
@@ -24,163 +34,6 @@ Classes
    agents.planning.smart_parsing_example.SmartPlannerAgent
    agents.planning.smart_parsing_example.SmartSimpleAgent
    agents.planning.smart_parsing_example.TaskAnalysis
-
-
-Module Contents
----------------
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for DecisionPoint:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_DecisionPoint {
-        node [shape=record];
-        "DecisionPoint" [label="DecisionPoint"];
-        "pydantic.BaseModel" -> "DecisionPoint";
-      }
-
-.. autopydantic_model:: agents.planning.smart_parsing_example.DecisionPoint
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
-
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for ProgressReport:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_ProgressReport {
-        node [shape=record];
-        "ProgressReport" [label="ProgressReport"];
-        "pydantic.BaseModel" -> "ProgressReport";
-      }
-
-.. autopydantic_model:: agents.planning.smart_parsing_example.ProgressReport
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
-
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for SmartExecutorAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_SmartExecutorAgent {
-        node [shape=record];
-        "SmartExecutorAgent" [label="SmartExecutorAgent"];
-        "haive.agents.base.smart_output_parsing.SmartOutputParsingMixin" -> "SmartExecutorAgent";
-        "haive.agents.planning.base.agents.executor.BaseExecutorAgent" -> "SmartExecutorAgent";
-      }
-
-.. autoclass:: agents.planning.smart_parsing_example.SmartExecutorAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for SmartPlannerAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_SmartPlannerAgent {
-        node [shape=record];
-        "SmartPlannerAgent" [label="SmartPlannerAgent"];
-        "haive.agents.base.smart_output_parsing.SmartOutputParsingMixin" -> "SmartPlannerAgent";
-        "haive.agents.planning.base.agents.planner.BasePlannerAgent" -> "SmartPlannerAgent";
-      }
-
-.. autoclass:: agents.planning.smart_parsing_example.SmartPlannerAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for SmartSimpleAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_SmartSimpleAgent {
-        node [shape=record];
-        "SmartSimpleAgent" [label="SmartSimpleAgent"];
-        "haive.agents.base.smart_output_parsing.SmartOutputParsingMixin" -> "SmartSimpleAgent";
-        "SimpleAgentV3" -> "SmartSimpleAgent";
-      }
-
-.. autoclass:: agents.planning.smart_parsing_example.SmartSimpleAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for TaskAnalysis:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_TaskAnalysis {
-        node [shape=record];
-        "TaskAnalysis" [label="TaskAnalysis"];
-        "pydantic.BaseModel" -> "TaskAnalysis";
-      }
-
-.. autopydantic_model:: agents.planning.smart_parsing_example.TaskAnalysis
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
-
 
 
 Functions
@@ -196,6 +49,181 @@ Functions
    agents.planning.smart_parsing_example.create_adaptive_parsing_workflow
    agents.planning.smart_parsing_example.create_smart_planning_workflow
    agents.planning.smart_parsing_example.test_smart_parsing_workflow
+
+
+Module Contents
+---------------
+
+.. py:class:: DecisionPoint(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Model for decision points in workflow.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: DecisionPoint
+      :collapse:
+
+   .. py:attribute:: decision_type
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: options
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: reasoning
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: recommendation
+      :type:  str
+      :value: None
+
+
+
+.. py:class:: ProgressReport(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Model for progress reporting.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: ProgressReport
+      :collapse:
+
+   .. py:attribute:: completed_steps
+      :type:  int
+      :value: None
+
+
+
+   .. py:attribute:: current_status
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: next_actions
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: total_steps
+      :type:  int
+      :value: None
+
+
+
+.. py:class:: SmartExecutorAgent(**kwargs)
+
+   Bases: :py:obj:`haive.agents.base.smart_output_parsing.SmartOutputParsingMixin`, :py:obj:`haive.agents.planning.base.agents.executor.BaseExecutorAgent`
+
+
+   BaseExecutorAgent enhanced with smart output parsing.
+
+
+   .. autolink-examples:: SmartExecutorAgent
+      :collapse:
+
+.. py:class:: SmartPlannerAgent(**kwargs)
+
+   Bases: :py:obj:`haive.agents.base.smart_output_parsing.SmartOutputParsingMixin`, :py:obj:`haive.agents.planning.base.agents.planner.BasePlannerAgent`
+
+
+   BasePlannerAgent enhanced with smart output parsing.
+
+
+   .. autolink-examples:: SmartPlannerAgent
+      :collapse:
+
+.. py:class:: SmartSimpleAgent(**kwargs)
+
+   Bases: :py:obj:`haive.agents.base.smart_output_parsing.SmartOutputParsingMixin`, :py:obj:`SimpleAgentV3`
+
+
+   SimpleAgentV3 enhanced with smart output parsing.
+
+
+   .. autolink-examples:: SmartSimpleAgent
+      :collapse:
+
+.. py:class:: TaskAnalysis(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Model for task analysis output.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: TaskAnalysis
+      :collapse:
+
+   .. py:attribute:: complexity
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: estimated_time
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: required_tools
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: risk_factors
+      :type:  list[str]
+      :value: None
+
+
 
 .. py:function:: _enhanced_content_detection(state) -> str
 
@@ -265,11 +293,5 @@ Functions
    .. autolink-examples:: test_smart_parsing_workflow
       :collapse:
 
+.. py:data:: logger
 
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.planning.smart_parsing_example
-   :collapse:
-   
-.. autolink-skip:: next

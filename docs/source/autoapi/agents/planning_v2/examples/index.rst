@@ -1,15 +1,23 @@
-
-:py:mod:`agents.planning_v2.examples`
-=====================================
+agents.planning_v2.examples
+===========================
 
 .. py:module:: agents.planning_v2.examples
 
-Examples for planning_v2 module.
+.. autoapi-nested-parse::
+
+   Examples for planning_v2 module.
 
 
-.. autolink-examples:: agents.planning_v2.examples
-   :collapse:
+   .. autolink-examples:: agents.planning_v2.examples
+      :collapse:
 
 
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /autoapi/agents/planning_v2/examples/tree_planning_example/index
 
 

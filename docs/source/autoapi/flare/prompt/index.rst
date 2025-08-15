@@ -1,10 +1,6 @@
-
-:py:mod:`flare.prompt`
-======================
+flare.prompt
+============
 
 .. py:module:: flare.prompt
-
-
-
 
 

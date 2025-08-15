@@ -1,9 +1,7 @@
-
-:py:mod:`agents.rag.self_rag2.nodes.transform_query`
-====================================================
+agents.rag.self_rag2.nodes.transform_query
+==========================================
 
 .. py:module:: agents.rag.self_rag2.nodes.transform_query
-
 
 
 Functions
@@ -12,6 +10,10 @@ Functions
 .. autoapisummary::
 
    agents.rag.self_rag2.nodes.transform_query.transform_query
+
+
+Module Contents
+---------------
 
 .. py:function:: transform_query(state: dict[str, Any])
 
@@ -27,11 +29,3 @@ Functions
    .. autolink-examples:: transform_query
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.rag.self_rag2.nodes.transform_query
-   :collapse:
-   
-.. autolink-skip:: next

@@ -1,6 +1,5 @@
-
-:py:mod:`agents.sequential.agent`
-=================================
+agents.sequential.agent
+=======================
 
 .. py:module:: agents.sequential.agent
 
@@ -13,31 +12,6 @@ Classes
    agents.sequential.agent.SequentialAgent
 
 
-Module Contents
----------------
-
-
-
-
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for SequentialAgent:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_SequentialAgent {
-        node [shape=record];
-        "SequentialAgent" [label="SequentialAgent"];
-        "haive.agents.base.agent.Agent" -> "SequentialAgent";
-      }
-
-.. autoclass:: agents.sequential.agent.SequentialAgent
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
 Functions
 ---------
 
@@ -47,6 +21,77 @@ Functions
    agents.sequential.agent.set_state_schema
    agents.sequential.agent.validate_agents
    agents.sequential.agent.validate_non_empty_agents
+
+
+Module Contents
+---------------
+
+.. py:class:: SequentialAgent
+
+   Bases: :py:obj:`haive.agents.base.agent.Agent`
+
+
+   Sequential agent that executes multiple agents in sequence.
+
+
+   .. autolink-examples:: SequentialAgent
+      :collapse:
+
+   .. py:method:: build_graph() -> haive.core.graph.state_graph.base_graph2.BaseGraph
+
+      Build the sequential graph connecting agents in order.
+
+
+      .. autolink-examples:: build_graph
+         :collapse:
+
+
+   .. py:method:: set_state_schema() -> SequentialAgent
+
+
+   .. py:method:: validate_agents(values) -> Any
+      :classmethod:
+
+
+      Validate that agents are Agent instances or convertible.
+
+
+      .. autolink-examples:: validate_agents
+         :collapse:
+
+
+   .. py:method:: validate_non_empty_agents() -> SequentialAgent
+
+      Ensure we have at least one agent.
+
+
+      .. autolink-examples:: validate_non_empty_agents
+         :collapse:
+
+
+   .. py:attribute:: agents
+      :type:  collections.abc.Sequence[Agent | Any]
+      :value: None
+
+
+
+   .. py:attribute:: name
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: smart_compose
+      :type:  bool
+      :value: None
+
+
+
+   .. py:attribute:: state_schema
+      :type:  type[pydantic.BaseModel] | None
+      :value: None
+
+
 
 .. py:function:: build_graph(agents: collections.abc.Sequence[haive.agents.base.agent.Agent]) -> haive.core.graph.state_graph.base_graph2.BaseGraph
 
@@ -80,11 +125,3 @@ Functions
    .. autolink-examples:: validate_non_empty_agents
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.sequential.agent
-   :collapse:
-   
-.. autolink-skip:: next

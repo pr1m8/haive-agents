@@ -1,9 +1,7 @@
-
-:py:mod:`agents.reasoning_and_critique.lats.utils`
-==================================================
+agents.reasoning_and_critique.lats.utils
+========================================
 
 .. py:module:: agents.reasoning_and_critique.lats.utils
-
 
 
 Functions
@@ -14,6 +12,10 @@ Functions
    agents.reasoning_and_critique.lats.utils.create_lats_agent
    agents.reasoning_and_critique.lats.utils.create_reflection_chain
    agents.reasoning_and_critique.lats.utils.format_messages_for_chain
+
+
+Module Contents
+---------------
 
 .. py:function:: create_lats_agent(system_prompt: str = 'You are a helpful assistant that can answer questions and help with tasks.', tools: list[langchain_core.tools.BaseTool] | None = None, max_depth: int = 3, max_iterations: int = 3, n_candidates: int = 3, exploration_weight: float = 1.0, name: str = 'lats_agent', model: str = 'gpt-4o') -> Any
 
@@ -50,11 +52,3 @@ Functions
    .. autolink-examples:: format_messages_for_chain
       :collapse:
 
-
-
-.. rubric:: Related Links
-
-.. autolink-examples:: agents.reasoning_and_critique.lats.utils
-   :collapse:
-   
-.. autolink-skip:: next

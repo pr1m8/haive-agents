@@ -1,6 +1,5 @@
-
-:py:mod:`agents.rag.dynamic.models`
-===================================
+agents.rag.dynamic.models
+=========================
 
 .. py:module:: agents.rag.dynamic.models
 
@@ -16,41 +15,54 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: DataSourceConfig(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Base configuration for a data source.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: DataSourceConfig
+      :collapse:
+
+   .. py:method:: create_retriever() -> haive.core.models.retriever.base.RetrieverConfig
+      :abstractmethod:
+
+
+      Create a retriever for this data source.
+
+
+      .. autolink-examples:: create_retriever
+         :collapse:
+
+
+   .. py:attribute:: description
+      :type:  str
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
-
-   Inheritance diagram for DataSourceConfig:
-
-   .. graphviz::
-      :align: center
-
-      digraph inheritance_DataSourceConfig {
-        node [shape=record];
-        "DataSourceConfig" [label="DataSourceConfig"];
-        "pydantic.BaseModel" -> "DataSourceConfig";
-      }
-
-.. autopydantic_model:: agents.rag.dynamic.models.DataSourceConfig
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
+   .. py:attribute:: name
+      :type:  str
+      :value: None
 
 
 
+   .. py:attribute:: source_type
+      :type:  haive.agents.rag.dynamic.data_source_types.DataSourceType
+      :value: None
 
 
-.. rubric:: Related Links
 
-.. autolink-examples:: agents.rag.dynamic.models
-   :collapse:
-   
-.. autolink-skip:: next

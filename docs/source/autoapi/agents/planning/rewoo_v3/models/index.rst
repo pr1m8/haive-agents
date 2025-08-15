@@ -1,23 +1,25 @@
-
-:py:mod:`agents.planning.rewoo_v3.models`
-=========================================
+agents.planning.rewoo_v3.models
+===============================
 
 .. py:module:: agents.planning.rewoo_v3.models
 
-Pydantic models for ReWOO V3 Agent.
+.. autoapi-nested-parse::
 
-This module defines structured output models for the ReWOO (Reasoning without Observation)
-methodology using Enhanced MultiAgent V3.
+   Pydantic models for ReWOO V3 Agent.
 
-Key Models:
-- ReWOOPlan: Planner agent structured output with evidence placeholders
-- EvidenceItem: Individual evidence collected by worker
-- EvidenceCollection: Worker agent structured output with all evidence
-- ReWOOSolution: Solver agent final answer with reasoning
+   This module defines structured output models for the ReWOO (Reasoning without Observation)
+   methodology using Enhanced MultiAgent V3.
+
+   Key Models:
+   - ReWOOPlan: Planner agent structured output with evidence placeholders
+   - EvidenceItem: Individual evidence collected by worker
+   - EvidenceCollection: Worker agent structured output with all evidence
+   - ReWOOSolution: Solver agent final answer with reasoning
 
 
-.. autolink-examples:: agents.planning.rewoo_v3.models
-   :collapse:
+   .. autolink-examples:: agents.planning.rewoo_v3.models
+      :collapse:
+
 
 Classes
 -------
@@ -37,242 +39,539 @@ Classes
 Module Contents
 ---------------
 
+.. py:class:: EvidenceCollection(/, **data: Any)
 
+   Bases: :py:obj:`pydantic.BaseModel`
 
 
-.. toggle:: Show Inheritance Diagram
+   Worker agent structured output with all collected evidence.
 
-   Inheritance diagram for EvidenceCollection:
+   Create a new model by parsing and validating input data from keyword arguments.
 
-   .. graphviz::
-      :align: center
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
 
-      digraph inheritance_EvidenceCollection {
-        node [shape=record];
-        "EvidenceCollection" [label="EvidenceCollection"];
-        "pydantic.BaseModel" -> "EvidenceCollection";
-      }
+   `self` is explicitly positional-only to allow `self` as a field name.
 
-.. autopydantic_model:: agents.planning.rewoo_v3.models.EvidenceCollection
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
 
+   .. autolink-examples:: __init__
+      :collapse:
 
 
+   .. autolink-examples:: EvidenceCollection
+      :collapse:
 
+   .. py:attribute:: collection_id
+      :type:  str
+      :value: None
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for EvidenceItem:
 
-   .. graphviz::
-      :align: center
+   .. py:attribute:: completed_at
+      :type:  datetime.datetime
+      :value: None
 
-      digraph inheritance_EvidenceItem {
-        node [shape=record];
-        "EvidenceItem" [label="EvidenceItem"];
-        "pydantic.BaseModel" -> "EvidenceItem";
-      }
 
-.. autopydantic_model:: agents.planning.rewoo_v3.models.EvidenceItem
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
 
+   .. py:attribute:: evidence_items
+      :type:  list[EvidenceItem]
+      :value: None
 
 
 
+   .. py:attribute:: execution_notes
+      :type:  list[str]
+      :value: None
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for EvidenceStatus:
 
-   .. graphviz::
-      :align: center
+   .. py:attribute:: failure_count
+      :type:  int
+      :value: None
 
-      digraph inheritance_EvidenceStatus {
-        node [shape=record];
-        "EvidenceStatus" [label="EvidenceStatus"];
-        "str" -> "EvidenceStatus";
-        "enum.Enum" -> "EvidenceStatus";
-      }
 
-.. autoclass:: agents.planning.rewoo_v3.models.EvidenceStatus
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
-   .. note::
+   .. py:attribute:: plan_id
+      :type:  str
+      :value: None
 
-      **EvidenceStatus** is an Enum defined in ``agents.planning.rewoo_v3.models``.
 
 
+   .. py:attribute:: success_count
+      :type:  int
+      :value: None
 
 
 
-.. toggle:: Show Inheritance Diagram
+   .. py:attribute:: summary
+      :type:  str
+      :value: None
 
-   Inheritance diagram for PlanStep:
 
-   .. graphviz::
-      :align: center
 
-      digraph inheritance_PlanStep {
-        node [shape=record];
-        "PlanStep" [label="PlanStep"];
-        "pydantic.BaseModel" -> "PlanStep";
-      }
+   .. py:attribute:: tools_used
+      :type:  list[str]
+      :value: None
 
-.. autopydantic_model:: agents.planning.rewoo_v3.models.PlanStep
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
 
 
+.. py:class:: EvidenceItem(/, **data: Any)
 
+   Bases: :py:obj:`pydantic.BaseModel`
 
 
-.. toggle:: Show Inheritance Diagram
+   Individual piece of evidence collected by Worker.
 
-   Inheritance diagram for ReWOOPlan:
+   Create a new model by parsing and validating input data from keyword arguments.
 
-   .. graphviz::
-      :align: center
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
 
-      digraph inheritance_ReWOOPlan {
-        node [shape=record];
-        "ReWOOPlan" [label="ReWOOPlan"];
-        "pydantic.BaseModel" -> "ReWOOPlan";
-      }
+   `self` is explicitly positional-only to allow `self` as a field name.
 
-.. autopydantic_model:: agents.planning.rewoo_v3.models.ReWOOPlan
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
 
+   .. autolink-examples:: __init__
+      :collapse:
 
 
+   .. autolink-examples:: EvidenceItem
+      :collapse:
 
+   .. py:attribute:: content
+      :type:  str
+      :value: None
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for ReWOOSolution:
 
-   .. graphviz::
-      :align: center
+   .. py:attribute:: evidence_id
+      :type:  str
+      :value: None
 
-      digraph inheritance_ReWOOSolution {
-        node [shape=record];
-        "ReWOOSolution" [label="ReWOOSolution"];
-        "pydantic.BaseModel" -> "ReWOOSolution";
-      }
 
-.. autopydantic_model:: agents.planning.rewoo_v3.models.ReWOOSolution
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
 
+   .. py:attribute:: metadata
+      :type:  dict[str, Any]
+      :value: None
 
 
 
+   .. py:attribute:: source
+      :type:  str
+      :value: None
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for ReWOOV3Input:
 
-   .. graphviz::
-      :align: center
+   .. py:attribute:: status
+      :type:  EvidenceStatus
+      :value: None
 
-      digraph inheritance_ReWOOV3Input {
-        node [shape=record];
-        "ReWOOV3Input" [label="ReWOOV3Input"];
-        "pydantic.BaseModel" -> "ReWOOV3Input";
-      }
 
-.. autopydantic_model:: agents.planning.rewoo_v3.models.ReWOOV3Input
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
 
+   .. py:attribute:: step_id
+      :type:  str
+      :value: None
 
 
 
+   .. py:attribute:: timestamp
+      :type:  datetime.datetime
+      :value: None
 
-.. toggle:: Show Inheritance Diagram
 
-   Inheritance diagram for ReWOOV3Output:
 
-   .. graphviz::
-      :align: center
+.. py:class:: EvidenceStatus
 
-      digraph inheritance_ReWOOV3Output {
-        node [shape=record];
-        "ReWOOV3Output" [label="ReWOOV3Output"];
-        "pydantic.BaseModel" -> "ReWOOV3Output";
-      }
+   Bases: :py:obj:`str`, :py:obj:`enum.Enum`
 
-.. autopydantic_model:: agents.planning.rewoo_v3.models.ReWOOV3Output
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :model-show-field-summary:
-   :model-show-config-summary:
-   :model-show-validator-members:
-   :model-show-validator-summary:
-   :model-show-json:
-   :field-list-validators:
-   :field-show-constraints:
 
+   Status of evidence collection.
 
+   Initialize self.  See help(type(self)) for accurate signature.
 
 
+   .. autolink-examples:: __init__
+      :collapse:
 
-.. rubric:: Related Links
 
-.. autolink-examples:: agents.planning.rewoo_v3.models
-   :collapse:
-   
-.. autolink-skip:: next
+   .. autolink-examples:: EvidenceStatus
+      :collapse:
+
+   .. py:attribute:: FAILED
+      :value: 'failed'
+
+
+
+   .. py:attribute:: PARTIAL
+      :value: 'partial'
+
+
+
+   .. py:attribute:: PENDING
+      :value: 'pending'
+
+
+
+   .. py:attribute:: SUCCESS
+      :value: 'success'
+
+
+
+.. py:class:: PlanStep(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Individual step in the ReWOO plan.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: PlanStep
+      :collapse:
+
+   .. py:attribute:: depends_on
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: description
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: evidence_id
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: step_id
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: tool_call
+      :type:  str | None
+      :value: None
+
+
+
+.. py:class:: ReWOOPlan(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Structured planning output from Planner agent.
+
+   The plan contains all steps upfront without seeing any tool results.
+   Each step has an evidence placeholder that will be filled by the Worker.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: ReWOOPlan
+      :collapse:
+
+   .. py:attribute:: approach
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: created_at
+      :type:  datetime.datetime
+      :value: None
+
+
+
+   .. py:attribute:: expected_evidence
+      :type:  dict[str, str]
+      :value: None
+
+
+
+   .. py:attribute:: objective
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: plan_id
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: reasoning
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: steps
+      :type:  list[PlanStep]
+      :value: None
+
+
+
+   .. py:attribute:: total_steps
+      :type:  int
+      :value: None
+
+
+
+.. py:class:: ReWOOSolution(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Final synthesized solution from Solver agent.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: ReWOOSolution
+      :collapse:
+
+   .. py:attribute:: confidence
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: created_at
+      :type:  datetime.datetime
+      :value: None
+
+
+
+   .. py:attribute:: evidence_used
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: final_answer
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: limitations
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: original_query
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: reasoning
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: solution_id
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: synthesis_process
+      :type:  str
+      :value: None
+
+
+
+.. py:class:: ReWOOV3Input(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Input model for ReWOO V3 agent.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: ReWOOV3Input
+      :collapse:
+
+   .. py:attribute:: context
+      :type:  str | None
+      :value: None
+
+
+
+   .. py:attribute:: max_steps
+      :type:  int | None
+      :value: None
+
+
+
+   .. py:attribute:: query
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: tools_preference
+      :type:  list[str] | None
+      :value: None
+
+
+
+.. py:class:: ReWOOV3Output(/, **data: Any)
+
+   Bases: :py:obj:`pydantic.BaseModel`
+
+
+   Output model for ReWOO V3 agent.
+
+   Create a new model by parsing and validating input data from keyword arguments.
+
+   Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+   validated to form a valid model.
+
+   `self` is explicitly positional-only to allow `self` as a field name.
+
+
+   .. autolink-examples:: __init__
+      :collapse:
+
+
+   .. autolink-examples:: ReWOOV3Output
+      :collapse:
+
+   .. py:attribute:: confidence
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: evidence_collected
+      :type:  int
+      :value: None
+
+
+
+   .. py:attribute:: evidence_summary
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: execution_time
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: final_answer
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: limitations
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: plan_id
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: planning_time
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: query
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: reasoning_process
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: solution_id
+      :type:  str
+      :value: None
+
+
+
+   .. py:attribute:: solving_time
+      :type:  float
+      :value: None
+
+
+
+   .. py:attribute:: steps_planned
+      :type:  int
+      :value: None
+
+
+
+   .. py:attribute:: tools_used
+      :type:  list[str]
+      :value: None
+
+
+
+   .. py:attribute:: total_execution_time
+      :type:  float
+      :value: None
+
+
+
