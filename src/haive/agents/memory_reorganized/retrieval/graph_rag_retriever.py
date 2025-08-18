@@ -498,7 +498,24 @@ class GraphRAGRetriever:
         self._setup_prompts()
 
     def _setup_prompts(self) -> None:
-        """Setup prompts for query analysis and expansion."""
+        """Setup prompts for query analysis and expansion.
+        
+        Initializes the prompt templates used for entity identification and relationship
+        path analysis. These prompts are crucial for the LLM-based analysis components
+        of the Graph RAG retrieval process.
+        
+        The method creates two main prompt templates:
+        
+        1. **Entity Identification Prompt**: Used to identify entities mentioned in user
+           queries and suggest related entities that might be relevant for graph traversal.
+           
+        2. **Relationship Path Analysis Prompt**: Used to analyze the relevance of
+           discovered relationship paths and provide context for query responses.
+           
+        Note:
+            This method is called automatically during initialization and sets up
+            optimized prompts that balance accuracy with token efficiency.
+        """
         self.entity_identification_prompt = PromptTemplate(
             template="""You are an expert at identifying entities in user queries for knowledge graph retrieval.
 
@@ -696,13 +713,109 @@ Analyze the relationship path now:""",
 
         except Exception as e:
             logger.exception(f"Error in Graph RAG retrieval: {e}")
-            # Return empty result on error
+            # Return empty result on error with performance tracking
             result = GraphRAGResult(query=query)
             result.total_time_ms = (datetime.now() - start_time).total_seconds() * 1000
+            
+            # Add error context for debugging
+            result.expansion_terms = ["[ERROR_OCCURRED]"]
+            logger.warning(f"Graph RAG retrieval failed after {result.total_time_ms:.1f}ms for query: '{query[:100]}...'")
+            
             return result
 
     async def _identify_query_entities(self, query: str) -> dict[str, Any]:
-        """Identify entities mentioned in the query."""
+        """Identify entities mentioned in the query using LLM analysis with fallback.
+        
+        This method performs intelligent entity identification from user queries by
+        leveraging LLM capabilities to understand context and suggest related entities.
+        It includes robust fallback mechanisms for cases where LLM analysis fails.
+        
+        The identification process:
+        1. Retrieve known entities from the knowledge graph
+        2. Use LLM with specialized prompt to identify entities in query
+        3. Extract expansion terms and suggested traversal depth
+        4. Fall back to simple string matching if LLM analysis fails
+        
+        Args:
+            query: User's natural language query to analyze
+            
+        Returns:
+            Dict[str, Any]: Entity identification results containing:
+                - direct_entities: List of entities explicitly mentioned in query
+                - related_entities: List of entities suggested as potentially relevant
+                - expansion_terms: List of terms for query expansion
+                - query_intent: Analysis of what the user is trying to find
+                - suggested_traversal_depth: Recommended graph traversal depth
+                
+        Examples:
+            Comprehensive entity identification::
+            
+                query = "How does Python relate to machine learning and data science?"
+                result = await self._identify_query_entities(query)
+                
+                print(f"Direct entities: {result['direct_entities']}")
+                # Output: ['Python', 'Machine Learning', 'Data Science']
+                
+                print(f"Related entities: {result['related_entities']}")
+                # Output: ['Programming', 'Statistics', 'Algorithms']
+                
+                print(f"Expansion terms: {result['expansion_terms']}")
+                # Output: ['programming', 'algorithms', 'statistics', 'AI']
+                
+                print(f"Query intent: {result['query_intent']}")
+                # Output: "User wants to understand relationships between Python and ML/DS"
+                
+                print(f"Suggested depth: {result['suggested_traversal_depth']}")
+                # Output: 2
+                
+            Handling empty knowledge graph::
+            
+                # When no entities exist in knowledge graph
+                result = await self._identify_query_entities("Tell me about quantum computing")
+                
+                # Returns safe defaults
+                assert result['direct_entities'] == []
+                assert result['related_entities'] == []
+                assert result['suggested_traversal_depth'] == 1
+                
+            Entity matching examples::
+            
+                # Technical query
+                tech_query = "Python frameworks for web development"
+                tech_result = await self._identify_query_entities(tech_query)
+                
+                # Business query
+                business_query = "Market analysis for startup companies"
+                business_result = await self._identify_query_entities(business_query)
+                
+                # Compare entity types found
+                print(f"Tech entities: {tech_result['direct_entities']}")
+                print(f"Business entities: {business_result['direct_entities']}")
+                
+        LLM Prompt Engineering:
+            The method uses a sophisticated prompt template that:
+            - Provides context about known entities in the knowledge graph
+            - Requests structured JSON output with specific fields
+            - Includes entity type guidelines (People, Organizations, Concepts, etc.)
+            - Asks for traversal depth suggestions based on query complexity
+            
+        Fallback Mechanism:
+            When LLM analysis fails (due to API errors, malformed responses, etc.),
+            the system automatically falls back to _fallback_entity_identification
+            which uses simple string matching to ensure continued functionality.
+            
+        Performance Optimization:
+            - Limits known entities to first 100 to avoid token limits
+            - Uses efficient string operations for entity lookup
+            - Caches entity information within the knowledge graph
+            
+        Error Recovery:
+            The method handles various error conditions gracefully:
+            - LLM API failures or timeouts
+            - Malformed JSON responses
+            - Empty or invalid entity lists
+            - Missing knowledge graph data
+        """
         # Get known entities from knowledge graph
         known_entities = [
             f"{node.name} ({node.type})"
@@ -750,7 +863,46 @@ Analyze the relationship path now:""",
     def _fallback_entity_identification(
         self, query: str, known_entities: list[str]
     ) -> dict[str, Any]:
-        """Fallback entity identification using simple matching."""
+        """Fallback entity identification using simple matching when LLM analysis fails.
+        
+        This method provides a robust fallback mechanism for entity identification
+        when the LLM-based analysis encounters errors or returns invalid responses.
+        It uses simple string matching to identify entities mentioned in the query.
+        
+        Args:
+            query: User query to analyze for entity mentions
+            known_entities: List of known entities in the knowledge graph
+            
+        Returns:
+            Dict[str, Any]: Entity identification result with structure:
+                - direct_entities: List of entities directly mentioned in query
+                - related_entities: Empty list (fallback doesn't suggest related entities)
+                - expansion_terms: Simple word split of the query
+                - query_intent: Original query as intent description
+                - suggested_traversal_depth: Conservative depth of 1
+                
+        Examples:
+            Fallback entity identification::
+            
+                result = self._fallback_entity_identification(
+                    "Tell me about Python programming",
+                    ["Python (Language)", "Programming (Concept)", "JavaScript (Language)"]
+                )
+                
+                # Result:
+                # {
+                #     "direct_entities": ["Python", "Programming"],
+                #     "related_entities": [],
+                #     "expansion_terms": ["Tell", "me", "about", "Python", "programming"],
+                #     "query_intent": "Tell me about Python programming",
+                #     "suggested_traversal_depth": 1
+                # }
+                
+        Note:
+            This fallback method is conservative and may miss subtle entity relationships
+            that the LLM would catch, but it ensures the system continues to function
+            even when LLM services are unavailable or return errors.
+        """
         query_lower = query.lower()
         direct_entities = []
 
@@ -774,7 +926,59 @@ Analyze the relationship path now:""",
         list[KnowledgeGraphNode],
         list[list[KnowledgeGraphRelationship]],
     ]:
-        """Perform graph traversal to find related entities."""
+        """Perform graph traversal to find related entities and relationship paths.
+        
+        This method implements a breadth-first search algorithm to explore the knowledge
+        graph starting from identified entities. It discovers connected entities and
+        records relationship paths that may be relevant to the user's query.
+        
+        The traversal process:
+        1. Find starting entity nodes in the knowledge graph
+        2. Perform breadth-first exploration up to max_depth
+        3. Filter relationships by confidence threshold
+        4. Collect traversed entities and relationship paths
+        5. Limit paths to prevent memory issues on large graphs
+        
+        Args:
+            direct_entities: Entity names directly mentioned in the query
+            related_entities: Additional entities suggested as potentially relevant
+            max_depth: Maximum traversal depth to prevent infinite loops
+            
+        Returns:
+            Tuple containing:
+                - start_entities: List of KnowledgeGraphNode objects used as starting points
+                - all_traversed: List of all KnowledgeGraphNode objects discovered during traversal
+                - relationship_paths: List of relationship paths (each path is a list of relationships)
+                
+        Examples:
+            Graph traversal for entity exploration::
+            
+                start_entities, traversed, paths = await self._perform_graph_traversal(
+                    direct_entities=["Python", "Machine Learning"],
+                    related_entities=["Data Science"],
+                    max_depth=2
+                )
+                
+                print(f"Started from {len(start_entities)} entities")
+                print(f"Discovered {len(traversed)} total entities")
+                print(f"Found {len(paths)} relationship paths")
+                
+                # Analyze traversed entities
+                for entity in traversed:
+                    print(f"Entity: {entity.name} ({entity.type}) - Confidence: {entity.confidence:.2f}")
+                    
+        Algorithm Details:
+            The breadth-first traversal ensures that shorter paths are discovered first
+            and provides comprehensive coverage of the entity neighborhood. Relationship
+            confidence filtering helps focus on high-quality connections while the path
+            limit (50 paths) prevents excessive memory usage on highly connected graphs.
+            
+        Performance Considerations:
+            - Uses visited set to prevent cycles and duplicate exploration
+            - Applies confidence threshold to reduce low-quality relationships
+            - Limits relationship paths to control memory usage
+            - Supports bidirectional traversal when enabled in configuration
+        """
         kg = self.kg_generator.knowledge_graph
 
         # Find starting entity nodes
@@ -839,7 +1043,79 @@ Analyze the relationship path now:""",
     async def _get_memories_from_graph_entities(
         self, entities: list[KnowledgeGraphNode], namespace: tuple[str, ...] | None
     ) -> list[dict[str, Any]]:
-        """Get memories associated with graph entities."""
+        """Retrieve memories associated with knowledge graph entities.
+        
+        This method extracts memories that are referenced by the provided knowledge
+        graph entities. It adds graph context metadata to each memory to indicate
+        which entities it's associated with and their relationship details.
+        
+        The process:
+        1. Iterate through each knowledge graph entity
+        2. Retrieve memories referenced by each entity
+        3. Add graph context metadata to memories
+        4. Return enriched memories with entity associations
+        
+        Args:
+            entities: List of KnowledgeGraphNode objects to get memories for
+            namespace: Optional namespace filter for memory retrieval
+            
+        Returns:
+            List[Dict[str, Any]]: Memories enriched with graph context metadata.
+                Each memory includes:
+                - Original memory fields (content, metadata, etc.)
+                - graph_context: List of associated entity information
+                    - entity_id: Unique identifier of the associated entity
+                    - entity_name: Human-readable name of the entity
+                    - entity_type: Type classification of the entity
+                    - confidence: Confidence score of the entity
+                    
+        Examples:
+            Retrieving entity-associated memories::
+            
+                entities = [python_entity, ml_entity, ai_entity]
+                memories = await self._get_memories_from_graph_entities(
+                    entities, namespace=("user", "technical")
+                )
+                
+                for memory in memories:
+                    print(f"Memory: {memory['content'][:100]}...")
+                    
+                    # Check graph context
+                    graph_context = memory.get('graph_context', [])
+                    if graph_context:
+                        entities_names = [ctx['entity_name'] for ctx in graph_context]
+                        print(f"  Associated with entities: {entities_names}")
+                        
+                        # Check entity confidence
+                        avg_confidence = sum(ctx['confidence'] for ctx in graph_context) / len(graph_context)
+                        print(f"  Average entity confidence: {avg_confidence:.2f}")
+                        
+            Analyzing graph-memory connections::
+            
+                memories = await self._get_memories_from_graph_entities(traversed_entities)
+                
+                # Group memories by entity type
+                by_entity_type = {}
+                for memory in memories:
+                    for ctx in memory.get('graph_context', []):
+                        entity_type = ctx['entity_type']
+                        if entity_type not in by_entity_type:
+                            by_entity_type[entity_type] = []
+                        by_entity_type[entity_type].append(memory)
+                        
+                for entity_type, type_memories in by_entity_type.items():
+                    print(f"{entity_type}: {len(type_memories)} memories")
+                    
+        Graph Context Structure:
+            The graph_context added to each memory contains detailed entity association
+            information that enables sophisticated analysis of entity-memory relationships
+            and supports advanced ranking algorithms based on graph centrality.
+            
+        Note:
+            Memories may be associated with multiple entities, resulting in multiple
+            graph_context entries. This allows for rich relationship analysis and
+            enables the scoring system to consider multiple entity associations.
+        """
         memories = []
 
         for entity in entities:
@@ -865,7 +1141,80 @@ Analyze the relationship path now:""",
     def _combine_memories(
         self, vector_memories: list[dict[str, Any]], graph_memories: list[dict[str, Any]]
     ) -> list[dict[str, Any]]:
-        """Combine and deduplicate memories from vector and graph sources."""
+        """Combine and deduplicate memories from vector and graph retrieval sources.
+        
+        This method intelligently merges memories retrieved through vector similarity
+        search with those discovered through graph traversal, handling deduplication
+        and metadata enrichment to create a unified result set.
+        
+        The combination process:
+        1. Use memory ID for deduplication to avoid duplicate memories
+        2. Add retrieval source metadata to track how each memory was found
+        3. Merge graph context for memories found through both sources
+        4. Preserve all relevant metadata from both retrieval methods
+        
+        Args:
+            vector_memories: Memories retrieved through vector similarity search
+            graph_memories: Memories retrieved through knowledge graph entity associations
+            
+        Returns:
+            List[Dict[str, Any]]: Combined and deduplicated memories with enriched metadata.
+                Each memory includes:
+                - Original memory content and metadata
+                - retrieval_source: "vector", "graph", or "vector+graph"
+                - graph_context: Entity associations (if applicable)
+                - All original similarity and relevance scores
+                
+        Examples:
+            Combining memory sources::
+            
+                vector_results = await self.memory_store.retrieve_memories(
+                    query="Python programming", limit=20
+                )
+                
+                graph_results = await self._get_memories_from_graph_entities(
+                    [python_entity, programming_entity]
+                )
+                
+                combined = self._combine_memories(vector_results, graph_results)
+                
+                # Analyze retrieval sources
+                source_counts = {}
+                for memory in combined:
+                    source = memory['retrieval_source']
+                    source_counts[source] = source_counts.get(source, 0) + 1
+                    
+                print(f"Memory sources: {source_counts}")
+                # Output: {'vector': 12, 'graph': 3, 'vector+graph': 5}
+                
+            Enhanced memory analysis::
+            
+                combined = self._combine_memories(vector_memories, graph_memories)
+                
+                for memory in combined:
+                    source = memory['retrieval_source']
+                    has_graph_context = 'graph_context' in memory
+                    
+                    print(f"Memory: {memory['content'][:50]}...")
+                    print(f"  Source: {source}")
+                    
+                    if has_graph_context:
+                        entities = [ctx['entity_name'] for ctx in memory['graph_context']]
+                        print(f"  Graph entities: {entities}")
+                        
+        Deduplication Strategy:
+            Memories are deduplicated using their unique ID field. When the same memory
+            is found through both vector search and graph traversal, the system:
+            - Keeps the memory once in the final result
+            - Updates retrieval_source to "vector+graph"
+            - Merges graph_context information from both sources
+            - Preserves the highest quality metadata from either source
+            
+        Metadata Preservation:
+            The combination process preserves all relevant metadata while avoiding
+            conflicts. Graph context is additive, allowing memories to be associated
+            with multiple entities discovered through different retrieval paths.
+        """
         # Use memory ID for deduplication
         combined = {}
 
@@ -901,7 +1250,109 @@ Analyze the relationship path now:""",
         graph_entities: list[KnowledgeGraphNode],
         relationship_paths: list[list[KnowledgeGraphRelationship]],
     ) -> tuple[list[dict[str, Any]], list[float], list[float], list[float]]:
-        """Score memories using combined vector similarity and graph centrality."""
+        """Score memories using sophisticated multi-factor ranking combining vector similarity and graph centrality.
+        
+        This method implements the core ranking algorithm that combines multiple scoring
+        factors to produce the final ranking of retrieved memories. It considers vector
+        similarity, graph centrality, importance, and recency to create a comprehensive
+        relevance score.
+        
+        Scoring Components:
+        1. **Vector Similarity**: Traditional semantic similarity from embeddings
+        2. **Graph Centrality**: Entity importance based on graph structure and relationships
+        3. **Importance Score**: Explicit importance metadata from memory storage
+        4. **Recency Score**: Time-based relevance with decay over approximately 1000 hours
+        
+        Args:
+            memories: List of memories to score and rank
+            query: Original user query for context
+            graph_entities: Knowledge graph entities discovered during traversal
+            relationship_paths: Relationship paths found during graph exploration
+            
+        Returns:
+            Tuple containing:
+                - memories: Original memories list (unchanged order)
+                - similarity_scores: Vector similarity scores for each memory
+                - graph_scores: Graph centrality scores for each memory
+                - final_scores: Combined weighted final scores for ranking
+                
+        Examples:
+            Analyzing memory scoring::
+            
+                memories, sim_scores, graph_scores, final_scores = await self._score_memories(
+                    retrieved_memories, "Python machine learning", entities, paths
+                )
+                
+                # Analyze scoring breakdown
+                for i, memory in enumerate(memories):
+                    print(f"Memory {i+1}: {memory['content'][:50]}...")
+                    print(f"  Similarity: {sim_scores[i]:.3f}")
+                    print(f"  Graph centrality: {graph_scores[i]:.3f}")
+                    print(f"  Final score: {final_scores[i]:.3f}")
+                    
+                    # Calculate component contributions
+                    sim_contrib = sim_scores[i] * self.config.similarity_weight
+                    graph_contrib = graph_scores[i] * self.config.graph_weight
+                    print(f"  Similarity contrib: {sim_contrib:.3f}")
+                    print(f"  Graph contrib: {graph_contrib:.3f}")
+                    
+            Top memory selection::
+            
+                memories, sim_scores, graph_scores, final_scores = await self._score_memories(
+                    all_memories, query, entities, paths
+                )
+                
+                # Sort by final score
+                scored_memories = list(zip(memories, final_scores))
+                scored_memories.sort(key=lambda x: x[1], reverse=True)
+                
+                # Get top 5 memories
+                top_memories = [memory for memory, score in scored_memories[:5]]
+                top_scores = [score for memory, score in scored_memories[:5]]
+                
+                print(f"Top memory score: {top_scores[0]:.3f}")
+                print(f"Average top-5 score: {sum(top_scores)/5:.3f}")
+                
+            Score distribution analysis::
+            
+                _, sim_scores, graph_scores, final_scores = await self._score_memories(
+                    memories, query, entities, paths
+                )
+                
+                # Analyze score distributions
+                avg_similarity = sum(sim_scores) / len(sim_scores)
+                avg_graph = sum(graph_scores) / len(graph_scores)
+                avg_final = sum(final_scores) / len(final_scores)
+                
+                print(f"Average similarity score: {avg_similarity:.3f}")
+                print(f"Average graph score: {avg_graph:.3f}")
+                print(f"Average final score: {avg_final:.3f}")
+                
+                # Find memories with high graph centrality
+                high_centrality = [(i, score) for i, score in enumerate(graph_scores) if score > 0.7]
+                print(f"High centrality memories: {len(high_centrality)}")
+                
+        Scoring Algorithm:
+            Final Score = (similarity × similarity_weight) + 
+                         (graph_centrality × graph_weight) + 
+                         (importance × importance_weight) + 
+                         (recency × recency_weight)
+                         
+            Where weights are configured in GraphRAGRetrieverConfig and should sum to 1.0
+            for optimal ranking performance.
+            
+        Graph Centrality Calculation:
+            Graph centrality considers:
+            - Entity confidence scores from knowledge graph
+            - Number of relationships per entity (normalized)
+            - Presence in discovered relationship paths
+            - Multiple entity associations per memory
+            
+        Performance Considerations:
+            The scoring process is optimized for batch processing and handles edge cases
+            like missing metadata gracefully. Default scores are used when specific
+            components are unavailable.
+        """
         similarity_scores = []
         graph_scores = []
         final_scores = []
@@ -953,7 +1404,111 @@ Analyze the relationship path now:""",
         entity_lookup: dict[str, KnowledgeGraphNode],
         relationship_paths: list[list[KnowledgeGraphRelationship]],
     ) -> float:
-        """Calculate graph centrality score for a memory."""
+        """Calculate graph centrality score for a memory based on associated entities.
+        
+        This method computes how central or important a memory is within the knowledge
+        graph structure by analyzing the entities it's associated with and their
+        position in the graph network.
+        
+        Centrality Factors:
+        1. **Entity Confidence**: Higher confidence entities contribute more to centrality
+        2. **Relationship Count**: Entities with more connections are more central
+        3. **Path Presence**: Entities appearing in relationship paths are more relevant
+        4. **Multi-Entity Normalization**: Score is normalized by number of entities
+        
+        Args:
+            memory: Memory dictionary containing content and metadata
+            entity_lookup: Mapping of entity IDs to KnowledgeGraphNode objects
+            relationship_paths: List of relationship paths discovered during graph traversal
+            
+        Returns:
+            float: Centrality score between 0.0 and 1.0, where higher values indicate
+                more central/important memories within the knowledge graph structure
+                
+        Examples:
+            Analyzing centrality components::
+            
+                memory = {
+                    'content': 'Python is a programming language...',
+                    'metadata': {'entities': ['Python', 'Programming']},
+                    'graph_context': [
+                        {'entity_id': 'python_1', 'entity_name': 'Python', 'confidence': 0.95},
+                        {'entity_id': 'prog_1', 'entity_name': 'Programming', 'confidence': 0.88}
+                    ]
+                }
+                
+                centrality = self._calculate_graph_centrality_score(
+                    memory, entity_lookup, relationship_paths
+                )
+                
+                print(f"Memory centrality score: {centrality:.3f}")
+                
+            Comparing memory centrality::
+            
+                memories_with_centrality = []
+                for memory in all_memories:
+                    centrality = self._calculate_graph_centrality_score(
+                        memory, entity_lookup, paths
+                    )
+                    memories_with_centrality.append((memory, centrality))
+                    
+                # Sort by centrality
+                memories_with_centrality.sort(key=lambda x: x[1], reverse=True)
+                
+                print("Top 3 most central memories:")
+                for i, (memory, centrality) in enumerate(memories_with_centrality[:3]):
+                    print(f"{i+1}. Centrality: {centrality:.3f}")
+                    print(f"   Content: {memory['content'][:100]}...")
+                    
+            Entity contribution analysis::
+            
+                # Analyze which entities contribute most to centrality
+                for memory in sample_memories:
+                    centrality = self._calculate_graph_centrality_score(
+                        memory, entity_lookup, paths
+                    )
+                    
+                    graph_context = memory.get('graph_context', [])
+                    entity_names = [ctx['entity_name'] for ctx in graph_context]
+                    
+                    print(f"Memory centrality: {centrality:.3f}")
+                    print(f"Associated entities: {entity_names}")
+                    
+                    # Check individual entity contributions
+                    for ctx in graph_context:
+                        entity_id = ctx['entity_id']
+                        if entity_id in entity_lookup:
+                            entity = entity_lookup[entity_id]
+                            relationships = kg.get_relationships_for_node(entity_id)
+                            print(f"  {ctx['entity_name']}: {len(relationships)} relationships")
+                            
+        Centrality Components:
+        
+        1. **Entity Confidence (30% weight)**:
+           - Uses the confidence scores of associated entities
+           - Higher confidence entities indicate more reliable associations
+           
+        2. **Relationship Count (40% weight)**:
+           - Counts relationships for each associated entity
+           - Normalized to prevent extremely connected entities from dominating
+           - Max normalized value of 1.0 for entities with 10+ relationships
+           
+        3. **Path Presence (30% weight)**:
+           - Checks if entities appear in discovered relationship paths
+           - Entities in more paths contribute higher centrality
+           - Max normalized value of 1.0 for entities in 10+ paths
+           
+        Normalization:
+            The final centrality score is normalized by the number of entities associated
+            with the memory to prevent memories with many entities from automatically
+            receiving higher scores. This ensures fair comparison across memories with
+            different numbers of entity associations.
+            
+        Edge Cases:
+            - Memories with no associated entities receive a centrality score of 0.0
+            - Missing entities in the lookup are ignored gracefully
+            - The score is capped at 1.0 to maintain consistent ranges
+        """
         # Get entities associated with this memory
         memory_entities = set()
 
@@ -1009,7 +1564,74 @@ Analyze the relationship path now:""",
         return min(centrality_score, 1.0)
 
     def _build_expanded_query(self, original_query: str, expansion_terms: list[str]) -> str:
-        """Build expanded query with additional terms."""
+        """Build expanded query with additional semantic terms for enhanced retrieval.
+        
+        This method enhances the original user query by adding relevant expansion terms
+        identified during entity analysis. Query expansion helps discover additional
+        relevant memories that might not match the original query directly but are
+        semantically related.
+        
+        Args:
+            original_query: The user's original query string
+            expansion_terms: List of additional terms to include in the expanded query
+            
+        Returns:
+            str: Expanded query string combining original query with selected expansion terms
+            
+        Examples:
+            Basic query expansion::
+            
+                original = "Python programming"
+                expansion_terms = ["coding", "development", "scripting", "language"]
+                
+                expanded = self._build_expanded_query(original, expansion_terms)
+                print(f"Original: {original}")
+                print(f"Expanded: {expanded}")
+                # Output: "Python programming coding development scripting"
+                
+            Controlled expansion with limits::
+            
+                # With max_expansion_terms = 3
+                original = "machine learning"
+                expansion_terms = ["AI", "neural", "networks", "deep", "learning", "algorithms"]
+                
+                expanded = self._build_expanded_query(original, expansion_terms)
+                print(f"Expanded: {expanded}")
+                # Output: "machine learning AI neural networks" (limited to 3 terms)
+                
+            Disabled expansion::
+            
+                # When enable_query_expansion = False
+                expanded = self._build_expanded_query(
+                    "data science", ["analytics", "statistics", "ML"]
+                )
+                print(f"Result: {expanded}")
+                # Output: "data science" (no expansion applied)
+                
+            Empty expansion terms::
+            
+                expanded = self._build_expanded_query("blockchain", [])
+                print(f"Result: {expanded}")
+                # Output: "blockchain" (original query unchanged)
+                
+        Configuration Impact:
+            The expansion behavior is controlled by two configuration parameters:
+            
+            - **enable_query_expansion**: Master switch for query expansion feature
+            - **max_expansion_terms**: Limits number of terms added to prevent
+              overly broad queries that might reduce precision
+              
+        Expansion Strategy:
+            The method applies expansion terms in their original order, trusting that
+            the entity identification process has ranked them by relevance. Terms are
+            space-separated and appended to the original query to maintain readability
+            and compatibility with vector search systems.
+            
+        Performance Considerations:
+            Query expansion can significantly improve recall (finding more relevant memories)
+            but may slightly reduce precision if expansion terms are too broad. The
+            max_expansion_terms limit helps balance this trade-off.
+        """
         if not expansion_terms or not self.config.enable_query_expansion:
             return original_query
 
@@ -1020,7 +1642,82 @@ Analyze the relationship path now:""",
         return expanded
 
     def _parse_json_response(self, response: str) -> dict[str, Any] | None:
-        """Parse JSON response from LLM."""
+        """Parse JSON response from LLM with robust error handling.
+        
+        This method extracts and parses JSON data from LLM responses, handling various
+        response formats and providing graceful fallback when parsing fails. It's
+        designed to work with LLM outputs that may contain additional text around
+        the requested JSON structure.
+        
+        Args:
+            response: Raw string response from the LLM
+            
+        Returns:
+            Optional[Dict[str, Any]]: Parsed JSON dictionary if successful, None if parsing fails
+            
+        Examples:
+            Successful JSON parsing::
+            
+                llm_response = '''Here's the analysis:
+                {
+                    "direct_entities": ["Python", "Machine Learning"],
+                    "related_entities": ["Data Science", "AI"],
+                    "expansion_terms": ["programming", "algorithms"],
+                    "query_intent": "Learn about Python for ML"
+                }
+                This should help with your query.'''
+                
+                result = self._parse_json_response(llm_response)
+                if result:
+                    print(f"Found entities: {result['direct_entities']}")
+                    print(f"Expansion terms: {result['expansion_terms']}")
+                    
+            Handling malformed responses::
+            
+                malformed_response = "The entities are Python and ML but I can't format as JSON"
+                
+                result = self._parse_json_response(malformed_response)
+                if result is None:
+                    print("Failed to parse JSON, using fallback method")
+                    # System will use fallback entity identification
+                    
+            Various JSON formats::
+            
+                # Clean JSON
+                clean = '{"entities": ["Python"]}'
+                result1 = self._parse_json_response(clean)
+                
+                # JSON with surrounding text
+                surrounded = 'Analysis: {"entities": ["Python"]} - Done'
+                result2 = self._parse_json_response(surrounded)
+                
+                # Both should parse successfully
+                assert result1 is not None
+                assert result2 is not None
+                
+        Parsing Strategy:
+            1. Locate the first '{' character in the response
+            2. Find the last '}' character in the response
+            3. Extract the substring between these markers
+            4. Attempt to parse as JSON using the standard json module
+            5. Return None if any step fails, triggering fallback mechanisms
+            
+        Error Handling:
+            The method provides comprehensive error handling for:
+            - Missing or malformed JSON structures
+            - Invalid JSON syntax
+            - Empty or None responses
+            - Encoding issues
+            
+        Fallback Integration:
+            When JSON parsing fails, the calling code automatically falls back to
+            the _fallback_entity_identification method, ensuring the system continues
+            to function even when LLM responses don't match the expected format.
+            
+        Logging:
+            Parse failures are logged as warnings with the specific error details,
+            helping with debugging and monitoring of LLM response quality.
+        """
         try:
             import json
 
