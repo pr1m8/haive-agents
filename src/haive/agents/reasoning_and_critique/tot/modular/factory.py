@@ -138,6 +138,15 @@ def create_math_tot_agent(
 
     # Function to score math solutions
     def score_math_solution(problem: str, solution: str) -> tuple:
+        """Score Math Solution.
+
+        Args:
+            problem: [TODO: Add description]
+            solution: [TODO: Add description]
+
+        Returns:
+            [TODO: Add return description]
+        """
         # Calculate length-normalized score based on:
         # 1. Presence of equations/numbers/calculations
         # 2. Presence of a clear final answer
@@ -263,6 +272,15 @@ def create_game24_tot_agent(
 
     # Define a function to score Game of 24 solutions
     def score_equation(problem: str, solution: str) -> tuple:
+        """Score Equation.
+
+        Args:
+            problem: [TODO: Add description]
+            solution: [TODO: Add description]
+
+        Returns:
+            [TODO: Add return description]
+        """
         # Extract the numbers from the problem
         input_numbers = [int(n) for n in problem.split() if n.isdigit()]
         if not input_numbers:

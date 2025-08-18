@@ -182,6 +182,14 @@ class LATSAgent(Agent[LATSAgentConfig]):
         # Define the reflection chain
         @as_runnable
         def reflection_chain(inputs) -> Reflection:
+            """Reflection Chain.
+
+            Args:
+                inputs: [TODO: Add description]
+
+            Returns:
+                [TODO: Add return description]
+            """
             tool_choices = self.reflection_llm_chain.invoke(inputs)
             reflection = tool_choices[0]
             if not isinstance(inputs["candidate"][-1], AIMessage):
@@ -192,6 +200,12 @@ class LATSAgent(Agent[LATSAgentConfig]):
 
         # Define the candidate generation function
         def generate_candidates(messages: ChatPromptValue, config: RunnableConfig):
+            """Generate Candidates.
+
+            Args:
+                messages: [TODO: Add description]
+                config: [TODO: Add description]
+            """
             n = config.get("configurable", {}).get(
                 "N", self.config.candidates_per_expansion
             )
@@ -207,6 +221,11 @@ class LATSAgent(Agent[LATSAgentConfig]):
 
         # Create expansion chain (using manual composition instead of pipe operator)
         def expansion_chain(input_data):
+            """Expansion Chain.
+
+            Args:
+                input_data: [TODO: Add description]
+            """
             messages = prompt_template.invoke(input_data)
             return generate_candidates(messages, input_data.get("config", {}))
 
@@ -445,6 +464,14 @@ class LATSAgent(Agent[LATSAgentConfig]):
 
         # Recursively check all nodes
         def check_node(node) -> Any:
+            """Check Node.
+
+            Args:
+                node: [TODO: Add description]
+
+            Returns:
+                [TODO: Add return description]
+            """
             if node.is_solved:
                 return True
             return any(check_node(child) for child in node.children)
@@ -457,6 +484,14 @@ class LATSAgent(Agent[LATSAgentConfig]):
         all_nodes = []
 
         def collect_nodes(node) -> None:
+            """Collect Nodes.
+
+            Args:
+                node: [TODO: Add description]
+
+            Returns:
+                [TODO: Add return description]
+            """
             all_nodes.append(node)
             for child in node.children:
                 collect_nodes(child)

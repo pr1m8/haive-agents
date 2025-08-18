@@ -20,6 +20,11 @@ class MockEngine:
     """Mock engine for testing without real LLM."""
 
     def __init__(self, name: str = "mock_engine"):
+        """Init  .
+
+        Args:
+            name: [TODO: Add description]
+        """
         self.name = name
         self.tools = []
         self.tool_routes = {}
@@ -29,6 +34,11 @@ class MockEngine:
 
         class MockResponse:
             def __init__(self, content: str):
+                """Init  .
+
+                Args:
+                    content: [TODO: Add description]
+                """
                 self.content = content
 
         # Simple keyword-based routing for testing
@@ -66,6 +76,13 @@ class MockAgent:
     def __init__(
         self, name: str, agent_type: Any = "MockAgent", tools: list[str] | None = None
     ):
+        """Init  .
+
+        Args:
+            name: [TODO: Add description]
+            agent_type: [TODO: Add description]
+            tools: [TODO: Add description]
+        """
         self.name = name
         self.agent_type = agent_type
         self.tools = tools or []
@@ -81,6 +98,11 @@ class MockAgent:
 
         class MockResult:
             def __init__(self, messages: list[dict[str, Any]]):
+                """Init  .
+
+                Args:
+                    messages: [TODO: Add description]
+                """
                 self.messages = messages
 
         # Simulate agent response
@@ -89,6 +111,11 @@ class MockAgent:
         # Mock message type
         class MockMessage:
             def __init__(self, content: str):
+                """Init  .
+
+                Args:
+                    content: [TODO: Add description]
+                """
                 self.content = content
 
         return MockResult([MockMessage(response_content)])
@@ -98,6 +125,11 @@ class SimpleDynamicSupervisorTest:
     """Simplified test of dynamic supervisor capabilities."""
 
     def __init__(self) -> None:
+        """Init  .
+
+        Returns:
+            [TODO: Add return description]
+        """
         self.agents = {}
         self.agent_configs = {}
         self.choice_options = ["END"]

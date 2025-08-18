@@ -59,7 +59,7 @@ The document should be the type that would appear in:
         ),
         (
             "human",
-            """Generate a comprehensive hypothetical document that would contain the ideal answer to this question:
+            """Generate a comprehensive hypothetical document that would contain the ideal answer to this question:.
 
 Question: {query}
 
@@ -230,6 +230,12 @@ class EnhancedHyDERetriever(Agent):
     def __init__(
         self, documents: list[Document], embedding_model: str | None = None, **kwargs
     ):
+        """Init  .
+
+        Args:
+            documents: [TODO: Add description]
+            embedding_model: [TODO: Add description]
+        """
         super().__init__(documents=documents, embedding_model=embedding_model, **kwargs)
 
     def build_graph(self) -> Any:

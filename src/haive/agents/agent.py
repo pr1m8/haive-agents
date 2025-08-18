@@ -126,6 +126,11 @@ class WebNavAgent(Agent[WebNavAgentConfig]):
     """An interactive web navigation agent using Playwright & LangGraph with integrated tools."""
 
     def __init__(self, config: WebNavAgentConfig):
+        """Init  .
+
+        Args:
+            config: [TODO: Add description]
+        """
         self.config = config
         self.headless = config.headless
         self.max_steps = config.max_steps
@@ -777,6 +782,7 @@ class WebNavAgent(Agent[WebNavAgentConfig]):
 
 # Example usage
 async def run_web_navigator():
+    """Run Web Navigator."""
     # Import web_nav_aug_llm from your module
 
     # web_nav_aug_llm is not available - module doesn't exist

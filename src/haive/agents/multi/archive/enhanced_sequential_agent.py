@@ -280,11 +280,25 @@ if __name__ == "__main__":
     # Mock agents for demo
     class MockAgent:
         def __init__(self, name: str, transform: str):
+            """Init  .
+
+            Args:
+                name: [TODO: Add description]
+                transform: [TODO: Add description]
+            """
             self.name = name
             self.transform = transform
             self.engine = AugLLMConfig()
 
         async def arun(self, input_data: str) -> str:
+            """Arun.
+
+            Args:
+                input_data: [TODO: Add description]
+
+            Returns:
+                [TODO: Add return description]
+            """
             return f"{self.name}: {self.transform}({input_data})"
 
     # Create sequential pipeline

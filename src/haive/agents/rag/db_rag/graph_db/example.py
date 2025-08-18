@@ -17,7 +17,7 @@ To run these examples:
     2. Set environment variables for Neo4j connection
     3. Run: python example.py
 
-Example:
+Examples:
     Basic execution::
 
         $ export NEO4J_URI="bolt://localhost:7687"
@@ -522,6 +522,13 @@ async def async_example():
         # Define async task
 
         async def process_query(agent, question, index):
+            """Process Query.
+
+            Args:
+                agent: [TODO: Add description]
+                question: [TODO: Add description]
+                index: [TODO: Add description]
+            """
             start_time = time.time()
             try:
                 # Note: This is a simplified example
@@ -571,7 +578,7 @@ def main():
     This function provides an interactive menu to run different examples
     demonstrating various features of the GraphDBRAGAgent.
 
-    Example:
+    Examples:
         Running the main function::
 
             $ python example.py

@@ -14,6 +14,11 @@ class TaskTree(AutoTree[TaskNode]):
     """
 
     def __init__(self, content: TaskNode, **kwargs):
+        """Init  .
+
+        Args:
+            content: [TODO: Add description]
+        """
         super().__init__(content, **kwargs)
         # Task-specific initialization
         self._join_points: list[dict[str, Any]] = []

@@ -69,6 +69,7 @@ class ChainBuilder:
     """Builder class for creating chain workflows."""
 
     def __init__(self):
+        """Init  ."""
         self.nodes: list[ChainNode] = []
         self.edges: list[ChainEdge] = []
 
@@ -101,6 +102,11 @@ class ExtendedChainAgent(Agent):
     """
 
     def __init__(self, config: ChainConfig):
+        """Init  .
+
+        Args:
+            config: [TODO: Add description]
+        """
         self.chain_config = config
         self.state_schema = ChainState
         super().__init__(config)

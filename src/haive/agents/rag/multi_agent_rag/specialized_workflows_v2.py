@@ -26,6 +26,12 @@ class FLAREAgentV2(MultiAgent, StateConfigMixin):
         max_retrieval_rounds: int = 3,
         **kwargs,
     ):
+        """Init  .
+
+        Args:
+            uncertainty_threshold: [TODO: Add description]
+            max_retrieval_rounds: [TODO: Add description]
+        """
         generation_monitor = SimpleAgent(
             name="generation_monitor",
             instructions="""
@@ -117,6 +123,13 @@ class DynamicRAGAgentV2(MultiAgent, StateConfigMixin):
         performance_threshold: float = 0.6,
         **kwargs,
     ):
+        """Init  .
+
+        Args:
+            min_retrievers: [TODO: Add description]
+            max_retrievers: [TODO: Add description]
+            performance_threshold: [TODO: Add description]
+        """
         retriever_manager = SimpleAgent(
             name="retriever_manager",
             instructions="""
@@ -211,6 +224,14 @@ class DebateRAGAgentV2(MultiAgent, StateConfigMixin):
         enable_judge: bool = True,
         **kwargs,
     ):
+        """Init  .
+
+        Args:
+            position_names: [TODO: Add description]
+            max_debate_rounds: [TODO: Add description]
+            require_consensus: [TODO: Add description]
+            enable_judge: [TODO: Add description]
+        """
         if position_names is None:
             position_names = ["Affirmative", "Negative", "Neutral"]
 
@@ -323,6 +344,14 @@ class AdaptiveThresholdRAGAgentV2(MultiAgent, StateConfigMixin):
         max_threshold: float = 0.95,
         **kwargs,
     ):
+        """Init  .
+
+        Args:
+            initial_threshold: [TODO: Add description]
+            threshold_step: [TODO: Add description]
+            min_threshold: [TODO: Add description]
+            max_threshold: [TODO: Add description]
+        """
         query_analyzer = SimpleAgent(
             name="query_analyzer",
             instructions="""

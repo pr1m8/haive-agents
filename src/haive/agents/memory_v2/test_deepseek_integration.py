@@ -120,6 +120,7 @@ async def test_custom_memory_agent():
         """Simple agent with memory capabilities."""
 
         def __init__(self, *args, **kwargs):
+            """Init  ."""
             super().__init__(*args, **kwargs)
             self.memory_state = MemoryState(user_id="default")
             print("✅ Initialized MemoryAgent with memory state")

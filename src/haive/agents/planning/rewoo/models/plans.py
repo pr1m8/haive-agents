@@ -122,6 +122,14 @@ class ExecutionPlan(BaseModel):
         rec_stack = set()
 
         def has_cycle(step_id: str) -> bool:
+            """Has Cycle.
+
+            Args:
+                step_id: [TODO: Add description]
+
+            Returns:
+                [TODO: Add return description]
+            """
             if step_id in rec_stack:
                 return True
             if step_id in visited:

@@ -20,7 +20,7 @@ Guidelines:
         ),
         (
             "human",
-            """Problem: {problem}
+            """Problem: {problem}.
 
 Current search progress:
 {search_progress}
@@ -56,7 +56,7 @@ Scoring scale:
         ),
         (
             "human",
-            """Problem: {problem}
+            """Problem: {problem}.
 
 Candidate to evaluate:
 {candidate_for_scoring}
@@ -89,7 +89,7 @@ Consider:
         ),
         (
             "human",
-            """Problem: {problem}
+            """Problem: {problem}.
 
 All scored candidates:
 {scored_candidates_summary}

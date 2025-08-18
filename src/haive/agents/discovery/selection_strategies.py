@@ -54,6 +54,11 @@ class SemanticSelectionStrategy(BaseSelectionStrategy):
     """Semantic similarity-based tool selection."""
 
     def __init__(self, similarity_threshold: float = 0.7):
+        """Init  .
+
+        Args:
+            similarity_threshold: [TODO: Add description]
+        """
         self.similarity_threshold = similarity_threshold
 
     async def select_tools(
@@ -101,6 +106,11 @@ class CapabilityBasedStrategy(BaseSelectionStrategy):
     """Capability-based tool selection."""
 
     def __init__(self, capability_weights: dict[str, float] | None = None):
+        """Init  .
+
+        Args:
+            capability_weights: [TODO: Add description]
+        """
         self.capability_weights = capability_weights or {}
 
     async def select_tools(
@@ -176,6 +186,11 @@ class AdaptiveSelectionStrategy(BaseSelectionStrategy):
     """Adaptive selection that learns from usage patterns."""
 
     def __init__(self, learning_rate: float = 0.1):
+        """Init  .
+
+        Args:
+            learning_rate: [TODO: Add description]
+        """
         self.learning_rate = learning_rate
         self.tool_performance: dict[str, float] = {}
 
@@ -243,6 +258,11 @@ class ContextualSelectionStrategy(BaseSelectionStrategy):
     """Context-aware tool selection considering conversation history."""
 
     def __init__(self, context_weight: float = 0.3):
+        """Init  .
+
+        Args:
+            context_weight: [TODO: Add description]
+        """
         self.context_weight = context_weight
 
     async def select_tools(
@@ -363,6 +383,11 @@ class EnsembleSelectionStrategy(BaseSelectionStrategy):
     """Ensemble strategy combining multiple selection approaches."""
 
     def __init__(self, strategies: list[BaseSelectionStrategy] | None = None):
+        """Init  .
+
+        Args:
+            strategies: [TODO: Add description]
+        """
         self.strategies = strategies or [
             SemanticSelectionStrategy(),
             CapabilityBasedStrategy(),
@@ -439,6 +464,11 @@ class LearningSelectionStrategy(BaseSelectionStrategy):
     """Selection strategy that learns from user feedback and tool performance."""
 
     def __init__(self) -> None:
+        """Init  .
+
+        Returns:
+            [TODO: Add return description]
+        """
         self.tool_ratings: dict[str, list[float]] = {}
         self.user_feedback: dict[str, list[dict[str, Any]]] = {}
         self.context_patterns: dict[str, list[str]] = {}

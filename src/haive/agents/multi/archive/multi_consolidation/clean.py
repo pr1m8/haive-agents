@@ -286,6 +286,16 @@ class MultiAgent(Agent):
                 routes = branch_config["routes"]
 
                 def make_condition_fn(fn, route_map) -> Any:
+                    """Make Condition Fn.
+
+                    Args:
+                        fn: [TODO: Add description]
+                        route_map: [TODO: Add description]
+
+                    Returns:
+                        [TODO: Add return description]
+                    """
+
                     def condition_wrapper(state: dict[str, Any]):
                         route_key = fn(state)
                         return route_map.get(route_key, next(iter(route_map.values())))
@@ -617,6 +627,14 @@ class MultiAgent(Agent):
 
         # Create a wrapper that ensures valid agent names
         def safe_path_wrapper(state: dict[str, Any]) -> str:
+            """Safe Path Wrapper.
+
+            Args:
+                state: [TODO: Add description]
+
+            Returns:
+                [TODO: Add return description]
+            """
             target = path(state)
             if target not in self.agents:
                 # Fallback to first available agent if target not found

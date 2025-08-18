@@ -32,7 +32,7 @@ class MultiAgentV4(Agent):
     Simple, clean implementation that starts small and builds incrementally.
     Uses MultiAgentState and AgentNodeV3 for proper integration.
 
-    Example:
+    Examples:
         >>> from haive.agents.simple.agent import SimpleAgent
         >>> from haive.agents.react.agent import ReactAgent
         >>>

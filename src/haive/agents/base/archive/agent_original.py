@@ -81,7 +81,7 @@ class Agent(
         store: Optional state store (excluded from serialization).
         config: Reference to AgentConfig (excluded from serialization).
 
-    Example:
+    Examples:
         Creating a simple agent with one engine::
 
             class MyAgent(Agent):
@@ -284,7 +284,7 @@ class Agent(
 
         Override this method in subclasses for custom setup logic.
 
-        Example:
+        Examples:
             def setup_agent(self):
                 # Sync fields to engine
                 if self.temperature is not None:

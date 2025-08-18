@@ -40,6 +40,11 @@ class DynamicSupervisorFixed(ReactAgent):
     _initial_build_complete: bool = False
 
     def __init__(self, **kwargs) -> None:
+        """Init  .
+
+        Returns:
+            [TODO: Add return description]
+        """
         super().__init__(**kwargs)
         self._agent_registry = {}
         self._needs_rebuild = False
@@ -306,9 +311,19 @@ if __name__ == "__main__":
         # Create mock agents
         class MockAgent:
             def __init__(self, name: str):
+                """Init  .
+
+                Args:
+                    name: [TODO: Add description]
+                """
                 self.name = name
 
             async def ainvoke(self, state):
+                """Ainvoke.
+
+                Args:
+                    state: [TODO: Add description]
+                """
                 messages = state.get("messages", [])
                 return {"messages": [*messages, f"Response from {self.name}"]}
 

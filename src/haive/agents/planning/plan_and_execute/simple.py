@@ -85,6 +85,11 @@ class PlanAndExecuteAgent(MultiAgent):
 
         # Conditional edge from replanner
         def should_continue(state: Dict[str, Any]):
+            """Should Continue.
+
+            Args:
+                state: [TODO: Add description]
+            """
             return "executor" if not state.is_plan_complete() else END
 
         graph.add_conditional_edges(

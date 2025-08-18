@@ -834,6 +834,14 @@ class DynamicReactAgent(ReactAgent):
 
             @tool
             def suggested_tool(input_text: str) -> str:
+                """Suggested Tool.
+
+                Args:
+                    input_text: [TODO: Add description]
+
+                Returns:
+                    [TODO: Add return description]
+                """
                 f"""Tool suggested by RAG: {tool_name}
                 Description: {description}
                 """

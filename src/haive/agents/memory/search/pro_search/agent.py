@@ -130,7 +130,7 @@ Remember: Depth, context, and personalization are key to pro search excellence."
 
     def get_search_instructions(self) -> str:
         """Get specific search instructions for pro search."""
-        return """PRO SEARCH INSTRUCTIONS:
+        return """PRO SEARCH INSTRUCTIONS:.
 
 1. QUERY ANALYSIS & REFINEMENT:
    - Identify core intent and implicit needs

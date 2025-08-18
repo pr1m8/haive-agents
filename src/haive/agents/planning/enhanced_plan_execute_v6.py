@@ -16,60 +16,54 @@ This module provides the next-generation Plan & Execute implementation using:
 
 ## Architecture
 
-```
-BasePlannerAgent.with_structured_output(BasePlan)
-    ↓ (structured BasePlan output)
-BaseExecutorAgent.with_structured_output(ExecutionResult)
-    ↓ (structured ExecutionResult output)
-Conditional Routing (should_continue)
-    ↓
-MultiAgent orchestration
-```
+        BasePlannerAgent.with_structured_output(BasePlan)
+            ↓ (structured BasePlan output)
+        BaseExecutorAgent.with_structured_output(ExecutionResult)
+            ↓ (structured ExecutionResult output)
+        Conditional Routing (should_continue)
+            ↓
+        MultiAgent orchestration
 
 ## Usage
 
 ### Basic Usage
-```python
-from haive.agents.planning.enhanced_plan_execute_v6 import create_enhanced_plan_execute_v6
+        from haive.agents.planning.enhanced_plan_execute_v6 import create_enhanced_plan_execute_v6
 
-# Create with default configuration
-agent = create_enhanced_plan_execute_v6()
-result = await agent.arun("Calculate compound interest on $1000 at 5% for 10 years")
+        # Create with default configuration
+        agent = create_enhanced_plan_execute_v6()
+        result = await agent.arun("Calculate compound interest on $1000 at 5% for 10 years")
 
-# Create with custom tools
-from haive.tools.tools.search_tools import tavily_search_tool
-agent = create_enhanced_plan_execute_v6(
-    name="research_planner",
-    executor_tools=[tavily_search_tool]
-)
-result = await agent.arun("Research Tesla stock performance and calculate ROI")
-```
+        # Create with custom tools
+        from haive.tools.tools.search_tools import tavily_search_tool
+        agent = create_enhanced_plan_execute_v6(
+            name="research_planner",
+            executor_tools=[tavily_search_tool]
+        )
+        result = await agent.arun("Research Tesla stock performance and calculate ROI")
 
 ### Advanced Configuration
-```python
-agent = create_enhanced_plan_execute_v6(
-    name="advanced_planner",
-    planner_config=AugLLMConfig(
-        model="gpt-4",
-        temperature=0.2,
-        system_message="You are an expert strategic planner."
-    ),
-    executor_config=AugLLMConfig(
-        model="gpt-4-turbo",
-        temperature=0.1
-    ),
-    executor_tools=[tavily_search_tool, calculator_tool],
-    max_iterations=15,
-    enable_hooks=True
-)
+        agent = create_enhanced_plan_execute_v6(
+            name="advanced_planner",
+            planner_config=AugLLMConfig(
+                model="gpt-4",
+                temperature=0.2,
+                system_message="You are an expert strategic planner."
+            ),
+            executor_config=AugLLMConfig(
+                model="gpt-4-turbo",
+                temperature=0.1
+            ),
+            executor_tools=[tavily_search_tool, calculator_tool],
+            max_iterations=15,
+            enable_hooks=True
+        )
 
-# Add custom hooks
-@agent.before_run
-def track_execution(context):
-    print(f"Starting planning workflow: {context.agent_name}")
+        # Add custom hooks
+        @agent.before_run
+        def track_execution(context):
+            print(f"Starting planning workflow: {context.agent_name}")
 
-result = await agent.arun("Complex multi-step research task")
-```
+        result = await agent.arun("Complex multi-step research task")
 
 ## Status: Production Ready
 
@@ -429,12 +423,22 @@ def _add_monitoring_hooks_v6(workflow: MultiAgent) -> None:
     # Workflow-level monitoring hooks
     @workflow.before_run
     def log_workflow_start(context):
+        """Log Workflow Start.
+
+        Args:
+            context: [TODO: Add description]
+        """
         logger.info(f"🚀 Starting enhanced planning workflow V6: {context.agent_name}")
         if hasattr(context, "metadata"):
             context.metadata["workflow_start_time"] = time.time()
 
     @workflow.after_run
     def log_workflow_complete(context):
+        """Log Workflow Complete.
+
+        Args:
+            context: [TODO: Add description]
+        """
         duration = ""
         if hasattr(context, "metadata") and "workflow_start_time" in context.metadata:
             duration = (
@@ -446,6 +450,11 @@ def _add_monitoring_hooks_v6(workflow: MultiAgent) -> None:
 
     @workflow.on_error
     def log_workflow_error(context):
+        """Log Workflow Error.
+
+        Args:
+            context: [TODO: Add description]
+        """
         logger.error(f"❌ Planning workflow V6 error: {context.error}")
         if hasattr(context, "metadata"):
             context.metadata["error_occurred"] = True
@@ -457,6 +466,12 @@ def _add_monitoring_hooks_v6(workflow: MultiAgent) -> None:
             from haive.agents.base.hooks import HookEvent
 
             def create_agent_hook(agent_name: str):
+                """Create Agent Hook.
+
+                Args:
+                    agent_name: [TODO: Add description]
+                """
+
                 def agent_execution_hook(context):
                     if context.event == HookEvent.BEFORE_RUN:
                         logger.debug(f"  ▶ Agent starting: {agent_name}")

@@ -19,6 +19,12 @@ from haive.agents.wiki_writer.interview.state import InterviewState
 async def generate_question(
     state: InterviewState, aug_llm_config: AugLLMConfig = gen_qn_aug_llm_config
 ):
+    """Generate Question.
+
+    Args:
+        state: [TODO: Add description]
+        aug_llm_config: [TODO: Add description]
+    """
     editor = state["editor"]
     gn_chain = (
         RunnableLambda(swap_roles).bind(name=editor.name)
@@ -36,6 +42,15 @@ async def gen_answer(
     max_str_len: int = 15000,
     search_engine: BaseTool | StructuredTool = tavily_search_tool,
 ):
+    """Gen Answer.
+
+    Args:
+        state: [TODO: Add description]
+        config: [TODO: Add description]
+        name: [TODO: Add description]
+        max_str_len: [TODO: Add description]
+        search_engine: [TODO: Add description]
+    """
     swapped_state = swap_roles(state, name)  # Convert all other AI messages
     queries = await gen_queries_chain.ainvoke(swapped_state)
 

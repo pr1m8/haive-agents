@@ -146,6 +146,11 @@ class STORMAgentConfig(SequenceAgentConfig):
     )
 
     def __init__(self, **data) -> None:
+        """Init  .
+
+        Returns:
+            [TODO: Add return description]
+        """
         # Initialize with parent class
         super().__init__(**data)
 

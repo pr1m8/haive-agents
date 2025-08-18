@@ -16,7 +16,7 @@ class ResponderWithRetries:
         num_retries: int = 3,
         name: str | None = None,
     ):
-        """Args:
+        """Args:.
         aug_llm_config: The config for the LLM to use.
         num_retries: The number of times to retry the runnable.
         """

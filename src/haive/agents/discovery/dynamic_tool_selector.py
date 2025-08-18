@@ -405,6 +405,14 @@ class DynamicToolSelector(ToolRouteMixin):
         try:
 
             def placeholder_function(query: str) -> str:
+                """Placeholder Function.
+
+                Args:
+                    query: [TODO: Add description]
+
+                Returns:
+                    [TODO: Add return description]
+                """
                 return f"Tool {component.name} executed with query: {query}"
 
             tool = StructuredTool.from_function(
@@ -577,6 +585,11 @@ class ContextAwareSelector(DynamicToolSelector):
     """Context-aware tool selector that considers conversation history."""
 
     def __init__(self, **kwargs) -> None:
+        """Init  .
+
+        Returns:
+            [TODO: Add return description]
+        """
         super().__init__(**kwargs)
         self.conversation_memory: list[dict[str, Any]] = []
 

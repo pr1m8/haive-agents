@@ -124,6 +124,14 @@ class ReflectionAgent(SimpleAgent):
         """Create a function for the initial response node."""
         # This is similar to the simple agent's node
         def initial_response_function(state: ReflectionAgentState) -> dict[str, Any]:
+            """Initial Response Function.
+
+Args:
+    state: [TODO: Add description]
+
+Returns:
+    [TODO: Add return description]
+"""
             try:
                 # Use the engine to generate an initial response
                 result = self.engine.invoke({"messages": state.messages})
@@ -166,6 +174,14 @@ class ReflectionAgent(SimpleAgent):
         )
 
         def reflection_function(state: ReflectionAgentState) -> dict[str, Any]:
+            """Reflection Function.
+
+Args:
+    state: [TODO: Add description]
+
+Returns:
+    [TODO: Add return description]
+"""
             try:
                 # Extract needed fields
                 original_request = state.original_request
@@ -239,6 +255,14 @@ class ReflectionAgent(SimpleAgent):
         )
 
         def search_function(state: ReflectionAgentState) -> dict[str, Any]:
+            """Search Function.
+
+Args:
+    state: [TODO: Add description]
+
+Returns:
+    [TODO: Add return description]
+"""
             try:
                 # Extract needed fields
                 original_request = state.original_request
@@ -292,6 +316,14 @@ class ReflectionAgent(SimpleAgent):
         )
 
         def improvement_function(state: ReflectionAgentState) -> dict[str, Any]:
+            """Improvement Function.
+
+Args:
+    state: [TODO: Add description]
+
+Returns:
+    [TODO: Add return description]
+"""
             try:
                 # Extract needed fields
                 original_request = state.original_request

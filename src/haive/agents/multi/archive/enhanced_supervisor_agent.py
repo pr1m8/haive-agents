@@ -291,11 +291,25 @@ if __name__ == "__main__":
     # Mock worker agents for demo
     class MockWorker:
         def __init__(self, name: str, specialty: str):
+            """Init  .
+
+            Args:
+                name: [TODO: Add description]
+                specialty: [TODO: Add description]
+            """
             self.name = name
             self.specialty = specialty
             self.engine = AugLLMConfig()
 
         async def arun(self, input_data: str) -> str:
+            """Arun.
+
+            Args:
+                input_data: [TODO: Add description]
+
+            Returns:
+                [TODO: Add return description]
+            """
             return f"{self.name} ({self.specialty}): Processed '{input_data}'"
 
     # Create supervisor with workers

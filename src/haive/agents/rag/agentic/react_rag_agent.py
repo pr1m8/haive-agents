@@ -31,7 +31,7 @@ class ReactRAGAgent(ReactAgent):
     The routing is handled by the LLM through a special retriever tool that triggers
     the retrieval node when called.
 
-    Example:
+    Examples:
         .. code-block:: python
 
             # Create ReactRAG agent with both types of tools

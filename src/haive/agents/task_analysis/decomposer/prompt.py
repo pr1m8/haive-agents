@@ -26,7 +26,7 @@ Output: Return a properly structured TaskNode object with all required fields.""
         ),
         (
             "human",
-            """Analyze and decompose this task into a hierarchical structure:
+            """Analyze and decompose this task into a hierarchical structure:.
 
 Task Description: {task_description}
 Domain: {domain}

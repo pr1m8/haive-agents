@@ -115,6 +115,11 @@ class JoinStep(AbstractStep):
         )
 
     def __init__(self, **data) -> None:
+        """Init  .
+
+        Returns:
+            [TODO: Add return description]
+        """
         super().__init__(**data)
         self._auto_detect_parallel_structure()
 
@@ -210,6 +215,15 @@ class JoinStep(AbstractStep):
         """Calculate maximum dependency depth for this step."""
 
         def get_depth(step_id: str, visited: set[str] | None = None) -> int:
+            """Get Depth.
+
+            Args:
+                step_id: [TODO: Add description]
+                visited: [TODO: Add description]
+
+            Returns:
+                [TODO: Add return description]
+            """
             if visited is None:
                 visited = set()
 
@@ -275,6 +289,16 @@ class JoinStep(AbstractStep):
         """Check if there's a dependency path from one step to another."""
 
         def dfs(current_id: str, target_id: str, visited: set[str]) -> bool:
+            """Dfs.
+
+            Args:
+                current_id: [TODO: Add description]
+                target_id: [TODO: Add description]
+                visited: [TODO: Add description]
+
+            Returns:
+                [TODO: Add return description]
+            """
             if current_id == target_id:
                 return True
 

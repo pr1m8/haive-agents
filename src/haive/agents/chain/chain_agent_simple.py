@@ -195,7 +195,7 @@ def flow(*nodes: NodeLike, **kwargs) -> ChainAgent:
 def flow_with_edges(nodes: list[NodeLike], *edges: EdgeLike) -> ChainAgent:
     """Create a flow with custom edges.
 
-    Example:
+    Examples:
         chain = flow_with_edges(
             [classifier, simple, complex, output],
             (0, {"simple": 1, "complex": 2}, lambda s: s.type),
@@ -211,6 +211,11 @@ class FlowBuilder:
     """Builder for method chaining."""
 
     def __init__(self, initial: NodeLike | None = None):
+        """Init  .
+
+        Args:
+            initial: [TODO: Add description]
+        """
         self.chain = ChainAgent() if initial is None else ChainAgent(initial)
 
     def add(self, node: NodeLike) -> "FlowBuilder":

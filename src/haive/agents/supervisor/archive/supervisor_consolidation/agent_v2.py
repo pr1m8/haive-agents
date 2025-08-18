@@ -134,6 +134,11 @@ class SupervisorAgent(ReactAgent):
 
             # Add conditional edges for tool routing
             def should_continue(state: dict[str, Any]):
+                """Should Continue.
+
+                Args:
+                    state: [TODO: Add description]
+                """
                 last_message = (
                     getattr(state, "messages", [])[-1]
                     if hasattr(state, "messages") and state.messages

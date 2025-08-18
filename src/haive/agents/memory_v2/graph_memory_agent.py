@@ -124,6 +124,7 @@ class GraphMemoryConfig:
     embedding_model: str = "openai"
 
     def __post_init__(self):
+        """Post Init  ."""
         if self.llm_config is None:
             self.llm_config = AugLLMConfig(temperature=0.7)
 
@@ -140,6 +141,11 @@ class GraphMemoryAgent:
     """
 
     def __init__(self, config: GraphMemoryConfig):
+        """Init  .
+
+        Args:
+            config: [TODO: Add description]
+        """
         self.config = config
         self.logger = logger
 

@@ -49,6 +49,12 @@ def select_tools_with_repeat(
 # The select_tools function selects tools based on the user's last message
 # content.
 def select_tools(state: State, vs_config: VectorStoreConfig):
+    """Select Tools.
+
+    Args:
+        state: [TODO: Add description]
+        vs_config: [TODO: Add description]
+    """
     last_user_message = state.messages[-1]
     query = last_user_message.content
     vector_store = vs_config.create_vector_store()

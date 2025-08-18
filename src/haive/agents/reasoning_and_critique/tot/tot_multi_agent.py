@@ -111,7 +111,7 @@ class TreeOfThoughtsMultiAgent:
             engine=AugLLMConfig(
                 temperature=temps["analyzer"],
                 structured_output_model=ProblemAnalysis,
-                system_message="""You are a problem analysis expert. Analyze problems to understand:
+                system_message="""You are a problem analysis expert. Analyze problems to understand:.
                 - What type of problem it is
                 - Key constraints and requirements
                 - Success criteria
@@ -135,7 +135,7 @@ class TreeOfThoughtsMultiAgent:
             engine=AugLLMConfig(
                 temperature=temps["evaluator"],
                 structured_output_model=CandidateEvaluation,
-                system_message="""You are a solution evaluator. Evaluate candidate solutions by:
+                system_message="""You are a solution evaluator. Evaluate candidate solutions by:.
                 - Checking if they meet the problem requirements
                 - Identifying strengths and weaknesses
                 - Providing a score between 0 (terrible) and 1 (perfect)
@@ -161,7 +161,7 @@ class TreeOfThoughtsMultiAgent:
             engine=AugLLMConfig(
                 temperature=temps["synthesizer"],
                 structured_output_model=FinalSolution,
-                system_message="""You are a solution synthesis expert. Create the final solution by:
+                system_message="""You are a solution synthesis expert. Create the final solution by:.
                 - Selecting the best candidate
                 - Providing clear explanation
                 - Summarizing the search process
@@ -402,6 +402,7 @@ async def solve_with_tot_multi_agent(
 if __name__ == "__main__":
 
     async def main():
+        """Main."""
         # Example 1: Math problem (Game of 24)
         problem1 = "Using the numbers 4, 9, 10, 13 and basic operations (+, -, *, /), create an expression that equals 24. Each number must be used exactly once."
 

@@ -17,7 +17,7 @@ Your expertise includes:
         ),
         (
             "human",
-            """Analyze this task tree structure:
+            """Analyze this task tree structure:.
 
 **Tree Visualization**:
 {tree_visualization}
@@ -49,7 +49,7 @@ CRITICAL_PATH_ANALYSIS_PROMPT = ChatPromptTemplate.from_messages(
         ),
         (
             "human",
-            """Analyze critical path for:
+            """Analyze critical path for:.
 
 **Task Tree**: {task_tree}
 **Dependencies**: {dependencies}
@@ -75,7 +75,7 @@ TREE_PATTERN_RECOGNITION_PROMPT = ChatPromptTemplate.from_messages(
         ),
         (
             "human",
-            """Identify patterns in:
+            """Identify patterns in:.
 
 **Tree Structure**: {tree_structure}
 

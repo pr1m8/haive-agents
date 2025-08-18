@@ -9,6 +9,11 @@ class Subsection(BaseModel):
 
     @property
     def as_str(self) -> str:
+        """As Str.
+
+Returns:
+    [TODO: Add return description]
+"""
         return f"### {self.subsection_title}\n\n{self.description}".strip()
 
 
@@ -21,6 +26,11 @@ class Section(BaseModel):
 
     @property
     def as_str(self) -> str:
+        """As Str.
+
+Returns:
+    [TODO: Add return description]
+"""
         subsections = "\n\n".join(
             f"### {subsection.subsection_title}\n\n{subsection.description}"
             for subsection in self.subsections or []
@@ -38,6 +48,11 @@ class WikiSection(BaseModel):
 
     @property
     def as_str(self) -> str:
+        """As Str.
+
+Returns:
+    [TODO: Add return description]
+"""
         subsections = "\n\n".join(subsection.as_str for subsection in self.subsections or [])
         citations = "\n".join([f" [{i}] {cit}" for i, cit in enumerate(self.citations)])
         return (
@@ -55,6 +70,11 @@ class Outline(BaseModel):
 
     @property
     def as_str(self) -> str:
+        """As Str.
+
+Returns:
+    [TODO: Add return description]
+"""
         sections = "\n\n".join(section.as_str for section in self.sections)
         return f"# {self.page_title}\n\n{sections}".strip()
 
@@ -79,6 +99,11 @@ class Editor(BaseModel):
 
     @property
     def persona(self) -> str:
+        """Persona.
+
+Returns:
+    [TODO: Add return description]
+"""
         return f"Name: {self.name}\nRole: {self.role}\nAffiliation: {
             self.affiliation
         }\nDescription: {self.description}\n"

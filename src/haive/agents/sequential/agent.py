@@ -43,6 +43,11 @@ class SequentialAgent(Agent):
 
     @model_validator(mode="after")
     def set_state_schema(self) -> "SequentialAgent":
+        """Set State Schema.
+
+        Returns:
+            [TODO: Add return description]
+        """
         self.input_schema = SchemaComposer.from_components(
             [self.agents[0].engine]
         ).derive_input_schema()

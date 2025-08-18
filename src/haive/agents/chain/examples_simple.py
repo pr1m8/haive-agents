@@ -51,6 +51,14 @@ def example_mixed() -> Any:
 
     # A function
     def formatter(s) -> dict[str, Any]:
+        """Formatter.
+
+        Args:
+            s: [TODO: Add description]
+
+        Returns:
+            [TODO: Add return description]
+        """
         return {"output": f"Summary: {s.get('summary', '')}"}
 
     # Just chain them!

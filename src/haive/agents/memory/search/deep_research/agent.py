@@ -154,7 +154,7 @@ Remember: Depth, accuracy, and comprehensive analysis are the hallmarks of excel
 
     def get_search_instructions(self) -> str:
         """Get specific search instructions for deep research."""
-        return """DEEP RESEARCH INSTRUCTIONS:
+        return """DEEP RESEARCH INSTRUCTIONS:.
 
 1. RESEARCH PLANNING:
    - Decompose complex queries into research components

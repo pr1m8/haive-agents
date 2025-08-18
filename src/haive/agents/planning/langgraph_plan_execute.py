@@ -81,14 +81,14 @@ def route_replan(state: PlanExecuteState) -> str:
 # PROMPT TEMPLATES (following LangGraph style)
 # ============================================================================
 
-PLANNER_PROMPT = """For the given objective, come up with a simple step by step plan. \
+PLANNER_PROMPT = """For the given objective, come up with a simple step by step plan. \.
 This plan should involve individual tasks, that if executed correctly will yield the correct answer. Do not add any superfluous steps. \
 The result of the final step should be the final answer. Make sure that each step has all the information needed - do not skip steps."""
 
-EXECUTOR_PROMPT = """Execute the given task using the available tools. \
+EXECUTOR_PROMPT = """Execute the given task using the available tools. \.
 Return the result when you have completed the task."""
 
-REPLANNER_PROMPT = """For the given objective, come up with a simple step by step plan. \
+REPLANNER_PROMPT = """For the given objective, come up with a simple step by step plan. \.
 This plan should involve individual tasks, that if executed correctly will yield the correct answer. Do not add any superfluous steps. \
 The result of the final step should be the final answer. Make sure that each step has all the information needed - do not skip steps.
 

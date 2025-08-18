@@ -176,6 +176,14 @@ class EnhancedSimpleAgent(Agent[AugLLMConfig]):
 
             # Conditional routing based on tool calls
             def has_tool_calls(state: dict[str, Any]) -> Literal["tools", "end"]:
+                """Has Tool Calls.
+
+                Args:
+                    state: [TODO: Add description]
+
+                Returns:
+                    [TODO: Add return description]
+                """
                 messages = state.get("messages", [])
                 if messages:
                     last_msg = messages[-1]
@@ -279,7 +287,7 @@ def create_simple_agent(
     Returns:
         Configured EnhancedSimpleAgent instance.
 
-    Example:
+    Examples:
         agent = create_simple_agent(
             name="helper",
             temperature=0.5,

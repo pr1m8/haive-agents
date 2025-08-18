@@ -12,6 +12,13 @@ from .models import SchedulerInput, Task
 def schedule_pending_task(
     task: Task, observations: dict[int, Any], retry_after: float = 0.2
 ):
+    """Schedule Pending Task.
+
+    Args:
+        task: [TODO: Add description]
+        observations: [TODO: Add description]
+        retry_after: [TODO: Add description]
+    """
     while True:
         deps = task["dependencies"]
         if deps and (any(dep not in observations for dep in deps)):
@@ -128,6 +135,14 @@ def _resolve_arg(arg: str | Any, observations: dict[int, Any]):
     ID_PATTERN = r"\$\{?(\d+)\}?"
 
     def replace_match(match) -> Any:
+        """Replace Match.
+
+        Args:
+            match: [TODO: Add description]
+
+        Returns:
+            [TODO: Add return description]
+        """
         # If the string is ${123}, match.group(0) is ${123}, and match.group(1)
         # is 123.
 
@@ -146,6 +161,12 @@ def _resolve_arg(arg: str | Any, observations: dict[int, Any]):
 
 @as_runnable
 def schedule_task(task_inputs, config: dict[str, Any]):
+    """Schedule Task.
+
+    Args:
+        task_inputs: [TODO: Add description]
+        config: [TODO: Add description]
+    """
     task: Task = task_inputs["task"]
     observations: dict[int, Any] = task_inputs["observations"]
     try:
@@ -158,6 +179,13 @@ def schedule_task(task_inputs, config: dict[str, Any]):
 def schedule_pending_task(
     task: Task, observations: dict[int, Any], retry_after: float = 0.2
 ):
+    """Schedule Pending Task.
+
+    Args:
+        task: [TODO: Add description]
+        observations: [TODO: Add description]
+        retry_after: [TODO: Add description]
+    """
     while True:
         deps = task["dependencies"]
         if deps and (any(dep not in observations for dep in deps)):

@@ -104,6 +104,11 @@ class AgentRegistry:
     """Registry for managing available agents."""
 
     def __init__(self) -> None:
+        """Init  .
+
+        Returns:
+            [TODO: Add return description]
+        """
         self._registry: dict[str, AgentRegistryEntry] = {}
         self._instances: dict[str, Agent] = {}  # Cache
 

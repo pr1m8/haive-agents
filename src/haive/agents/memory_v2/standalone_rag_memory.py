@@ -758,6 +758,7 @@ def create_unified_memory_agent(
 if __name__ == "__main__":
     # Demo usage
     async def demo():
+        """Demo."""
         # Create unified memory agent
         agent = create_unified_memory_agent(user_id="demo_user")
         await agent.initialize()

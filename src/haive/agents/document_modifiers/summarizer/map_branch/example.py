@@ -11,6 +11,7 @@ from haive.agents.document_modifiers.summarizer.map_branch.config import (
 
 
 async def main():
+    """Main."""
     summarizer = SummarizerAgent(SummarizerAgentConfig())
 
     documents = WebBaseLoader(

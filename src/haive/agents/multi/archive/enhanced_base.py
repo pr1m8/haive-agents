@@ -16,7 +16,7 @@ The system uses Pydantic fields for configuration and supports both simple
 edge definitions and complex conditional routing with proper error handling
 and state management.
 
-Example:
+Examples:
     Sequential multi-agent system::
 
         agents = [planner, executor, validator]
@@ -116,7 +116,7 @@ class MultiAgentBase(Agent):
         workflow_nodes (Optional[Dict[str, Callable]]): Custom workflow nodes
         create_missing_nodes (bool): Auto-create missing destination nodes
 
-    Example:
+    Examples:
         Sequential execution (default)::
 
             multi_agent = MultiAgentBase(
@@ -214,6 +214,14 @@ class MultiAgentBase(Agent):
         return detected_agents
 
     def model_post_init(self, __context: Any) -> None:
+        """Model Post Init.
+
+        Args:
+            __context: [TODO: Add description]
+
+        Returns:
+            [TODO: Add return description]
+        """
         super().model_post_init(__context)
 
         # Auto-compose agents from individual agent fields if not provided
@@ -285,7 +293,7 @@ class MultiAgentBase(Agent):
                 - Dict[Any, Union[str, Agent]]: Mapping of condition results to destinations
             default: Default destination if no condition matches (defaults to END)
 
-        Example:
+        Examples:
             Simple conditional routing::
 
                 def route_condition(state):
@@ -606,7 +614,7 @@ def create_sequential_multi_agent(
     Returns:
         MultiAgentBase: Configured sequential multi-agent system
 
-    Example:
+    Examples:
         Create a simple pipeline::
 
             agents = [preprocessor, analyzer, summarizer]
@@ -647,7 +655,7 @@ def create_branching_multi_agent(
     Returns:
         MultiAgentBase: Configured branching multi-agent system
 
-    Example:
+    Examples:
         Create a system with conditional routing::
 
             def route_condition(state):

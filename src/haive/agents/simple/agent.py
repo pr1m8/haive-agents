@@ -309,45 +309,90 @@ class SimpleAgent(
         # Setup lifecycle hooks
         @self.before_setup
         def log_setup_start(context: HookContext):
+            """Log Setup Start.
+
+            Args:
+                context: [TODO: Add description]
+            """
             logger.debug(f"[{self.name}] Setup starting...")
 
         @self.after_setup
         def log_setup_complete(context: HookContext):
+            """Log Setup Complete.
+
+            Args:
+                context: [TODO: Add description]
+            """
             logger.debug(f"[{self.name}] Setup complete")
 
         @self.before_build_graph
         def log_graph_build_start(context: HookContext):
+            """Log Graph Build Start.
+
+            Args:
+                context: [TODO: Add description]
+            """
             logger.debug(f"[{self.name}] Graph building starting...")
 
         @self.after_build_graph
         def log_graph_build_complete(context: HookContext):
+            """Log Graph Build Complete.
+
+            Args:
+                context: [TODO: Add description]
+            """
             logger.debug(f"[{self.name}] Graph building complete")
 
         # Setup execution hooks
         @self.before_run
         def log_execution_start(context: HookContext):
+            """Log Execution Start.
+
+            Args:
+                context: [TODO: Add description]
+            """
             logger.info(
                 f"[{self.name}] Execution starting with input: {type(context.input_data)}"
             )
 
         @self.after_run
         def log_execution_complete(context: HookContext):
+            """Log Execution Complete.
+
+            Args:
+                context: [TODO: Add description]
+            """
             logger.info(
                 f"[{self.name}] Execution complete with output: {type(context.output_data)}"
             )
 
         @self.on_error
         def log_execution_error(context: HookContext):
+            """Log Execution Error.
+
+            Args:
+                context: [TODO: Add description]
+            """
             logger.error(f"[{self.name}] Execution error: {context.error}")
 
         # Setup state hooks
         @self.before_state_update
         def log_state_update_start(context: HookContext):
+            """Log State Update Start.
+
+            Args:
+                context: [TODO: Add description]
+            """
             if self.debug:
                 logger.debug(f"[{self.name}] State update starting...")
 
         @self.after_state_update
         def log_state_update_complete(context: HookContext):
+            """Log State Update Complete.
+
+            Args:
+                context: [TODO: Add description]
+            """
             if self.debug:
                 logger.debug(f"[{self.name}] State update complete")
 
@@ -755,6 +800,12 @@ class SimpleAgent(
 
         # Register for tool change notifications with hooks
         def tool_change_handler(change_type: str, tool_name: str, **kwargs):
+            """Tool Change Handler.
+
+            Args:
+                change_type: [TODO: Add description]
+                tool_name: [TODO: Add description]
+            """
             if self.debug:
                 logger.debug(f"Tool change detected: {change_type} - {tool_name}")
 

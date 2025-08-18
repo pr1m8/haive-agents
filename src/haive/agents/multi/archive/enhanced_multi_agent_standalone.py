@@ -388,6 +388,12 @@ class BranchingMultiAgent(MultiAgent[dict[str, Agent]]):
     mode: Literal["branch"] = Field(default="branch")
 
     def __init__(self, name: str, agents: dict[str, Agent], **kwargs):
+        """Init  .
+
+        Args:
+            name: [TODO: Add description]
+            agents: [TODO: Add description]
+        """
         super().__init__(name=name, agents=agents, mode="branch", **kwargs)
 
 
@@ -399,6 +405,12 @@ class AdaptiveBranchingMultiAgent(BranchingMultiAgent):
     adaptation_rate: float = Field(default=0.1, ge=0.0, le=1.0)
 
     def __init__(self, name: str, agents: dict[str, Agent], **kwargs):
+        """Init  .
+
+        Args:
+            name: [TODO: Add description]
+            agents: [TODO: Add description]
+        """
         super().__init__(name=name, agents=agents, **kwargs)
 
         # Initialize performance tracking

@@ -78,7 +78,7 @@ def create_branched_rag_chain(
             [
                 (
                     "system",
-                    """Classify the query type and complexity:
+                    """Classify the query type and complexity:.
             - factual: Seeking specific facts or information
             - analytical: Requiring analysis, comparison, or reasoning
             - creative: Seeking ideas, brainstorming, or creative solutions
@@ -129,7 +129,7 @@ def create_branched_rag_chain(
                 ("system", "Analyze and synthesize information for deeper insights"),
                 (
                     "human",
-                    """Query: {query}
+                    """Query: {query}.
             Available context: {documents_context}
 
             Provide analytical insights and reasoning.""",
@@ -160,7 +160,7 @@ def create_branched_rag_chain(
                 ("system", "Generate creative solutions and innovative ideas"),
                 (
                     "human",
-                    """Query: {query}
+                    """Query: {query}.
             Context for inspiration: {documents_context}
 
             Provide creative and innovative responses.""",
@@ -191,7 +191,7 @@ def create_branched_rag_chain(
                 ("system", "Extract step-by-step procedures and processes"),
                 (
                     "human",
-                    """Query: {query}
+                    """Query: {query}.
             Available procedures: {documents_context}
 
             Provide clear, step-by-step instructions.""",
@@ -232,7 +232,7 @@ def create_branched_rag_chain(
                 ),
                 (
                     "human",
-                    """Original Query: {query}
+                    """Original Query: {query}.
             Query Classification: {classification}
 
             Branch Results:
@@ -257,7 +257,7 @@ def create_branched_rag_chain(
                 ("system", "Generate the final user-facing response"),
                 (
                     "human",
-                    """Query: {query}
+                    """Query: {query}.
             Merged Analysis: {merged_result}
 
             Provide a clear, comprehensive response.""",
@@ -376,6 +376,14 @@ def create_adaptive_branched_rag(
 
     # Context preparation
     def add_context(state: dict[str, Any]) -> dict[str, Any]:
+        """Add Context.
+
+        Args:
+            state: [TODO: Add description]
+
+        Returns:
+            [TODO: Add return description]
+        """
         context = "\n\n".join([doc.page_content for doc in documents[:3]])
         return {"context": context}
 
@@ -416,6 +424,14 @@ def create_parallel_branched_rag(
 
     # Context preparation
     def prepare_context(state: dict[str, Any]) -> dict[str, Any]:
+        """Prepare Context.
+
+        Args:
+            state: [TODO: Add description]
+
+        Returns:
+            [TODO: Add return description]
+        """
         context = "\n\n".join([doc.page_content for doc in documents[:5]])
         return {"context": context}
 
@@ -464,7 +480,7 @@ def create_parallel_branched_rag(
                 ),
                 (
                     "human",
-                    """Query: {query}
+                    """Query: {query}.
             Factual: {factual_response}
             Analytical: {analytical_response}
             Creative: {creative_response}

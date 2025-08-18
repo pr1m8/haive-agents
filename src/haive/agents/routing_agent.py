@@ -87,6 +87,11 @@ class RoutingAgent(SimpleAgent):
 
             # Create router function
             def route_function(state: dict[str, Any]):
+                """Route Function.
+
+                Args:
+                    state: [TODO: Add description]
+                """
                 # Track the node we're in
                 if hasattr(state, "current_node"):
                     state.current_node = source
@@ -197,6 +202,11 @@ if __name__ == "__main__":
 
     # Routing conditions
     def route_to_question_handler(state: dict[str, Any]):
+        """Route To Question Handler.
+
+        Args:
+            state: [TODO: Add description]
+        """
         # Check if input is a question
         message = state["messages"][-1].content
         return (
@@ -206,6 +216,11 @@ if __name__ == "__main__":
         )
 
     def route_to_task_handler(state: dict[str, Any]):
+        """Route To Task Handler.
+
+        Args:
+            state: [TODO: Add description]
+        """
         # Check if input is a task
         message = state["messages"][-1].content
         task_phrases = ["can you", "please", "help me", "i need"]

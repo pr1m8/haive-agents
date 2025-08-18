@@ -240,6 +240,14 @@ def hook(
     """
 
     def decorator(func: Callable) -> Callable:
+        """Decorator.
+
+        Args:
+            func: [TODO: Add description]
+
+        Returns:
+            [TODO: Add return description]
+        """
         func._hook_metadata = {
             "point": point,
             "priority": priority,

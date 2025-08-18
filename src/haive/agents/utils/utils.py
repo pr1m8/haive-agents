@@ -22,6 +22,11 @@ else:
 
 @chain
 async def mark_page(page):
+    """Mark Page.
+
+    Args:
+        page: [TODO: Add description]
+    """
     await page.evaluate(mark_page_script)
     for _ in range(10):
         try:
@@ -40,6 +45,14 @@ async def mark_page(page):
 
 
 def parse(text: str) -> dict:
+    """Parse.
+
+    Args:
+        text: [TODO: Add description]
+
+    Returns:
+        [TODO: Add return description]
+    """
     action_prefix = "Action: "
     if not text.strip().split("\n")[-1].startswith(action_prefix):
         return {"action": "retry", "args": f"Could not parse LLM Output: {text}"}

@@ -57,7 +57,7 @@ class SequentialWorkflowAgent(MultiAgent):
     This agent orchestrates a sequence of SimpleAgentV3 agents to
     accomplish complex tasks through staged processing.
 
-    Example:
+    Examples:
         >>> workflow = SequentialWorkflowAgent(
         ...     name="research_pipeline",
         ...     stages=["analyze", "research", "synthesize", "format"],
@@ -153,6 +153,7 @@ class PipelineAgent(MultiAgent):
     """
 
     def __init__(self, **kwargs):
+        """Init  ."""
         # Set sequential execution by default
         kwargs.setdefault("execution_mode", "sequential")
 
@@ -221,6 +222,7 @@ class IterativeRefinementAgent(MultiAgent):
     )
 
     def __init__(self, **kwargs):
+        """Init  ."""
         # Extract iteration settings
         max_iterations = kwargs.pop("max_iterations", 3)
         quality_threshold = kwargs.pop("quality_threshold", 0.85)
@@ -345,9 +347,19 @@ async def example_conditional_workflow():
 
     # Define custom routing conditions
     def needs_expert_review(state):
+        """Needs Expert Review.
+
+        Args:
+            state: [TODO: Add description]
+        """
         return state.get("technical_complexity", 0) > 0.8
 
     def needs_simplification(state):
+        """Needs Simplification.
+
+        Args:
+            state: [TODO: Add description]
+        """
         return state.get("audience_level") == "general"
 
     workflow = create_conditional_workflow(

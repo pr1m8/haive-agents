@@ -116,25 +116,50 @@ class ReactWithStructuredOutput(MultiAgent):
 
         @self.before_run
         def log_pattern_start(context: HookContext):
+            """Log Pattern Start.
+
+            Args:
+                context: [TODO: Add description]
+            """
             pass
 
         @self.after_run
         def log_pattern_completion(context: HookContext):
+            """Log Pattern Completion.
+
+            Args:
+                context: [TODO: Add description]
+            """
             pass
 
         # Hook into the reasoning agent
         @self.reasoning_agent.after_run
         def track_reasoning_completion(context: HookContext):
+            """Track Reasoning Completion.
+
+            Args:
+                context: [TODO: Add description]
+            """
             if context.output_data and isinstance(context.output_data, dict):
                 context.output_data.get("messages", [])
 
         # Hook into the structuring agent
         @self.structuring_agent.before_structured_output
         def track_structuring_start(context: HookContext):
+            """Track Structuring Start.
+
+            Args:
+                context: [TODO: Add description]
+            """
             pass
 
         @self.structuring_agent.after_structured_output
         def track_structuring_completion(context: HookContext):
+            """Track Structuring Completion.
+
+            Args:
+                context: [TODO: Add description]
+            """
             if context.structured_data:
                 pass
 
@@ -185,7 +210,7 @@ class ReactWithStructuredOutput(MultiAgent):
                     ),
                     (
                         "human",
-                        """Analysis Results:
+                        """Analysis Results:.
 {reasoning_output}
 
 Convert this analysis into a structured format with:
@@ -242,7 +267,7 @@ Ensure all fields are properly filled based on the analysis.""",
                     ("system", "Format research findings into a structured report."),
                     (
                         "human",
-                        """Research Findings:
+                        """Research Findings:.
 {reasoning_output}
 
 Create a comprehensive research report with:
@@ -304,7 +329,7 @@ Ensure the report is professional and well-structured.""",
                     ),
                     (
                         "human",
-                        """Problem Analysis:
+                        """Problem Analysis:.
 {reasoning_output}
 
 Create a structured solution with:

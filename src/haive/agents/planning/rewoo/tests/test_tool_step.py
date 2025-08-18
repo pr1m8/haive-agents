@@ -256,6 +256,11 @@ class TestToolStepFactories:
 
     @pytest.fixture
     def available_tools(self) -> list[Any]:
+        """Available Tools.
+
+        Returns:
+            [TODO: Add return description]
+        """
         return [calculator, text_analyzer, file_reader]
 
     def test_create_tool_steps_from_plan(self, available_tools) -> None:
@@ -296,6 +301,11 @@ class TestToolStepFactories:
 
         @tool
         def bad_tool_no_desc() -> str:
+            """Bad Tool No Desc.
+
+            Returns:
+                [TODO: Add return description]
+            """
             return "no description"
 
         @tool
@@ -323,6 +333,11 @@ class TestToolStepIntegration:
 
     @pytest.fixture
     def available_tools(self) -> list[Any]:
+        """Available Tools.
+
+        Returns:
+            [TODO: Add return description]
+        """
         return [calculator, text_analyzer, file_reader]
 
     def test_tool_steps_in_execution_plan(self, available_tools) -> None:

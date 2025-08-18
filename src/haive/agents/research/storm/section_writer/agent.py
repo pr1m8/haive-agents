@@ -5,6 +5,11 @@ graph = BaseGraph(name="section_writer")
 
 
 async def retrieve(inputs: dict):
+    """Retrieve.
+
+    Args:
+        inputs: [TODO: Add description]
+    """
     docs = await retriever.ainvoke(inputs["topic"] + ": " + inputs["section"])
     formatted = "\n".join(
         [

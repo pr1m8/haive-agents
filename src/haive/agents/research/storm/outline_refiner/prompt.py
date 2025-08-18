@@ -4,7 +4,7 @@ refine_outline_prompt = ChatPromptTemplate.from_messages(
     [
         (
             "system",
-            """You are a Wikipedia writer. You have gathered information from experts and search engines. Now, you are refining the outline of the Wikipedia page. \
+            """You are a Wikipedia writer. You have gathered information from experts and search engines. Now, you are refining the outline of the Wikipedia page. \.
 You need to make sure that the outline is comprehensive and specific. \
 Topic you are writing about: {topic}
 

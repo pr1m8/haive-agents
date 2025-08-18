@@ -83,7 +83,7 @@ def create_query_planning_chain(
                 ("system", "Synthesize sub-query results into a comprehensive answer"),
                 (
                     "human",
-                    """Original query: {query}
+                    """Original query: {query}.
             Sub-query results: {sub_results}
 
             Create a complete, coherent response.""",
@@ -124,6 +124,14 @@ def create_simple_decomposition_chain(
 
     # Step 2: Answer each (simplified)
     def answer_all(state: dict[str, Any]) -> dict[str, Any]:
+        """Answer All.
+
+        Args:
+            state: [TODO: Add description]
+
+        Returns:
+            [TODO: Add return description]
+        """
         sub_queries = state.get("sub_queries", "").split("\n")
         answers = [f"Answer: {q}" for q in sub_queries if q.strip()]
         return {"answers": answers}

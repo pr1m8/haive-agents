@@ -650,6 +650,14 @@ class DAGPlan(BasePlan):
         rec_stack = set()
 
         def has_cycle(step_id: str) -> bool:
+            """Has Cycle.
+
+            Args:
+                step_id: [TODO: Add description]
+
+            Returns:
+                [TODO: Add return description]
+            """
             visited.add(step_id)
             rec_stack.add(step_id)
 

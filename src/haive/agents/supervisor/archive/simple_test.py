@@ -29,6 +29,12 @@ class EchoAgent(SimpleAgent):
     response_prefix: str = ""
 
     def __init__(self, name: str, response_prefix: str = ""):
+        """Init  .
+
+        Args:
+            name: [TODO: Add description]
+            response_prefix: [TODO: Add description]
+        """
         super().__init__(name=name)
         self.response_prefix = response_prefix
         self.description = (
@@ -230,6 +236,7 @@ Tests:
     )
 
     async def run_all_tests():
+        """Run All Tests."""
         try:
             await test_supervisor_basic()
             await test_agent_registration()

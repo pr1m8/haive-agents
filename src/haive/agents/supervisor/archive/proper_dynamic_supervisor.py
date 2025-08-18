@@ -35,6 +35,11 @@ class ProperDynamicSupervisor(ReactAgent):
     _agent_capabilities: dict[str, str] = Field(default_factory=dict, exclude=True)
 
     def __init__(self, **kwargs) -> None:
+        """Init  .
+
+        Returns:
+            [TODO: Add return description]
+        """
         super().__init__(**kwargs)
         self._agent_registry = {}
         self._agent_capabilities = {}
@@ -261,10 +266,25 @@ if __name__ == "__main__":
         """Simple mock agent for testing."""
 
         def __init__(self, name: str, response_prefix: str | None = None):
+            """Init  .
+
+            Args:
+                name: [TODO: Add description]
+                response_prefix: [TODO: Add description]
+            """
             self.name = name
             self.response_prefix = response_prefix or f"{name} response"
 
         async def ainvoke(self, state: dict[str, Any], config=None) -> dict[str, Any]:
+            """Ainvoke.
+
+            Args:
+                state: [TODO: Add description]
+                config: [TODO: Add description]
+
+            Returns:
+                [TODO: Add return description]
+            """
             messages = state.get("messages", [])
             response = AIMessage(
                 content=f"{self.response_prefix}: Processed your request"

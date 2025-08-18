@@ -134,6 +134,12 @@ class SimpleRAGAgent(SimpleAgent):
     def __init__(
         self, documents: list[Document] | None = None, max_documents: int = 5, **kwargs
     ):
+        """Init  .
+
+        Args:
+            documents: [TODO: Add description]
+            max_documents: [TODO: Add description]
+        """
         # Set up default engine if none provided
         if "engine" not in kwargs:
             kwargs["engine"] = AugLLMConfig(
@@ -226,6 +232,11 @@ class SimpleRAGAnswerAgent(SimpleAgent):
     """
 
     def __init__(self, use_citations: bool = False, **kwargs):
+        """Init  .
+
+        Args:
+            use_citations: [TODO: Add description]
+        """
         # Choose appropriate prompt template
         prompt_template = (
             RAG_ANSWER_WITH_CITATIONS if use_citations else RAG_ANSWER_STANDARD
@@ -302,6 +313,12 @@ class DocumentGradingAgent(SimpleAgent):
         min_relevance_threshold: float = 0.5,
         **kwargs,
     ):
+        """Init  .
+
+        Args:
+            grading_mode: [TODO: Add description]
+            min_relevance_threshold: [TODO: Add description]
+        """
         # Set up structured output for grading results
         if grading_mode == "binary":
             kwargs["structured_output_model"] = DocumentBinaryResponse
@@ -428,6 +445,11 @@ class IterativeDocumentGradingAgent(DocumentGradingAgent):
     """
 
     def __init__(self, custom_grader: Callable | None = None, **kwargs):
+        """Init  .
+
+        Args:
+            custom_grader: [TODO: Add description]
+        """
         super().__init__(**kwargs)
         self.custom_grader = custom_grader
 
@@ -551,14 +573,30 @@ from_documents = SimpleRAGAgent.from_documents
 
 
 def generate_answer(query, docs):
+    """Generate Answer.
+
+    Args:
+        query: [TODO: Add description]
+        docs: [TODO: Add description]
+    """
     return "Generated answer based on query and documents"
 
 
 def grade_document(doc):
+    """Grade Document.
+
+    Args:
+        doc: [TODO: Add description]
+    """
     return {"relevance": 0.8, "quality": 0.9}
 
 
 def grade_documents(docs):
+    """Grade Documents.
+
+    Args:
+        docs: [TODO: Add description]
+    """
     return [grade_document(doc) for doc in docs]
 
 
@@ -568,22 +606,47 @@ min_relevance_threshold = 0.5
 
 
 def retrieve_documents(query):
+    """Retrieve Documents.
+
+    Args:
+        query: [TODO: Add description]
+    """
     return conversation_documents[:3]
 
 
 def run_generation(state):
+    """Run Generation.
+
+    Args:
+        state: [TODO: Add description]
+    """
     return {"answer": "Generated response"}
 
 
 def run_grading(state):
+    """Run Grading.
+
+    Args:
+        state: [TODO: Add description]
+    """
     return {"graded_documents": []}
 
 
 def run_iterative_grading(state):
+    """Run Iterative Grading.
+
+    Args:
+        state: [TODO: Add description]
+    """
     return {"final_documents": []}
 
 
 def run_retrieval(state):
+    """Run Retrieval.
+
+    Args:
+        state: [TODO: Add description]
+    """
     return {"retrieved_documents": conversation_documents}
 
 

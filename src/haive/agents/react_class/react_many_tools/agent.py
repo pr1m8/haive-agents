@@ -665,6 +665,14 @@ class ReactManyToolsAgent(ReactAgent):
 
         # Create a wrapper for the LLM that binds only the filtered tools
         def llm_with_filtered_tools(state: dict[str, Any]) -> dict[str, Any]:
+            """Llm With Filtered Tools.
+
+            Args:
+                state: [TODO: Add description]
+
+            Returns:
+                [TODO: Add return description]
+            """
             # Get filtered tool names
             filtered_tool_names = state.get("filtered_tools", [])
 

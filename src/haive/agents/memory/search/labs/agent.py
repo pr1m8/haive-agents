@@ -336,7 +336,7 @@ Remember: You are automating complex workflows and creating professional-grade d
 
     def get_search_instructions(self) -> str:
         """Get specific search instructions for Labs operations."""
-        return """LABS PROJECT INSTRUCTIONS:
+        return """LABS PROJECT INSTRUCTIONS:.
 
 1. PROJECT ANALYSIS:
    - Understand the project requirements thoroughly

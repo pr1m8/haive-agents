@@ -155,7 +155,7 @@ class ReasoningExecution(BaseModel):
 
 
 # Default reasoning modules
-DEFAULT_REASONING_MODULES = """1. Critical Thinking: Question assumptions, identify biases, evaluate evidence
+DEFAULT_REASONING_MODULES = """1. Critical Thinking: Question assumptions, identify biases, evaluate evidence.
 2. Systems Analysis: Break down complex systems, identify components and relationships
 3. Root Cause Analysis: Identify underlying causes of problems or phenomena
 4. Stakeholder Analysis: Identify and understand different perspectives and interests
@@ -327,7 +327,7 @@ if __name__ == "__main__":
         self_discover = create_self_discover_sequential()
 
         # Example task
-        task = """This SVG path element <path d="M 55.57,80.69 L 57.38,65.80 M 57.38,65.80 L 48.90,57.46 M 48.90,57.46 L
+        task = """This SVG path element <path d="M 55.57,80.69 L 57.38,65.80 M 57.38,65.80 L 48.90,57.46 M 48.90,57.46 L.
 45.58,47.78 M 45.58,47.78 L 53.25,36.07 L 66.29,48.90 L 78.69,61.09 L 55.57,80.69"/> draws a:
 (A) circle (B) heptagon (C) hexagon (D) kite (E) line (F) octagon (G) pentagon (H) rectangle (I) sector (J) triangle"""
 

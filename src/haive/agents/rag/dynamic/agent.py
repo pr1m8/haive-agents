@@ -19,6 +19,11 @@ class DynamicRAGAgent(BaseRAGAgent):
     """Implements a dynamic RAG pipeline that routes queries to appropriate data sources."""
 
     def __init__(self, config: DynamicRAGConfig):
+        """Init  .
+
+        Args:
+            config: [TODO: Add description]
+        """
         super().__init__(config)
         self._init_data_sources()
         self._init_router()
@@ -135,6 +140,14 @@ class DynamicRAGAgent(BaseRAGAgent):
             # Implement parallel retrieval with concurrent.futures or asyncio
 
             def retrieve_from_source(source_name) -> Any:
+                """Retrieve From Source.
+
+                Args:
+                    source_name: [TODO: Add description]
+
+                Returns:
+                    [TODO: Add return description]
+                """
                 try:
                     retriever = self.retrievers.get(source_name)
                     if retriever:

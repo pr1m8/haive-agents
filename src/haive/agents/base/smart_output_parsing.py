@@ -28,6 +28,7 @@ class SmartOutputParsingMixin:
     """Mixin to add smart output parsing capabilities to agents."""
 
     def __init__(self, *args, **kwargs):
+        """Init  ."""
         super().__init__(*args, **kwargs)
         self._output_parsing_hooks: dict[str, Callable] = {}
         self._setup_output_parsing_hooks()

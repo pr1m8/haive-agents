@@ -16,6 +16,11 @@ class IterativeGraphTransformerState(BaseModel):
     graph_doc: GraphDocument | None = Field(default=None)
 
     def should_refine(self) -> Literal["refine_summary", "__end__"]:
+        """Should Refine.
+
+        Returns:
+            [TODO: Add return description]
+        """
         return "refine_summary" if self.index < len(self.contents) else "__end__"
 
     @model_validator(mode="before")

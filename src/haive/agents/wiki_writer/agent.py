@@ -23,7 +23,20 @@ class WikiWriterAgent(AgentArchitecture):
     """An agent that writes a wiki page."""
 
     def __init__(self, config: WikiWriterAgentConfig = WikiWriterAgentConfig()):
+        """Init  .
+
+        Args:
+            config: [TODO: Add description]
+        """
         super().__init__(config)
 
     async def call_agent(self, question: str) -> str | None:
+        """Call Agent.
+
+        Args:
+            question: [TODO: Add description]
+
+        Returns:
+            [TODO: Add return description]
+        """
         return await super().call_agent(question)

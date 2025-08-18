@@ -103,7 +103,7 @@ Response Guidelines:
 - Mention uncertainty if information is unclear
 
 Examples:
-Query: "What is the capital of Japan?"
+    Query: "What is the capital of Japan?"
 Response: "The capital of Japan is Tokyo. It is the largest city in Japan and the seat of government."
 
 Query: "How tall is Mount Everest?"
@@ -113,7 +113,7 @@ Remember: Speed and accuracy are more important than comprehensive coverage."""
 
     def get_search_instructions(self) -> str:
         """Get specific search instructions for quick search."""
-        return """QUICK SEARCH INSTRUCTIONS:
+        return """QUICK SEARCH INSTRUCTIONS:.
 
 1. IDENTIFY QUERY TYPE:
    - Factual question (who, what, where, when)

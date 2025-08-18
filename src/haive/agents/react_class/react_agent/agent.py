@@ -23,6 +23,14 @@ from haive.agents.react_class.react_agent.state import ReactAgentState
 
 # Utility function to determine whether to continue execution
 def should_continue(state: ReactAgentState) -> str:
+    """Should Continue.
+
+    Args:
+        state: [TODO: Add description]
+
+    Returns:
+        [TODO: Add return description]
+    """
     messages = filter_messages(state["messages"], exclude_types=[SystemMessage])
     last_message = messages[-1]
     if last_message.tool_calls:
@@ -125,6 +133,11 @@ class ReactAgentConfig(AgentConfig):
         return v
 
     def build_agent(self) -> "ReactAgent":
+        """Build Agent.
+
+        Returns:
+            [TODO: Add return description]
+        """
         return ReactAgent(config=self)
 
 
@@ -134,6 +147,11 @@ class ReactAgentConfig(AgentConfig):
 @register_agent(ReactAgentConfig)
 class ReactAgent(Agent[ReactAgentConfig]):
     def __init__(self, config: ReactAgentConfig = ReactAgentConfig()):
+        """Init  .
+
+        Args:
+            config: [TODO: Add description]
+        """
         # ✅ Initialize Tools
         self.llm_tools = config.tools or []
         self.tool_node_tools = config.tool_node_tools or self.llm_tools

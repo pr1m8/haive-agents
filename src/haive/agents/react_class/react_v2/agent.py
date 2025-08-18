@@ -28,6 +28,11 @@ class ReactAgent(Agent[ReactAgentConfig]):
     """
 
     def __init__(self, config: ReactAgentConfig):
+        """  Init  .
+
+Args:
+    config: [TODO: Add description]
+"""
         # Process tools before initialization
         self.tools_map = self._prepare_tools(config.tools)
         self.tool_nodes = self._create_tool_nodes()

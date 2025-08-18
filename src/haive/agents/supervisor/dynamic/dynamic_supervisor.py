@@ -26,7 +26,7 @@ Architecture:
     execution graph whenever agents are added or removed. Tools are dynamically
     discovered and prefixed to avoid conflicts.
 
-Example:
+Examples:
     Dynamic agent management::
 
         >>> from haive.agents.supervisor import DynamicSupervisor

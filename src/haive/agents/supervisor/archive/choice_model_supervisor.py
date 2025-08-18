@@ -29,6 +29,11 @@ class AgentSelectionTool(BaseTool):
     args_schema: type[BaseModel] | None = Field(default=None)
 
     def __init__(self, choice_model: DynamicChoiceModel, **kwargs):
+        """Init  .
+
+        Args:
+            choice_model: [TODO: Add description]
+        """
         super().__init__(**kwargs)
         self.choice_model = choice_model
 
@@ -72,6 +77,14 @@ class AgentCreationTool(BaseTool):
     args_schema: type[BaseModel] | None = Field(default=None)
 
     def __init__(self, supervisor, **kwargs) -> None:
+        """Init  .
+
+        Args:
+            supervisor: [TODO: Add description]
+
+        Returns:
+            [TODO: Add return description]
+        """
         super().__init__(**kwargs)
         self.supervisor = supervisor
 

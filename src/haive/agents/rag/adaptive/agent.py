@@ -59,7 +59,7 @@ Consider:
         ),
         (
             "human",
-            """Analyze this query and determine its characteristics:
+            """Analyze this query and determine its characteristics:.
 
 Query: {query}
 

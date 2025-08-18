@@ -168,6 +168,7 @@ class HooksMixin:
     """Mixin that adds hook functionality to agents."""
 
     def __init__(self, *args, **kwargs):
+        """Init  ."""
         super().__init__(*args, **kwargs)
         self._hooks: dict[HookEvent, list[HookFunction]] = {}
 
@@ -178,7 +179,7 @@ class HooksMixin:
             event: The event to hook into
             hook: The function to call on the event
 
-        Example:
+        Examples:
             agent.add_hook(HookEvent.BEFORE_RUN, lambda ctx: print(f"Running {ctx.agent_name}"))
         """
         if event not in self._hooks:
@@ -364,7 +365,7 @@ def timing_hook(context: HookContext) -> None:
     Note:
         Must be added to both BEFORE and AFTER events to work properly.
 
-    Example:
+    Examples:
         agent.add_hook(HookEvent.BEFORE_RUN, timing_hook)
         agent.add_hook(HookEvent.AFTER_RUN, timing_hook)
     """
@@ -400,12 +401,20 @@ def retry_limit_hook(max_retries: int = 3) -> HookFunction:
     Raises:
         Exception: When retry limit is exceeded.
 
-    Example:
+    Examples:
         agent.add_hook(HookEvent.ON_RETRY, retry_limit_hook(max_retries=5))
     """
     retry_count = {}
 
     def hook(context: HookContext) -> None:
+        """Hook.
+
+        Args:
+            context: [TODO: Add description]
+
+        Returns:
+            [TODO: Add return description]
+        """
         if context.event == HookEvent.ON_RETRY:
             key = f"{context.agent_name}:{context.node_name}"
             retry_count[key] = retry_count.get(key, 0) + 1
@@ -584,7 +593,7 @@ def create_multi_stage_hook(stages: list[str]) -> HookFunction:
     Returns:
         A hook function that tracks multi-stage workflows.
 
-    Example:
+    Examples:
         hook = create_multi_stage_hook(["grading", "reflection", "improvement"])
         agent.add_hook(HookEvent.PRE_PROCESS, hook)
         agent.add_hook(HookEvent.POST_PROCESS, hook)
@@ -592,6 +601,14 @@ def create_multi_stage_hook(stages: list[str]) -> HookFunction:
     stage_data = {}
 
     def hook(context: HookContext) -> None:
+        """Hook.
+
+        Args:
+            context: [TODO: Add description]
+
+        Returns:
+            [TODO: Add return description]
+        """
         agent_key = context.agent_name
 
         if context.event == HookEvent.PRE_PROCESS:

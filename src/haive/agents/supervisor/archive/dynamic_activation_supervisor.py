@@ -9,7 +9,7 @@ Based on:
 - @packages/haive-agents/examples/supervisor/advanced/dynamic_activation_example.py
 
 Implementation Notes:
-- Uses factory methods for complex initialization (no __init__ override)
+    - Uses factory methods for complex initialization (no __init__ override)
 - Private attributes for internal state (_discovery_agent)
 - MetaStateSchema for component wrapping
 - DynamicActivationState as state schema

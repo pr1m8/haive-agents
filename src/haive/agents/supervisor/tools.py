@@ -37,7 +37,7 @@ def create_agent_from_spec(spec: AgentSpec) -> Any:
     Raises:
         ValueError: If agent_type is not supported
 
-    Example:
+    Examples:
         >>> spec = AgentSpec(
         ...     name="calculator",
         ...     agent_type="ReactAgent",
@@ -113,7 +113,7 @@ def find_matching_agent_specs(
     Returns:
         List of matching specs, sorted by relevance
 
-    Example:
+    Examples:
         >>> specs = [math_spec, research_spec, writing_spec]
         >>> matches = find_matching_agent_specs(
         ...     "Calculate the compound interest",
@@ -228,7 +228,7 @@ def create_handoff_tool(agent_name: str, description: str) -> BaseTool:
     Returns:
         Tool that can be used to route tasks to the agent
 
-    Example:
+    Examples:
         >>> tool = create_handoff_tool("math_expert", "Handles math problems")
         >>> result = tool.invoke({"task": "Calculate 2+2"})
     """
@@ -238,6 +238,14 @@ def create_handoff_tool(agent_name: str, description: str) -> BaseTool:
 
     @tool(args_schema=HandoffInput)
     def handoff_to_agent(task: str) -> str:
+        """Handoff To Agent.
+
+        Args:
+            task: [TODO: Add description]
+
+        Returns:
+            [TODO: Add return description]
+        """
         f"""Hand off task to {agent_name}: {description}"""
         return f"HANDOFF_TO_{agent_name.upper()}: {task}"
 

@@ -894,14 +894,29 @@ class PerformanceMonitor:
     """Simple performance monitoring for supervisor operations."""
 
     def __init__(self) -> None:
+        """  Init  .
+
+Returns:
+    [TODO: Add return description]
+"""
         self.decision_start_time = None
         self.decision_count = 0
         self.total_decision_time = 0.0
 
     def start_decision(self) -> None:
+        """Start Decision.
+
+Returns:
+    [TODO: Add return description]
+"""
         self.decision_start_time = time.time()
 
     def end_decision(self, target: str):
+        """End Decision.
+
+Args:
+    target: [TODO: Add description]
+"""
         if self.decision_start_time:
             duration = time.time() - self.decision_start_time
             self.total_decision_time += duration
@@ -909,4 +924,9 @@ class PerformanceMonitor:
             logger.debug(f"Decision to {target} took {duration:.3f}s")
 
     def get_average_decision_time(self) -> float:
+        """Get Average Decision Time.
+
+Returns:
+    [TODO: Add return description]
+"""
         return self.total_decision_time / self.decision_count if self.decision_count > 0 else 0.0

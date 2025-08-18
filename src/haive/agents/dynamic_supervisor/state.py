@@ -11,7 +11,7 @@ Classes:
     SupervisorStateWithTools: Extends base with dynamic tool generation
     SupervisorStateV2: Experimental version with full serialization
 
-Example:
+Examples:
     Creating and managing supervisor state::
 
         state = SupervisorState()
@@ -47,7 +47,7 @@ class SupervisorState(MessagesStateWithTokenUsage):
         agent_task: Task to pass to the selected agent
         agent_response: Response from the last executed agent
 
-    Example:
+    Examples:
         Basic agent management::
 
             state = SupervisorState()
@@ -97,7 +97,7 @@ class SupervisorState(MessagesStateWithTokenUsage):
             description: Human-readable description of agent capabilities
             active: Whether agent should be immediately active
 
-        Example:
+        Examples:
             state.add_agent("search", search_agent, "Web search expert", active=True)
         """
         agent_info = AgentInfo(
@@ -205,7 +205,7 @@ class SupervisorStateWithTools(SupervisorState):
         agent_choice_model: Dynamic model for validated agent selection
         generated_tools: List of tool names generated from agents
 
-    Example:
+    Examples:
         Using dynamic tools::
 
             state = SupervisorStateWithTools()

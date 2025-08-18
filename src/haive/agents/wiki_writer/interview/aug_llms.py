@@ -8,7 +8,7 @@ GEN_QUESTION_PROMPT = gen_qn_prompt = ChatPromptTemplate.from_messages(
     [
         (
             "system",
-            """You are an experienced Wikipedia writer and want to edit a specific page. \
+            """You are an experienced Wikipedia writer and want to edit a specific page. \.
 Besides your identity as a Wikipedia writer, you have a specific focus when researching the topic. \
 Now, you are chatting with an expert to get information. Ask good questions to get more useful information.
 
@@ -48,7 +48,7 @@ GEN_ANSWER_PROMPT = ChatPromptTemplate.from_messages(
     [
         (
             "system",
-            """You are an expert who can use information effectively. You are chatting with a Wikipedia writer who wants\
+            """You are an expert who can use information effectively. You are chatting with a Wikipedia writer who wants\.
  to write a Wikipedia page on the topic you know. You have gathered the related information and will now use the information to form a response.
 
 Make your response as informative as possible and make sure every sentence is supported by the gathered information.

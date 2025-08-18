@@ -3,14 +3,14 @@ from langchain.prompts import ChatPromptTemplate, MessagesPlaceholder
 
 from haive.agents.planning.plan_and_execute.models import Act, Plan
 
-EXECUTOR_PROMPT = """You are a helpful assistant"""
+EXECUTOR_PROMPT = """You are a helpful assistant."""
 EXECUTOR_PROMPT_TEMPLATE = ChatPromptTemplate.from_messages(
     [
         ("system", EXECUTOR_PROMPT),
         MessagesPlaceholder(variable_name="messages"),
     ]
 )
-PLANNER_PROMPT = """For the given objective, come up with a simple step by step plan. \
+PLANNER_PROMPT = """For the given objective, come up with a simple step by step plan. \.
 This plan should involve individual tasks, that if executed correctly will yield the correct answer. Do not add any superfluous steps. \
 The result of the final step should be the final answer. Make sure that each step has all the information needed - do not skip steps."""
 PLANNER_PROMPT_TEMPLATE = ChatPromptTemplate.from_messages(
@@ -24,7 +24,7 @@ planner_aug_llm_config = AugLLMConfig(
     prompt_template=PLANNER_PROMPT_TEMPLATE,
     structured_output_model=Plan,
 )
-REPLANNER_PROMPT = """For the given objective, come up with a simple step by step plan. \
+REPLANNER_PROMPT = """For the given objective, come up with a simple step by step plan. \.
 This plan should involve individual tasks, that if executed correctly will yield the correct answer. Do not add any superfluous steps. \
 The result of the final step should be the final answer. Make sure that each step has all the information needed - do not skip steps.
 

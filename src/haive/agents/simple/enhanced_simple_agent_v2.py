@@ -101,6 +101,14 @@ class SimpleAgentV2(Agent[AugLLMConfig]):
 
             # Conditional routing
             def check_tools(state: dict[str, Any]) -> Literal["tools", "end"]:
+                """Check Tools.
+
+                Args:
+                    state: [TODO: Add description]
+
+                Returns:
+                    [TODO: Add return description]
+                """
                 msgs = state.get("messages", [])
                 if msgs and isinstance(msgs[-1], AIMessage) and msgs[-1].tool_calls:
                     return "tools"

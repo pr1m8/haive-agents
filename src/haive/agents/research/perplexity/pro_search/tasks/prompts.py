@@ -46,7 +46,7 @@ Context Information:
 
 Remember: Good planning is hierarchical, with appropriate depth and breadth based on complexity."""
 
-TASK_DECOMPOSITION_USER = """Create a detailed task plan for the following goal:
+TASK_DECOMPOSITION_USER = """Create a detailed task plan for the following goal:.
 
 Goal: {goal}
 
@@ -77,7 +77,7 @@ Given a high-level subtask, you should:
 
 Consider the parent task context and overall goal when refining."""
 
-SUBTASK_REFINEMENT_USER = """Refine this subtask within the larger plan:
+SUBTASK_REFINEMENT_USER = """Refine this subtask within the larger plan:.
 
 Parent Task: {parent_task}
 Current Subtask: {subtask_name}
@@ -113,7 +113,7 @@ Optimization Priority: {optimization_goals}
 
 Create execution batches that can run efficiently while maintaining correctness."""
 
-EXECUTION_PLANNING_USER = """Create an execution plan for these tasks:
+EXECUTION_PLANNING_USER = """Create an execution plan for these tasks:.
 
 Available Tasks:
 {available_tasks}
@@ -151,7 +151,7 @@ Previous Results from Dependencies:
 
 Execute tasks precisely and report results in the required format."""
 
-TASK_EXECUTION_USER = """Execute this task:
+TASK_EXECUTION_USER = """Execute this task:.
 
 Task: {task_name}
 Description: {task_description}
@@ -181,7 +181,7 @@ Evaluate conditions and make branching decisions based on:
 
 Make clear, justified decisions that advance toward the overall goal."""
 
-DECISION_NODE_USER = """Make a decision for this branching point:
+DECISION_NODE_USER = """Make a decision for this branching point:.
 
 Decision Node: {node_name}
 Criteria: {decision_criteria}
@@ -215,7 +215,7 @@ Analyze the current execution state and determine if replanning would be benefic
 
 Provide actionable recommendations for plan adjustments."""
 
-REPLANNING_ANALYSIS_USER = """Analyze whether replanning is needed:
+REPLANNING_ANALYSIS_USER = """Analyze whether replanning is needed:.
 
 Original Goal: {goal}
 Current Progress: {completion_percentage}%
@@ -257,7 +257,7 @@ Replanning Strategy: {replanning_strategy}
 
 Create a revised plan that adapts to the current reality while maintaining goal focus."""
 
-ADAPTIVE_REPLANNING_USER = """Create an updated plan based on execution feedback:
+ADAPTIVE_REPLANNING_USER = """Create an updated plan based on execution feedback:.
 
 Original Goal: {goal}
 Current State Summary: {state_summary}
@@ -295,7 +295,7 @@ Provide insights on:
 
 Be analytical and highlight both successes and areas of concern."""
 
-PROGRESS_MONITORING_USER = """Analyze the current execution progress:
+PROGRESS_MONITORING_USER = """Analyze the current execution progress:.
 
 Goal: {goal}
 Start Time: {start_time}
@@ -336,7 +336,7 @@ Evaluate whether a loop should continue based on:
 
 Make clear decisions with justification."""
 
-LOOP_CONDITION_USER = """Evaluate this loop condition:
+LOOP_CONDITION_USER = """Evaluate this loop condition:.
 
 Loop Task: {loop_name}
 Condition: {loop_condition}

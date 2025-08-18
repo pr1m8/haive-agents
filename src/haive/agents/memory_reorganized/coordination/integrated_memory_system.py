@@ -51,6 +51,14 @@ class IntegratedMemorySystem:
         vector_store_path: Optional[str] = None,
         engine: Optional[AugLLMConfig] = None,
     ):
+        """Init  .
+
+        Args:
+            user_id: [TODO: Add description]
+            neo4j_config: [TODO: Add description]
+            vector_store_path: [TODO: Add description]
+            engine: [TODO: Add description]
+        """
         self.user_id = user_id
         self.engine = engine or AugLLMConfig(temperature=0.7)
 
@@ -223,7 +231,7 @@ class IntegratedMemorySystem:
             name="memory_router",
             engine=self.engine,
             tools=[analyze_memory_type, route_memory_query],
-            system_message="""You are a memory routing specialist. Analyze content and queries to determine
+            system_message="""You are a memory routing specialist. Analyze content and queries to determine.
 the best memory system(s) to use:
 - structured: For entities, relationships, and structured knowledge (Neo4j graph)
 - conversational: For dialogue, opinions, and temporal information (React memory)

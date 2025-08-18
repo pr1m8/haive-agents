@@ -110,7 +110,7 @@ class SequentialAgentWithStructuredOutput(Generic[OutputT]):
                 [
                     (
                         "system",
-                        """You are a structured output specialist. Your role is to take the provided
+                        """You are a structured output specialist. Your role is to take the provided.
 information and organize it into the requested structured format.
 
 Ensure all required fields are populated accurately based on the input data.

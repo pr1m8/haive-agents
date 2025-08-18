@@ -15,62 +15,56 @@ Haive architecture patterns, enhanced agents, and modern multi-agent orchestrati
 
 ## Architecture
 
-```
-PlannerAgentV3 (SimpleAgentV3)
-    ↓ (structured Plan model)
-ExecutorAgentV3 (ReactAgent) ←─┐
-    ↓ (execution results)       │
-Routing Logic ──→ Continue ────┘
-    ↓
-ReplannerAgentV3 (SimpleAgentV3)
-    ↓ (structured Decision model)
-Final Response or Loop Back
-```
+        PlannerAgentV3 (SimpleAgentV3)
+            ↓ (structured Plan model)
+        ExecutorAgentV3 (ReactAgent) ←─┐
+            ↓ (execution results)       │
+        Routing Logic ──→ Continue ────┘
+            ↓
+        ReplannerAgentV3 (SimpleAgentV3)
+            ↓ (structured Decision model)
+        Final Response or Loop Back
 
 ## Usage
 
 ### Basic Usage
-```python
-from haive.agents.planning.enhanced_plan_execute_v5 import create_enhanced_plan_execute_v5
+        from haive.agents.planning.enhanced_plan_execute_v5 import create_enhanced_plan_execute_v5
 
-# Create with default tools
-agent = create_enhanced_plan_execute_v5()
-result = await agent.arun("Calculate compound interest on $1000 at 5% for 10 years")
+        # Create with default tools
+        agent = create_enhanced_plan_execute_v5()
+        result = await agent.arun("Calculate compound interest on $1000 at 5% for 10 years")
 
-# Create with custom tools
-from haive.tools import web_search_tool, calculator_tool
-agent = create_enhanced_plan_execute_v5(
-    name="research_planner",
-    tools=[web_search_tool, calculator_tool]
-)
-result = await agent.arun("Research Tesla stock performance and calculate ROI")
-```
+        # Create with custom tools
+        from haive.tools import web_search_tool, calculator_tool
+        agent = create_enhanced_plan_execute_v5(
+            name="research_planner",
+            tools=[web_search_tool, calculator_tool]
+        )
+        result = await agent.arun("Research Tesla stock performance and calculate ROI")
 
 ### Advanced Configuration
-```python
-agent = create_enhanced_plan_execute_v5(
-    name="advanced_planner",
-    planner_config=AugLLMConfig(
-        model="gpt-4",
-        temperature=0.2,
-        system_message="You are an expert strategic planner."
-    ),
-    executor_config=AugLLMConfig(
-        model="gpt-4-turbo",
-        temperature=0.1
-    ),
-    tools=[custom_tool1, custom_tool2],
-    max_iterations=10,
-    enable_hooks=True
-)
+        agent = create_enhanced_plan_execute_v5(
+            name="advanced_planner",
+            planner_config=AugLLMConfig(
+                model="gpt-4",
+                temperature=0.2,
+                system_message="You are an expert strategic planner."
+            ),
+            executor_config=AugLLMConfig(
+                model="gpt-4-turbo",
+                temperature=0.1
+            ),
+            tools=[custom_tool1, custom_tool2],
+            max_iterations=10,
+            enable_hooks=True
+        )
 
-# Add custom hooks
-@agent.before_run
-def track_execution(context):
-    print(f"Starting planning workflow: {context.agent_name}")
+        # Add custom hooks
+        @agent.before_run
+        def track_execution(context):
+            print(f"Starting planning workflow: {context.agent_name}")
 
-result = await agent.arun("Complex multi-step research task")
-```
+        result = await agent.arun("Complex multi-step research task")
 
 ## Custom Models
 
@@ -276,7 +270,7 @@ PLANNER_PROMPT_TEMPLATE = ChatPromptTemplate.from_messages(
         ("system", PLANNER_SYSTEM_MESSAGE),
         (
             "human",
-            """Please create a detailed plan for this objective:
+            """Please create a detailed plan for this objective:.
 
 Objective: {objective}
 
@@ -313,7 +307,7 @@ EXECUTOR_PROMPT_TEMPLATE = ChatPromptTemplate.from_messages(
         ("system", EXECUTOR_SYSTEM_MESSAGE),
         (
             "human",
-            """Execute this specific step from our plan:
+            """Execute this specific step from our plan:.
 
 Step: {step_description}
 Expected Outcome: {expected_outcome}
@@ -354,7 +348,7 @@ REPLANNER_PROMPT_TEMPLATE = ChatPromptTemplate.from_messages(
         ("system", REPLANNER_SYSTEM_MESSAGE),
         (
             "human",
-            """Analyze the current progress and make a decision about next steps:
+            """Analyze the current progress and make a decision about next steps:.
 
 Original Objective: {objective}
 Current Plan: {current_plan}
@@ -559,14 +553,29 @@ def _add_monitoring_hooks(workflow: MultiAgent) -> None:
 
     @workflow.before_run
     def log_workflow_start(context):
+        """Log Workflow Start.
+
+        Args:
+            context: [TODO: Add description]
+        """
         logger.info(f"🚀 Starting enhanced planning workflow: {context.agent_name}")
 
     @workflow.after_run
     def log_workflow_complete(context):
+        """Log Workflow Complete.
+
+        Args:
+            context: [TODO: Add description]
+        """
         logger.info(f"✅ Planning workflow completed: {context.agent_name}")
 
     @workflow.on_error
     def log_workflow_error(context):
+        """Log Workflow Error.
+
+        Args:
+            context: [TODO: Add description]
+        """
         logger.error(f"❌ Planning workflow error: {context.error}")
 
 

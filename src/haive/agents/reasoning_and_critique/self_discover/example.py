@@ -31,7 +31,7 @@ def example_math_problem():
 
 def example_svg_interpretation():
     """Example using SelfDiscover to interpret an SVG path."""
-    problem = """This SVG path element <path d="M 55.57,80.69 L 57.38,65.80 M 57.38,65.80 L 48.90,57.46 M 48.90,57.46 L
+    problem = """This SVG path element <path d="M 55.57,80.69 L 57.38,65.80 M 57.38,65.80 L 48.90,57.46 M 48.90,57.46 L.
 45.58,47.78 M 45.58,47.78 L 53.25,36.07 L 66.29,48.90 L 78.69,61.09 L 55.57,80.69"/> draws a:
 (A) circle (B) heptagon (C) hexagon (D) kite (E) line (F) octagon (G) pentagon (H) rectangle (I) sector (J) triangle"""
 
@@ -63,7 +63,7 @@ def example_svg_interpretation():
 
 def example_logical_reasoning():
     """Example using SelfDiscover for a logical reasoning problem."""
-    problem = """Four people (Alex, Blake, Casey, and Dana) each have a different favorite color
+    problem = """Four people (Alex, Blake, Casey, and Dana) each have a different favorite color.
 (red, blue, green, and yellow) and a different favorite fruit (apple, banana, cherry, and date).
 Given the following clues, determine each person\'s favorite color and fruit:
 
@@ -244,7 +244,7 @@ def example_advanced_configuration():
             ("system", "You are an expert problem solver."),
             (
                 "human",
-                """Customize these selected reasoning techniques specifically for the problem at hand:
+                """Customize these selected reasoning techniques specifically for the problem at hand:.
 
         Selected techniques:
         {selected_modules}
@@ -414,7 +414,7 @@ def analyze_reasoning_process(
 
 def example_compare_models():
     """Example comparing different models on the same problem."""
-    problem = """If a sequence follows the pattern: 2, 6, 12, 20, 30, ..., what is the next number in the sequence?"""
+    problem = """If a sequence follows the pattern: 2, 6, 12, 20, 30, ..., what is the next number in the sequence?."""
 
     models = ["gpt-4o", "gpt-3.5-turbo"]
     results = {}

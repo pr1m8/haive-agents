@@ -40,6 +40,17 @@ class ReactMemoryAgent:
         decay_rate: float = 0.01,
         use_time_weighting: bool = True,
     ):
+        """Init  .
+
+        Args:
+            name: [TODO: Add description]
+            engine: [TODO: Add description]
+            user_id: [TODO: Add description]
+            memory_store_path: [TODO: Add description]
+            k: [TODO: Add description]
+            decay_rate: [TODO: Add description]
+            use_time_weighting: [TODO: Add description]
+        """
         self.name = name
         self.engine = engine or AugLLMConfig(temperature=0.7)
         self.user_id = user_id or "default_user"

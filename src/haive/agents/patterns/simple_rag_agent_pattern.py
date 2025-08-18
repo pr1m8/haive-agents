@@ -63,7 +63,7 @@ class SimpleRAGAgent(SimpleAgentV3):
     - Source attribution
     - Structured output with confidence scores
 
-    Example:
+    Examples:
         >>> rag_agent = SimpleRAGAgent(
         ...     name="knowledge_assistant",
         ...     temperature=0.3,
@@ -107,7 +107,7 @@ If information is not available in the documents, say so clearly.""",
                 ("system", "{system_message}"),
                 (
                     "human",
-                    """Question: {query}
+                    """Question: {query}.
 
 Retrieved Documents:
 {retrieved_documents}
@@ -156,7 +156,7 @@ class IterativeRAGAgent(SimpleRAGAgent):
                 ),
                 (
                     "human",
-                    """Previous Answer: {previous_answer}
+                    """Previous Answer: {previous_answer}.
 Confidence: {confidence}
 
 Additional Retrieved Documents:

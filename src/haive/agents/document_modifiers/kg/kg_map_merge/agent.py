@@ -51,6 +51,11 @@ class ParallelKGTransformer(Agent[ParallelKGTransformerConfig]):
     """
 
     def __init__(self, config: ParallelKGTransformerConfig):
+        """Init  .
+
+        Args:
+            config: [TODO: Add description]
+        """
         # Prepare graph transformer
         config.engines.get("graph_transformer")
         self.llm_graph_transformer = GraphTransformer()
@@ -64,6 +69,11 @@ class ParallelKGTransformer(Agent[ParallelKGTransformerConfig]):
         super().__init__(config)
 
     def setup_workflow(self) -> None:
+        """Setup Workflow.
+
+        Returns:
+            [TODO: Add return description]
+        """
         self.graph.add_node("map_graph_documents", self.map_graph_documents)
         self.graph.add_node("collect_graph_documents", self.collect_graph_documents)
         self.graph.add_node("map_nodes", self.map_nodes)
@@ -101,6 +111,11 @@ class ParallelKGTransformer(Agent[ParallelKGTransformerConfig]):
         self.graph.add_edge("merge_graphs", END)
 
     def map_graph_documents(self, state: KnowledgeGraphState):
+        """Map Graph Documents.
+
+        Args:
+            state: [TODO: Add description]
+        """
         return [
             Send("collect_graph_documents", {"content": doc, "index": i})
             for i, doc in enumerate(state.contents)
@@ -109,6 +124,11 @@ class ParallelKGTransformer(Agent[ParallelKGTransformerConfig]):
     async def collect_graph_documents(
         self, state: KnowledgeGraphState | dict[str, Any], **kwargs
     ):
+        """Collect Graph Documents.
+
+        Args:
+            state: [TODO: Add description]
+        """
         content = state["content"]
         # At this point, `content` is a Document object
         if isinstance(content, Document | dict):
@@ -153,6 +173,13 @@ class ParallelKGTransformer(Agent[ParallelKGTransformerConfig]):
         content: Document | dict | BaseModel | None = None,
         index: int | None = None,
     ):
+        """Collect Nodes.
+
+        Args:
+            state: [TODO: Add description]
+            content: [TODO: Add description]
+            index: [TODO: Add description]
+        """
         try:
             if isinstance(content, Document):
                 context = content.page_content
@@ -218,6 +245,15 @@ class ParallelKGTransformer(Agent[ParallelKGTransformerConfig]):
         index: int | None = None,
         context_type: str = "document",
     ):
+        """Collect Relationships.
+
+        Args:
+            state: [TODO: Add description]
+            content: [TODO: Add description]
+            nodes: [TODO: Add description]
+            index: [TODO: Add description]
+            context_type: [TODO: Add description]
+        """
         try:
             if context_type == "document":
                 if isinstance(content, Document):
@@ -347,6 +383,7 @@ def build_agent(documents: list[Document]) -> ParallelKGTransformer:
 
 # Example usage
 async def main():
+    """Main."""
     # Sample documents for testing
     test_docs = [
         Document(

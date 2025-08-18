@@ -45,6 +45,11 @@ def example_sequential_mixed() -> Any:
 
     # 2. A callable function
     def process_summary(state: dict[str, Any]):
+        """Process Summary.
+
+        Args:
+            state: [TODO: Add description]
+        """
         summary = state.get("summary", "")
         return {"processed_summary": f"[PROCESSED] {summary}"}
 
@@ -174,6 +179,14 @@ def example_rag_router_simplified() -> Any:
 
     # Create complex RAG (mock)
     def complex_rag(s) -> dict[str, Any]:
+        """Complex Rag.
+
+        Args:
+            s: [TODO: Add description]
+
+        Returns:
+            [TODO: Add return description]
+        """
         return {"response": "Complex RAG response"}
 
     # Use conditional_chain helper

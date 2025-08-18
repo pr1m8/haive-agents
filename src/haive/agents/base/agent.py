@@ -479,7 +479,7 @@ class Agent(
                     ("system", "{system_message}"),
                     (
                         "human",
-                        """Based on the previous agent's analysis:
+                        """Based on the previous agent's analysis:.
 
 {messages}
 

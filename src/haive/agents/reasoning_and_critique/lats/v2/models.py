@@ -59,6 +59,11 @@ class Reflection(BaseModel):
 
     @property
     def normalized_score(self) -> float:
+        """Normalized Score.
+
+        Returns:
+            [TODO: Add return description]
+        """
         return self.score / 10.0
 
 

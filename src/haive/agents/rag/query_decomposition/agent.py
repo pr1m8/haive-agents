@@ -153,7 +153,7 @@ Break down the query systematically and logically.""",
         ),
         (
             "human",
-            """Decompose this complex query into manageable sub-queries:
+            """Decompose this complex query into manageable sub-queries:.
 
 **Query:** {query}
 
@@ -188,7 +188,7 @@ Higher levels provide context for lower levels.""",
         ),
         (
             "human",
-            """Create a hierarchical decomposition:
+            """Create a hierarchical decomposition:.
 
 **Query:** {query}
 **Context:** {retrieved_documents}
@@ -215,7 +215,7 @@ Consider both what can be answered with current context and what requires additi
         ),
         (
             "human",
-            """Create a context-aware decomposition:
+            """Create a context-aware decomposition:.
 
 **Query:** {query}
 
@@ -248,7 +248,7 @@ Provide multiple decomposition approaches and select the best one based on the s
         ),
         (
             "human",
-            """Create an adaptive decomposition strategy:
+            """Create an adaptive decomposition strategy:.
 
 **Query:** {query}
 **Context:** {retrieved_documents}

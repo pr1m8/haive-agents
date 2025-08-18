@@ -55,6 +55,12 @@ def _parse_llm_compiler_action_args(args: str, tool: str | BaseTool) -> list[Any
 
 
 def default_dependency_rule(idx, args: str):
+    """Default Dependency Rule.
+
+    Args:
+        idx: [TODO: Add description]
+        args: [TODO: Add description]
+    """
     matches = re.findall(ID_PATTERN, args)
     numbers = [int(match) for match in matches]
     return idx in numbers
@@ -84,6 +90,18 @@ def instantiate_task(
     args: str | Any,
     thought: str | None = None,
 ) -> Task:
+    """Instantiate Task.
+
+    Args:
+        tools: [TODO: Add description]
+        idx: [TODO: Add description]
+        tool_name: [TODO: Add description]
+        args: [TODO: Add description]
+        thought: [TODO: Add description]
+
+    Returns:
+        [TODO: Add return description]
+    """
     if tool_name == "join":
         tool = "join"
     else:
@@ -120,6 +138,14 @@ class LLMCompilerPlanParser(BaseTransformOutputParser[dict], extra="allow"):
                 yield task
 
     def parse(self, text: str) -> list[Task]:
+        """Parse.
+
+        Args:
+            text: [TODO: Add description]
+
+        Returns:
+            [TODO: Add return description]
+        """
         return list(self._transform([text]))
 
     def stream(
@@ -128,11 +154,30 @@ class LLMCompilerPlanParser(BaseTransformOutputParser[dict], extra="allow"):
         config: RunnableConfig | None = None,
         **kwargs: Any | None,
     ) -> Iterator[Task]:
+        """Stream.
+
+        Args:
+            input: [TODO: Add description]
+            config: [TODO: Add description]
+
+        Returns:
+            [TODO: Add return description]
+        """
         yield from self.transform([input], config, **kwargs)
 
     def ingest_token(
         self, token: str, buffer: list[str], thought: str | None
     ) -> Iterator[tuple[Task | None, str]]:
+        """Ingest Token.
+
+        Args:
+            token: [TODO: Add description]
+            buffer: [TODO: Add description]
+            thought: [TODO: Add description]
+
+        Returns:
+            [TODO: Add return description]
+        """
         buffer.append(token)
         if "\n" in token:
             buffer_ = "".join(buffer).split("\n")

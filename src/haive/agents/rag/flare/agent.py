@@ -141,7 +141,7 @@ Create detailed plans for active retrieval and iterative generation.""",
         ),
         (
             "human",
-            """Create FLARE plan for this query and current generation:
+            """Create FLARE plan for this query and current generation:.
 
 **Original Query:** {query}
 
@@ -193,7 +193,7 @@ Generate natural, evidence-grounded text that builds toward a complete response.
         ),
         (
             "human",
-            """Generate next portion of response:
+            """Generate next portion of response:.
 
 **Original Query:** {query}
 

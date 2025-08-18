@@ -10,7 +10,7 @@ The supervisor supports multiple discovery modes:
 - MCP Discovery: External tool discovery via MCP framework
 - Hybrid: Combines all discovery methods
 
-Example:
+Examples:
     Basic usage with tool discovery::
 
         from haive.agents.supervisor.dynamic_tool_discovery_supervisor import (
@@ -105,7 +105,7 @@ class ToolDiscoveryMode(str, Enum):
         MCP_DISCOVERY: Use MCP framework for external tool discovery
         HYBRID: Combine all discovery methods
 
-    Example:
+    Examples:
         Setting discovery mode::
 
             supervisor = DynamicToolDiscoverySupervisor(
@@ -143,7 +143,7 @@ class DynamicToolDiscoverySupervisor(BaseSupervisor):
         max_discovery_attempts (int): Maximum discovery attempts per task (default: 3)
         tools_to_register (Optional[List[Dict[str, Any]]]): Initial tools for registration
 
-    Example:
+    Examples:
         Creating a supervisor with tool discovery::
 
             from haive.agents.supervisor.dynamic_tool_discovery_supervisor import (
@@ -255,7 +255,7 @@ class DynamicToolDiscoverySupervisor(BaseSupervisor):
                 - func (Callable): Tool function (required if not a full tool config)
                 - Other Tool configuration parameters
 
-        Example:
+        Examples:
             Registering a tool internally::
 
                 tool_data = {
@@ -380,7 +380,7 @@ class DynamicToolDiscoverySupervisor(BaseSupervisor):
                 - confidence: Confidence score (0.0-1.0)
                 - suggested_prompt: Optional prompt modification
 
-        Example:
+        Examples:
             The method automatically detects tool needs::
 
                 # Task: "Calculate the compound interest"
@@ -513,7 +513,7 @@ class DynamicToolDiscoverySupervisor(BaseSupervisor):
             RuntimeError: If discovery agent initialization fails
             FileNotFoundError: If rag_documents_path doesn't exist
 
-        Example:
+        Examples:
             Create supervisor with all discovery sources::
 
                 supervisor = DynamicToolDiscoverySupervisor.create_with_discovery(

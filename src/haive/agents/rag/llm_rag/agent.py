@@ -65,6 +65,11 @@ class LLMRAGAgent(BaseRAGAgent):
 
         # Define function to invoke the base RAG subgraph
         def retrieve_documents(state: dict[str, Any]):
+            """Retrieve Documents.
+
+            Args:
+                state: [TODO: Add description]
+            """
             logger.info(
                 f"Invoking base RAG for document retrieval with query: '{state.query}'"
             )
@@ -90,6 +95,11 @@ class LLMRAGAgent(BaseRAGAgent):
 
         # Define a function to check document relevance
         def check_relevance(state: dict[str, Any]):
+            """Check Relevance.
+
+            Args:
+                state: [TODO: Add description]
+            """
             logger.info(
                 f"Checking relevance of {len(state.retrieved_documents)} documents"
             )
@@ -125,6 +135,11 @@ class LLMRAGAgent(BaseRAGAgent):
 
         # Define a function to generate an answer
         def generate_answer(state: dict[str, Any]):
+            """Generate Answer.
+
+            Args:
+                state: [TODO: Add description]
+            """
             logger.info(f"Generating answer with relevance: {state.is_relevant}")
 
             try:
@@ -169,6 +184,11 @@ class LLMRAGAgent(BaseRAGAgent):
         else:
             # If no relevance checker, add a passthrough node
             def default_relevance(state: dict[str, Any]):
+                """Default Relevance.
+
+                Args:
+                    state: [TODO: Add description]
+                """
                 return Command(
                     update={"is_relevant": bool(state.retrieved_documents)},
                     goto="generate_answer",

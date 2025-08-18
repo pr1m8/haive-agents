@@ -136,6 +136,11 @@ class MetaAgent(Agent, Generic[TAgent]):
 
         # Add a single node that executes through meta state
         def meta_execute(state: dict[str, Any]):
+            """Meta Execute.
+
+            Args:
+                state: [TODO: Add description]
+            """
             # Execute wrapped agent through meta state
             result = self.state.meta_state.execute_agent(
                 input_data=state, update_state=True

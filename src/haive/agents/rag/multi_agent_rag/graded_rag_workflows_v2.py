@@ -26,6 +26,11 @@ class FullyGradedRAGAgentV2(MultiAgent, StateConfigMixin):
     """Fully Graded RAG V2 - Uses enhanced state schema with configuration support."""
 
     def __init__(self, relevance_threshold: float = 0.5, **kwargs):
+        """Init  .
+
+        Args:
+            relevance_threshold: [TODO: Add description]
+        """
         # Create agents
         query_analyzer = create_query_analyzer("query_analyzer")
 
@@ -135,6 +140,11 @@ class MultiCriteriaGradedRAGAgentV2(MultiAgent, StateConfigMixin):
     """Multi-Criteria Graded RAG V2 - Configuration stored in state schema."""
 
     def __init__(self, grading_criteria: list[str] | None = None, **kwargs):
+        """Init  .
+
+        Args:
+            grading_criteria: [TODO: Add description]
+        """
         if grading_criteria is None:
             grading_criteria = [
                 "relevance",
@@ -211,6 +221,12 @@ class FLAREAgentV2Example(MultiAgent, StateConfigMixin):
         max_retrieval_rounds: int = 3,
         **kwargs,
     ):
+        """Init  .
+
+        Args:
+            uncertainty_threshold: [TODO: Add description]
+            max_retrieval_rounds: [TODO: Add description]
+        """
         # Create a simple agent for example
         monitor = SimpleAgent(
             name="monitor",

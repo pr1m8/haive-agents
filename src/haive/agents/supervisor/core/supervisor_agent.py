@@ -27,7 +27,7 @@ Architecture:
     5. Agent response returned through supervisor
     6. Loop continues for multi-turn conversations
 
-Example:
+Examples:
     Basic supervisor setup::
 
         >>> from haive.agents.supervisor import SupervisorAgent
@@ -324,7 +324,7 @@ class SupervisorAgent(ReactAgent):
         Returns:
             Configured SupervisorAgent
 
-        Example:
+        Examples:
             supervisor = SupervisorAgent.create_with_agents([
                 ("writer", writer_agent, "Creative writing tasks"),
                 ("coder", coder_agent, "Programming tasks"),

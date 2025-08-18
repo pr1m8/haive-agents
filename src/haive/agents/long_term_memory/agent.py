@@ -29,6 +29,11 @@ class LongTermMemoryAgent(ReactAgent):
     config: LongTermMemoryAgentConfig
 
     def __init__(self, config: LongTermMemoryAgentConfig):
+        """Init  .
+
+        Args:
+            config: [TODO: Add description]
+        """
         super().__init__(config)
 
     def load_memories(
@@ -54,6 +59,11 @@ class LongTermMemoryAgent(ReactAgent):
         }
 
     def setup_workflow(self) -> None:
+        """Setup Workflow.
+
+        Returns:
+            [TODO: Add return description]
+        """
         self.graph.add_node(load_memories)
         self.graph.add_node(agent)
         self.graph.add_node("tools", ToolNode(tools))

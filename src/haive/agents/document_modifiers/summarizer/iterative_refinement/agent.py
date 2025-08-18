@@ -20,6 +20,11 @@ class IterativeSummarizer(Agent[IterativeSummarizerConfig]):
     """An agent that summarizes a document iteratively."""
 
     def __init__(self, config: IterativeSummarizerConfig = IterativeSummarizerConfig()):
+        """Init  .
+
+        Args:
+            config: [TODO: Add description]
+        """
         super().__init__(config)
 
     # We define functions for each node, including a node that generates
@@ -27,6 +32,12 @@ class IterativeSummarizer(Agent[IterativeSummarizerConfig]):
     async def generate_initial_summary(
         self, state: IterativeSummarizerState, config: RunnableConfig
     ):
+        """Generate Initial Summary.
+
+        Args:
+            state: [TODO: Add description]
+            config: [TODO: Add description]
+        """
         summary = await self.engines["initial_summary"].ainvoke(
             state.contents[0], config
         )
@@ -36,6 +47,12 @@ class IterativeSummarizer(Agent[IterativeSummarizerConfig]):
     async def refine_summary(
         self, state: IterativeSummarizerState, config: RunnableConfig
     ):
+        """Refine Summary.
+
+        Args:
+            state: [TODO: Add description]
+            config: [TODO: Add description]
+        """
         content = state.contents[state.index]
         summary = await self.engines["refine_summary"].ainvoke(
             {"existing_answer": state.summary, "context": content}, config
@@ -44,6 +61,11 @@ class IterativeSummarizer(Agent[IterativeSummarizerConfig]):
         return Command(update={"summary": summary, "index": state.index + 1})
 
     def setup_workflow(self) -> None:
+        """Setup Workflow.
+
+        Returns:
+            [TODO: Add return description]
+        """
         self.graph.add_node("generate_initial_summary", self.generate_initial_summary)
         self.graph.add_node("refine_summary", self.refine_summary)
 

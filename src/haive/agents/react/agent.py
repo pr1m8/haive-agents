@@ -973,4 +973,11 @@ if __name__ == "__main__":
 
 
 # Rebuild Pydantic model to resolve forward references
-ReactAgent.model_rebuild()
+# Only rebuild if not in documentation building context
+try:
+    import sys
+    if 'sphinx' not in sys.modules and 'autoapi' not in sys.modules:
+        ReactAgent.model_rebuild()
+except Exception:
+    # Skip rebuild if it causes issues during import
+    pass

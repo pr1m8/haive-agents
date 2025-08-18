@@ -21,12 +21,22 @@ class Reflection(BaseModel):
     )
 
     def as_message(self) -> Any:
+        """As Message.
+
+        Returns:
+            [TODO: Add return description]
+        """
         return HumanMessage(
             content=f"Reasoning: {self.reflections}\nScore: {self.score}"
         )
 
     @property
     def normalized_score(self) -> float:
+        """Normalized Score.
+
+        Returns:
+            [TODO: Add return description]
+        """
         return self.score / 10.0
 
 
@@ -37,6 +47,13 @@ class Node:
         reflection: Reflection,
         parent: Optional["Node"] = None,
     ):
+        """Init  .
+
+        Args:
+            messages: [TODO: Add description]
+            reflection: [TODO: Add description]
+            parent: [TODO: Add description]
+        """
         self.messages = messages
         self.parent = parent
         self.children = []
@@ -62,6 +79,11 @@ class Node:
 
     @property
     def is_terminal(self) -> bool:
+        """Is Terminal.
+
+        Returns:
+            [TODO: Add return description]
+        """
         return not self.children
 
     @property
@@ -99,6 +121,11 @@ class Node:
             node = node.parent
 
     def get_messages(self, include_reflections: bool = True):
+        """Get Messages.
+
+        Args:
+            include_reflections: [TODO: Add description]
+        """
         if include_reflections:
             return [*self.messages, self.reflection.as_message()]
         return self.messages

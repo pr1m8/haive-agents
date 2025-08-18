@@ -86,6 +86,15 @@ class CorrectiveRAGAgent(ConditionalAgent):
         documents: list[Document] | None = None,
         **kwargs,
     ):
+        """Init  .
+
+        Args:
+            retrieval_agent: [TODO: Add description]
+            grading_agent: [TODO: Add description]
+            requery_agent: [TODO: Add description]
+            answer_agent: [TODO: Add description]
+            documents: [TODO: Add description]
+        """
         # Create default agents if not provided
         if not retrieval_agent:
             retrieval_agent = SimpleRAGAgent.from_documents(
@@ -171,6 +180,14 @@ class HYDERAGAgent(SequentialAgent):
         documents: list[Document] | None = None,
         **kwargs,
     ):
+        """Init  .
+
+        Args:
+            hypothesis_agent: [TODO: Add description]
+            retrieval_agent: [TODO: Add description]
+            answer_agent: [TODO: Add description]
+            documents: [TODO: Add description]
+        """
         # Create hypothesis generator
         if not hypothesis_agent:
             hyde_prompt = ChatPromptTemplate.from_messages(
@@ -217,6 +234,15 @@ class SelfRAGAgent(ConditionalAgent):
         documents: list[Document] | None = None,
         **kwargs,
     ):
+        """Init  .
+
+        Args:
+            retrieval_decision_agent: [TODO: Add description]
+            retrieval_agent: [TODO: Add description]
+            relevance_agent: [TODO: Add description]
+            generation_agent: [TODO: Add description]
+            documents: [TODO: Add description]
+        """
         # Create retrieval decision agent
         if not retrieval_decision_agent:
             retrieval_prompt = ChatPromptTemplate.from_messages(

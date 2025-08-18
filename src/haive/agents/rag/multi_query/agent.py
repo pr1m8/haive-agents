@@ -38,7 +38,7 @@ Generate diverse query variations that capture different aspects and phrasings."
         ),
         (
             "human",
-            """Generate 3 different versions of this query to improve search coverage:
+            """Generate 3 different versions of this query to improve search coverage:.
 
 Original Query: {query}
 

@@ -53,7 +53,7 @@ class MultiAgent(Agent):
     - Supports both list and dict agent specifications
     - Maintains type safety without schema flattening
 
-    Example:
+    Examples:
         Sequential execution::
 
             multi = MultiAgent(
@@ -195,7 +195,7 @@ class MultiAgent(Agent):
 class SequentialAgent(MultiAgent):
     """Sequential multi-agent execution.
 
-    Example:
+    Examples:
         agent = SequentialAgent([react_agent, simple_agent])
     """
 
@@ -209,7 +209,7 @@ class SequentialAgent(MultiAgent):
 class ConditionalAgent(MultiAgent):
     """Conditional routing multi-agent.
 
-    Example:
+    Examples:
         agent = ConditionalAgent(
             agents={"analyzer": analyzer, "synthesizer": synthesizer},
             routing_function=my_router

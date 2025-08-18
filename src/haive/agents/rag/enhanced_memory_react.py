@@ -147,7 +147,7 @@ def create_enhanced_memory_react_rag(
                 ),
                 (
                     "human",
-                    """Query: {query}
+                    """Query: {query}.
             Memory Analysis: {memory_analysis}
 
             THOUGHT: What should I think about and plan for this query?""",
@@ -170,7 +170,7 @@ def create_enhanced_memory_react_rag(
                 ),
                 (
                     "human",
-                    """Query: {query}
+                    """Query: {query}.
             Previous Thought: {thought_result}
             Available Documents: {document_context}
 
@@ -229,7 +229,7 @@ def create_enhanced_memory_react_rag(
                 ),
                 (
                     "human",
-                    """Query: {query}
+                    """Query: {query}.
             Action Taken: {action_result}
             Observation: {observation}
             Retrieved Context: {retrieved_context}
@@ -249,13 +249,13 @@ def create_enhanced_memory_react_rag(
             [
                 (
                     "system",
-                    """REFLECTION: Based on your thought, action, and observation,
+                    """REFLECTION: Based on your thought, action, and observation,.
             determine if you have enough information to provide a good answer.
             If not, specify what additional steps are needed.""",
                 ),
                 (
                     "human",
-                    """Query: {query}
+                    """Query: {query}.
             Thought: {thought_result}
             Action: {action_result}
             Observation: {observation_result}
@@ -280,7 +280,7 @@ def create_enhanced_memory_react_rag(
                 ),
                 (
                     "human",
-                    """Query: {query}
+                    """Query: {query}.
 
             Memory Analysis: {memory_analysis}
             ReAct Chain:
@@ -328,7 +328,7 @@ def create_enhanced_memory_react_rag(
                 ),
                 (
                     "human",
-                    """Query: {query}
+                    """Query: {query}.
             Generated Answer: {generated_answer}
             Reasoning Chain Available: {thought_result}, {action_result}, {observation_result}
             Memory Integration: {memory_analysis}
@@ -387,6 +387,14 @@ def create_simple_memory_react_rag(
 
     # Simplified memory check
     def check_memory(state: dict[str, Any]) -> dict[str, Any]:
+        """Check Memory.
+
+        Args:
+            state: [TODO: Add description]
+
+        Returns:
+            [TODO: Add return description]
+        """
         messages = state.get("messages", [])
         has_context = len(messages) > 1
         return {"has_memory_context": has_context}
@@ -398,7 +406,7 @@ def create_simple_memory_react_rag(
             [
                 (
                     "system",
-                    """Use ReAct pattern:
+                    """Use ReAct pattern:.
             THOUGHT: What do I need to consider?
             ACTION: What should I do?
             OBSERVATION: What did I learn?
@@ -407,7 +415,7 @@ def create_simple_memory_react_rag(
                 ),
                 (
                     "human",
-                    """Query: {query}
+                    """Query: {query}.
             Memory Context Available: {has_memory_context}
             Context: {context}
 
@@ -429,7 +437,7 @@ def create_simple_memory_react_rag(
                 ),
                 (
                     "human",
-                    """Query: {query}
+                    """Query: {query}.
             ReAct Reasoning: {react_response}
             Previous Messages: {messages}
 
@@ -442,6 +450,14 @@ def create_simple_memory_react_rag(
 
     # Context preparation
     def add_context(state: dict[str, Any]) -> dict[str, Any]:
+        """Add Context.
+
+        Args:
+            state: [TODO: Add description]
+
+        Returns:
+            [TODO: Add return description]
+        """
         context = "\n\n".join([doc.page_content for doc in documents[:3]])
         return {"context": context}
 
@@ -467,6 +483,14 @@ def create_memory_react_with_tools(
 
     # Tool availability checker
     def check_tools(state: dict[str, Any]) -> dict[str, Any]:
+        """Check Tools.
+
+        Args:
+            state: [TODO: Add description]
+
+        Returns:
+            [TODO: Add return description]
+        """
         # Mock tool availability
         available_tools = ["search", "calculate", "summarize"]
         return {"available_tools": available_tools}
@@ -478,7 +502,7 @@ def create_memory_react_with_tools(
             [
                 (
                     "system",
-                    """Use ReAct pattern with available tools:
+                    """Use ReAct pattern with available tools:.
             Available tools: {available_tools}
 
             THOUGHT: Analyze the query
@@ -488,7 +512,7 @@ def create_memory_react_with_tools(
                 ),
                 (
                     "human",
-                    """Query: {query}
+                    """Query: {query}.
             Memory Context: {messages}
             Document Context: {context}
 
@@ -501,6 +525,14 @@ def create_memory_react_with_tools(
 
     # Context prep
     def add_context(state: dict[str, Any]) -> dict[str, Any]:
+        """Add Context.
+
+        Args:
+            state: [TODO: Add description]
+
+        Returns:
+            [TODO: Add return description]
+        """
         context = "\n\n".join([doc.page_content for doc in documents[:3]])
         return {"context": context}
 

@@ -37,6 +37,11 @@ class InterviewAgent(AgentArchitecture):
     """An agent that conducts an interview with a Subject Matter Expert."""
 
     def __init__(self, config: InterviewAgentConfig = InterviewAgentConfig()):
+        """Init  .
+
+        Args:
+            config: [TODO: Add description]
+        """
         super().__init__(config)
 
     def setup_workflow(self) -> None:

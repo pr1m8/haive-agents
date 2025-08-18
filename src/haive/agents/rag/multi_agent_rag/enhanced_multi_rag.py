@@ -48,6 +48,14 @@ class EnhancedRAGSequentialAgent(CompatibilityEnhancedSequentialAgent):
         compatibility_mode: CompatibilityMode = CompatibilityMode.ADAPTIVE,
         **kwargs,
     ):
+        """Init  .
+
+        Args:
+            retrieval_agent: [TODO: Add description]
+            grading_agent: [TODO: Add description]
+            answer_agent: [TODO: Add description]
+            compatibility_mode: [TODO: Add description]
+        """
         # Set RAG-specific defaults
         if "state_schema" not in kwargs:
             kwargs["state_schema"] = MultiAgentRAGState
@@ -90,6 +98,14 @@ class EnhancedRAGConditionalAgent(CompatibilityEnhancedConditionalAgent):
         compatibility_mode: CompatibilityMode = CompatibilityMode.AUTO_FIX,
         **kwargs,
     ):
+        """Init  .
+
+        Args:
+            retrieval_agent: [TODO: Add description]
+            grading_agent: [TODO: Add description]
+            answer_agent: [TODO: Add description]
+            compatibility_mode: [TODO: Add description]
+        """
         # Set RAG-specific defaults
         if "state_schema" not in kwargs:
             kwargs["state_schema"] = MultiAgentRAGState
@@ -154,6 +170,12 @@ class EnhancedRAGParallelAgent(CompatibilityEnhancedParallelAgent):
         compatibility_mode: CompatibilityMode = CompatibilityMode.ADAPTIVE,
         **kwargs,
     ):
+        """Init  .
+
+        Args:
+            rag_variants: [TODO: Add description]
+            compatibility_mode: [TODO: Add description]
+        """
         # Set RAG-specific defaults
         if "state_schema" not in kwargs:
             kwargs["state_schema"] = MultiAgentRAGState

@@ -109,7 +109,7 @@ Be constructive and specific in your feedback."""
                 ("system", system_prompt),
                 (
                     "human",
-                    """Please analyze and provide structured feedback on this response:
+                    """Please analyze and provide structured feedback on this response:.
 
 Original Query: {query}
 Response to Analyze: {response}
@@ -176,7 +176,7 @@ maintaining the strengths identified.""",
                 ),
                 (
                     "human",
-                    """Please improve this response based on the feedback provided:
+                    """Please improve this response based on the feedback provided:.
 
 Original Query: {query}
 Original Response: {response}

@@ -106,7 +106,7 @@ class FinalAnswer(BaseModel):
 # Default Reasoning Modules
 # ==========================
 
-REASONING_MODULES = """1. Critical Thinking: Question assumptions, evaluate evidence
+REASONING_MODULES = """1. Critical Thinking: Question assumptions, evaluate evidence.
 2. Systems Analysis: Break down complex systems and relationships
 3. Root Cause Analysis: Identify underlying causes
 4. Pattern Recognition: Identify recurring themes and structures
@@ -147,7 +147,7 @@ def create_selector() -> SimpleAgent:
                 ("system", "{system_message}"),
                 (
                     "human",
-                    """Available Modules:
+                    """Available Modules:.
 {modules}
 
 Task: {task}
@@ -173,7 +173,7 @@ def create_adapter() -> SimpleAgent:
                 ("system", "{system_message}"),
                 (
                     "human",
-                    """Task: {task}
+                    """Task: {task}.
 
 {selected}
 
@@ -198,7 +198,7 @@ def create_structurer() -> SimpleAgent:
                 ("system", "{system_message}"),
                 (
                     "human",
-                    """Task: {task}
+                    """Task: {task}.
 
 {adapted}
 
@@ -223,7 +223,7 @@ def create_executor() -> SimpleAgent:
                 ("system", "{system_message}"),
                 (
                     "human",
-                    """Task: {task}
+                    """Task: {task}.
 
 {plan}
 
@@ -338,7 +338,7 @@ if __name__ == "__main__":
         agent = create_self_discover_v4()
 
         # Example task
-        task = """Analyze this SVG path and determine what shape it draws:
+        task = """Analyze this SVG path and determine what shape it draws:.
 <path d="M 55.57,80.69 L 57.38,65.80 M 57.38,65.80 L 48.90,57.46 M 48.90,57.46 L
 45.58,47.78 M 45.58,47.78 L 53.25,36.07 L 66.29,48.90 L 78.69,61.09 L 55.57,80.69"/>
 

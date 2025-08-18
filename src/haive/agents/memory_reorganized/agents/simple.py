@@ -158,7 +158,7 @@ Guidelines:
 6. Keep the summary coherent and well-structured"""
         ),
         HumanMessage(
-            content="""Current Summary:
+            content="""Current Summary:.
 {current_summary}
 
 New Memories to Integrate:

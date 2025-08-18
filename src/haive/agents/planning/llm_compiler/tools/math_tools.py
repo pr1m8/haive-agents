@@ -69,7 +69,7 @@ ExecuteCode({{code: "37593**(1/5)"}})
 Answer: 8.222831614237718
 """
 
-_ADDITIONAL_CONTEXT_PROMPT = """The following additional context is provided from other functions.\
+_ADDITIONAL_CONTEXT_PROMPT = """The following additional context is provided from other functions.\.
     Use it to substitute into any ${{#}} variables or other words in the problem.\
     \n\n${context}\n\nNote that context variables are not defined in code yet.\
 You must extract the relevant numbers and directly put them in code."""
@@ -96,6 +96,11 @@ def _evaluate_expression(expression: str) -> str:
 
 
 def get_math_tool(llm: ChatOpenAI):
+    """Get Math Tool.
+
+    Args:
+        llm: [TODO: Add description]
+    """
     prompt = ChatPromptTemplate.from_messages(
         [
             ("system", _SYSTEM_PROMPT),

@@ -54,28 +54,26 @@ class TaskPlan(PlanTree):
     This class extends the generic Tree to provide planning-specific
     functionality while maintaining type safety.
 
-    Example:
-        ```python
-        # Create a plan
-        plan = TaskPlan(content=PlanContent(
-            objective="Deploy new feature",
-            priority=4
-        ))
+    Examples:
+                # Create a plan
+                plan = TaskPlan(content=PlanContent(
+                    objective="Deploy new feature",
+                    priority=4
+                ))
 
-        # Add simple tasks
-        plan.add_task("Write tests", priority=5)
-        plan.add_task("Code review", priority=3)
+                # Add simple tasks
+                plan.add_task("Write tests", priority=5)
+                plan.add_task("Code review", priority=3)
 
-        # Add sub-plan
-        deploy_plan = plan.add_subplan("Deploy to production")
-        deploy_plan.add_task("Deploy to staging")
-        deploy_plan.add_task("Run smoke tests")
-        deploy_plan.add_task("Deploy to prod")
+                # Add sub-plan
+                deploy_plan = plan.add_subplan("Deploy to production")
+                deploy_plan.add_task("Deploy to staging")
+                deploy_plan.add_task("Run smoke tests")
+                deploy_plan.add_task("Deploy to prod")
 
-        # Check status
-        print(f"Total tasks: {plan.total_nodes}")
-        print(f"Progress: {plan.progress_percentage}%")
-        ```
+                # Check status
+                print(f"Total tasks: {plan.total_nodes}")
+                print(f"Progress: {plan.progress_percentage}%")
     """
 
     def add_task(
@@ -253,7 +251,7 @@ def create_phased_plan(objective: str, phases: dict[str, list[str]]) -> TaskPlan
         objective: Main plan objective
         phases: Dict of phase_name -> list of tasks
 
-    Example:
+    Examples:
         plan = create_phased_plan(
             "Launch Product",
             {

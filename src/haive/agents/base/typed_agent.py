@@ -40,6 +40,12 @@ class BaseExecutor(ABC, Generic[TState]):
     """
 
     def __init__(self, name: str, state_schema: type[TState], **kwargs):
+        """Init  .
+
+        Args:
+            name: [TODO: Add description]
+            state_schema: [TODO: Add description]
+        """
         self.name = name
         self.state_schema = state_schema
         self.config = kwargs
@@ -67,6 +73,12 @@ class ToolExecutor(BaseExecutor[ToolExecutorState]):
     """
 
     def __init__(self, name: str, execution_strategy: str = "sequential", **kwargs):
+        """Init  .
+
+        Args:
+            name: [TODO: Add description]
+            execution_strategy: [TODO: Add description]
+        """
         super().__init__(name, ToolExecutorState, **kwargs)
         self.execution_strategy = execution_strategy
 
@@ -114,6 +126,12 @@ class DataProcessor(BaseExecutor[DataProcessingState]):
     """
 
     def __init__(self, name: str, required_engines: list[str], **kwargs):
+        """Init  .
+
+        Args:
+            name: [TODO: Add description]
+            required_engines: [TODO: Add description]
+        """
         super().__init__(name, DataProcessingState, **kwargs)
         self.required_engines = required_engines
 
@@ -166,6 +184,13 @@ class BaseAgent(BaseExecutor[AgentState]):
         state_schema: type[AgentState] = AgentState,
         **kwargs,
     ):
+        """Init  .
+
+        Args:
+            name: [TODO: Add description]
+            primary_engine: [TODO: Add description]
+            state_schema: [TODO: Add description]
+        """
         super().__init__(name, state_schema, **kwargs)
         self.primary_engine = primary_engine
 
@@ -240,6 +265,13 @@ class WorkflowAgent(BaseAgent):
         initial_graph: dict[str, Any] | None = None,
         **kwargs,
     ):
+        """Init  .
+
+        Args:
+            name: [TODO: Add description]
+            primary_engine: [TODO: Add description]
+            initial_graph: [TODO: Add description]
+        """
         super().__init__(name, primary_engine, WorkflowState, **kwargs)
         self.initial_graph = initial_graph
 
@@ -286,6 +318,13 @@ class MetaAgent(WorkflowAgent):
         agent_factory: dict[str, type[BaseAgent]] | None = None,
         **kwargs,
     ):
+        """Init  .
+
+        Args:
+            name: [TODO: Add description]
+            primary_engine: [TODO: Add description]
+            agent_factory: [TODO: Add description]
+        """
         super().__init__(name, primary_engine, **kwargs)
         self.agent_factory = agent_factory or {}
         self.state_schema = MetaAgentState
@@ -363,6 +402,12 @@ class ReactiveAgent(LLMAgent):
     """
 
     def __init__(self, name: str, triggers: list[dict[str, Any]], **kwargs):
+        """Init  .
+
+        Args:
+            name: [TODO: Add description]
+            triggers: [TODO: Add description]
+        """
         super().__init__(name, **kwargs)
         self.triggers = triggers
 
@@ -411,6 +456,13 @@ class AdaptiveAgent(WorkflowAgent):
         adaptation_threshold: float = 0.7,
         **kwargs,
     ):
+        """Init  .
+
+        Args:
+            name: [TODO: Add description]
+            performance_metrics: [TODO: Add description]
+            adaptation_threshold: [TODO: Add description]
+        """
         super().__init__(name, **kwargs)
         self.performance_metrics = performance_metrics
         self.adaptation_threshold = adaptation_threshold

@@ -11,6 +11,11 @@ class Editor(BaseModel):
 
     @property
     def persona(self) -> str:
+        """Persona.
+
+Returns:
+    [TODO: Add return description]
+"""
         return f"Name: {self.name}\nRole: {self.role}\nAffiliation: {
             self.affiliation
         }\nDescription: {self.description}\n"

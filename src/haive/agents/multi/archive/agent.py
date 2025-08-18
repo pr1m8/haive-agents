@@ -37,7 +37,7 @@ class MultiAgent(Agent):
     - Agent transitions based on agent decisions
     - Meta-agent capabilities for self-modification
 
-    Example:
+    Examples:
         .. code-block:: python
 
             # Create multi-agent with two component agents

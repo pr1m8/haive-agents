@@ -118,6 +118,11 @@ class ReasoningSystem(Agent):
 
         # Conditional edge
         def should_explore_alternatives(state: dict[str, Any]):
+            """Should Explore Alternatives.
+
+            Args:
+                state: [TODO: Add description]
+            """
             return state.get("explore_alternatives", False)
 
         graph.add_conditional_edges(

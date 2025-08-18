@@ -4,7 +4,7 @@ This module defines the state schema used throughout the taxonomy generation pro
 It provides a structured way to track documents, their groupings into minibatches,
 and the evolution of taxonomy clusters over multiple iterations.
 
-Example:
+Examples:
     Basic usage of the state class::
 
         state = TaxonomyGenerationState(
@@ -45,7 +45,7 @@ class TaxonomyGenerationState(BaseModel):
             - name: Category name
             - description: Category description
 
-    Example:
+    Examples:
         >>> docs = [Doc(id="1", content="text")]
         >>> state = TaxonomyGenerationState(
         ...     documents=docs,

@@ -58,7 +58,7 @@ class DynamicSupervisor(ReactAgent):
         auto_discover: Whether to automatically discover new agents
         include_management_tools: Whether to include agent management tools
 
-    Example:
+    Examples:
         Basic usage with predefined agent specs::
 
             supervisor = DynamicSupervisor(
@@ -152,6 +152,7 @@ class DynamicSupervisor(ReactAgent):
         """Add agent management tools to the supervisor."""
 
         def state_accessor():
+            """State Accessor."""
             return self._state
 
         management_tools = [
@@ -557,7 +558,7 @@ def create_dynamic_supervisor(
     Returns:
         Configured DynamicSupervisor instance
 
-    Example:
+    Examples:
         >>> supervisor = create_dynamic_supervisor(
         ...     name="task_router",
         ...     agent_specs=[math_spec, research_spec],

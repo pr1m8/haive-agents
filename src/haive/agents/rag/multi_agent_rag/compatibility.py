@@ -75,6 +75,11 @@ class SafeCompatibilityTester:
     """
 
     def __init__(self) -> None:
+        """Init  .
+
+        Returns:
+            [TODO: Add return description]
+        """
         self.analyzer = TypeAnalyzer()
         self.converter_registry = ConverterRegistry()
         self._test_cache = {}
@@ -544,6 +549,11 @@ class SafeCompatibilityTester:
 
         class BasicResult:
             def __init__(self) -> None:
+                """Init  .
+
+                Returns:
+                    [TODO: Add return description]
+                """
                 self.is_compatible = True
                 self.missing_required_fields = []
                 self.issues = []

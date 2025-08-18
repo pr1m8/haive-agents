@@ -221,6 +221,14 @@ def retrieve_memories(
     if filter_fn is None:
 
         def filter_fn(doc) -> Any:
+            """Filter Fn.
+
+            Args:
+                doc: [TODO: Add description]
+
+            Returns:
+                [TODO: Add return description]
+            """
             return doc.metadata.get("user_id") == user_id
 
     try:

@@ -43,6 +43,13 @@ class MultiReactMemorySystem:
         engine: AugLLMConfig | None = None,
         memory_base_path: str | None = None,
     ):
+        """Init  .
+
+        Args:
+            user_id: [TODO: Add description]
+            engine: [TODO: Add description]
+            memory_base_path: [TODO: Add description]
+        """
         self.user_id = user_id
         self.engine = engine or AugLLMConfig(temperature=0.7)
         self.memory_base_path = memory_base_path or f"./memories/{user_id}"
@@ -264,7 +271,7 @@ class MultiReactMemorySystem:
             name="memory_router",
             engine=self.engine,
             tools=[route_memory_query, classify_memory_for_storage],
-            system_message="""You are a memory routing specialist. Your job is to:
+            system_message="""You are a memory routing specialist. Your job is to:.
 1. Determine which memory systems should handle queries
 2. Classify new memories for appropriate storage
 3. Ensure efficient memory organization

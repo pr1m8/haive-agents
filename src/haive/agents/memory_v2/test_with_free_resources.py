@@ -194,6 +194,12 @@ async def test_memory_state_with_embeddings():
         # Simple cosine similarity search
 
         def cosine_similarity(a, b):
+            """Cosine Similarity.
+
+            Args:
+                a: [TODO: Add description]
+                b: [TODO: Add description]
+            """
             return dot(a, b) / (norm(a) * norm(b))
 
         # Score all memories

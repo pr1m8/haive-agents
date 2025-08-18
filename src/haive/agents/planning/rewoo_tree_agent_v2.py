@@ -284,6 +284,12 @@ class ReWOOPlannerAgent(SimpleAgent):
         available_tools: list[BaseTool] | None = None,
         **kwargs,
     ):
+        """Init  .
+
+        Args:
+            name: [TODO: Add description]
+            available_tools: [TODO: Add description]
+        """
         # Create planning-specific prompt
         prompt_template = """
         You are a ReWOO Planner that creates detailed execution plans.
@@ -372,6 +378,13 @@ class ReWOOExecutorAgent(ReactAgent):
         tool_aliases: dict[str, ToolAlias] | None = None,
         **kwargs,
     ):
+        """Init  .
+
+        Args:
+            name: [TODO: Add description]
+            tools: [TODO: Add description]
+            tool_aliases: [TODO: Add description]
+        """
         super().__init__(
             name=name, tools=tools or [], tool_aliases=tool_aliases or {}, **kwargs
         )
@@ -420,6 +433,15 @@ class ReWOOTreeAgent(MultiAgent):
         max_parallelism: int = 4,
         **kwargs,
     ):
+        """Init  .
+
+        Args:
+            name: [TODO: Add description]
+            available_tools: [TODO: Add description]
+            tool_aliases: [TODO: Add description]
+            max_planning_depth: [TODO: Add description]
+            max_parallelism: [TODO: Add description]
+        """
         # Create planner agent
         planner = ReWOOPlannerAgent(
             name=f"{name}_planner", available_tools=available_tools
@@ -585,6 +607,12 @@ class ParallelReWOOAgent(ReWOOTreeAgent):
     def __init__(
         self, name: str = "parallel_rewoo", max_parallelism: int = 8, **kwargs
     ):
+        """Init  .
+
+        Args:
+            name: [TODO: Add description]
+            max_parallelism: [TODO: Add description]
+        """
         # Set higher parallelism
         super().__init__(name=name, max_parallelism=max_parallelism, **kwargs)
 

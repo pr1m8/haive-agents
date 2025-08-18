@@ -61,7 +61,7 @@ def create_agentic_rag_router_chain(
             [
                 (
                     "system",
-                    """Select the best RAG strategy:
+                    """Select the best RAG strategy:.
             - simple: Basic queries, direct lookup
             - multi_query: Complex queries needing multiple perspectives
             - hyde: Abstract queries needing expansion
@@ -90,7 +90,7 @@ def create_agentic_rag_router_chain(
                 ("system", "Synthesize the RAG results into a final response"),
                 (
                     "human",
-                    """Original query: {query}
+                    """Original query: {query}.
             Selected strategy: {strategy}
             RAG response: {response}
 

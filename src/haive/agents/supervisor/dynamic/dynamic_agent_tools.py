@@ -117,6 +117,11 @@ class AddAgentTool(BaseTool):
     args_schema: type[BaseModel] | None = Field(default=AddAgentInput)
 
     def __init__(self, registry_manager: AgentRegistryManager):
+        """  Init  .
+
+Args:
+    registry_manager: [TODO: Add description]
+"""
         super().__init__()
         self.registry_manager = registry_manager
 
@@ -165,6 +170,11 @@ class RemoveAgentTool(BaseTool):
     args_schema: type[BaseModel] | None = Field(default=RemoveAgentInput)
 
     def __init__(self, registry_manager: AgentRegistryManager):
+        """  Init  .
+
+Args:
+    registry_manager: [TODO: Add description]
+"""
         super().__init__()
         self.registry_manager = registry_manager
 
@@ -199,6 +209,11 @@ class ChangeAgentTool(BaseTool):
     args_schema: type[BaseModel] | None = Field(default=ChangeAgentInput)
 
     def __init__(self, registry_manager: AgentRegistryManager):
+        """  Init  .
+
+Args:
+    registry_manager: [TODO: Add description]
+"""
         super().__init__()
         self.registry_manager = registry_manager
 
@@ -226,11 +241,16 @@ class ListAgentsTool(BaseTool):
     """Tool for listing available agents and their capabilities."""
 
     name: str = "list_agents"
-    description: str = """List all available agents in the supervisor registry
+    description: str = """List all available agents in the supervisor registry.
     with their capabilities and performance metrics."""
     args_schema: type[BaseModel] | None = Field(default=ListAgentsInput)
 
     def __init__(self, registry_manager: AgentRegistryManager):
+        """  Init  .
+
+Args:
+    registry_manager: [TODO: Add description]
+"""
         super().__init__()
         self.registry_manager = registry_manager
 
@@ -278,6 +298,11 @@ class AgentSelectorTool(BaseTool):
     args_schema: type[BaseModel] | None = Field(default=None)
 
     def __init__(self, registry_manager: AgentRegistryManager):
+        """  Init  .
+
+Args:
+    registry_manager: [TODO: Add description]
+"""
         super().__init__()
         self.registry_manager = registry_manager
 

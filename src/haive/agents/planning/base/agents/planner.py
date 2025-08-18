@@ -258,7 +258,7 @@ Remember: Your role is to be the strategic thinking partner who transforms compl
                 ("system", "System message configured in AugLLMConfig"),
                 (
                     "human",
-                    """Please create a comprehensive, strategic plan for this objective:
+                    """Please create a comprehensive, strategic plan for this objective:.
 
 **Objective:** {objective}
 
@@ -373,7 +373,7 @@ You are particularly expert at creating plans for conversation analysis tasks:
             ("system", "System message configured in AugLLMConfig"),
             (
                 "human",
-                """Create a comprehensive plan for analyzing and summarizing this conversation or communication:
+                """Create a comprehensive plan for analyzing and summarizing this conversation or communication:.
 
 **Analysis Objective:** {objective}
 

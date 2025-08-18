@@ -14,12 +14,22 @@ class Reflection(BaseModel):
     found_solution: bool = Field(..., description="True if task was solved")
 
     def as_message(self) -> HumanMessage:
+        """As Message.
+
+        Returns:
+            [TODO: Add return description]
+        """
         return HumanMessage(
             content=f"Reasoning: {self.reflections}\nScore: {self.score}"
         )
 
     @property
     def normalized_score(self) -> float:
+        """Normalized Score.
+
+        Returns:
+            [TODO: Add return description]
+        """
         return self.score / 10.0
 
 
@@ -34,6 +44,7 @@ class TreeNode(BaseModel):
     _is_solved: bool = False
 
     def __init__(self, **data: Any):
+        """Init  ."""
         super().__init__(**data)
         self.depth = self.parent.depth + 1 if self.parent else 1
         self._is_solved = self.reflection.found_solution
@@ -42,6 +53,11 @@ class TreeNode(BaseModel):
         self.backpropagate(self.reflection.normalized_score)
 
     def backpropagate(self, reward: float):
+        """Backpropagate.
+
+        Args:
+            reward: [TODO: Add description]
+        """
         node = self
         while node:
             node.visits += 1
@@ -55,11 +71,27 @@ class TreeNode(BaseModel):
             node = node.parent
 
     def get_messages(self, include_reflections: bool = True) -> list[BaseMessage]:
+        """Get Messages.
+
+        Args:
+            include_reflections: [TODO: Add description]
+
+        Returns:
+            [TODO: Add return description]
+        """
         return self.messages + (
             [self.reflection.as_message()] if include_reflections else []
         )
 
     def get_trajectory(self, include_reflections: bool = True) -> list[BaseMessage]:
+        """Get Trajectory.
+
+        Args:
+            include_reflections: [TODO: Add description]
+
+        Returns:
+            [TODO: Add return description]
+        """
         node = self
         messages = []
         while node:
@@ -77,6 +109,11 @@ class TreeNode(BaseModel):
         return all_nodes
 
     def get_best_solution(self) -> TreeNode:
+        """Get Best Solution.
+
+        Returns:
+            [TODO: Add return description]
+        """
         all_nodes = [self, *self._get_all_children()]
         best = max(
             all_nodes,
@@ -85,6 +122,14 @@ class TreeNode(BaseModel):
         return best
 
     def upper_confidence_bound(self, exploration_weight=1.0) -> float:
+        """Upper Confidence Bound.
+
+        Args:
+            exploration_weight: [TODO: Add description]
+
+        Returns:
+            [TODO: Add return description]
+        """
         if self.parent is None:
             raise ValueError("Cannot obtain UCT from root node")
         if self.visits == 0:
@@ -95,14 +140,29 @@ class TreeNode(BaseModel):
 
     @property
     def is_solved(self) -> bool:
+        """Is Solved.
+
+        Returns:
+            [TODO: Add return description]
+        """
         return self._is_solved
 
     @property
     def is_terminal(self) -> bool:
+        """Is Terminal.
+
+        Returns:
+            [TODO: Add return description]
+        """
         return not self.children
 
     @property
     def best_child_score(self) -> float | None:
+        """Best Child Score.
+
+        Returns:
+            [TODO: Add return description]
+        """
         if not self.children:
             return None
         return max(child.value for child in self.children if child.is_solved)
@@ -110,12 +170,26 @@ class TreeNode(BaseModel):
     @computed_field
     @property
     def height(self) -> int:
+        """Height.
+
+        Returns:
+            [TODO: Add return description]
+        """
         if not self.children:
             return 1
         return 1 + max(child.height for child in self.children)
 
     @field_serializer("children", mode="wrap")
     def serialize_children(self, children, handler) -> Any:
+        """Serialize Children.
+
+        Args:
+            children: [TODO: Add description]
+            handler: [TODO: Add description]
+
+        Returns:
+            [TODO: Add return description]
+        """
         try:
             return handler(children)
         except ValueError as exc:

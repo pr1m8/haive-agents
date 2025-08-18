@@ -15,6 +15,11 @@ class UltraLazyAgent:
     """Ultra-minimal agent proxy with maximum lazy loading."""
 
     def __init__(self, name: str = "UltraLazyAgent", **kwargs):
+        """Init  .
+
+        Args:
+            name: [TODO: Add description]
+        """
         # Store ONLY basic data - no complex objects
         self._name = name
         self._kwargs = kwargs
@@ -23,6 +28,11 @@ class UltraLazyAgent:
 
     @property
     def name(self) -> str:
+        """Name.
+
+        Returns:
+            [TODO: Add return description]
+        """
         return self._name
 
     def _load_real_agent(self):

@@ -87,7 +87,7 @@ The step-back query should provide conceptual foundation for better understandin
         ),
         (
             "human",
-            """Generate a step-back query for enhanced reasoning:
+            """Generate a step-back query for enhanced reasoning:.
 
 **Specific Query:** {query}
 
@@ -126,7 +126,7 @@ knowledge to give a comprehensive answer to the original specific query.
         ),
         (
             "human",
-            """Answer the specific query using step-back enhanced context:
+            """Answer the specific query using step-back enhanced context:.
 
 **Original Query:** {query}
 **Step-Back Query:** {step_back_query}

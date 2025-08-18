@@ -46,7 +46,7 @@ class AgentCapability(BaseModel):
         last_used: Timestamp of last usage (ISO format)
         metadata: Additional custom metadata
 
-    Example:
+    Examples:
         >>> capability = AgentCapability(
         ...     name="research_expert",
         ...     agent_type="ReactAgent",
@@ -134,7 +134,7 @@ class AgentSpec(BaseModel):
         priority: Priority level for agent selection (higher = preferred)
         enabled: Whether this spec can be used to create agents
 
-    Example:
+    Examples:
         >>> spec = AgentSpec(
         ...     name="code_reviewer",
         ...     agent_type="ReactAgent",

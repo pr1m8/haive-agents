@@ -58,7 +58,7 @@ IMPORTANT: Provide objective, consistent scoring with clear justification.""",
         ),
         (
             "human",
-            """Assess the complexity of this task:
+            """Assess the complexity of this task:.
 
 **Task Overview**: {task_details}
 
@@ -128,7 +128,7 @@ COMPLEXITY_FACTORS_PROMPT = ChatPromptTemplate.from_messages(
         ),
         (
             "human",
-            """Analyze complexity factors for:
+            """Analyze complexity factors for:.
 
 {task_description}
 
@@ -155,7 +155,7 @@ COMPLEXITY_COMPARISON_PROMPT = ChatPromptTemplate.from_messages(
         ),
         (
             "human",
-            """Compare this task's complexity with similar tasks:
+            """Compare this task's complexity with similar tasks:.
 
 Current Task: {task_description}
 Complexity Scores: {complexity_scores}

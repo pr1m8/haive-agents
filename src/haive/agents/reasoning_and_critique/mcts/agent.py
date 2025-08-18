@@ -100,6 +100,14 @@ class MCTSAgent(Agent):
 
         @as_runnable
         def reflection_chain(inputs) -> Reflection:
+            """Reflection Chain.
+
+            Args:
+                inputs: [TODO: Add description]
+
+            Returns:
+                [TODO: Add return description]
+            """
             tool_choices = reflection_llm_chain.invoke(inputs)
             reflection = tool_choices[0]
             if not isinstance(inputs["candidate"][-1], AIMessage):
@@ -110,6 +118,12 @@ class MCTSAgent(Agent):
 
         # Expansion chain
         def generate_candidates(messages: list[dict[str, Any]], config: RunnableConfig):
+            """Generate Candidates.
+
+            Args:
+                messages: [TODO: Add description]
+                config: [TODO: Add description]
+            """
             configurable = config.get("configurable", {})
             n = configurable.get("N", self.config.candidates_per_rollout)
             bound_kwargs = llm_with_tools.kwargs

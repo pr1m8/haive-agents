@@ -62,6 +62,11 @@ class ChainBuilder:
     """Builder for creating declarative chains."""
 
     def __init__(self, name: str):
+        """Init  .
+
+        Args:
+            name: [TODO: Add description]
+        """
         self.name = name
         self.nodes: list[NodeSpec] = []
         self.sequences: list[SequenceSpec] = []
@@ -136,6 +141,12 @@ class DeclarativeChainAgent:
     """Agent that executes a declaratively defined chain."""
 
     def __init__(self, name: str, chain_spec: ChainSpec):
+        """Init  .
+
+        Args:
+            name: [TODO: Add description]
+            chain_spec: [TODO: Add description]
+        """
         self.name = name
         self.chain_spec = chain_spec
         self._compiled_graph = None

@@ -287,6 +287,11 @@ class CorrectiveRAGAgent(ConditionalAgent):
     """Full Corrective RAG implementation with web search fallback."""
 
     def __init__(self, documents: list[Document] | None = None, **kwargs):
+        """Init  .
+
+        Args:
+            documents: [TODO: Add description]
+        """
         # Create retrieval agent
         retrieval_agent = SimpleRAGAgent.from_documents(
             documents or conversation_documents, name="CRAG Retrieval Agent"
@@ -355,6 +360,14 @@ class CorrectiveRAGAgent(ConditionalAgent):
         """Set up CRAG conditional routing."""
 
         def crag_router(state: MultiAgentRAGState) -> str:
+            """Crag Router.
+
+            Args:
+                state: [TODO: Add description]
+
+            Returns:
+                [TODO: Add return description]
+            """
             # Start with retrieval
             if not state.retrieved_documents:
                 return self._get_agent_node_name(self.retrieval_agent)
@@ -388,6 +401,11 @@ class SelfRAGAgent(ConditionalAgent):
     """Self-RAG with reflection tokens and adaptive retrieval."""
 
     def __init__(self, documents: list[Document] | None = None, **kwargs):
+        """Init  .
+
+        Args:
+            documents: [TODO: Add description]
+        """
         # Create retrieval decision agent
         decision_agent = Agent()
         decision_agent.name = "Self-RAG Decision Agent"
@@ -481,6 +499,14 @@ class SelfRAGAgent(ConditionalAgent):
         """Set up Self-RAG routing with reflection tokens."""
 
         def self_rag_router(state: MultiAgentRAGState) -> str:
+            """Self Rag Router.
+
+            Args:
+                state: [TODO: Add description]
+
+            Returns:
+                [TODO: Add return description]
+            """
             # Check retrieval decision
             if not hasattr(state, "needs_retrieval"):
                 return self._get_agent_node_name(self.decision_agent)
@@ -524,6 +550,11 @@ class AdaptiveRAGAgent(ConditionalAgent):
     """Adaptive RAG with complexity-based routing."""
 
     def __init__(self, documents: list[Document] | None = None, **kwargs):
+        """Init  .
+
+        Args:
+            documents: [TODO: Add description]
+        """
         # Create query analyzer
         analyzer_agent = Agent()
         analyzer_agent.name = "Query Complexity Analyzer"
@@ -582,6 +613,11 @@ class AdaptiveRAGAgent(ConditionalAgent):
         multi_query_agent.name = "Multi-Query RAG Agent"
 
         def build_multi_query_graph() -> BaseGraph:
+            """Build Multi Query Graph.
+
+            Returns:
+                [TODO: Add return description]
+            """
             graph = BaseGraph(name="MultiQueryRAG")
 
             # Generate multiple queries
@@ -620,6 +656,14 @@ class AdaptiveRAGAgent(ConditionalAgent):
         """Set up adaptive routing based on complexity."""
 
         def adaptive_router(state: MultiAgentRAGState) -> str:
+            """Adaptive Router.
+
+            Args:
+                state: [TODO: Add description]
+
+            Returns:
+                [TODO: Add return description]
+            """
             # Analyze complexity first
             if not hasattr(state, "complexity"):
                 return self._get_agent_node_name(self.analyzer_agent)
@@ -649,6 +693,11 @@ class HYDERAGAgent(SequentialAgent):
     """Enhanced HYDE RAG with hypothesis generation."""
 
     def __init__(self, documents: list[Document] | None = None, **kwargs):
+        """Init  .
+
+        Args:
+            documents: [TODO: Add description]
+        """
         # Create hypothesis generator
         hypothesis_agent = Agent()
         hypothesis_agent.name = "HYDE Hypothesis Generator"

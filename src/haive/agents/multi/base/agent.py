@@ -30,6 +30,11 @@ class SequentialAgent(Agent):
     """
 
     def __init__(self, config: SequentialAgentConfig):
+        """Init  .
+
+        Args:
+            config: [TODO: Add description]
+        """
         self.agents = config.agents
         self.pass_results = config.pass_results
         super().__init__(config)

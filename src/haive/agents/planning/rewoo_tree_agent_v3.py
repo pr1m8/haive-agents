@@ -15,54 +15,48 @@ planning tasks. It represents the latest and most elegant approach to the ReWOO
 
 ## ReWOO Pattern
 
-```
-Problem Analysis
-    ↓
-Evidence Planning (what info needed?)
-    ↓
-Parallel Evidence Collection
-    ↓
-Reasoning with Evidence
-    ↓
-Final Answer
-```
+        Problem Analysis
+            ↓
+        Evidence Planning (what info needed?)
+            ↓
+        Parallel Evidence Collection
+            ↓
+        Reasoning with Evidence
+            ↓
+        Final Answer
 
 ## Usage
 
 ### Basic Research Task
-```python
-from haive.agents.planning import create_rewoo_agent_with_tools_v3
-from haive.tools import web_search_tool, calculator_tool
+        from haive.agents.planning import create_rewoo_agent_with_tools_v3
+        from haive.tools import web_search_tool, calculator_tool
 
-agent = create_rewoo_agent_with_tools_v3(
-    name="researcher",
-    tools=[web_search_tool, calculator_tool],
-    model="gpt-4"
-)
+        agent = create_rewoo_agent_with_tools_v3(
+            name="researcher",
+            tools=[web_search_tool, calculator_tool],
+            model="gpt-4"
+        )
 
-result = agent.run("What is the economic impact of renewable energy?")
-```
+        result = agent.run("What is the economic impact of renewable energy?")
 
 ### Advanced with Tool Aliases
-```python
-agent = ReWOOTreeAgent(
-    name="advanced_researcher",
-    available_tools=[web_search, db_query, api_call],
-    tool_aliases={
-        "research": ToolAlias(
-            alias="research",
-            actual_tool="web_search",
-            force_choice=True
-        ),
-        "data": ToolAlias(
-            alias="data",
-            actual_tool="db_query",
-            parameters={"limit": 100}
+        agent = ReWOOTreeAgent(
+            name="advanced_researcher",
+            available_tools=[web_search, db_query, api_call],
+            tool_aliases={
+                "research": ToolAlias(
+                    alias="research",
+                    actual_tool="web_search",
+                    force_choice=True
+                ),
+                "data": ToolAlias(
+                    alias="data",
+                    actual_tool="db_query",
+                    parameters={"limit": 100}
+                )
+            },
+            max_parallelism=4
         )
-    },
-    max_parallelism=4
-)
-```
 
 ## When to Use
 
@@ -129,6 +123,14 @@ class ToolAlias(BaseModel):
     @field_validator("alias")
     @classmethod
     def validate_alias(cls, v: str) -> str:
+        """Validate Alias.
+
+        Args:
+            v: [TODO: Add description]
+
+        Returns:
+            [TODO: Add return description]
+        """
         if not v.replace("_", "").isalnum():
             raise ValueError("Alias must be alphanumeric with underscores")
         return v
@@ -186,6 +188,15 @@ class ReWOOTreeAgent(MultiAgent):
         max_parallelism: int = 4,
         **kwargs,
     ):
+        """Init  .
+
+        Args:
+            name: [TODO: Add description]
+            available_tools: [TODO: Add description]
+            tool_aliases: [TODO: Add description]
+            max_planning_depth: [TODO: Add description]
+            max_parallelism: [TODO: Add description]
+        """
         # Create planner agent
         planner = SimpleAgent(
             name=f"{name}_planner",
@@ -352,6 +363,12 @@ class ParallelReWOOAgent(ReWOOTreeAgent):
     def __init__(
         self, name: str = "parallel_rewoo", max_parallelism: int = 8, **kwargs
     ):
+        """Init  .
+
+        Args:
+            name: [TODO: Add description]
+            max_parallelism: [TODO: Add description]
+        """
         super().__init__(name=name, max_parallelism=max_parallelism, **kwargs)
 
         # Configure for maximum parallelization

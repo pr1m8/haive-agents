@@ -129,7 +129,7 @@ Assess the response carefully and identify any hallucinations.""",
         ),
         (
             "human",
-            """Evaluate this response for hallucinations:
+            """Evaluate this response for hallucinations:.
 
 Query: {query}
 Context Documents: {retrieved_documents}
@@ -174,7 +174,7 @@ Be thorough and provide specific examples for any hallucinations found.""",
         ),
         (
             "human",
-            """Conduct a comprehensive hallucination analysis:
+            """Conduct a comprehensive hallucination analysis:.
 
 **Query:** {query}
 
@@ -211,7 +211,7 @@ Provide a quick safety assessment.""",
         ),
         (
             "human",
-            """Quick hallucination check:
+            """Quick hallucination check:.
 
 Query: {query}
 Context: {retrieved_documents}

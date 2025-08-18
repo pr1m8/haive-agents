@@ -206,7 +206,7 @@ class SimpleSupervisor(MultiAgent):
         Returns:
             SimpleSupervisor instance
 
-        Example:
+        Examples:
             supervisor = SimpleSupervisor.create_with_agents([
                 ("writer", writer_agent, "Writes creative content"),
                 ("coder", coder_agent, "Writes and reviews code"),

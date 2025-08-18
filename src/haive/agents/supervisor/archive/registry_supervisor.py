@@ -24,6 +24,11 @@ class AgentRegistry:
     """Registry of available agents that can be added to supervisor."""
 
     def __init__(self) -> None:
+        """Init  .
+
+        Returns:
+            [TODO: Add return description]
+        """
         self.available_agents: dict[str, ReactAgent] = {}
         self.agent_capabilities: dict[str, str] = {}
 
@@ -69,6 +74,12 @@ class AgentRetrievalTool(BaseTool):
     Use this when no currently active agent can handle the request."""
 
     def __init__(self, registry: AgentRegistry, supervisor, **kwargs):
+        """Init  .
+
+        Args:
+            registry: [TODO: Add description]
+            supervisor: [TODO: Add description]
+        """
         super().__init__(**kwargs)
         self.registry = registry
         self.supervisor = supervisor
@@ -114,6 +125,11 @@ class AgentSelectionTool(BaseTool):
     )
 
     def __init__(self, choice_model: DynamicChoiceModel, **kwargs):
+        """Init  .
+
+        Args:
+            choice_model: [TODO: Add description]
+        """
         super().__init__(**kwargs)
         self.choice_model = choice_model
 

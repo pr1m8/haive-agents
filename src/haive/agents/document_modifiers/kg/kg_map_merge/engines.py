@@ -202,7 +202,7 @@ def create_graph_merger_config(
             ),
             (
                 "human",
-                """Merge these knowledge graphs with precision:
+                """Merge these knowledge graphs with precision:.
         {graph_contexts}
 
         Provide a unified, comprehensive knowledge graph.""",
@@ -282,6 +282,11 @@ def create_parallel_kg_transformer_configs() -> dict:
 
 # Example usage
 def main() -> None:
+    """Main.
+
+    Returns:
+        [TODO: Add return description]
+    """
     # Create configurations
     configs = create_parallel_kg_transformer_configs()
 

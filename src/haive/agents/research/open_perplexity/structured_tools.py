@@ -38,6 +38,14 @@ def register_document_loader(loader_type: str):
     """Decorator to register document loaders with metadata."""
 
     def decorator(loader_class) -> Any:
+        """Decorator.
+
+        Args:
+            loader_class: [TODO: Add description]
+
+        Returns:
+            [TODO: Add return description]
+        """
         DOCUMENT_LOADERS[loader_type] = {
             "class": loader_class,
             "metadata": getattr(loader_class, "loader_metadata", {}),
@@ -62,6 +70,14 @@ class EnhancedWebBaseLoader(WebBaseLoader):
     }
 
     def __init__(self, web_path) -> None:
+        """Init  .
+
+        Args:
+            web_path: [TODO: Add description]
+
+        Returns:
+            [TODO: Add return description]
+        """
         super().__init__(web_path)
         self.web_path = web_path
 
@@ -95,6 +111,14 @@ class EnhancedRecursiveUrlLoader(RecursiveUrlLoader):
     }
 
     def __init__(self, url: str, max_depth=2, extractor=None, prevent_outside=True):
+        """Init  .
+
+        Args:
+            url: [TODO: Add description]
+            max_depth: [TODO: Add description]
+            extractor: [TODO: Add description]
+            prevent_outside: [TODO: Add description]
+        """
         # Use BS4 extractor if not provided
         if extractor is None:
             extractor = self._default_extractor

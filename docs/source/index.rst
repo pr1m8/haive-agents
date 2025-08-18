@@ -1,63 +1,51 @@
-Haive Agents Documentation
-=========================
+haive-agents
+============
 
-Welcome to **Haive Agents** - Pre-built AI agents with specialized capabilities.
+AI Agent implementations for the Haive framework.
 
-This package is part of the Haive AI Agent Framework ecosystem.
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
 
-.. admonition:: Framework Integration
-   :class: tip
+   API Reference <autoapi/haive/agents/index>
 
-   Haive Agents seamlessly integrates with other Haive packages. 
-   See the `complete framework documentation <https://github.com/prim8/haive>`_ for the full ecosystem.
-
-
-Examples
+Overview
 --------
 
-Explore practical examples and tutorials:
+The haive-agents package provides various agent implementations:
 
-.. toctree::
-   :maxdepth: 2
-   :caption: Examples
-   
-   examples/index
+- **Simple Agents** - Basic agents with prompt templates
+- **React Agents** - Reasoning and acting agents with tool use
+- **Multi Agents** - Orchestration of multiple agents
+- **RAG Agents** - Retrieval-augmented generation agents
+- **Research Agents** - Specialized research workflows
+- **Planning Agents** - Strategic planning and execution
 
+Installation
+------------
 
-API Reference
--------------
+.. code-block:: bash
 
-Complete API documentation for Haive Agents:
+   pip install haive-agents
 
-.. toctree::
-   :maxdepth: 2
-   :caption: API Documentation
-   
-   autoapi/index
-
-
-Development
+Quick Start
 -----------
 
-.. toctree::
-   :maxdepth: 1
-   :caption: Development
-   
-   GitHub Repository <https://github.com/prim8/haive>
-   Contributing Guide <https://github.com/prim8/haive/blob/main/CONTRIBUTING.md>
-   Issue Tracker <https://github.com/prim8/haive/issues>
+.. code-block:: python
 
+   from haive.agents import SimpleAgent
+   from haive.core.engine import AugLLMConfig
 
-Changelog
----------
+   # Create a simple agent
+   agent = SimpleAgent(
+       name="assistant",
+       engine=AugLLMConfig(temperature=0.7)
+   )
 
-.. toctree::
-   :maxdepth: 2
-   :caption: Changelog
-   
-   changelog
+   # Use the agent
+   response = agent.run("Hello, how can you help me?")
 
-Indices and Tables
+Indices and tables
 ==================
 
 * :ref:`genindex`

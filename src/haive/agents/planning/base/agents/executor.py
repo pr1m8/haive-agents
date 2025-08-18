@@ -221,7 +221,7 @@ Remember: Your role is to be the reliable execution partner who transforms plann
                 ("system", "System message configured in AugLLMConfig"),
                 (
                     "human",
-                    """Execute this specific step from our plan:
+                    """Execute this specific step from our plan:.
 
 **Step to Execute:** {step_description}
 

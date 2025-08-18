@@ -12,6 +12,11 @@ class SubSection(BaseModel):
 
     @property
     def as_str(self) -> str:
+        """As Str.
+
+        Returns:
+            [TODO: Add return description]
+        """
         return f"### {self.subsection_title}\n\n{self.content}".strip()
 
 
@@ -26,6 +31,11 @@ class WikiSection(BaseModel):
 
     @property
     def as_str(self) -> str:
+        """As Str.
+
+        Returns:
+            [TODO: Add return description]
+        """
         subsections = "\n\n".join(
             subsection.as_str for subsection in self.subsections or []
         )

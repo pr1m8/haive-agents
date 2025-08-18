@@ -44,7 +44,7 @@ class Solution(BaseModel):
 
 
 # Default modules (simplified)
-MODULES = """1. Pattern Analysis - Identify patterns and structures
+MODULES = """1. Pattern Analysis - Identify patterns and structures.
 2. Logical Reasoning - Apply logic to solve problems
 3. Visual/Spatial - Understand spatial relationships
 4. Mathematical - Apply mathematical concepts
@@ -67,7 +67,7 @@ def create_agents():
                 ("system", "Select 3-5 most relevant reasoning modules for the task."),
                 (
                     "human",
-                    """Available modules:
+                    """Available modules:.
 {modules}
 
 Task: {task}
@@ -87,7 +87,7 @@ Select the most relevant modules and format them clearly.""",
                 ("system", "Adapt the selected modules to be specific for this task."),
                 (
                     "human",
-                    """Task: {task}
+                    """Task: {task}.
 
 Selected modules:
 {modules}
@@ -110,7 +110,7 @@ Adapt each module with specific strategies for this task.""",
                 ),
                 (
                     "human",
-                    """Task: {task}
+                    """Task: {task}.
 
 Adapted modules:
 {adapted}
@@ -130,7 +130,7 @@ Create a numbered step-by-step plan to solve this task.""",
                 ("system", "Follow the plan to solve the task."),
                 (
                     "human",
-                    """Task: {task}
+                    """Task: {task}.
 
 Plan:
 {plan}
@@ -192,6 +192,7 @@ async def run_self_discover(task: str, modules: str | None = None):
 if __name__ == "__main__":
 
     async def main():
+        """Main."""
         task = """What shape does this SVG path draw?
 <path d="M 10,10 L 40,10 L 40,40 L 10,40 Z"/>
 Options: circle, square, triangle, pentagon"""

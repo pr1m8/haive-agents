@@ -252,7 +252,7 @@ class SupervisorAgent(ReactAgent):
         Returns:
             Configured SupervisorAgent
 
-        Example:
+        Examples:
             supervisor = SupervisorAgent.create_with_agents([
                 ("writer", writer_agent, "Creative writing tasks"),
                 ("coder", coder_agent, "Programming tasks"),

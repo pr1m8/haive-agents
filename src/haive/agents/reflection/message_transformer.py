@@ -42,6 +42,11 @@ class SimpleReflectionTransformer:
     """Simple reflection transformer for when message_transformation_v2 is not available."""
 
     def __init__(self, preserve_first_message: bool = True):
+        """Init  .
+
+        Args:
+            preserve_first_message: [TODO: Add description]
+        """
         self.preserve_first_message = preserve_first_message
 
     def _apply_transformation(self, messages: list[BaseMessage]) -> list[BaseMessage]:

@@ -37,6 +37,11 @@ except (ImportError, AttributeError):
     # Fallback transformer
     class SimpleTransformer:
         def __init__(self, preserve_first=True):
+            """Init  .
+
+            Args:
+                preserve_first: [TODO: Add description]
+            """
             self.preserve_first_message = preserve_first
 
         def _apply_transformation(
@@ -196,7 +201,7 @@ class ReflectionWithGradePostHook(MessageTransformerPostHook):
                 ("system", "You are a reflection specialist that improves responses."),
                 (
                     "human",
-                    """Please improve this response:
+                    """Please improve this response:.
 
 {response}
 
@@ -381,7 +386,7 @@ def create_graded_reflection_post_hook(
             ("system", "You are a grading expert that evaluates response quality."),
             (
                 "human",
-                """Grade this response to the query:
+                """Grade this response to the query:.
 
 Query: {original_query}
 Response: {response}

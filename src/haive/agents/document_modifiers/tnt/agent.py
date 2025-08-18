@@ -12,7 +12,7 @@ The agent follows these main steps:
 4. Iterative taxonomy refinement
 5. Final taxonomy review
 
-Example:
+Examples:
     Basic usage of the taxonomy agent::
 
         config = TaxonomyAgentConfig(

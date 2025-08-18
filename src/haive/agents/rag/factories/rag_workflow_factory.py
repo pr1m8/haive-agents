@@ -26,6 +26,12 @@ class GenericCallableAgent(Agent):
     def __init__(
         self, callables: list[Callable], name: str = "Generic Callable Agent", **kwargs
     ):
+        """Init  .
+
+        Args:
+            callables: [TODO: Add description]
+            name: [TODO: Add description]
+        """
         super().__init__(name=name, **kwargs)
         self.callables = callables
 
@@ -60,6 +66,13 @@ class ConditionalCallableAgent(Agent):
         name: str = "Conditional Callable Agent",
         **kwargs,
     ):
+        """Init  .
+
+        Args:
+            router_callable: [TODO: Add description]
+            action_callables: [TODO: Add description]
+            name: [TODO: Add description]
+        """
         super().__init__(name=name, **kwargs)
         self.router_callable = router_callable
         self.action_callables = action_callables
@@ -84,6 +97,14 @@ class ConditionalCallableAgent(Agent):
 
         # Add conditional edges from router
         def route_condition(state: dict[str, Any]) -> str:
+            """Route Condition.
+
+            Args:
+                state: [TODO: Add description]
+
+            Returns:
+                [TODO: Add return description]
+            """
             next_action = getattr(state, "next_action", "complete")
             if next_action in self.action_callables:
                 return next_action
@@ -144,6 +165,14 @@ def create_self_rag_agent(
 
     # Self-RAG specific router
     def self_rag_router(input_data: dict) -> dict:
+        """Self Rag Router.
+
+        Args:
+            input_data: [TODO: Add description]
+
+        Returns:
+            [TODO: Add return description]
+        """
         state = input_data["state"]
 
         if not hasattr(state, "needs_retrieval"):
@@ -169,6 +198,14 @@ def create_self_rag_agent(
 
     # Retrieval decision function
     def retrieval_decision(input_data: dict) -> dict:
+        """Retrieval Decision.
+
+        Args:
+            input_data: [TODO: Add description]
+
+        Returns:
+            [TODO: Add return description]
+        """
         state = input_data["state"]
         query = getattr(state, "query", "").lower()
 
@@ -237,6 +274,14 @@ def create_adaptive_rag_agent(
 
     # Adaptive router
     def adaptive_router(state: dict[str, Any]) -> str:
+        """Adaptive Router.
+
+        Args:
+            state: [TODO: Add description]
+
+        Returns:
+            [TODO: Add return description]
+        """
         complexity = getattr(state, "complexity", QueryComplexity.UNKNOWN)
 
         if complexity == QueryComplexity.SIMPLE:
@@ -255,6 +300,11 @@ def create_adaptive_rag_agent(
     # Create conditional multi-agent
     class AdaptiveRAGAgent(ConditionalAgent):
         def __init__(self) -> None:
+            """Init  .
+
+            Returns:
+                [TODO: Add return description]
+            """
             super().__init__(
                 name=name,
                 agents=[analyzer_agent, simple_rag, multi_query_agent, complex_rag],

@@ -144,15 +144,15 @@ class SelfReflectiveResult(BaseModel):
 INITIAL_ANSWER_PROMPT = ChatPromptTemplate.from_messages(
     [
         (
-            """system""",
+            """system.""",
             """You are an expert at providing comprehensive answers using retrieved information.
 
 Generate an initial answer that will later be refined through self-reflection.
 Focus on accuracy and use of evidence, knowing that the answer will be critiqued and improved.""",
         ),
         (
-            """human""",
-            """Answer this query using the retrieved documents:
+            """human.""",
+            """Answer this query using the retrieved documents:.
 
 **Query:** {query}
 
@@ -167,7 +167,7 @@ Provide a comprehensive initial answer with clear evidence references.""",
 REFLECTION_CRITIQUE_PROMPT = ChatPromptTemplate.from_messages(
     [
         (
-            """system""",
+            """system.""",
             """You are an expert critic for RAG-generated answers.
 
 **REFLECTION FRAMEWORK:**
@@ -189,8 +189,8 @@ REFLECTION_CRITIQUE_PROMPT = ChatPromptTemplate.from_messages(
 Provide constructive, actionable critique for improvement.""",
         ),
         (
-            """human""",
-            """Critique this answer for the given query:
+            """human.""",
+            """Critique this answer for the given query:.
 
 **Original Query:** {query}
 
@@ -209,7 +209,7 @@ Analyze the answer across all dimensions and provide specific improvement guidan
 IMPROVEMENT_PLANNING_PROMPT = ChatPromptTemplate.from_messages(
     [
         (
-            """system""",
+            """system.""",
             """You are an expert at planning iterative improvements for RAG answers.
 
 **PLANNING PRINCIPLES:**
@@ -236,8 +236,8 @@ IMPROVEMENT_PLANNING_PROMPT = ChatPromptTemplate.from_messages(
 Create effective improvement plans.""",
         ),
         (
-            """human""",
-            """Plan improvements based on reflection critiques:
+            """human.""",
+            """Plan improvements based on reflection critiques:.
 
 **Query:** {query}
 
@@ -258,7 +258,7 @@ Create an improvement plan or decide to terminate with reasoning.""",
 ANSWER_IMPROVEMENT_PROMPT = ChatPromptTemplate.from_messages(
     [
         (
-            """system""",
+            """system.""",
             """You are an expert at improving RAG answers based on reflection feedback.
 
 **IMPROVEMENT PRINCIPLES:**
@@ -279,8 +279,8 @@ ANSWER_IMPROVEMENT_PROMPT = ChatPromptTemplate.from_messages(
 Create improved answers that address all feedback.""",
         ),
         (
-            """human""",
-            """Improve this answer based on the improvement plan:
+            """human.""",
+            """Improve this answer based on the improvement plan:.
 
 **Query:** {query}
 

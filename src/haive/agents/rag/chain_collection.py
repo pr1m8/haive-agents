@@ -5,7 +5,7 @@ This module provides a comprehensive collection of Retrieval-Augmented Generatio
 agents implemented using the ChainAgent framework. Each agent represents a different
 RAG strategy or pattern, optimized for specific use cases.
 
-Example:
+Examples:
     >>> from haive.agents.rag.chain_collection import RAGChainCollection
     >>> from langchain_core.documents import Document
     >>> from haive.core.models.llm.base import AzureLLMConfig
@@ -62,7 +62,7 @@ class RAGChainCollection:
     of RAG agents using the ChainAgent framework. Each method builds a
     complete RAG workflow with appropriate retrieval and generation steps.
 
-    Example:
+    Examples:
         >>> collection = RAGChainCollection()
         >>> agent = collection.create_simple_rag(documents, llm_config)
         >>> response = agent.invoke({"query": "What is machine learning?"})
@@ -85,7 +85,7 @@ class RAGChainCollection:
         Returns:
             ChainAgent: A configured simple RAG agent.
 
-        Example:
+        Examples:
             >>> from langchain_core.documents import Document
             >>> docs = [Document(page_content="AI helps solve problems...")]
             >>> agent = RAGChainCollection.create_simple_rag(docs, llm_config)
@@ -93,6 +93,14 @@ class RAGChainCollection:
 
         # Simple retrieval mock
         def retrieve(state: dict[str, Any]) -> dict[str, Any]:
+            """Retrieve.
+
+            Args:
+                state: [TODO: Add description]
+
+            Returns:
+                [TODO: Add return description]
+            """
             state.get("query", "")
             # Mock retrieval - in real implementation would use vector search
             relevant_docs = documents[:3]  # Top 3 docs
@@ -134,6 +142,14 @@ class RAGChainCollection:
 
         # Enhanced retrieval using hypothesis
         def enhanced_retrieve(state: dict[str, Any]) -> dict[str, Any]:
+            """Enhanced Retrieve.
+
+            Args:
+                state: [TODO: Add description]
+
+            Returns:
+                [TODO: Add return description]
+            """
             hyde_result = state.get("hyde_result", {})
             hypothetical_doc = hyde_result.get("hypothetical_doc", "")
 
@@ -155,7 +171,7 @@ class RAGChainCollection:
                     ),
                     (
                         "human",
-                        """Original Query: {query}
+                        """Original Query: {query}.
                 Hypothetical Document: {hyde_result}
                 Retrieved Context: {context}
 
@@ -190,6 +206,14 @@ class RAGChainCollection:
 
         # Fusion ranker
         def fusion_rank(state: dict[str, Any]) -> dict[str, Any]:
+            """Fusion Rank.
+
+            Args:
+                state: [TODO: Add description]
+
+            Returns:
+                [TODO: Add return description]
+            """
             # Mock fusion ranking
             state.get("multi_queries", "").split("\n")[:3]
 
@@ -213,7 +237,7 @@ class RAGChainCollection:
                     ("system", "Synthesize answer from fusion-ranked documents"),
                     (
                         "human",
-                        """Query: {query}
+                        """Query: {query}.
                 Fusion Results: {fusion_result}
 
                 Create comprehensive answer.""",
@@ -248,6 +272,14 @@ class RAGChainCollection:
 
         # Enhanced context retrieval
         def context_retrieve(state: dict[str, Any]) -> dict[str, Any]:
+            """Context Retrieve.
+
+            Args:
+                state: [TODO: Add description]
+
+            Returns:
+                [TODO: Add return description]
+            """
             step_back_result = state.get("step_back_result", {})
             abstract_answer = step_back_result.get("abstract_answer", "")
 
@@ -267,7 +299,7 @@ class RAGChainCollection:
                     ),
                     (
                         "human",
-                        """Original Query: {query}
+                        """Original Query: {query}.
                 Abstract Reasoning: {step_back_result}
                 Specific Context: {context}
 
@@ -300,6 +332,14 @@ class RAGChainCollection:
 
         # Hypothesis verifier
         def verify_hypotheses(state: dict[str, Any]) -> dict[str, Any]:
+            """Verify Hypotheses.
+
+            Args:
+                state: [TODO: Add description]
+
+            Returns:
+                [TODO: Add return description]
+            """
             speculative_result = state.get("speculative_result", {})
             hypotheses = speculative_result.get("hypotheses", [])
 
@@ -324,7 +364,7 @@ class RAGChainCollection:
                     ("system", "Create final answer based on verified hypotheses"),
                     (
                         "human",
-                        """Query: {query}
+                        """Query: {query}.
                 Verified Hypotheses: {verified_hypotheses}
 
                 Synthesize final answer.""",
@@ -346,6 +386,14 @@ class RAGChainCollection:
 
         # Memory analyzer
         def analyze_memory(state: dict[str, Any]) -> dict[str, Any]:
+            """Analyze Memory.
+
+            Args:
+                state: [TODO: Add description]
+
+            Returns:
+                [TODO: Add return description]
+            """
             # Mock memory analysis
             state.get("query", "")
             messages = state.get("messages", [])
@@ -364,6 +412,14 @@ class RAGChainCollection:
 
         # Context-aware retrieval
         def memory_retrieve(state: dict[str, Any]) -> dict[str, Any]:
+            """Memory Retrieve.
+
+            Args:
+                state: [TODO: Add description]
+
+            Returns:
+                [TODO: Add return description]
+            """
             query = state.get("query", "")
             relevant_memories = state.get("relevant_memories", [])
 
@@ -384,7 +440,7 @@ class RAGChainCollection:
                     ),
                     (
                         "human",
-                        """Current Query: {query}
+                        """Current Query: {query}.
                 Temporal Context: {temporal_context}
                 Relevant Memories: {relevant_memories}
                 Retrieved Context: {context}
@@ -422,6 +478,14 @@ class RAGChainCollection:
 
         # Active retrieval based on gaps
         def active_retrieve(state: dict[str, Any]) -> dict[str, Any]:
+            """Active Retrieve.
+
+            Args:
+                state: [TODO: Add description]
+
+            Returns:
+                [TODO: Add return description]
+            """
             initial_answer = state.get("initial_answer", "")
 
             # Identify information gaps (simplified)
@@ -442,6 +506,14 @@ class RAGChainCollection:
 
         # Conditional refinement
         def maybe_refine(state: dict[str, Any]) -> dict[str, Any]:
+            """Maybe Refine.
+
+            Args:
+                state: [TODO: Add description]
+
+            Returns:
+                [TODO: Add return description]
+            """
             if state.get("needs_refinement", False):
                 # Use LLM to refine answer
                 refined_engine = AugLLMConfig(
@@ -519,6 +591,11 @@ def create_rag_pipeline(
     if combination_strategy == "parallel":
         # All run in parallel then combine (simplified)
         def combiner(state: dict[str, Any]):
+            """Combiner.
+
+            Args:
+                state: [TODO: Add description]
+            """
             return {"combined_responses": [state.get("response", "")]}
 
         return flow_with_edges(

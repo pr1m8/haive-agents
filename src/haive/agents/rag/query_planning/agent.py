@@ -154,7 +154,7 @@ class QueryPlanningResult(BaseModel):
 QUERY_PLANNING_PROMPT = ChatPromptTemplate.from_messages(
     [
         (
-            """system""",
+            """system.""",
             """You are an expert query planner for RAG systems.
 
 **QUERY PLANNING PRINCIPLES:**
@@ -187,8 +187,8 @@ QUERY_PLANNING_PROMPT = ChatPromptTemplate.from_messages(
 Create comprehensive, executable query plans.""",
         ),
         (
-            """human""",
-            """Create a query execution plan:
+            """human.""",
+            """Create a query execution plan:.
 
 **Query:** {query}
 
@@ -215,7 +215,7 @@ Provide a complete, actionable query plan.""",
 SUB_QUERY_EXECUTION_PROMPT = ChatPromptTemplate.from_messages(
     [
         (
-            """system""",
+            """system.""",
             """You are an expert at executing sub-queries in a query plan.
 
 **EXECUTION PRINCIPLES:**
@@ -242,8 +242,8 @@ SUB_QUERY_EXECUTION_PROMPT = ChatPromptTemplate.from_messages(
 Execute sub-queries with precision and efficiency.""",
         ),
         (
-            """human""",
-            """Execute this sub-query:
+            """human.""",
+            """Execute this sub-query:.
 
 **Sub-Query:** {sub_query}
 
@@ -273,7 +273,7 @@ Focus on this sub-query only, not the broader context.""",
 QUERY_SYNTHESIS_PROMPT = ChatPromptTemplate.from_messages(
     [
         (
-            """system""",
+            """system.""",
             """You are an expert at synthesizing sub-query results into comprehensive answers.
 
 **SYNTHESIS PRINCIPLES:**
@@ -300,8 +300,8 @@ QUERY_SYNTHESIS_PROMPT = ChatPromptTemplate.from_messages(
 Create comprehensive, high-quality synthesized answers.""",
         ),
         (
-            """human""",
-            """Synthesize sub-query results into final answer:
+            """human.""",
+            """Synthesize sub-query results into final answer:.
 
 **Original Query:** {original_query}
 

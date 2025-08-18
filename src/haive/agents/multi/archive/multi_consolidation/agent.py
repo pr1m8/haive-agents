@@ -121,6 +121,11 @@ class MultiAgent(Agent):
     """
 
     def __init__(self, config: MultiAgentConfig):
+        """Init  .
+
+        Args:
+            config: [TODO: Add description]
+        """
         self.agents = config.agents
         self.execution_mode = config.execution_mode
         self.max_iterations = config.max_iterations
@@ -261,6 +266,15 @@ class MultiAgent(Agent):
         results = {}
 
         def run_agent(agent_name: str, agent: Agent) -> tuple[str, Any]:
+            """Run Agent.
+
+            Args:
+                agent_name: [TODO: Add description]
+                agent: [TODO: Add description]
+
+            Returns:
+                [TODO: Add return description]
+            """
             try:
                 if hasattr(agent, "run"):
                     result = agent.run(input_data, **kwargs)

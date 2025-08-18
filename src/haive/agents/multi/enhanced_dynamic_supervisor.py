@@ -310,6 +310,7 @@ if __name__ == "__main__":
         """Template for creating workers."""
 
         def __init__(self):
+            """Init  ."""
             self.engine = None  # Would be actual engine
 
     # Create dynamic supervisor

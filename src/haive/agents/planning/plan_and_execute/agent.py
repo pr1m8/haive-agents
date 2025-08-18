@@ -15,6 +15,11 @@ from haive.agents.react.agent_v4 import ReactAgentV4
 @register_agent(PlanAndExecuteConfig)
 class PlanAndExecuteAgent(Agent[PlanAndExecuteConfig]):
     def __init__(self, config: PlanAndExecuteConfig = PlanAndExecuteConfig()):
+        """Init  .
+
+        Args:
+            config: [TODO: Add description]
+        """
         self.config = config
 
         self.planner_runnable = compose_runnable(self.config.aug_llm_configs["planner"])
@@ -27,6 +32,11 @@ class PlanAndExecuteAgent(Agent[PlanAndExecuteConfig]):
         super().__init__(config)
 
     async def planner(self, state: PlanAndExecuteState):
+        """Planner.
+
+        Args:
+            state: [TODO: Add description]
+        """
         plan = await self.planner_runnable.ainvoke(
             {"messages": [("user", state.input)]}
         )
@@ -35,6 +45,11 @@ class PlanAndExecuteAgent(Agent[PlanAndExecuteConfig]):
         )
 
     def setup_workflow(self) -> None:
+        """Setup Workflow.
+
+        Returns:
+            [TODO: Add return description]
+        """
         self.graph.add_node("planner", self.planner)
         self.graph.add_node("execute_step", self.execute_step)
         self.graph.add_node("replan_step", self.replan_step)
@@ -153,6 +168,12 @@ class PlanAndExecuteAgent(Agent[PlanAndExecuteConfig]):
     async def arun(
         self, input_text: str | None = None, input_dict: dict[str, Any] | None = None
     ):
+        """Arun.
+
+        Args:
+            input_text: [TODO: Add description]
+            input_dict: [TODO: Add description]
+        """
         if not self.graph:
             raise RuntimeError("Workflow graph is not set up.")
         if not self.app:

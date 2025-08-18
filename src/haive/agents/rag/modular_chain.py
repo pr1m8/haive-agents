@@ -71,6 +71,14 @@ def create_modular_rag(
     if RAGModule.DOCUMENT_FILTERING in config.modules:
 
         def filter_documents(state: dict[str, Any]) -> dict[str, Any]:
+            """Filter Documents.
+
+            Args:
+                state: [TODO: Add description]
+
+            Returns:
+                [TODO: Add return description]
+            """
             query = state.get("expanded_query") or state.get("query", "")
 
             # Simple relevance filtering (mock)
@@ -99,7 +107,7 @@ def create_modular_rag(
                     ("system", "Rank document relevance for the query"),
                     (
                         "human",
-                        """Query: {query}
+                        """Query: {query}.
                 Documents: {filtered_documents}
 
                 Rank by relevance and provide top 3.""",
@@ -119,7 +127,7 @@ def create_modular_rag(
                     ("system", "Generate answer based on ranked context"),
                     (
                         "human",
-                        """Query: {query}
+                        """Query: {query}.
                 Context: {ranked_context}
 
                 Provide comprehensive answer.""",
@@ -134,6 +142,14 @@ def create_modular_rag(
     if RAGModule.ANSWER_VERIFICATION in config.modules:
 
         def verify_answer(state: dict[str, Any]) -> dict[str, Any]:
+            """Verify Answer.
+
+            Args:
+                state: [TODO: Add description]
+
+            Returns:
+                [TODO: Add return description]
+            """
             answer = state.get("generated_answer", "")
             state.get("ranked_context", "")
 
@@ -162,7 +178,7 @@ def create_modular_rag(
                     ("system", "Synthesize final response with confidence indicators"),
                     (
                         "human",
-                        """Original Query: {query}
+                        """Original Query: {query}.
                 Generated Answer: {generated_answer}
                 Verification: {verification_result}
 

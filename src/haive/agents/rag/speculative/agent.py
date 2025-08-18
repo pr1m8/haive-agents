@@ -197,7 +197,7 @@ Generate 3-7 diverse, high-quality hypotheses for comprehensive coverage.""",
         ),
         (
             "human",
-            """Generate hypotheses for this query:
+            """Generate hypotheses for this query:.
 
 **Query:** {query}
 
@@ -255,7 +255,7 @@ Provide detailed, objective verification assessments.""",
         ),
         (
             "human",
-            """Verify this hypothesis using available evidence:
+            """Verify this hypothesis using available evidence:.
 
 **Hypothesis:** {hypothesis_text}
 
@@ -308,7 +308,7 @@ Generate nuanced, evidence-based answers that reflect the full speculative analy
         ),
         (
             "human",
-            """Synthesize results from speculative hypothesis analysis:
+            """Synthesize results from speculative hypothesis analysis:.
 
 **Original Query:** {query}
 

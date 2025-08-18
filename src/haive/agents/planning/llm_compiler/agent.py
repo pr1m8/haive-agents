@@ -531,6 +531,11 @@ class LLMCompilerAgent(AgentArchitecture):
 
 
 def main() -> None:
+    """Main.
+
+    Returns:
+        [TODO: Add return description]
+    """
     agent = LLMCompilerAgent(config=LLMCompilerAgentConfig())
     asyncio.run(
         agent.arun(

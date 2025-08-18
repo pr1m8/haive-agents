@@ -263,6 +263,7 @@ Always think step-by-step about the best approach before acting."""
 if __name__ == "__main__":
 
     async def demo_self_modifying_supervisor():
+        """Demo Self Modifying Supervisor."""
         # Create self-modifying supervisor
         supervisor = SelfModifyingSupervisor(
             name="Autonomous Supervisor", enable_self_modification=True, debug=True

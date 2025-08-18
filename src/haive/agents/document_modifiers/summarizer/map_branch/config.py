@@ -39,6 +39,11 @@ class SummarizerAgentConfig(AgentConfig):
     )
 
     def build_agent(self) -> Any:
+        """Build Agent.
+
+        Returns:
+            [TODO: Add return description]
+        """
         from haive.agents.document_modifiers.summarizer.map_branch.agent import (
             SummarizerAgent,
         )

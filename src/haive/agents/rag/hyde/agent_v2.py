@@ -41,7 +41,7 @@ Please provide your response in the following format:
         ),
         (
             "human",
-            """Write a detailed document that would contain the answer to this question:
+            """Write a detailed document that would contain the answer to this question:.
 
 Question: {query}""",
         ),
@@ -57,7 +57,7 @@ HYDE_RETRIEVAL_PROMPT = ChatPromptTemplate.from_messages(
         ),
         (
             "human",
-            """Based on this hypothetical answer document, create a search query to find similar real documents:
+            """Based on this hypothetical answer document, create a search query to find similar real documents:.
 
 Hypothetical Document:
 {hypothetical_doc}

@@ -192,7 +192,7 @@ Provide detailed, structured analysis for routing optimization.""",
         ),
         (
             "human",
-            """Analyze this query for optimal RAG routing:
+            """Analyze this query for optimal RAG routing:.
 
 **Query:** {query}
 
@@ -242,7 +242,7 @@ Design efficient iterative plans that balance thoroughness with performance.""",
         ),
         (
             "human",
-            """Create an iterative plan for this query processing:
+            """Create an iterative plan for this query processing:.
 
 **Query:** {query}
 **Query Analysis:** {query_analysis}
@@ -289,7 +289,7 @@ Make data-driven routing decisions with clear justification.""",
         ),
         (
             "human",
-            """Make routing decision for this query:
+            """Make routing decision for this query:.
 
 **Query:** {query}
 **Query Analysis:** {query_analysis}

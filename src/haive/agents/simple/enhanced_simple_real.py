@@ -128,6 +128,14 @@ class SimpleAgent(EnhancedAgentBase):
 
             # Conditional routing based on tool calls
             def check_tools(state: dict[str, Any]) -> Literal["tools", "end"]:
+                """Check Tools.
+
+                Args:
+                    state: [TODO: Add description]
+
+                Returns:
+                    [TODO: Add return description]
+                """
                 messages = state.get("messages", [])
                 if messages and isinstance(messages[-1], AIMessage):
                     if messages[-1].tool_calls:

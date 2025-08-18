@@ -66,7 +66,7 @@ Each variation should potentially retrieve different but relevant documents.""",
         ),
         (
             "human",
-            """Generate diverse query variations for RAG Fusion:
+            """Generate diverse query variations for RAG Fusion:.
 
 Original Query: {query}
 
@@ -100,7 +100,7 @@ Key principles:
         ),
         (
             "human",
-            """Answer the query using the fusion-ranked documents:
+            """Answer the query using the fusion-ranked documents:.
 
 Original Query: {query}
 Query Variations Used: {query_variations}

@@ -109,6 +109,8 @@ class MultiMemoryConfig:
     base_storage_path: str | None = None
 
     def __post_init__(self):
+        """  Post Init  .
+"""
         if self.engine is None:
             self.engine = AugLLMConfig(temperature=0.7)
 
@@ -125,6 +127,11 @@ class MultiMemoryCoordinator:
     """
 
     def __init__(self, config: MultiMemoryConfig):
+        """  Init  .
+
+Args:
+    config: [TODO: Add description]
+"""
         self.config = config
         self.logger = logger
 

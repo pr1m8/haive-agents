@@ -135,6 +135,12 @@ class LLMRoutingStrategy(BaseRoutingStrategy):
     def __init__(
         self, routing_engine: InvokableEngine, routing_model: DynamicChoiceModel[str]
     ):
+        """Init  .
+
+        Args:
+            routing_engine: [TODO: Add description]
+            routing_model: [TODO: Add description]
+        """
         self.routing_engine = routing_engine
         self.routing_model = routing_model
 

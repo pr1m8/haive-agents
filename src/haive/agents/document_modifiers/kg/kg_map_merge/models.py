@@ -139,6 +139,11 @@ class KnowledgeGraph(BaseModel):
 
 
 def main() -> None:
+    """Main.
+
+    Returns:
+        [TODO: Add return description]
+    """
     person_node = EntityNode(
         id="marie_curie",
         type="Scientist",

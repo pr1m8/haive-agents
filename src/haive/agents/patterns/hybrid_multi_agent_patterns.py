@@ -56,7 +56,7 @@ class HybridMultiAgent(Agent):
     This agent can combine parallel and sequential execution,
     conditional routing, and dynamic agent selection.
 
-    Example:
+    Examples:
         >>> agent = HybridMultiAgent(
         ...     name="hybrid_processor",
         ...     initial_agents=[classifier],
@@ -308,6 +308,7 @@ class AdaptiveMultiAgent(MultiAgent):
     )
 
     def __init__(self, **kwargs):
+        """Init  ."""
         # Create adaptive agents
         agents = [
             SimpleAgent(
@@ -375,6 +376,7 @@ class CollaborativeMultiAgent(MultiAgent):
     )
 
     def __init__(self, **kwargs):
+        """Init  ."""
         # Create collaborative agents
         agents = []
 

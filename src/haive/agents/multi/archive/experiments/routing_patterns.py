@@ -25,7 +25,7 @@ class RoutingMultiAgent(ListMultiAgent):
     Extends ListMultiAgent with routing rules that determine
     which agent executes next based on state conditions.
 
-    Example:
+    Examples:
         .. code-block:: python
 
             multi = RoutingMultiAgent("router")
@@ -126,7 +126,7 @@ class RoutingMultiAgent(ListMultiAgent):
     ) -> "RoutingMultiAgent":
         """Add multi-way routing with keyword arguments.
 
-        Example:
+        Examples:
             multi.add_multi_route(
                 "classifier",
                 lambda s: s["category"],
@@ -157,6 +157,12 @@ class RoutingMultiAgent(ListMultiAgent):
 
             # Create agent node
             def make_agent_node(agent_instance: Any):
+                """Make Agent Node.
+
+                Args:
+                    agent_instance: [TODO: Add description]
+                """
+
                 def node(state: dict[str, Any]) -> dict[str, Any]:
                     messages = state.get("messages", [])
                     result = agent_instance.invoke({"messages": messages})
@@ -231,7 +237,7 @@ class BranchingMultiAgent(RoutingMultiAgent):
 
     Supports parallel branches that merge back together.
 
-    Example:
+    Examples:
         .. code-block:: python
 
             multi = BranchingMultiAgent("branching")

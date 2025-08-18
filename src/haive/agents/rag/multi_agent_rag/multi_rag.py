@@ -112,6 +112,13 @@ class BaseRAGMultiAgent(SequentialAgent):
         answer_agent: SimpleRAGAnswerAgent | None = None,
         **kwargs,
     ):
+        """Init  .
+
+        Args:
+            retrieval_agent: [TODO: Add description]
+            grading_agent: [TODO: Add description]
+            answer_agent: [TODO: Add description]
+        """
         # Use default agents if none provided
         agents = [
             retrieval_agent or SIMPLE_RAG_AGENT,
@@ -145,6 +152,14 @@ class ConditionalRAGMultiAgent(ConditionalAgent):
         query_refiner: Any | None = None,  # Could be another agent
         **kwargs,
     ):
+        """Init  .
+
+        Args:
+            retrieval_agent: [TODO: Add description]
+            grading_agent: [TODO: Add description]
+            answer_agent: [TODO: Add description]
+            query_refiner: [TODO: Add description]
+        """
         # Create agents
         self.retrieval_agent = retrieval_agent or SIMPLE_RAG_AGENT
         self.grading_agent = grading_agent or DocumentGradingAgent()
@@ -213,6 +228,14 @@ class IterativeRAGMultiAgent(SequentialAgent):
         custom_grader_callable: Callable | None = None,
         **kwargs,
     ):
+        """Init  .
+
+        Args:
+            retrieval_agent: [TODO: Add description]
+            iterative_grader: [TODO: Add description]
+            answer_agent: [TODO: Add description]
+            custom_grader_callable: [TODO: Add description]
+        """
         # Create iterative grading agent with custom callable if provided
         if not iterative_grader:
             iterative_grader = IterativeDocumentGradingAgent(
@@ -243,6 +266,11 @@ class ParallelRAGMultiAgent(ParallelAgent):
     """
 
     def __init__(self, rag_agents: list[BaseRAGMultiAgent] | None = None, **kwargs):
+        """Init  .
+
+        Args:
+            rag_agents: [TODO: Add description]
+        """
         # Create default parallel RAG agents if none provided
         if not rag_agents:
             rag_agents = [
@@ -281,6 +309,13 @@ class AdaptiveRAGMultiAgent(ConditionalAgent):
         consensus_rag: ParallelRAGMultiAgent | None = None,
         **kwargs,
     ):
+        """Init  .
+
+        Args:
+            simple_rag: [TODO: Add description]
+            complex_rag: [TODO: Add description]
+            consensus_rag: [TODO: Add description]
+        """
         self.simple_rag = simple_rag or BaseRAGMultiAgent(name="Simple RAG")
         self.complex_rag = complex_rag or IterativeRAGMultiAgent(name="Complex RAG")
         self.consensus_rag = consensus_rag or ParallelRAGMultiAgent(

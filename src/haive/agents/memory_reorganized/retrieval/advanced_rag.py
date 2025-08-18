@@ -105,6 +105,7 @@ class AdvancedRAGConfig:
     max_context_length: int = 4000
 
     def __post_init__(self):
+        """Post Init  ."""
         if self.llm_config is None:
             self.llm_config = AugLLMConfig(temperature=0.7)
 
@@ -117,6 +118,11 @@ class AdvancedRAGMemoryAgent:
     """
 
     def __init__(self, config: AdvancedRAGConfig):
+        """Init  .
+
+        Args:
+            config: [TODO: Add description]
+        """
         self.config = config
         self.logger = logger
 
@@ -422,6 +428,11 @@ class AdvancedRAGMemoryAgent:
 
         # Sort by importance, then by original ranking
         def importance_score(doc):
+            """Importance Score.
+
+            Args:
+                doc: [TODO: Add description]
+            """
             importance = doc.metadata.get("importance", "normal")
             importance_values = {"critical": 4, "high": 3, "normal": 2, "low": 1}
             base_score = importance_values.get(importance, 2)

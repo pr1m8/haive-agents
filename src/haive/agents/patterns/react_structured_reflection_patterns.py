@@ -99,6 +99,15 @@ class ReactToStructuredV3:
         reasoning_config: AugLLMConfig = None,
         structuring_config: AugLLMConfig = None,
     ):
+        """Init  .
+
+        Args:
+            name: [TODO: Add description]
+            tools: [TODO: Add description]
+            structured_output_model: [TODO: Add description]
+            reasoning_config: [TODO: Add description]
+            structuring_config: [TODO: Add description]
+        """
         self.name = name
         self.structured_output_model = structured_output_model
 
@@ -147,18 +156,38 @@ Convert this into the required structured format. Ensure all fields are properly
 
         @self.reasoning_agent.before_run
         def log_reasoning_start(context: HookContext):
+            """Log Reasoning Start.
+
+            Args:
+                context: [TODO: Add description]
+            """
             pass
 
         @self.reasoning_agent.after_run
         def log_reasoning_complete(context: HookContext):
+            """Log Reasoning Complete.
+
+            Args:
+                context: [TODO: Add description]
+            """
             pass
 
         @self.structuring_agent.before_structured_output
         def log_structuring_start(context: HookContext):
+            """Log Structuring Start.
+
+            Args:
+                context: [TODO: Add description]
+            """
             pass
 
         @self.structuring_agent.after_structured_output
         def log_structuring_complete(context: HookContext):
+            """Log Structuring Complete.
+
+            Args:
+                context: [TODO: Add description]
+            """
             pass
 
     async def arun(self, input_data: str) -> BaseModel:
@@ -193,6 +222,7 @@ class ReactToStructuredV4(MultiAgent):
     )
 
     def __init__(self, **data):
+        """Init  ."""
         # Set up agents for V4 architecture
         if "agents" not in data:
             data["agents"] = [
@@ -211,18 +241,38 @@ class ReactToStructuredV4(MultiAgent):
 
         @self.before_run
         def log_v4_start(context: HookContext):
+            """Log V4 Start.
+
+            Args:
+                context: [TODO: Add description]
+            """
             pass
 
         @self.after_run
         def log_v4_complete(context: HookContext):
+            """Log V4 Complete.
+
+            Args:
+                context: [TODO: Add description]
+            """
             pass
 
         @self.reasoning_agent.after_run
         def track_reasoning_stage(context: HookContext):
+            """Track Reasoning Stage.
+
+            Args:
+                context: [TODO: Add description]
+            """
             pass
 
         @self.structuring_agent.after_structured_output
         def track_structuring_stage(context: HookContext):
+            """Track Structuring Stage.
+
+            Args:
+                context: [TODO: Add description]
+            """
             pass
 
     @classmethod
@@ -275,6 +325,15 @@ class ReactWithReflection:
         reasoning_config: AugLLMConfig = None,
         structuring_config: AugLLMConfig = None,
     ):
+        """Init  .
+
+        Args:
+            name: [TODO: Add description]
+            tools: [TODO: Add description]
+            structured_output_model: [TODO: Add description]
+            reasoning_config: [TODO: Add description]
+            structuring_config: [TODO: Add description]
+        """
         self.name = name
         self.structured_output_model = structured_output_model
 
@@ -310,18 +369,38 @@ class ReactWithReflection:
 
         @self.reasoning_agent.before_run
         def log_reasoning_with_reflection_start(context: HookContext):
+            """Log Reasoning With Reflection Start.
+
+            Args:
+                context: [TODO: Add description]
+            """
             pass
 
         @self.reasoning_agent.after_run
         def log_reasoning_with_reflection_complete(context: HookContext):
+            """Log Reasoning With Reflection Complete.
+
+            Args:
+                context: [TODO: Add description]
+            """
             pass
 
         @self.structuring_agent.before_reflection
         def log_reflection_start(context: HookContext):
+            """Log Reflection Start.
+
+            Args:
+                context: [TODO: Add description]
+            """
             pass
 
         @self.structuring_agent.after_reflection
         def log_reflection_complete(context: HookContext):
+            """Log Reflection Complete.
+
+            Args:
+                context: [TODO: Add description]
+            """
             pass
 
     async def arun(self, input_data: str) -> dict[str, Any]:
@@ -351,6 +430,13 @@ class ReactWithGradedReflection:
         tools: list | None = None,
         structured_output_model: type[BaseModel] = TaskAnalysis,
     ):
+        """Init  .
+
+        Args:
+            name: [TODO: Add description]
+            tools: [TODO: Add description]
+            structured_output_model: [TODO: Add description]
+        """
         self.name = name
         self.structured_output_model = structured_output_model
 
@@ -384,18 +470,38 @@ class ReactWithGradedReflection:
 
         @self.structuring_agent.before_grading
         def log_grading_start(context: HookContext):
+            """Log Grading Start.
+
+            Args:
+                context: [TODO: Add description]
+            """
             pass
 
         @self.structuring_agent.after_grading
         def log_grading_complete(context: HookContext):
+            """Log Grading Complete.
+
+            Args:
+                context: [TODO: Add description]
+            """
             pass
 
         @self.structuring_agent.before_reflection
         def log_reflection_with_grade_start(context: HookContext):
+            """Log Reflection With Grade Start.
+
+            Args:
+                context: [TODO: Add description]
+            """
             pass
 
         @self.structuring_agent.after_reflection
         def log_reflection_with_grade_complete(context: HookContext):
+            """Log Reflection With Grade Complete.
+
+            Args:
+                context: [TODO: Add description]
+            """
             pass
 
     async def arun(self, input_data: str) -> dict[str, Any]:

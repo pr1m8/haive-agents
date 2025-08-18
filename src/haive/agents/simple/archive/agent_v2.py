@@ -374,6 +374,12 @@ class SimpleAgentV2(Agent):
         original_ainvoke = compiled.ainvoke
 
         async def wrapped_ainvoke(input_data, config=None):
+            """Wrapped Ainvoke.
+
+Args:
+    input_data: [TODO: Add description]
+    config: [TODO: Add description]
+"""
             # Ensure additional state fields are available
             if isinstance(input_data, dict):
                 if "engine_name" not in input_data and self.engine:

@@ -38,7 +38,7 @@ class ParallelKGTransformerConfig(AgentConfig):
                     ),
                     (
                         "human",
-                        """Merge these knowledge graphs:
+                        """Merge these knowledge graphs:.
                 {graph_contexts}
 
                 Provide a unified and refined knowledge graph.""",

@@ -13,7 +13,7 @@ The agent workflow consists of the following steps:
     5. **Query Execution**: Runs the validated query against Neo4j
     6. **Answer Generation**: Converts database results to natural language
 
-Example:
+Examples:
     Basic usage of the Graph DB RAG Agent::
 
         >>> from haive.agents.rag.db_rag.graph_db import GraphDBRAGAgent, GraphDBRAGConfig
@@ -95,7 +95,7 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
         example_selector: Semantic similarity selector for few-shot examples.
         no_results (str): Default message when no results are found.
 
-    Example:
+    Examples:
         Creating and using the agent::
 
             >>> # Create agent with minimal config
@@ -135,7 +135,7 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
             ValueError: If Neo4j connection cannot be established.
             Exception: For other initialization errors.
 
-        Example:
+        Examples:
             >>> # Using default config (from environment)
             >>> agent = GraphDBRAGAgent()
 
@@ -292,7 +292,7 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
                 - question: Natural language question
                 - query: Corresponding Cypher query
 
-        Example:
+        Examples:
             >>> agent = GraphDBRAGAgent()
             >>> examples = agent._get_default_examples("movies")
             >>> print(examples[0])
@@ -366,7 +366,7 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
                 - database_records: Error message if out-of-domain
                 - steps: Updated with "check_domain_relevance"
 
-        Example:
+        Examples:
             >>> state = OverallState(question="What's the weather like?")
             >>> command = agent.check_domain_relevance(state)
             >>> # For a movie domain agent, this would return:
@@ -453,7 +453,7 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
                 - cypher_statement: The generated Cypher query
                 - steps: Updated with "generate_query"
 
-        Example:
+        Examples:
             >>> state = OverallState(question="Who directed Inception?")
             >>> command = agent.generate_query(state)
             >>> print(command.update["cypher_statement"])
@@ -515,7 +515,7 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
                 - cypher_errors: List of validation errors (if any)
                 - steps: Updated with "validate_query"
 
-        Example:
+        Examples:
             >>> state = OverallState(
             ...     cypher_statement="MATCH (p:Actor)-[:DIRECTED]->(m:Film) RETURN p.name"
             ... )
@@ -576,7 +576,7 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
                 - cypher_statement: The corrected Cypher query
                 - steps: Updated with "correct_query"
 
-        Example:
+        Examples:
             >>> state = OverallState(
             ...     cypher_statement="MATCH (p:Actor)-[:DIRECTED]->(m:Film) RETURN p.name",
             ...     cypher_errors=["Label 'Film' does not exist, use 'Movie'"]
@@ -633,7 +633,7 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
                 - next_action: "generate_answer"
                 - steps: Updated with "execute_query"
 
-        Example:
+        Examples:
             >>> state = OverallState(
             ...     cypher_statement="MATCH (m:Movie) RETURN m.title LIMIT 3"
             ... )
@@ -679,7 +679,7 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
                 - next_action: "end"
                 - steps: Updated with "generate_answer"
 
-        Example:
+        Examples:
             >>> state = OverallState(
             ...     question="Who directed The Matrix?",
             ...     database_records=[{"p.name": "Lana Wachowski"}, {"p.name": "Lilly Wachowski"}]

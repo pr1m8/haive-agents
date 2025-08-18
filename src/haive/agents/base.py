@@ -22,7 +22,17 @@ class DocumentAgentConfig(AgentConfig):
 @register_agent(DocumentAgentConfig)
 class DocumentAgent(Agent[DocumentAgentConfig]):
     def __init__(self, config: DocumentAgentConfig):
+        """Init  .
+
+        Args:
+            config: [TODO: Add description]
+        """
         super().__init__(config)
 
     def run(self, document: Document):
+        """Run.
+
+        Args:
+            document: [TODO: Add description]
+        """
         pass

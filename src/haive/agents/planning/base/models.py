@@ -92,6 +92,7 @@ class EventEmitter:
     """Event system for tracking changes."""
 
     def __init__(self):
+        """Init  ."""
         self.listeners: dict[str, list[Callable]] = {}
         self.event_history: list[ChangeEvent] = []
 
@@ -150,6 +151,7 @@ class IntelligentStatusMixin(BaseModel, ABC):
     _children_refs: set[str] = Field(default_factory=set, exclude=True)
 
     def __init__(self, **data):
+        """Init  ."""
         super().__init__(**data)
         self._auto_setup()
 
@@ -334,6 +336,12 @@ class IntelligentSequence(list[PlanContent], Generic[T]):
     """Advanced modifiable sequence with event system, undo/redo, and cycle detection."""
 
     def __init__(self, items: list[T] = None, parent: BasePlan | None = None):
+        """Init  .
+
+        Args:
+            items: [TODO: Add description]
+            parent: [TODO: Add description]
+        """
         super().__init__(items or [])
         self.parent = parent
         self._event_emitter = EventEmitter()
@@ -399,6 +407,7 @@ class IntelligentSequence(list[PlanContent], Generic[T]):
 
         # Create undo action
         def undo_action():
+            """Undo Action."""
             return self._raw_remove(item)
 
         self._undo_stack.append(undo_action)
@@ -420,6 +429,7 @@ class IntelligentSequence(list[PlanContent], Generic[T]):
             raise ValueError(f"Adding item {item.id} would create a cycle")
 
         def undo_action():
+            """Undo Action."""
             return self._raw_pop(index)
 
         self._undo_stack.append(undo_action)
@@ -436,6 +446,7 @@ class IntelligentSequence(list[PlanContent], Generic[T]):
         index = self.index(item)
 
         def undo_action():
+            """Undo Action."""
             return self._raw_insert(index, item)
 
         self._undo_stack.append(undo_action)
@@ -453,6 +464,7 @@ class IntelligentSequence(list[PlanContent], Generic[T]):
         actual_index = index if index >= 0 else len(self) + index
 
         def undo_action():
+            """Undo Action."""
             return self._raw_insert(actual_index, item)
 
         self._undo_stack.append(undo_action)
@@ -478,6 +490,7 @@ class IntelligentSequence(list[PlanContent], Generic[T]):
         current_state = list(self)
 
         def redo_action():
+            """Redo Action."""
             return self._restore_state(current_state)
 
         self._redo_stack.append(redo_action)
@@ -723,6 +736,7 @@ class BasePlan(IntelligentStatusMixin, Generic[T]):
     performance_targets: dict[str, Any] = Field(default_factory=dict)
 
     def __init__(self, **data):
+        """Init  ."""
         super().__init__(**data)
         # Set parent reference
         if hasattr(self.steps, "parent"):
@@ -855,6 +869,11 @@ class BasePlan(IntelligentStatusMixin, Generic[T]):
         result = []
 
         def visit(item):
+            """Visit.
+
+            Args:
+                item: [TODO: Add description]
+            """
             result.append(item)
             if hasattr(item, "steps"):
                 for sub_item in item.steps:
@@ -899,6 +918,11 @@ class BasePlan(IntelligentStatusMixin, Generic[T]):
         }
 
         def get_priority(item):
+            """Get Priority.
+
+            Args:
+                item: [TODO: Add description]
+            """
             if hasattr(item, "priority"):
                 return priority_order.get(item.priority, 3)
             return 3

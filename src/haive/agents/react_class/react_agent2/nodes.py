@@ -430,6 +430,14 @@ def create_tool_node(tool_name: str) -> Callable:
     """
 
     def tool_node(state: dict[str, Any]) -> Command:
+        """Tool Node.
+
+        Args:
+            state: [TODO: Add description]
+
+        Returns:
+            [TODO: Add return description]
+        """
         # Convert state to dict if it's a model
         state_dict = state.model_dump() if hasattr(state, "model_dump") else state
 

@@ -19,6 +19,13 @@ logger = logging.getLogger(__name__)
 @register_agent(ToTAgentConfig)
 class ToTAgent(Agent[ToTAgentConfig]):
     def get_state_value(self, state: dict | BaseModel, key: str, default=None):
+        """Get State Value.
+
+        Args:
+            state: [TODO: Add description]
+            key: [TODO: Add description]
+            default: [TODO: Add description]
+        """
         return (
             state.get(key, default)
             if isinstance(state, dict)
@@ -26,6 +33,11 @@ class ToTAgent(Agent[ToTAgentConfig]):
         )
 
     def setup_workflow(self) -> None:
+        """Setup Workflow.
+
+        Returns:
+            [TODO: Add return description]
+        """
         logger.debug(f"Setting up workflow for ToTAgent {self.config.name}")
         gb = DynamicGraph(state_schema=self.state_schema)
 
@@ -188,6 +200,14 @@ class ToTAgent(Agent[ToTAgentConfig]):
         )
 
     def run(self, input_data: str | dict[str, Any], **kwargs) -> dict[str, Any]:
+        """Run.
+
+        Args:
+            input_data: [TODO: Add description]
+
+        Returns:
+            [TODO: Add return description]
+        """
         if isinstance(input_data, str):
             msg = HumanMessage(content=input_data)
             state = ToTState(

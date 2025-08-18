@@ -53,7 +53,7 @@ class ReactToStructuredAgent(Agent):
     This agent combines ReactAgent for reasoning with SimpleAgentV3 for
     structured output generation, following the base Agent pattern.
 
-    Example:
+    Examples:
         >>> agent = ReactToStructuredAgent(
         ...     name="analyzer",
         ...     tools=[calculator, search_tool],
@@ -106,7 +106,7 @@ class ReactToStructuredAgent(Agent):
                         ("system", "{system_message}"),
                         (
                             "human",
-                            """Based on this analysis:
+                            """Based on this analysis:.
 {reasoning_output}
 
 Create a structured output with all required fields properly filled.""",

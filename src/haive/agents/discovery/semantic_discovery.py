@@ -25,6 +25,7 @@ EnhancedComponentRegistry = Any
 
 
 def create_component_registry(**kwargs):
+    """Create Component Registry."""
     return None
 
 

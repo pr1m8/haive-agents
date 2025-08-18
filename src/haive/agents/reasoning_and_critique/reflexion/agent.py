@@ -23,6 +23,11 @@ class ReflexionAgent(Agent[ReflexionConfig]):
     config: ReflexionConfig
 
     def __init__(self, config: ReflexionConfig = ReflexionConfig()):
+        """Init  .
+
+        Args:
+            config: [TODO: Add description]
+        """
         self.config = config
         self.responder = ResponderWithRetries(
             config.engines["responder"], config.attempts, name="responder"
@@ -95,6 +100,11 @@ class ReflexionAgent(Agent[ReflexionConfig]):
 
         # Create a simple condition function for LangGraph
         def should_continue(state):
+            """Should Continue.
+
+            Args:
+                state: [TODO: Add description]
+            """
             iterations = _get_num_iterations(state)
             return "end" if iterations > self.config.max_iterations else "execute_tools"
 

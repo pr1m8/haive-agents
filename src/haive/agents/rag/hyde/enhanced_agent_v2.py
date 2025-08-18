@@ -341,6 +341,11 @@ class QueryAnalysisAgent(SimpleAgent):
     )
 
     def __init__(self, llm_config: LLMConfig, **kwargs):
+        """Init  .
+
+        Args:
+            llm_config: [TODO: Add description]
+        """
         analysis_prompt = ChatPromptTemplate.from_messages(
             [
                 (
@@ -377,6 +382,11 @@ class AdaptiveHyDEGenerator(SimpleAgent):
     target_length: int = Field(default=1000, description="Target document length")
 
     def __init__(self, llm_config: LLMConfig, **kwargs):
+        """Init  .
+
+        Args:
+            llm_config: [TODO: Add description]
+        """
         default_prompt = get_generation_prompt(
             HyDEPromptType.GENERAL, kwargs.get("target_length", 1000)
         )
@@ -411,6 +421,11 @@ class HyDEDocumentAnalyzer(SimpleAgent):
     )
 
     def __init__(self, llm_config: LLMConfig, **kwargs):
+        """Init  .
+
+        Args:
+            llm_config: [TODO: Add description]
+        """
         generation_prompt, parsing_prompt = create_generation_and_parsing_prompts(
             model_class=HyDEResult,
             generation_instruction="Analyze the hypothetical document and extract structured information.",
@@ -431,6 +446,11 @@ class DomainAnalysisAgent(SimpleAgent):
     """Analyzes queries to determine relevant domains for multi-domain generation."""
 
     def __init__(self, llm_config: LLMConfig, **kwargs):
+        """Init  .
+
+        Args:
+            llm_config: [TODO: Add description]
+        """
         domain_prompt = ChatPromptTemplate.from_messages(
             [
                 (
@@ -454,6 +474,11 @@ class EnsembleDocumentParser(SimpleAgent):
     """Parses ensemble document output into individual documents."""
 
     def __init__(self, llm_config: LLMConfig, **kwargs):
+        """Init  .
+
+        Args:
+            llm_config: [TODO: Add description]
+        """
         parser_prompt = ChatPromptTemplate.from_messages(
             [
                 (
@@ -480,6 +505,11 @@ class EnhancedHyDERetrieverV2(Agent):
     embedding_model: str | None = Field(default=None)
 
     def build_graph(self) -> Any:
+        """Build Graph.
+
+        Returns:
+            [TODO: Add return description]
+        """
         graph = BaseGraph(name="EnhancedHyDERetrieverV2")
 
         def smart_retrieval(state: dict[str, Any]) -> dict[str, Any]:
@@ -539,6 +569,11 @@ class EnsembleHyDERetriever(Agent):
     ensemble_mode: bool = Field(default=False)
 
     def build_graph(self) -> Any:
+        """Build Graph.
+
+        Returns:
+            [TODO: Add return description]
+        """
         graph = BaseGraph(name="EnsembleHyDERetriever")
 
         def ensemble_retrieval(state: dict[str, Any]) -> dict[str, Any]:
@@ -611,6 +646,11 @@ class MultiDomainHyDERetriever(Agent):
     domain_types: list[str] = Field(default_factory=list)
 
     def build_graph(self) -> Any:
+        """Build Graph.
+
+        Returns:
+            [TODO: Add return description]
+        """
         graph = BaseGraph(name="MultiDomainHyDERetriever")
 
         def multi_domain_retrieval(state: dict[str, Any]) -> dict[str, Any]:

@@ -449,6 +449,14 @@ class CompatibleRAGFactory:
 
         # Route based on query analysis
         def route_by_intent(state: dict[str, Any]) -> str:
+            """Route By Intent.
+
+            Args:
+                state: [TODO: Add description]
+
+            Returns:
+                [TODO: Add return description]
+            """
             analysis = state.get("query_analysis", {})
 
             if isinstance(analysis, dict):
@@ -744,7 +752,7 @@ to provide a comprehensive answer. Cite sources and note any conflicting informa
                 ),
                 (
                     "human",
-                    """Answer this query using all available sources:
+                    """Answer this query using all available sources:.
 
 Query: {query}
 
@@ -916,6 +924,14 @@ Provide a well-sourced, comprehensive answer.""",
         """Create input mapping function."""
 
         def input_mapper(input_data: dict) -> dict:
+            """Input Mapper.
+
+            Args:
+                input_data: [TODO: Add description]
+
+            Returns:
+                [TODO: Add return description]
+            """
             state = input_data["state"]
             state_dict = (
                 state.model_dump() if hasattr(state, "model_dump") else dict(state)
@@ -936,6 +952,14 @@ Provide a well-sourced, comprehensive answer.""",
         """Create output mapping function."""
 
         def output_mapper(input_data: dict) -> dict:
+            """Output Mapper.
+
+            Args:
+                input_data: [TODO: Add description]
+
+            Returns:
+                [TODO: Add return description]
+            """
             state = input_data["state"]
             state_dict = (
                 state.model_dump() if hasattr(state, "model_dump") else dict(state)
@@ -977,7 +1001,7 @@ def create_plug_and_play_component(
     Returns:
         Standalone agent that can be plugged into any workflow
 
-    Example:
+    Examples:
         # Create standalone components
         decomposer = create_plug_and_play_component(
             RAGComponent.ADAPTIVE_DECOMPOSITION, docs
@@ -1225,6 +1249,14 @@ def create_compatible_self_rag(
 
     # Self-RAG specific callables
     def self_rag_retrieval_decision(input_data: dict) -> dict:
+        """Self Rag Retrieval Decision.
+
+        Args:
+            input_data: [TODO: Add description]
+
+        Returns:
+            [TODO: Add return description]
+        """
         state = input_data["state"]
         query = getattr(state, "query", "").lower()
 
@@ -1341,6 +1373,11 @@ def create_compatible_adaptive_rag(
     # Create adaptive routing agent
     class CompatibleAdaptiveRAG(ConditionalAgent):
         def __init__(self) -> None:
+            """Init  .
+
+            Returns:
+                [TODO: Add return description]
+            """
             super().__init__(
                 name=name,
                 agents=[analyzer_agent, simple_rag, multi_query_agent, complex_agent],
@@ -1356,6 +1393,14 @@ def create_compatible_adaptive_rag(
 
         def _setup_adaptive_routing(self):
             def adaptive_router(state: Dict[str, Any]) -> str:
+                """Adaptive Router.
+
+                Args:
+                    state: [TODO: Add description]
+
+                Returns:
+                    [TODO: Add return description]
+                """
                 complexity = getattr(state, "complexity", QueryComplexity.UNKNOWN)
 
                 if complexity == QueryComplexity.SIMPLE:

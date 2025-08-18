@@ -50,6 +50,7 @@ class LazyAugLLMConfig:
     """Lazy proxy for AugLLMConfig that defers all heavy imports."""
 
     def __init__(self, **kwargs):
+        """Init  ."""
         # Store initialization args without importing anything heavy
         self._init_kwargs = kwargs
         self._real_instance = None
@@ -116,6 +117,7 @@ class LazyAgent:
     """Lazy proxy for Agent base class."""
 
     def __init__(self, **kwargs):
+        """Init  ."""
         self._init_kwargs = kwargs
         self._real_instance = None
         self._is_initialized = False
@@ -228,10 +230,20 @@ class LazySimpleAgent:
     # Essential properties that can be handled without initialization
     @property
     def name(self) -> str:
+        """Name.
+
+        Returns:
+            [TODO: Add return description]
+        """
         return self._name
 
     @name.setter
     def name(self, value: str):
+        """Name.
+
+        Args:
+            value: [TODO: Add description]
+        """
         self._name = value
         if self._is_initialized:
             self._real_instance.name = value

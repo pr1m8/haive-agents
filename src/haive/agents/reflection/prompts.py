@@ -55,7 +55,7 @@ Leverage your deep knowledge to:
 {style_instruction}"""
 
 # Improvement prompt template
-IMPROVEMENT_PROMPT_TEMPLATE = """Given this response to improve:
+IMPROVEMENT_PROMPT_TEMPLATE = """Given this response to improve:.
 
 {original_response}
 

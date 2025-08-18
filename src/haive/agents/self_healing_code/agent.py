@@ -63,6 +63,7 @@ class SelfHealingCodeAgent(AgentArchitecture):
     # Filter the top 30% of results to ensure the relevance of memories being
     # updated.
     def memory_filter_node(self: SelfHealingCodeState):
+        """Memory Filter Node."""
         for memory in self.memory_search_results:
             if memory["distance"] < 0.3:
                 self.memory_ids_to_update.append(memory["id"])
@@ -120,6 +121,11 @@ class SelfHealingCodeAgent(AgentArchitecture):
         return self
 
     def setup_workflow(self) -> None:
+        """Setup Workflow.
+
+        Returns:
+            [TODO: Add return description]
+        """
         self.graph.add_node("code_execution_node", code_execution_node)
         self.graph.add_node("code_update_node", code_update_node)
         self.graph.add_node("code_patching_node", code_patching_node)

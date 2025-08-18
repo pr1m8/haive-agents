@@ -88,6 +88,14 @@ def default_aggregator(messages: Sequence[AnyMessage]) -> AIMessage:
 
 
 def aggregate_messages(messages: Sequence[AnyMessage]) -> AIMessage:
+    """Aggregate Messages.
+
+    Args:
+        messages: [TODO: Add description]
+
+    Returns:
+        [TODO: Add return description]
+    """
     # Get all the AI messages and apply json patches
     resolved_tool_calls: dict[str | None, ToolCall] = {}
     content: str | list[str | dict] = ""
