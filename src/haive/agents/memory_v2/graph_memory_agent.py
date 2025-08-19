@@ -681,11 +681,9 @@ class GraphMemoryAgent:
         Examples:
             Extract entities from business information::
 
-                text = """
-                John Smith is the CEO of TechCorp, a software company based in
-                San Francisco. The company specializes in AI solutions and was
-                founded in 2020. John previously worked at DataCorp for 8 years.
-                """
+                text = ("John Smith is the CEO of TechCorp, a software company based in "
+                        "San Francisco. The company specializes in AI solutions and was "
+                        "founded in 2020. John previously worked at DataCorp for 8 years.")
 
                 graph_docs = await agent.extract_graph_from_text(
                     text,
@@ -712,11 +710,9 @@ class GraphMemoryAgent:
 
             Extract from research content::
 
-                research_text = """
-                The study by Dr. Sarah Chen at MIT demonstrates that transformer
-                models can achieve 95% accuracy on sentiment analysis tasks.
-                This research builds on earlier work by the Stanford NLP team.
-                """
+                research_text = ("The study by Dr. Sarah Chen at MIT demonstrates that transformer "
+                                 "models can achieve 95% accuracy on sentiment analysis tasks. "
+                                 "This research builds on earlier work by the Stanford NLP team.")
 
                 graph_docs = await agent.extract_graph_from_text(
                     research_text,
@@ -849,14 +845,14 @@ class GraphMemoryAgent:
 
                 try:
                     result = await agent.store_graph_documents(large_document_set)
-                    
+
                     if result['success']:
                         print("Storage completed successfully")
                     else:
                         print(f"Partial storage: {len(result['errors'])} errors")
                         for error in result['errors']:
                             print(f"Error: {error}")
-                            
+
                 except DatabaseError as e:
                     print(f"Database operation failed: {e}")
 
@@ -864,12 +860,12 @@ class GraphMemoryAgent:
 
                 import time
                 start_time = time.time()
-                
+
                 result = await agent.store_graph_documents(graph_docs)
-                
+
                 storage_time = time.time() - start_time
                 nodes_per_second = result['nodes_created'] / storage_time
-                
+
                 print(f"Storage rate: {nodes_per_second:.1f} nodes/second")
                 print(f"Database time: {result.get('storage_time_ms', 0):.1f}ms")
 
@@ -1047,7 +1043,7 @@ class GraphMemoryAgent:
 
                 print(f"Answer: {result.get('result', 'No answer found')}")
                 print(f"Generated Cypher: {result.get('cypher_statement')}")
-                
+
                 if result.get('context'):
                     recent_nodes = result['context'].get('recent_nodes', [])
                     print(f"Related context: {len(recent_nodes)} recent entities")
@@ -1065,12 +1061,12 @@ class GraphMemoryAgent:
             Direct Cypher queries::
 
                 # Precise database queries for specific data
-                cypher_query = """
-                MATCH (p:Person)-[r:WORKS_FOR]->(o:Organization)
-                WHERE o.name CONTAINS 'Tech'
-                RETURN p.name, o.name, r.role
-                LIMIT 10
-                """
+                cypher_query = (
+                    "MATCH (p:Person)-[r:WORKS_FOR]->(o:Organization) "
+                    "WHERE o.name CONTAINS 'Tech' "
+                    "RETURN p.name, o.name, r.role "
+                    "LIMIT 10"
+                )
 
                 result = await agent.query_graph(
                     cypher_query,
@@ -1370,7 +1366,7 @@ class GraphMemoryAgent:
                 print(f"Processing mode: {result['mode']}")
                 print(f"Entities extracted: {result['extracted_graph']['total_nodes']}")
                 print(f"Relationships found: {result['extracted_graph']['total_relationships']}")
-                
+
                 if result.get('storage'):
                     print(f"Storage successful: {result['storage']['success']}")
 
@@ -1404,13 +1400,13 @@ class GraphMemoryAgent:
 
                 import time
                 start_time = time.time()
-                
+
                 result = await agent.run(large_text_document)
-                
+
                 total_time = time.time() - start_time
                 print(f"Total processing: {total_time:.2f}s")
                 print(f"Agent processing: {result.get('processing_time_ms', 0):.1f}ms")
-                
+
                 if result.get('warnings'):
                     for warning in result['warnings']:
                         print(f"Warning: {warning}")
@@ -1427,7 +1423,7 @@ class GraphMemoryAgent:
                 for text in texts:
                     result = await agent.run(text)
                     results.append(result)
-                    
+
                     # Monitor progress
                     entities = result['extracted_graph']['total_nodes']
                     print(f"Processed: {entities} entities")
@@ -1503,7 +1499,7 @@ class GraphMemoryAgent:
         Tool Interface:
             - **Name**: "graph_memory_tool"
             - **Description**: "Process text with graph memory. Operations: extract, store, query, full."
-            - **Input Schema**: 
+            - **Input Schema**:
                 - text (str): Text content to process
                 - operation (str): Operation type (extract/store/query/full)
             - **Output**: JSON string containing processing results
@@ -1542,7 +1538,7 @@ class GraphMemoryAgent:
                     user_id="team_shared",
                     mode=GraphMemoryMode.FULL
                 )
-                
+
                 memory_tool = GraphMemoryAgent.as_tool(shared_config)
 
                 # Multiple agents with shared memory
@@ -1550,9 +1546,9 @@ class GraphMemoryAgent:
                     name="data_collector",
                     tools=[memory_tool, data_tools...]
                 )
-                
+
                 analysis_agent = ReactAgent(
-                    name="data_analyzer", 
+                    name="data_analyzer",
                     tools=[memory_tool, analysis_tools...]
                 )
 
@@ -1599,17 +1595,17 @@ class GraphMemoryAgent:
         @tool
         async def graph_memory_tool(text: str, operation: str = "full") -> str:
             """Process text with graph memory capabilities.
-            
+
             Operations:
             - extract: Extract entities and relationships from text without storage
             - store: Store pre-extracted graph data directly in Neo4j
-            - query: Search existing graph knowledge for relevant information  
+            - query: Search existing graph knowledge for relevant information
             - full: Complete processing including extraction, storage, and querying
-            
+
             Args:
                 text: Text content to process or query string
                 operation: Type of operation to perform (extract/store/query/full)
-                
+
             Returns:
                 JSON string containing processing results, extracted entities,
                 storage statistics, or query answers depending on operation type.
@@ -1632,7 +1628,7 @@ class GraphMemoryAgent:
 # Example usage
 async def example_graph_memory():
     """Comprehensive example demonstrating GraphMemoryAgent capabilities.
-    
+
     This example showcases the full range of graph memory functionality including
     entity extraction, knowledge storage, querying, and advanced operations like
     memory consolidation and subgraph exploration.
@@ -1640,24 +1636,31 @@ async def example_graph_memory():
     # Configure for comprehensive graph memory operations
     config = GraphMemoryConfig(
         neo4j_uri="bolt://localhost:7687",
-        neo4j_username="neo4j", 
+        neo4j_username="neo4j",
         neo4j_password="password",
         user_id="alice_smith",
         mode=GraphMemoryMode.FULL,
-        
         # Enable enhanced features
         extract_properties=True,
         enable_vector_index=True,
-        
         # Professional networking domain
         allowed_nodes=[
-            "Person", "Organization", "Location", "Event", 
-            "Technology", "Skill", "Project"
+            "Person",
+            "Organization",
+            "Location",
+            "Event",
+            "Technology",
+            "Skill",
+            "Project",
         ],
         node_properties=[
-            "role", "seniority", "expertise", "years_experience",
-            "contact_info", "importance"
-        ]
+            "role",
+            "seniority",
+            "expertise",
+            "years_experience",
+            "contact_info",
+            "importance",
+        ],
     )
 
     agent = GraphMemoryAgent(config)

@@ -39,17 +39,19 @@ extensions = [
     "sphinx_toggleprompt",  # NEW: Toggle shell prompts in code
     "sphinx_issues",  # NEW: Link to GitHub issues
     "sphinx_git",  # NEW: Git integration for changelogs
-    "seed_intersphinx_mapping",  # NEW: Auto-populate intersphinx from requirements.txt
+    # "seed_intersphinx_mapping",  # DISABLED: Auto-populate intersphinx from requirements.txt (has bug)
     "sphinx_favicon",  # NEW: Multiple favicon support
     "sphinx_changelog",  # NEW: Structured changelog support
     "sphinx_prompt",  # NEW: Better shell prompts and code blocks
     # "sphinxemoji",  # NOTE: Extension installed but may have compatibility issues
-    "sphinx_codeautolink",  # NEW: Auto-link code to docs
+    # "sphinx_codeautolink",  # DISABLED: Auto-link code to docs (causing errors)
     "enum_tools.autoenum",  # NEW: Better enum documentation
 ]
 
 # AutoAPI Configuration
-autoapi_dirs = ["../../src/haive"]  # Point directly to haive package to avoid src prefix
+autoapi_dirs = [
+    "../../src/haive"
+]  # Point directly to haive package to avoid src prefix
 autoapi_type = "python"
 autoapi_add_toctree_entry = False  # We'll add manually for better control
 autoapi_keep_files = True
@@ -531,6 +533,20 @@ exec_code_source_file_link = True
 
 # NEW: Sphinx-codeautolink configuration
 # Automatically link code references to their documentation
+
+
+# Mock torch to avoid CUDA errors during doc build
+class MockCuda:
+    def is_available(self):
+        return False
+
+
+class MockTorch:
+    cuda = MockCuda()
+
+
+sys.modules["torch"] = MockTorch()
+
 codeautolink_global_preface = """
 # Standard library
 import os
@@ -539,6 +555,16 @@ import json
 import asyncio
 from typing import Any, Dict, List, Optional, Union, Type
 from pathlib import Path
+
+# Mock torch for documentation build
+class MockCuda:
+    def is_available(self):
+        return False
+
+class MockTorch:
+    cuda = MockCuda()
+
+sys.modules['torch'] = MockTorch()
 
 # Third party
 import pydantic

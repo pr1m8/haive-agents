@@ -1,7 +1,7 @@
 #!/bin/bash
 # Enhanced documentation build script for haive-core
 
-echo "🚀 Building enhanced haive-core documentation..."
+echo "🚀 Building enhanced haive-agents documentation..."
 echo "================================================"
 
 # Colors for output
