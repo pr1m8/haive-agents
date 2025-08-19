@@ -22,7 +22,7 @@ extensions = [
     "sphinx.ext.coverage",
     "sphinx.ext.mathjax",
     "sphinx.ext.graphviz",  # NEW: Architecture diagrams
-    "sphinxcontrib.autodoc_pydantic",  # NEW: Pydantic model documentation
+    # "sphinxcontrib.autodoc_pydantic",  # DISABLED: Pydantic model documentation (causing AttributeError)
     "sphinx_autodoc_typehints",
     "sphinx_copybutton",
     "sphinx_togglebutton",
@@ -35,7 +35,7 @@ extensions = [
     "notfound.extension",  # NEW: Custom 404 pages
     "sphinxext.opengraph",
     "myst_parser",
-    "sphinx_exec_code",  # NEW: Execute example code in docs
+    # "sphinx_exec_code",  # DISABLED: Execute example code in docs (causing build errors)
     "sphinx_toggleprompt",  # NEW: Toggle shell prompts in code
     "sphinx_issues",  # NEW: Link to GitHub issues
     "sphinx_git",  # NEW: Git integration for changelogs
@@ -332,16 +332,16 @@ autodoc_default_options = {
 napoleon_preprocess_types = True
 napoleon_attr_annotations = True
 
-# NEW: Pydantic configuration
-autodoc_pydantic_model_show_json = True
-autodoc_pydantic_model_show_config_summary = True
-autodoc_pydantic_model_show_validator_summary = True
-autodoc_pydantic_model_show_field_summary = True
-autodoc_pydantic_model_show_validator_members = True
-autodoc_pydantic_field_list_validators = True
-autodoc_pydantic_field_show_constraints = True
-autodoc_pydantic_model_erdantic_figure = False
-autodoc_pydantic_model_erdantic_figure_collapsed = False
+# # NEW: Pydantic configuration - DISABLED due to autodoc_pydantic issues
+# autodoc_pydantic_model_show_json = True
+# autodoc_pydantic_model_show_config_summary = True
+# autodoc_pydantic_model_show_validator_summary = True
+# autodoc_pydantic_model_show_field_summary = True
+# autodoc_pydantic_model_show_validator_members = True
+# autodoc_pydantic_field_list_validators = True
+# autodoc_pydantic_field_show_constraints = True
+# autodoc_pydantic_model_erdantic_figure = False
+# autodoc_pydantic_model_erdantic_figure_collapsed = False
 
 # MyST Parser
 myst_enable_extensions = [
@@ -710,19 +710,19 @@ enum_tools_namespace = "haive.agents"
 enum_tools_default_render_style = "table"  # or "list" or "definition"
 enum_tools_member_order = "bysource"  # Keep original order
 
-# NEW: autodoc_pydantic configuration - Enhanced Pydantic model docs
-autodoc_pydantic_model_show_json = True
-autodoc_pydantic_model_show_config_member = True
-autodoc_pydantic_model_show_validator_summary = True
-autodoc_pydantic_model_show_field_summary = True
-autodoc_pydantic_model_members = True
-autodoc_pydantic_model_member_order = "bysource"
-autodoc_pydantic_model_undoc_members = True
-autodoc_pydantic_model_hide_reused_validator = False
-autodoc_pydantic_field_list_validators = True
-autodoc_pydantic_field_show_default = True
-autodoc_pydantic_field_show_required = True
-autodoc_pydantic_field_show_alias = True
+# # NEW: autodoc_pydantic configuration - DISABLED due to autodoc_pydantic issues
+# autodoc_pydantic_model_show_json = True
+# autodoc_pydantic_model_show_config_member = True
+# autodoc_pydantic_model_show_validator_summary = True
+# autodoc_pydantic_model_show_field_summary = True
+# autodoc_pydantic_model_members = True
+# autodoc_pydantic_model_member_order = "bysource"
+# autodoc_pydantic_model_undoc_members = True
+# autodoc_pydantic_model_hide_reused_validator = False
+# autodoc_pydantic_field_list_validators = True
+# autodoc_pydantic_field_show_default = True
+# autodoc_pydantic_field_show_required = True
+# autodoc_pydantic_field_show_alias = True
 
 # AutoAPI + Pydantic integration
 autoapi_autodoc_typehints = "both"
