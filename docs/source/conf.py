@@ -36,7 +36,7 @@ extensions = [
     "sphinxext.opengraph",
     "myst_parser",
     # "sphinx_exec_code",  # DISABLED: Execute example code in docs (causing build errors)
-    "sphinx_toggleprompt",  # NEW: Toggle shell prompts in code
+    # "sphinx_toggleprompt",  # DISABLED: Module not available
     "sphinx_issues",  # NEW: Link to GitHub issues
     "sphinx_git",  # NEW: Git integration for changelogs
     # "seed_intersphinx_mapping",  # DISABLED: Auto-populate intersphinx from requirements.txt (has bug)
@@ -53,18 +53,19 @@ autoapi_dirs = [
     "../../src/haive"
 ]  # Point directly to haive package to avoid src prefix
 autoapi_type = "python"
-autoapi_add_toctree_entry = False  # We'll add manually for better control
+autoapi_add_toctree_entry = True  # Allow AutoAPI to add to toctree
 autoapi_keep_files = True
 autoapi_root = "autoapi"
-autoapi_include_inheritance_diagram = False  # Disable for now
 autoapi_options = [
     "members",
+    "inherited-members",
     "undoc-members",
     "show-inheritance",
     "show-module-summary",
-    "imported-members",
     "special-members",  # Show __init__ and other special methods
+    "imported-members",
 ]
+autoapi_include_inheritance_diagram = False  # Disable for now
 autoapi_template_dir = "_templates/autoapi"  # Use custom templates
 
 # CRITICAL: Use module-level pages for hierarchical organization
@@ -93,6 +94,8 @@ autoapi_ignore = [
     "**/engine_node_test/**",
     "**/engine_node_test.py",
     "**/graph/state_graph/base.py",  # Metaclass issues
+    "**/_autoapi_templates/**",  # Exclude template directory
+    "**/docs/**",  # Exclude any docs folders
 ]
 
 # -- Options for HTML output -------------------------------------------------
@@ -581,9 +584,9 @@ from haive.core.schema import *
 from haive.core.schema.state_schema import StateSchema
 from haive.core.schema.prebuilt.meta_state import MetaStateSchema
 from haive.core.schema.prebuilt.messages_state import MessagesState
-from haive.core.graph import *
-from haive.core.graph.state_graph import StateGraph
-from haive.core.graph.dynamic_graph import DynamicGraph
+# from haive.core.graph import *  # Commented out - causing import errors in haive-agents context
+# from haive.core.graph.state_graph import StateGraph
+# from haive.core.graph.dynamic_graph import DynamicGraph
 from haive.core.tools import *
 from haive.core.tools.base import BaseTool
 from haive.core.persistence import *

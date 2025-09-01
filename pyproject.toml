@@ -68,6 +68,7 @@ sphinx-prompt = "^1.10.0"
 sphinx-git = "^11.0.0"
 sphinx-changelog = "^1.6.0"
 sphinx-notfound-page = "^1.1.0"
+sphinx-issues = "^5.0.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
