@@ -27,12 +27,10 @@ mock = "^5.2.0"
 syntax-checker = "^0.4.0"
 
 [tool.poetry.group.docs.dependencies]
-# Use the shared pydevelop-docs system (contains all 43+ Sphinx extensions)
-pydevelop-docs = { path = "../../tools/pydevelop-docs", develop = true }
+# Documentation dependencies
 sphinx = "^8.2.3"
 sphinx-autoapi = "^3.6.0"
 sphinx-autodoc-typehints = "^3.1.0"
-autodoc-pydantic = "^2.0.1"
 furo = "^2024.8.6"
 myst-parser = "^4.0.1"
 sphinx-copybutton = "^0.5.2"
