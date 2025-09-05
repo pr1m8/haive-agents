@@ -73,7 +73,19 @@ html_theme_options = {
         "color-brand-content": "#7c3aed",
         "color-sidebar-background": "#faf5ff",
         "color-sidebar-background-border": "#e9d5ff", 
-    },
+    
+    "announcement": (
+        '<div style="font-weight: 600;">'
+        '🚀 <a href="https://github.com/pr1m8/haive-agents" target="_blank">Star us on GitHub</a> | '
+        '<a href="https://discord.gg/haive" target="_blank">Join Discord</a> | '
+        '<a href="https://docs.haive.io" target="_blank">Haive Central Docs</a>'
+        '</div>'
+    ),
+
+    "source_repository": "https://github.com/pr1m8/haive-agents",
+    "source_branch": "main",
+    "source_directory": "docs/source/",
+},
     "dark_css_variables": {
         "color-brand-primary": "#a78bfa",
         "color-brand-content": "#c084fc",
