@@ -91,9 +91,7 @@ class MultiStrategyRAGAgent(SelfCorrectiveRAGAgent):
         else:
             # Try to parse variations from text
             try:
-                variations = [
-                    q.strip() for q in rewrite_result.split("\n") if q.strip()
-                ]
+                variations = [q.strip() for q in rewrite_result.split("\n") if q.strip()]
             except BaseException:
                 variations = []
 

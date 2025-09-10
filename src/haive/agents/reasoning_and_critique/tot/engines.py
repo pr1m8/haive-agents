@@ -8,10 +8,7 @@ from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import SystemMessage
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 
-from haive.agents.reasoning_and_critique.tot.models import (
-    CandidateEvaluation,
-    CandidateGeneration,
-)
+from haive.agents.reasoning_and_critique.tot.models import CandidateEvaluation, CandidateGeneration
 
 # =============================
 # Default Prompts

@@ -81,7 +81,7 @@ class Agent(
         store: Optional state store (excluded from serialization).
         config: Reference to AgentConfig (excluded from serialization).
 
-    Examples:
+    Example:
         Creating a simple agent with one engine::
 
             class MyAgent(Agent):
@@ -284,7 +284,7 @@ class Agent(
 
         Override this method in subclasses for custom setup logic.
 
-        Examples:
+        Example:
             def setup_agent(self):
                 # Sync fields to engine
                 if self.temperature is not None:
@@ -410,7 +410,7 @@ class Agent(
             logger.debug("No input schema provided, deriving from available sources")
             if self.state_schema and hasattr(self.state_schema, "derive_input_schema"):
                 try:
-                    derive_method = self.state_schema.derive_input_schema
+                    derive_method = getattr(self.state_schema, "derive_input_schema")
                     self.input_schema = derive_method(name=f"{self.name}Input")
                     logger.debug(
                         f"Derived input schema from state schema: {getattr(self.input_schema, '__name__', 'Unknown')}"

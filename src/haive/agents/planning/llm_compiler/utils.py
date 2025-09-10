@@ -4,21 +4,11 @@ import traceback
 from concurrent.futures import ThreadPoolExecutor, wait
 from typing import Any
 
+from .models import SchedulerInput, Task
 from langchain_core.messages import BaseMessage, FunctionMessage
 
-from .models import SchedulerInput, Task
 
-
-def schedule_pending_task(
-    task: Task, observations: dict[int, Any], retry_after: float = 0.2
-):
-    """Schedule Pending Task.
-
-    Args:
-        task: [TODO: Add description]
-        observations: [TODO: Add description]
-        retry_after: [TODO: Add description]
-    """
+def schedule_pending_task(task: Task, observations: dict[int, Any], retry_after: float = 0.2):
     while True:
         deps = task["dependencies"]
         if deps and (any(dep not in observations for dep in deps)):
@@ -59,13 +49,10 @@ def schedule_tasks(scheduler_input: SchedulerInput) -> list[FunctionMessage]:
             args_for_tasks[task["idx"]] = task["args"]
             if (
                 # Depends on other tasks
-                deps
-                and (any(dep not in observations for dep in deps))
+                deps and (any(dep not in observations for dep in deps))
             ):
                 futures.append(
-                    executor.submit(
-                        schedule_pending_task, task, observations, retry_after
-                    )
+                    executor.submit(schedule_pending_task, task, observations, retry_after)
                 )
             else:
                 # No deps or all deps satisfied
@@ -110,9 +97,7 @@ def _execute_task(task, observations, config):
         if isinstance(args, str):
             resolved_args = _resolve_arg(args, observations)
         elif isinstance(args, dict):
-            resolved_args = {
-                key: _resolve_arg(val, observations) for key, val in args.items()
-            }
+            resolved_args = {key: _resolve_arg(val, observations) for key, val in args.items()}
         else:
             # This will likely fail
             resolved_args = args
@@ -135,14 +120,6 @@ def _resolve_arg(arg: str | Any, observations: dict[int, Any]):
     ID_PATTERN = r"\$\{?(\d+)\}?"
 
     def replace_match(match) -> Any:
-        """Replace Match.
-
-        Args:
-            match: [TODO: Add description]
-
-        Returns:
-            [TODO: Add return description]
-        """
         # If the string is ${123}, match.group(0) is ${123}, and match.group(1)
         # is 123.
 
@@ -161,12 +138,6 @@ def _resolve_arg(arg: str | Any, observations: dict[int, Any]):
 
 @as_runnable
 def schedule_task(task_inputs, config: dict[str, Any]):
-    """Schedule Task.
-
-    Args:
-        task_inputs: [TODO: Add description]
-        config: [TODO: Add description]
-    """
     task: Task = task_inputs["task"]
     observations: dict[int, Any] = task_inputs["observations"]
     try:
@@ -176,16 +147,7 @@ def schedule_task(task_inputs, config: dict[str, Any]):
     observations[task["idx"]] = observation
 
 
-def schedule_pending_task(
-    task: Task, observations: dict[int, Any], retry_after: float = 0.2
-):
-    """Schedule Pending Task.
-
-    Args:
-        task: [TODO: Add description]
-        observations: [TODO: Add description]
-        retry_after: [TODO: Add description]
-    """
+def schedule_pending_task(task: Task, observations: dict[int, Any], retry_after: float = 0.2):
     while True:
         deps = task["dependencies"]
         if deps and (any(dep not in observations for dep in deps)):

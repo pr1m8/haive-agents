@@ -38,9 +38,7 @@ class LTMState(BaseModel):
     """
 
     # Core message state (required by LangGraph)
-    messages: list[AnyMessage] = Field(
-        default_factory=list, description="Conversation messages"
-    )
+    messages: list[AnyMessage] = Field(default_factory=list, description="Conversation messages")
 
     # Processing control
     processing_stage: str = Field(
@@ -88,15 +86,9 @@ class LTMState(BaseModel):
     enable_kg_processing: bool = Field(
         default=True, description="Enable knowledge graph processing"
     )
-    enable_categorization: bool = Field(
-        default=True, description="Enable memory categorization"
-    )
-    enable_consolidation: bool = Field(
-        default=True, description="Enable memory consolidation"
-    )
-    enable_reflection: bool = Field(
-        default=True, description="Enable background reflection"
-    )
+    enable_categorization: bool = Field(default=True, description="Enable memory categorization")
+    enable_consolidation: bool = Field(default=True, description="Enable memory consolidation")
+    enable_reflection: bool = Field(default=True, description="Enable background reflection")
 
     # Metadata
     processing_started_at: datetime | None = Field(
@@ -184,15 +176,9 @@ class LTMAgent(Agent):
     enable_kg_processing: bool = Field(
         default=True, description="Enable knowledge graph extraction"
     )
-    enable_categorization: bool = Field(
-        default=True, description="Enable memory categorization"
-    )
-    enable_consolidation: bool = Field(
-        default=True, description="Enable memory consolidation"
-    )
-    enable_reflection: bool = Field(
-        default=True, description="Enable background reflection"
-    )
+    enable_categorization: bool = Field(default=True, description="Enable memory categorization")
+    enable_consolidation: bool = Field(default=True, description="Enable memory consolidation")
+    enable_reflection: bool = Field(default=True, description="Enable background reflection")
     ltm_llm_config: LLMConfig | None = Field(
         default=None, description="LLM configuration for memory processing"
     )
@@ -389,9 +375,7 @@ class LTMAgent(Agent):
                 "processing_stage": "error",
             }
 
-    def _calculate_extraction_quality(
-        self, memories: list[dict], messages: list
-    ) -> float:
+    def _calculate_extraction_quality(self, memories: list[dict], messages: list) -> float:
         """Calculate quality score for extracted memories."""
         if not memories:
             return 0.0

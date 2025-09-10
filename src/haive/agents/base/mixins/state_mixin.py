@@ -6,7 +6,7 @@ import logging
 import os
 import uuid
 from datetime import datetime
-from typing import TYPE_CHECKING, Any
+from typing import Any, TYPE_CHECKING
 
 from haive.core.persistence.handlers import ensure_pool_open
 from haive.core.utils.pydantic_utils import ensure_json_serializable
@@ -14,7 +14,7 @@ from langchain_core.runnables import RunnableConfig
 
 if TYPE_CHECKING:
     # Type hints for attributes expected from mixed-in classes
-    pass
+    from pydantic import BaseModel
 
 logger = logging.getLogger(__name__)
 
@@ -66,9 +66,7 @@ class StateMixin:
         # Use provided runnable config or create default
         if not runnable_config:
             runnable_config = (
-                self._prepare_runnable_config()
-                if hasattr(self, "_prepare_runnable_config")
-                else {}
+                self._prepare_runnable_config() if hasattr(self, "_prepare_runnable_config") else {}
             )
 
         try:
@@ -97,9 +95,7 @@ class StateMixin:
                 # Generate filename
                 agent_name = getattr(self, "name", "agent")
                 safe_name = agent_name.replace(" ", "_").replace("/", "_")
-                self._state_filename = os.path.join(
-                    output_dir, f"{safe_name}_{timestamp}.json"
-                )
+                self._state_filename = os.path.join(output_dir, f"{safe_name}_{timestamp}.json")
 
             # Save to file
             with open(self._state_filename, "w", encoding="utf-8") as f:
@@ -112,9 +108,7 @@ class StateMixin:
             logger.exception(f"Error saving state history: {e}")
             return False
 
-    async def save_state_history_async(
-        self, runnable_config: RunnableConfig | None = None
-    ) -> bool:
+    async def save_state_history_async(self, runnable_config: RunnableConfig | None = None) -> bool:
         """Asynchronously save the current agent state to a JSON file.
 
         Args:
@@ -124,9 +118,7 @@ class StateMixin:
             True if successful, False otherwise
         """
         loop = asyncio.get_event_loop()
-        return await loop.run_in_executor(
-            None, lambda: self.save_state_history(runnable_config)
-        )
+        return await loop.run_in_executor(None, lambda: self.save_state_history(runnable_config))
 
     def inspect_state(
         self, thread_id: str | None = None, config: RunnableConfig | None = None
@@ -241,9 +233,7 @@ class StateMixin:
             elif hasattr(checkpointer, "conn") and checkpointer.conn:
                 conn = checkpointer.conn
                 with conn.connection() as db_conn, db_conn.cursor() as cursor:
-                    cursor.execute(
-                        "DELETE FROM checkpoints WHERE thread_id = %s", (thread_id)
-                    )
+                    cursor.execute("DELETE FROM checkpoints WHERE thread_id = %s", (thread_id))
 
             logger.info(f"State reset successfully for thread {thread_id}")
             return True
@@ -265,9 +255,7 @@ class StateMixin:
             True if successful, False otherwise
         """
         loop = asyncio.get_event_loop()
-        return await loop.run_in_executor(
-            None, lambda: self.reset_state(thread_id, config)
-        )
+        return await loop.run_in_executor(None, lambda: self.reset_state(thread_id, config))
 
     def load_from_state(
         self, state_data: dict[str, Any] | str, thread_id: str | None = None
@@ -350,9 +338,7 @@ class StateMixin:
             True if successful, False otherwise
         """
         loop = asyncio.get_event_loop()
-        return await loop.run_in_executor(
-            None, lambda: self.load_from_state(state_data, thread_id)
-        )
+        return await loop.run_in_executor(None, lambda: self.load_from_state(state_data, thread_id))
 
     def get_state_filename(self) -> str | None:
         """Get the current state filename if one has been generated."""

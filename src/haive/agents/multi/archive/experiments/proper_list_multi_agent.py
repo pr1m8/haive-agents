@@ -10,7 +10,7 @@ This implementation properly leverages the existing infrastructure:
 
 import logging
 from collections.abc import Callable, Iterator, Sequence
-from typing import Any, Union
+from typing import Any, Union, Union
 
 from haive.core.common.mixins.recompile_mixin import RecompileMixin
 from haive.core.graph.node.agent_node_v3 import create_agent_node_v3
@@ -35,7 +35,7 @@ class ProperListMultiAgent(Agent, RecompileMixin, Sequence[Agent]):
     - Supports recompilation tracking
     - Maintains the natural list interface
 
-    Examples:
+    Example:
         .. code-block:: python
 
             multi = ProperListMultiAgent("research_team")
@@ -56,9 +56,7 @@ class ProperListMultiAgent(Agent, RecompileMixin, Sequence[Agent]):
 
     # Execution settings
     sequential: bool = Field(default=True, description="Execute agents sequentially")
-    stop_on_error: bool = Field(
-        default=False, description="Stop execution on agent error"
-    )
+    stop_on_error: bool = Field(default=False, description="Stop execution on agent error")
 
     # Routing rules for conditional execution
     routing_rules: dict[str, dict[str, Any]] = Field(
@@ -66,9 +64,7 @@ class ProperListMultiAgent(Agent, RecompileMixin, Sequence[Agent]):
     )
 
     # State settings
-    use_prebuilt_base: bool = Field(
-        default=True, description="Use MultiAgentState as base"
-    )
+    use_prebuilt_base: bool = Field(default=True, description="Use MultiAgentState as base")
 
     # Private tracking
     _agent_index: dict[str, int] = PrivateAttr(default_factory=dict)
@@ -81,30 +77,12 @@ class ProperListMultiAgent(Agent, RecompileMixin, Sequence[Agent]):
     # ========== List Interface ==========
 
     def __getitem__(self, index: int | slice) -> Agent | list[Agent]:
-        """Getitem  .
-
-        Args:
-            index: [TODO: Add description]
-
-        Returns:
-            [TODO: Add return description]
-        """
         return self.agents[index]
 
     def __len__(self) -> int:
-        """Len  .
-
-        Returns:
-            [TODO: Add return description]
-        """
         return len(self.agents)
 
     def __iter__(self) -> Iterator[Agent]:
-        """Iter  .
-
-        Returns:
-            [TODO: Add return description]
-        """
         return iter(self.agents)
 
     def append(self, agent: Agent) -> "ProperListMultiAgent":
@@ -132,9 +110,7 @@ class ProperListMultiAgent(Agent, RecompileMixin, Sequence[Agent]):
             self.agents.remove(agent)
 
         self._update_agent_index()
-        self.mark_for_recompile(
-            f"Removed agent: {agent if isinstance(agent, str) else agent.name}"
-        )
+        self.mark_for_recompile(f"Removed agent: {agent if isinstance(agent, str) else agent.name}")
         return self
 
     def pop(self, index: int = -1) -> Agent:
@@ -191,8 +167,7 @@ class ProperListMultiAgent(Agent, RecompileMixin, Sequence[Agent]):
         # Input schema - just messages by default
 
         self.input_schema = create_model(
-            f"{self.name}Input",
-            messages=(list[BaseMessage], Field(default_factory=list)),
+            f"{self.name}Input", messages=(list[BaseMessage], Field(default_factory=list))
         )
 
         # Output schema - messages plus agent outputs
@@ -394,7 +369,7 @@ class MetaListMultiAgent(Agent, RecompileMixin, Sequence[Agent]):
     This is useful when you want to embed a sequence of agents as a single
     unit within another agent's state using the MetaStateSchema pattern.
 
-    Examples:
+    Example:
         .. code-block:: python
 
             # Create a meta multi-agent
@@ -425,30 +400,12 @@ class MetaListMultiAgent(Agent, RecompileMixin, Sequence[Agent]):
     # ========== List Interface ==========
 
     def __getitem__(self, index: int | slice) -> Agent | list[Agent]:
-        """Getitem  .
-
-        Args:
-            index: [TODO: Add description]
-
-        Returns:
-            [TODO: Add return description]
-        """
         return self.agents[index]
 
     def __len__(self) -> int:
-        """Len  .
-
-        Returns:
-            [TODO: Add return description]
-        """
         return len(self.agents)
 
     def __iter__(self) -> Iterator[Agent]:
-        """Iter  .
-
-        Returns:
-            [TODO: Add return description]
-        """
         return iter(self.agents)
 
     def append(self, agent: Agent) -> "MetaListMultiAgent":
@@ -467,8 +424,7 @@ class MetaListMultiAgent(Agent, RecompileMixin, Sequence[Agent]):
         # Input and output schemas
 
         self.input_schema = create_model(
-            f"{self.name}Input",
-            messages=(list[BaseMessage], Field(default_factory=list)),
+            f"{self.name}Input", messages=(list[BaseMessage], Field(default_factory=list))
         )
 
         self.output_schema = create_model(
@@ -506,13 +462,6 @@ class MetaListMultiAgent(Agent, RecompileMixin, Sequence[Agent]):
 
             # Create node that executes this specific agent
             def make_meta_agent_node(agent_instance: Any, agent_index: Any):
-                """Make Meta Agent Node.
-
-                Args:
-                    agent_instance: [TODO: Add description]
-                    agent_index: [TODO: Add description]
-                """
-
                 def meta_node(state: dict[str, Any]) -> dict[str, Any]:
                     # Get messages from state
                     messages = state.get("messages", [])
@@ -543,9 +492,7 @@ class MetaListMultiAgent(Agent, RecompileMixin, Sequence[Agent]):
 # ========== Convenience Functions ==========
 
 
-def sequential_multi(
-    *agents: Agent, name: str = "sequential_multi"
-) -> ProperListMultiAgent:
+def sequential_multi(*agents: Agent, name: str = "sequential_multi") -> ProperListMultiAgent:
     """Create a sequential multi-agent."""
     multi = ProperListMultiAgent(name=name)
     for agent in agents:

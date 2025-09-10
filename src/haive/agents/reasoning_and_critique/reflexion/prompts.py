@@ -1,8 +1,7 @@
 import datetime
 
-from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
-
 from haive.agents.reflexion.models import AnswerQuestion, ReviseAnswer
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 
 actor_prompt_template = ChatPromptTemplate.from_messages(
     [
@@ -25,8 +24,7 @@ Current time: {time}
 ).partial(role="expert researcher", time=lambda: datetime.datetime.now().isoformat())
 
 initial_answer_chain = actor_prompt_template.partial(
-    first_instruction="Provide a detailed ~250 word answer.",
-    function_name=AnswerQuestion.__name__,
+    first_instruction="Provide a detailed ~250 word answer.", function_name=AnswerQuestion.__name__
 )  # | llm.bind_tools(tools=[AnswerQuestion])
 
 

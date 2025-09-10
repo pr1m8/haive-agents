@@ -92,9 +92,7 @@ class DocumentGradingAgent(Agent):
             query = getattr(state, "query", "")
 
             # Get structured grade
-            grade = grading_engine.invoke(
-                {"query": query, "document": document.page_content}
-            )
+            grade = grading_engine.invoke({"query": query, "document": document.page_content})
 
             # Return in format expected by CallableNode
             return {
@@ -151,10 +149,7 @@ class DocumentGradingRAGAgent(SequentialAgent):
                 llm_config=llm_config,
                 prompt_template=ChatPromptTemplate.from_messages(
                     [
-                        (
-                            "system",
-                            "Answer based only on relevant documents that passed grading.",
-                        ),
+                        ("system", "Answer based only on relevant documents that passed grading."),
                         (
                             "human",
                             """Answer the query using these relevant documents.

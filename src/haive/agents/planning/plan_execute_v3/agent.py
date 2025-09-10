@@ -83,9 +83,7 @@ class PlanExecuteV3Agent:
         planner_config = AugLLMConfig.model_copy(self.config)
         planner_config.prompt_template = planner_prompt
         self.planner = SimpleAgent(
-            name=f"{name}_planner",
-            engine=planner_config,
-            structured_output_model=ExecutionPlan,
+            name=f"{name}_planner", engine=planner_config, structured_output_model=ExecutionPlan
         )
 
         executor_config = AugLLMConfig.model_copy(self.config)
@@ -108,9 +106,7 @@ class PlanExecuteV3Agent:
         replanner_config = AugLLMConfig.model_copy(self.config)
         replanner_config.prompt_template = replanner_prompt
         self.replanner = SimpleAgent(
-            name=f"{name}_replanner",
-            engine=replanner_config,
-            structured_output_model=RevisedPlan,
+            name=f"{name}_replanner", engine=replanner_config, structured_output_model=RevisedPlan
         )
 
         # Create Enhanced MultiAgent V3 coordinator
@@ -204,8 +200,7 @@ class PlanExecuteV3Agent:
 
             # Extract final answer from state
             final_answer = (
-                state.final_answer
-                or "Plan execution completed but no final answer provided"
+                state.final_answer or "Plan execution completed but no final answer provided"
             )
 
             # Calculate metrics

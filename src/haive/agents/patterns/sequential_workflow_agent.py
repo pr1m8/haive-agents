@@ -1,7 +1,7 @@
-"""Sequential Workflow Agent - Using MultiAgent with SimpleAgentV3 patterns.
+"""Sequential Workflow Agent - Using EnhancedMultiAgentV4 with SimpleAgentV3 patterns.
 
 This module demonstrates creating sequential multi-agent workflows using the
-MultiAgent as a base, with SimpleAgentV3 agents as components.
+EnhancedMultiAgentV4 as a base, with SimpleAgentV3 agents as components.
 
 Shows various sequential patterns:
 1. Simple linear workflows
@@ -15,8 +15,8 @@ from typing import Any
 from haive.core.engine.aug_llm import AugLLMConfig
 from pydantic import BaseModel, Field
 
-from haive.agents.multi.agent import MultiAgent
-from haive.agents.simple.agent import SimpleAgent
+from haive.agents.multi.enhanced_multi_agent_v4 import EnhancedMultiAgentV4
+from haive.agents.simple.agent_v3 import SimpleAgentV3
 
 
 # Structured models for workflow stages
@@ -36,9 +36,7 @@ class ResearchFindings(BaseModel):
     main_findings: list[str] = Field(description="Key findings")
     evidence: dict[str, list[str]] = Field(description="Evidence for each finding")
     gaps: list[str] = Field(description="Identified knowledge gaps")
-    confidence_scores: dict[str, float] = Field(
-        description="Confidence in each finding"
-    )
+    confidence_scores: dict[str, float] = Field(description="Confidence in each finding")
 
 
 class FinalReport(BaseModel):
@@ -51,13 +49,13 @@ class FinalReport(BaseModel):
     recommendations: list[str] = Field(description="Actionable recommendations")
 
 
-class SequentialWorkflowAgent(MultiAgent):
+class SequentialWorkflowAgent(EnhancedMultiAgentV4):
     """Sequential workflow agent for multi-stage processing.
 
     This agent orchestrates a sequence of SimpleAgentV3 agents to
     accomplish complex tasks through staged processing.
 
-    Examples:
+    Example:
         >>> workflow = SequentialWorkflowAgent(
         ...     name="research_pipeline",
         ...     stages=["analyze", "research", "synthesize", "format"],
@@ -106,7 +104,7 @@ class SequentialWorkflowAgent(MultiAgent):
         for stage in self.stages:
             config = self.stage_configs.get(stage, default_configs.get(stage, {}))
 
-            agent = SimpleAgent(
+            agent = SimpleAgentV3(
                 name=f"{stage}_agent", engine=AugLLMConfig(**config), debug=self.debug
             )
 
@@ -146,14 +144,13 @@ class ConditionalWorkflowAgent(SequentialWorkflowAgent):
             }
 
 
-class PipelineAgent(MultiAgent):
+class PipelineAgent(EnhancedMultiAgentV4):
     """Pipeline-style agent for data transformation workflows.
 
     Each stage transforms data for the next stage in a pipeline pattern.
     """
 
     def __init__(self, **kwargs):
-        """Init  ."""
         # Set sequential execution by default
         kwargs.setdefault("execution_mode", "sequential")
 
@@ -162,23 +159,22 @@ class PipelineAgent(MultiAgent):
 
         super().__init__(**kwargs)
 
-    def _create_pipeline_stages(self) -> list[SimpleAgent]:
+    def _create_pipeline_stages(self) -> list[SimpleAgentV3]:
         """Create standard pipeline stages."""
         stages = []
 
         # Data extraction stage
-        extractor = SimpleAgent(
+        extractor = SimpleAgentV3(
             name="extractor",
             engine=AugLLMConfig(
-                temperature=0.1,
-                system_message="Extract key information from input data.",
+                temperature=0.1, system_message="Extract key information from input data."
             ),
             debug=True,
         )
         stages.append(extractor)
 
         # Data transformation stage
-        transformer = SimpleAgent(
+        transformer = SimpleAgentV3(
             name="transformer",
             engine=AugLLMConfig(
                 temperature=0.3, system_message="Transform and enrich extracted data."
@@ -188,7 +184,7 @@ class PipelineAgent(MultiAgent):
         stages.append(transformer)
 
         # Data validation stage
-        validator = SimpleAgent(
+        validator = SimpleAgentV3(
             name="validator",
             engine=AugLLMConfig(
                 temperature=0.1, system_message="Validate and ensure data quality."
@@ -198,11 +194,9 @@ class PipelineAgent(MultiAgent):
         stages.append(validator)
 
         # Data loading stage
-        loader = SimpleAgent(
+        loader = SimpleAgentV3(
             name="loader",
-            engine=AugLLMConfig(
-                temperature=0.1, system_message="Format data for final output."
-            ),
+            engine=AugLLMConfig(temperature=0.1, system_message="Format data for final output."),
             debug=True,
         )
         stages.append(loader)
@@ -210,19 +204,16 @@ class PipelineAgent(MultiAgent):
         return stages
 
 
-class IterativeRefinementAgent(MultiAgent):
+class IterativeRefinementAgent(EnhancedMultiAgentV4):
     """Iterative refinement workflow with feedback loops.
 
     This pattern implements iterative improvement through multiple passes.
     """
 
     max_iterations: int = Field(default=3, description="Maximum refinement iterations")
-    quality_threshold: float = Field(
-        default=0.85, description="Quality threshold to stop"
-    )
+    quality_threshold: float = Field(default=0.85, description="Quality threshold to stop")
 
     def __init__(self, **kwargs):
-        """Init  ."""
         # Extract iteration settings
         max_iterations = kwargs.pop("max_iterations", 3)
         quality_threshold = kwargs.pop("quality_threshold", 0.85)
@@ -231,18 +222,17 @@ class IterativeRefinementAgent(MultiAgent):
         agents = []
 
         # Initial creator
-        creator = SimpleAgent(
+        creator = SimpleAgentV3(
             name="creator",
             engine=AugLLMConfig(
-                temperature=0.7,
-                system_message="Create initial content based on requirements.",
+                temperature=0.7, system_message="Create initial content based on requirements."
             ),
             debug=True,
         )
         agents.append(creator)
 
         # Quality evaluator
-        evaluator = SimpleAgent(
+        evaluator = SimpleAgentV3(
             name="evaluator",
             engine=AugLLMConfig(
                 temperature=0.3,
@@ -254,11 +244,10 @@ class IterativeRefinementAgent(MultiAgent):
         agents.append(evaluator)
 
         # Content refiner
-        refiner = SimpleAgent(
+        refiner = SimpleAgentV3(
             name="refiner",
             engine=AugLLMConfig(
-                temperature=0.5,
-                system_message="Refine content based on evaluation feedback.",
+                temperature=0.5, system_message="Refine content based on evaluation feedback."
             ),
             debug=True,
         )
@@ -319,10 +308,7 @@ def create_iterative_workflow(
 ) -> IterativeRefinementAgent:
     """Create an iterative refinement workflow."""
     return IterativeRefinementAgent(
-        name=name,
-        max_iterations=max_iterations,
-        quality_threshold=quality_threshold,
-        debug=debug,
+        name=name, max_iterations=max_iterations, quality_threshold=quality_threshold, debug=debug
     )
 
 
@@ -347,19 +333,9 @@ async def example_conditional_workflow():
 
     # Define custom routing conditions
     def needs_expert_review(state):
-        """Needs Expert Review.
-
-        Args:
-            state: [TODO: Add description]
-        """
         return state.get("technical_complexity", 0) > 0.8
 
     def needs_simplification(state):
-        """Needs Simplification.
-
-        Args:
-            state: [TODO: Add description]
-        """
         return state.get("audience_level") == "general"
 
     workflow = create_conditional_workflow(

@@ -6,7 +6,7 @@ and metadata schemas used throughout the Haive memory system.
 
 from datetime import datetime
 from enum import Enum
-from typing import Any
+from typing import Any, Optional, Dict, List, Union
 
 from pydantic import BaseModel, Field
 
@@ -51,17 +51,13 @@ class MemoryEntry(BaseModel):
 
     # Core content
     content: str = Field(..., description="Memory content")
-    memory_types: list[MemoryType] = Field(
-        ..., description="Memory type classifications"
-    )
+    memory_types: list[MemoryType] = Field(..., description="Memory type classifications")
     importance: MemoryImportance = Field(
         default=MemoryImportance.MEDIUM, description="Memory importance level"
     )
 
     # Temporal metadata
-    created_at: datetime = Field(
-        default_factory=datetime.utcnow, description="Creation timestamp"
-    )
+    created_at: datetime = Field(default_factory=datetime.utcnow, description="Creation timestamp")
     last_accessed: datetime = Field(
         default_factory=datetime.utcnow, description="Last access timestamp"
     )
@@ -79,9 +75,7 @@ class MemoryEntry(BaseModel):
     )
 
     # Contextual metadata
-    entities: list[str] = Field(
-        default_factory=list, description="Named entities mentioned"
-    )
+    entities: list[str] = Field(default_factory=list, description="Named entities mentioned")
     relationships: list[dict[str, str]] = Field(
         default_factory=list, description="Entity relationships"
     )
@@ -91,12 +85,8 @@ class MemoryEntry(BaseModel):
     )
 
     # Conversational context
-    conversation_id: str | None = Field(
-        default=None, description="Source conversation ID"
-    )
-    user_context: dict[str, Any] = Field(
-        default_factory=dict, description="User-specific context"
-    )
+    conversation_id: str | None = Field(default=None, description="Source conversation ID")
+    user_context: dict[str, Any] = Field(default_factory=dict, description="User-specific context")
     session_context: dict[str, Any] = Field(
         default_factory=dict, description="Session-specific context"
     )
@@ -108,18 +98,12 @@ class MemoryEntry(BaseModel):
     source_quality: float = Field(
         default=1.0, ge=0.0, le=1.0, description="Quality of information source"
     )
-    validation_status: str = Field(
-        default="unverified", description="Validation status"
-    )
+    validation_status: str = Field(default="unverified", description="Validation status")
 
     # System metadata
-    namespace: str | None = Field(
-        default=None, description="Memory namespace for organization"
-    )
+    namespace: str | None = Field(default=None, description="Memory namespace for organization")
     tags: list[str] = Field(default_factory=list, description="User-defined tags")
-    metadata: dict[str, Any] = Field(
-        default_factory=dict, description="Additional metadata"
-    )
+    metadata: dict[str, Any] = Field(default_factory=dict, description="Additional metadata")
 
     def update_access(self) -> None:
         """Update access metadata when memory is retrieved."""
@@ -128,12 +112,8 @@ class MemoryEntry(BaseModel):
 
     def calculate_current_weight(self) -> float:
         """Calculate current relevance weight based on age and decay."""
-        time_since_creation = (
-            datetime.utcnow() - self.created_at
-        ).total_seconds() / 3600  # hours
-        time_since_access = (
-            datetime.utcnow() - self.last_accessed
-        ).total_seconds() / 3600  # hours
+        time_since_creation = (datetime.utcnow() - self.created_at).total_seconds() / 3600  # hours
+        time_since_access = (datetime.utcnow() - self.last_accessed).total_seconds() / 3600  # hours
 
         # Combine creation age, access recency, and importance
         creation_factor = max(0.0, 1.0 - (time_since_creation * self.decay_rate / 1000))
@@ -171,24 +151,16 @@ class MemoryClassificationResult(BaseModel):
 
     memory_types: list[MemoryType] = Field(..., description="Identified memory types")
     importance: MemoryImportance = Field(..., description="Assessed importance level")
-    importance_score: float = Field(
-        ..., ge=0.0, le=1.0, description="Numerical importance score"
-    )
+    importance_score: float = Field(..., ge=0.0, le=1.0, description="Numerical importance score")
 
     # Extracted metadata
     entities: list[str] = Field(default_factory=list, description="Extracted entities")
     topics: list[str] = Field(default_factory=list, description="Identified topics")
-    sentiment: float | None = Field(
-        default=None, description="Sentiment analysis result"
-    )
+    sentiment: float | None = Field(default=None, description="Sentiment analysis result")
 
     # Classification confidence
-    confidence: float = Field(
-        default=1.0, ge=0.0, le=1.0, description="Classification confidence"
-    )
-    reasoning: str = Field(
-        default="", description="Explanation of classification logic"
-    )
+    confidence: float = Field(default=1.0, ge=0.0, le=1.0, description="Classification confidence")
+    reasoning: str = Field(default="", description="Explanation of classification logic")
 
 
 class MemoryQueryIntent(BaseModel):
@@ -198,20 +170,14 @@ class MemoryQueryIntent(BaseModel):
     complexity: str = Field(
         default="simple", description="Query complexity: simple, moderate, complex"
     )
-    temporal_scope: str = Field(
-        default="recent", description="Time scope: recent, historical, all"
-    )
+    temporal_scope: str = Field(default="recent", description="Time scope: recent, historical, all")
     requires_reasoning: bool = Field(
         default=False, description="Whether complex reasoning is needed"
     )
 
     # Extracted query elements
-    entities: list[str] = Field(
-        default_factory=list, description="Entities mentioned in query"
-    )
-    topics: list[str] = Field(
-        default_factory=list, description="Topics mentioned in query"
-    )
+    entities: list[str] = Field(default_factory=list, description="Entities mentioned in query")
+    topics: list[str] = Field(default_factory=list, description="Topics mentioned in query")
     intent_keywords: list[str] = Field(
         default_factory=list, description="Intent-indicating keywords"
     )
@@ -221,31 +187,19 @@ class MemoryQueryIntent(BaseModel):
         default="semantic", description="Suggested retrieval approach"
     )
     max_results: int = Field(default=5, description="Suggested maximum results")
-    confidence_threshold: float = Field(
-        default=0.7, description="Minimum confidence for results"
-    )
+    confidence_threshold: float = Field(default=0.7, description="Minimum confidence for results")
 
 
 class MemoryConsolidationResult(BaseModel):
     """Result of memory consolidation process."""
 
-    consolidated_count: int = Field(
-        default=0, description="Number of memories consolidated"
-    )
-    duplicates_removed: int = Field(
-        default=0, description="Number of duplicate memories removed"
-    )
-    memories_summarized: int = Field(
-        default=0, description="Number of memories summarized"
-    )
-    expired_removed: int = Field(
-        default=0, description="Number of expired memories removed"
-    )
+    consolidated_count: int = Field(default=0, description="Number of memories consolidated")
+    duplicates_removed: int = Field(default=0, description="Number of duplicate memories removed")
+    memories_summarized: int = Field(default=0, description="Number of memories summarized")
+    expired_removed: int = Field(default=0, description="Number of expired memories removed")
 
     # Quality metrics
-    storage_efficiency_gain: float = Field(
-        default=0.0, description="Storage space saved (0.0-1.0)"
-    )
+    storage_efficiency_gain: float = Field(default=0.0, description="Storage space saved (0.0-1.0)")
     retrieval_accuracy_change: float = Field(
         default=0.0, description="Change in retrieval accuracy"
     )

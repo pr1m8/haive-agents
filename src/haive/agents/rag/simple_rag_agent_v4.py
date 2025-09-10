@@ -4,12 +4,12 @@ from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.engine.vectorstore.vectorstore import VectorStoreConfig
 from pydantic import Field
 
-from haive.agents.multi.agent import MultiAgent
+from haive.agents.multi.enhanced_multi_agent_v4 import EnhancedMultiAgentV4
 from haive.agents.rag.answer_agent import AnswerAgent
 from haive.agents.rag.base.agent import BaseRAGAgent
 
 
-class SimpleRAGAgentV4(MultiAgent):
+class SimpleRAGAgentV4(EnhancedMultiAgentV4):
     """Simple RAG = MultiAgent([BaseRAGAgent, AnswerAgent], mode="sequential")."""
 
     vector_store_config: VectorStoreConfig = Field(
@@ -26,9 +26,7 @@ class SimpleRAGAgentV4(MultiAgent):
     def model_post_init(self, __context):
         """Set up the agents with the configs."""
         self.agents = [
-            BaseRAGAgent(
-                name=f"{self.name}_retriever", engine=self.vector_store_config
-            ),
+            BaseRAGAgent(name=f"{self.name}_retriever", engine=self.vector_store_config),
             AnswerAgent(name=f"{self.name}_answerer", engine=self.llm_config),
         ]
         super().model_post_init(__context)

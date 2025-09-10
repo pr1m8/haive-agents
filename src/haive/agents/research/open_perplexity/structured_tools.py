@@ -38,14 +38,6 @@ def register_document_loader(loader_type: str):
     """Decorator to register document loaders with metadata."""
 
     def decorator(loader_class) -> Any:
-        """Decorator.
-
-        Args:
-            loader_class: [TODO: Add description]
-
-        Returns:
-            [TODO: Add return description]
-        """
         DOCUMENT_LOADERS[loader_type] = {
             "class": loader_class,
             "metadata": getattr(loader_class, "loader_metadata", {}),
@@ -70,14 +62,6 @@ class EnhancedWebBaseLoader(WebBaseLoader):
     }
 
     def __init__(self, web_path) -> None:
-        """Init  .
-
-        Args:
-            web_path: [TODO: Add description]
-
-        Returns:
-            [TODO: Add return description]
-        """
         super().__init__(web_path)
         self.web_path = web_path
 
@@ -111,14 +95,6 @@ class EnhancedRecursiveUrlLoader(RecursiveUrlLoader):
     }
 
     def __init__(self, url: str, max_depth=2, extractor=None, prevent_outside=True):
-        """Init  .
-
-        Args:
-            url: [TODO: Add description]
-            max_depth: [TODO: Add description]
-            extractor: [TODO: Add description]
-            prevent_outside: [TODO: Add description]
-        """
         # Use BS4 extractor if not provided
         if extractor is None:
             extractor = self._default_extractor
@@ -276,12 +252,8 @@ class DocumentLoaderDescriptionInput(BaseModel):
 class DocumentLoaderRecommendationInput(BaseModel):
     """Input for document loader recommendation."""
 
-    research_topic: str = Field(
-        description="Research topic to find appropriate loaders for"
-    )
-    research_question: str | None = Field(
-        None, description="Specific research question"
-    )
+    research_topic: str = Field(description="Research topic to find appropriate loaders for")
+    research_question: str | None = Field(None, description="Specific research question")
     data_types: list[str] | None = Field(
         None, description="Types of data needed (web, academic, news, etc.)"
     )
@@ -298,9 +270,7 @@ class RecursiveWebLoaderInput(BaseModel):
 
     url: str = Field(description="Root URL to crawl")
     max_depth: int = Field(2, description="Maximum crawl depth (1-3 recommended)")
-    prevent_outside: bool = Field(
-        True, description="Only crawl URLs on the same domain"
-    )
+    prevent_outside: bool = Field(True, description="Only crawl URLs on the same domain")
 
 
 class ArxivLoaderInput(BaseModel):
@@ -317,9 +287,7 @@ class GitHubIssuesLoaderInput(BaseModel):
     """Input for GitHub issues loader."""
 
     repo: str = Field(description="GitHub repository in format 'owner/repo'")
-    access_token: str | None = Field(
-        None, description="GitHub access token for private repos"
-    )
+    access_token: str | None = Field(None, description="GitHub access token for private repos")
     state: str = Field("open", description="Issue state: 'open', 'closed', or 'all'")
 
 
@@ -349,9 +317,7 @@ def describe_document_loader(loader_type: str) -> dict[str, Any]:
 
 
 def recommend_document_loaders(
-    research_topic: str,
-    research_question: str | None = None,
-    data_types: list[str] | None = None,
+    research_topic: str, research_question: str | None = None, data_types: list[str] | None = None
 ) -> list[dict[str, Any]]:
     """Recommend document loaders based on research topic and question."""
     # Get all available loaders
@@ -438,9 +404,7 @@ def load_recursive_web(
             "documents": results,
             "root_url": url,
             "document_count": len(results),
-            "max_depth_reached": (
-                max(doc.metadata.get("depth", 0) for doc in docs) if docs else 0
-            ),
+            "max_depth_reached": (max(doc.metadata.get("depth", 0) for doc in docs) if docs else 0),
         }
     except Exception as e:
         return {"error": str(e)}
@@ -452,9 +416,7 @@ def load_arxiv_papers(
     """Load papers from ArXiv."""
     try:
         loader = EnhancedArxivLoader(
-            query=query,
-            load_all_available_meta=load_all_available_meta,
-            max_results=max_results,
+            query=query, load_all_available_meta=load_all_available_meta, max_results=max_results
         )
         docs = loader.load()
 
@@ -478,9 +440,7 @@ def load_arxiv_papers(
                 else doc.page_content
             )
 
-            results.append(
-                {"paper_info": paper_info, "content_preview": content_preview}
-            )
+            results.append({"paper_info": paper_info, "content_preview": content_preview})
 
         return {"papers": results, "query": query, "paper_count": len(results)}
     except Exception as e:
@@ -631,9 +591,7 @@ try:
         """Input for Tavily search."""
 
         query: str = Field(description="Search query")
-        max_results: int | None = Field(
-            5, description="Maximum number of results to return"
-        )
+        max_results: int | None = Field(5, description="Maximum number of results to return")
         search_depth: str | None = Field(
             "basic", description="Search depth (basic or comprehensive)"
         )
@@ -703,7 +661,8 @@ class GitHubLoader:
                     },
                 )
                 return [doc]
-            return []
+            else:
+                return []
         except Exception as e:
             import logging
 
@@ -725,6 +684,7 @@ class WebScraper:
             List of Document objects
         """
         try:
+            from langchain_core.documents import Document
 
             # Use the existing EnhancedWebBaseLoader for actual scraping
             loader = EnhancedWebBaseLoader(url)

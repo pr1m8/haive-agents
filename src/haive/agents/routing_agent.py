@@ -4,6 +4,8 @@ import logging
 from collections.abc import Callable
 from typing import Any
 
+from haive.agents.simple.agent import SimpleAgent, SimpleAgentSchema
+from haive.agents.simple.config import SimpleAgentConfig
 from haive.core.engine.agent.agent import register_agent
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.dynamic_graph_builder import DynamicGraph
@@ -11,9 +13,6 @@ from haive.core.models.llm.base import AzureLLMConfig
 from langchain_core.prompts import ChatPromptTemplate
 from langgraph.graph import END
 from pydantic import BaseModel, Field
-
-from haive.agents.simple.agent import SimpleAgent, SimpleAgentSchema
-from haive.agents.simple.config import SimpleAgentConfig
 
 # Set up logging
 
@@ -26,9 +25,7 @@ class RoutingAgentSchema(SimpleAgentSchema):
     """Schema for routing agents."""
 
     current_node: str = Field(default="start", description="Current node in workflow")
-    route_history: list[str] = Field(
-        default_factory=list, description="History of routing"
-    )
+    route_history: list[str] = Field(default_factory=list, description="History of routing")
 
 
 # Configuration for routing agent
@@ -75,9 +72,7 @@ class RoutingAgent(SimpleAgent):
         # Add handlers
         for name, handler in self.config.handlers.items():
             gb.add_node(
-                name=name,
-                config=handler,
-                command_goto=self.config.default_routes.get(name, END),
+                name=name, config=handler, command_goto=self.config.default_routes.get(name, END)
             )
 
         # Add routing conditions
@@ -87,11 +82,6 @@ class RoutingAgent(SimpleAgent):
 
             # Create router function
             def route_function(state: dict[str, Any]):
-                """Route Function.
-
-                Args:
-                    state: [TODO: Add description]
-                """
                 # Track the node we're in
                 if hasattr(state, "current_node"):
                     state.current_node = source
@@ -106,9 +96,7 @@ class RoutingAgent(SimpleAgent):
                         # more robust mapping
                         condition_name = condition.__name__
                         if condition_name.startswith("route_to_"):
-                            dest = condition_name[
-                                9:
-                            ]  # Extract destination from "route_to_X"
+                            dest = condition_name[9:]  # Extract destination from "route_to_X"
                             return dest
 
                 # No conditions matched, use default
@@ -172,9 +160,7 @@ def create_routing_agent(
 # Example usage
 if __name__ == "__main__":
     # Main engine
-    main_engine = AugLLMConfig(
-        name="main_processor", llm_config=AzureLLMConfig(model="gpt-4o")
-    )
+    main_engine = AugLLMConfig(name="main_processor", llm_config=AzureLLMConfig(model="gpt-4o"))
 
     # Handler nodes
     handlers = {
@@ -202,11 +188,6 @@ if __name__ == "__main__":
 
     # Routing conditions
     def route_to_question_handler(state: dict[str, Any]):
-        """Route To Question Handler.
-
-        Args:
-            state: [TODO: Add description]
-        """
         # Check if input is a question
         message = state["messages"][-1].content
         return (
@@ -216,20 +197,13 @@ if __name__ == "__main__":
         )
 
     def route_to_task_handler(state: dict[str, Any]):
-        """Route To Task Handler.
-
-        Args:
-            state: [TODO: Add description]
-        """
         # Check if input is a task
         message = state["messages"][-1].content
         task_phrases = ["can you", "please", "help me", "i need"]
         return any(phrase in message.lower() for phrase in task_phrases)
 
     # Add routing condition for main node
-    conditions = {
-        "simple_agent_node": [route_to_question_handler, route_to_task_handler]
-    }
+    conditions = {"simple_agent_node": [route_to_question_handler, route_to_task_handler]}
 
     # Default routes
     default_routes = {

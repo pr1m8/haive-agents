@@ -26,12 +26,9 @@ class ComplexExtractionAgentConfig(AgentConfig):
     extraction_model: type[BaseModel] | None = Field(
         default=None, description="The Pydantic model to extract data into"
     )
-    max_retries: int = Field(
-        default=3, description="Maximum number of extraction attempts"
-    )
+    max_retries: int = Field(default=3, description="Maximum number of extraction attempts")
     force_tool_choice: bool = Field(
-        default=True,
-        description="Whether to force the tool choice to use the extraction model",
+        default=True, description="Whether to force the tool choice to use the extraction model"
     )
     state_schema: type[BaseModel] = Field(
         default=ComplexExtractionState, description="State schema for the agent"
@@ -48,9 +45,7 @@ class ComplexExtractionAgentConfig(AgentConfig):
         description="Whether to parse the extracted data into a Pydantic object based on the extraction_model",
     )
     runnable_config: RunnableConfig = Field(
-        default=RunnableConfig(
-            configurable={"thread_id": str(uuid.uuid4())}, debug=True
-        ),
+        default=RunnableConfig(configurable={"thread_id": str(uuid.uuid4())}, debug=True),
         description="The runnable configuration to use for the agent",
     )
 

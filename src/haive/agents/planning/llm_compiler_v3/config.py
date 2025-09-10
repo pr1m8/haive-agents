@@ -11,14 +11,10 @@ from haive.agents.planning.llm_compiler_v3.models import ExecutionMode
 class LLMCompilerV3Config(BaseModel):
     """Configuration for LLM Compiler V3 Agent."""
 
-    model_config = ConfigDict(
-        str_strip_whitespace=True, validate_assignment=True, extra="forbid"
-    )
+    model_config = ConfigDict(str_strip_whitespace=True, validate_assignment=True, extra="forbid")
 
     # Agent identification
-    name: str = Field(
-        default="llm_compiler_v3", description="Name of the compiler agent instance"
-    )
+    name: str = Field(default="llm_compiler_v3", description="Name of the compiler agent instance")
 
     # Engine configurations for different sub-agents
     planner_engine: AugLLMConfig = Field(
@@ -63,22 +59,15 @@ class LLMCompilerV3Config(BaseModel):
     )
 
     max_parallel_tasks: int = Field(
-        default=3,
-        ge=1,
-        le=10,
-        description="Maximum number of tasks to execute in parallel",
+        default=3, ge=1, le=10, description="Maximum number of tasks to execute in parallel"
     )
 
     task_timeout: float = Field(
-        default=120.0,
-        gt=0.0,
-        description="Timeout for individual task execution in seconds",
+        default=120.0, gt=0.0, description="Timeout for individual task execution in seconds"
     )
 
     total_timeout: float = Field(
-        default=600.0,
-        gt=0.0,
-        description="Total timeout for entire plan execution in seconds",
+        default=600.0, gt=0.0, description="Total timeout for entire plan execution in seconds"
     )
 
     # Replanning settings
@@ -87,10 +76,7 @@ class LLMCompilerV3Config(BaseModel):
     )
 
     replan_on_failure_threshold: float = Field(
-        default=0.5,
-        ge=0.0,
-        le=1.0,
-        description="Failure rate threshold that triggers replanning",
+        default=0.5, ge=0.0, le=1.0, description="Failure rate threshold that triggers replanning"
     )
 
     enable_auto_replan: bool = Field(
@@ -121,10 +107,7 @@ class LLMCompilerV3Config(BaseModel):
     )
 
     parallel_efficiency_target: float = Field(
-        default=0.8,
-        ge=0.0,
-        le=1.0,
-        description="Target efficiency score for parallel execution",
+        default=0.8, ge=0.0, le=1.0, description="Target efficiency score for parallel execution"
     )
 
     # Debugging and monitoring
@@ -186,27 +169,19 @@ class LLMCompilerV3Config(BaseModel):
 class ToolExecutionConfig(BaseModel):
     """Configuration for individual tool execution."""
 
-    model_config = ConfigDict(
-        str_strip_whitespace=True, validate_assignment=True, extra="forbid"
-    )
+    model_config = ConfigDict(str_strip_whitespace=True, validate_assignment=True, extra="forbid")
 
     tool_name: str = Field(..., description="Name of the tool")
 
-    timeout: float = Field(
-        default=60.0, gt=0.0, description="Timeout for this specific tool"
-    )
+    timeout: float = Field(default=60.0, gt=0.0, description="Timeout for this specific tool")
 
     retry_attempts: int = Field(
         default=2, ge=0, le=5, description="Number of retry attempts on failure"
     )
 
-    priority: int = Field(
-        default=1, ge=1, le=10, description="Tool priority (higher = preferred)"
-    )
+    priority: int = Field(default=1, ge=1, le=10, description="Tool priority (higher = preferred)")
 
-    enable_caching: bool = Field(
-        default=True, description="Whether to cache results for this tool"
-    )
+    enable_caching: bool = Field(default=True, description="Whether to cache results for this tool")
 
     custom_args: dict[str, Any] = Field(
         default_factory=dict, description="Tool-specific configuration arguments"

@@ -53,18 +53,12 @@ class RAGStep(BaseModel):
 
     step_id: str = Field(description="Unique identifier for this step")
     operation_type: RAGOperationType = Field(description="Type of operation performed")
-    input_data: dict[str, Any] = Field(
-        default_factory=dict, description="Input data for this step"
-    )
+    input_data: dict[str, Any] = Field(default_factory=dict, description="Input data for this step")
     output_data: dict[str, Any] = Field(
         default_factory=dict, description="Output data from this step"
     )
-    timestamp: str | None = Field(
-        default=None, description="When this step was executed"
-    )
-    agent_name: str | None = Field(
-        default=None, description="Which agent performed this step"
-    )
+    timestamp: str | None = Field(default=None, description="When this step was executed")
+    agent_name: str | None = Field(default=None, description="Which agent performed this step")
 
 
 class MultiAgentRAGState(StateSchema):
@@ -77,8 +71,7 @@ class MultiAgentRAGState(StateSchema):
     # Core RAG Fields
     query: str = Field(description="The original user query")
     queries: Annotated[list[str], operator.add] = Field(
-        default_factory=list,
-        description="All queries processed (original + refined/decomposed)",
+        default_factory=list, description="All queries processed (original + refined/decomposed)"
     )
 
     # Document Management
@@ -89,20 +82,16 @@ class MultiAgentRAGState(StateSchema):
         default_factory=list, description="Documents retrieved for current query"
     )
     graded_documents: Annotated[list[DocumentGradingResult], operator.add] = Field(
-        default_factory=list,
-        description="Documents that have been graded for relevance",
+        default_factory=list, description="Documents that have been graded for relevance"
     )
     filtered_documents: Annotated[list[Document], operator.add] = Field(
         default_factory=list, description="Documents that passed relevance filtering"
     )
 
     # Generation and Responses
-    generated_answer: str = Field(
-        default="", description="Generated answer from RAG process"
-    )
+    generated_answer: str = Field(default="", description="Generated answer from RAG process")
     intermediate_answers: Annotated[list[str], operator.add] = Field(
-        default_factory=list,
-        description="Intermediate answers during multi-step generation",
+        default_factory=list, description="Intermediate answers during multi-step generation"
     )
 
     # Workflow Control
@@ -123,28 +112,17 @@ class MultiAgentRAGState(StateSchema):
 
     # Quality Metrics
     retrieval_confidence: float = Field(
-        default=0.0,
-        ge=0.0,
-        le=1.0,
-        description="Confidence in document retrieval quality",
+        default=0.0, ge=0.0, le=1.0, description="Confidence in document retrieval quality"
     )
     generation_confidence: float = Field(
-        default=0.0,
-        ge=0.0,
-        le=1.0,
-        description="Confidence in answer generation quality",
+        default=0.0, ge=0.0, le=1.0, description="Confidence in answer generation quality"
     )
     overall_quality_score: float = Field(
-        default=0.0,
-        ge=0.0,
-        le=1.0,
-        description="Overall quality assessment of the RAG process",
+        default=0.0, ge=0.0, le=1.0, description="Overall quality assessment of the RAG process"
     )
 
     # Agent Coordination
-    active_agent: str | None = Field(
-        default=None, description="Currently active agent name"
-    )
+    active_agent: str | None = Field(default=None, description="Currently active agent name")
     agent_decisions: Annotated[dict[str, Any], operator.add] = Field(
         default_factory=dict, description="Decisions made by different agents"
     )
@@ -256,9 +234,7 @@ class MultiAgentRAGState(StateSchema):
             or self.query_status == QueryStatus.NEEDS_REFINEMENT
         )
 
-    def get_latest_step(
-        self, operation_type: RAGOperationType | None = None
-    ) -> RAGStep | None:
+    def get_latest_step(self, operation_type: RAGOperationType | None = None) -> RAGStep | None:
         """Get the most recent workflow step, optionally filtered by operation type."""
         steps = self.workflow_steps
         if operation_type:

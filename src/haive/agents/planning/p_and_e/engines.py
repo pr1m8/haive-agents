@@ -58,9 +58,7 @@ def create_planner_aug_llm_config(
 
 
 def create_executor_aug_llm_config(
-    model_name: str = "gpt-4o",
-    tools: list[BaseTool] | None = None,
-    force_tool_use: bool = False,
+    model_name: str = "gpt-4o", tools: list[BaseTool] | None = None, force_tool_use: bool = False
 ) -> AugLLMConfig:
     """Create AugLLM configuration for the execution agent.
 

@@ -36,7 +36,7 @@ Consider:
 
 Output your reasoning in the specified JSON format."""
 
-QUERY_REASONING_USER = """Analyze this search query and provide reasoning for how to search effectively:.
+QUERY_REASONING_USER = """Analyze this search query and provide reasoning for how to search effectively:
 
 Query: {query}
 
@@ -73,7 +73,7 @@ For current events or time-sensitive topics, always include the year or "latest"
 
 Remember: The goal is comprehensive coverage through diverse, well-crafted queries."""
 
-QUERY_GENERATION_USER = """Based on the following reasoning, generate effective search queries:.
+QUERY_GENERATION_USER = """Based on the following reasoning, generate effective search queries:
 
 {reasoning}
 
@@ -107,7 +107,7 @@ Guidelines:
 
 Provide a thorough analysis that will support creating a comprehensive answer."""
 
-RESULT_ANALYSIS_USER = """Analyze these search results for the query batch:.
+RESULT_ANALYSIS_USER = """Analyze these search results for the query batch:
 
 Original Query: {original_query}
 Search Queries Executed: {queries}
@@ -150,7 +150,7 @@ Citation format:
 
 The summary should be substantive (at least 50 words) but focused on what's most relevant to the user's query."""
 
-SYNTHESIS_USER = """Create a comprehensive synthesis for this search:.
+SYNTHESIS_USER = """Create a comprehensive synthesis for this search:
 
 Original Query: {original_query}
 
@@ -187,7 +187,7 @@ Keep follow-up queries:
 - Diverse in their focus
 - Limited to the most valuable additions (max 5)"""
 
-FOLLOW_UP_USER = """Based on this search synthesis, suggest valuable follow-up queries:.
+FOLLOW_UP_USER = """Based on this search synthesis, suggest valuable follow-up queries:
 
 Original Query: {original_query}
 Information Gaps: {gaps}
@@ -244,7 +244,7 @@ When search queries fail or return poor results, you should:
 
 Be creative and persistent in finding the information needed."""
 
-ERROR_RECOVERY_USER = """The following search encountered issues:.
+ERROR_RECOVERY_USER = """The following search encountered issues:
 
 Original Query: {original_query}
 Failed Searches: {failed_queries}

@@ -16,11 +16,6 @@ class Node(BaseModel):
     depth: int = Field(default=1)
 
     def __init__(self, **data) -> None:
-        """Init  .
-
-        Returns:
-            [TODO: Add return description]
-        """
         super().__init__(**data)
         # Set depth based on parent
         if self.parent:
@@ -89,11 +84,6 @@ class NodeManager:
     """Manages Node objects to rebuild references after serialization/deserialization."""
 
     def __init__(self) -> None:
-        """Init  .
-
-        Returns:
-            [TODO: Add return description]
-        """
         self.nodes: dict[int, Node] = {}
 
     def register(self, node: Node) -> None:
@@ -114,7 +104,5 @@ class NodeManager:
                 node.parent = self.nodes[parent_id]
 
             node.children = [
-                self.nodes[child_id]
-                for child_id in children_ids
-                if child_id in self.nodes
+                self.nodes[child_id] for child_id in children_ids if child_id in self.nodes
             ]

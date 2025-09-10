@@ -8,14 +8,12 @@ import logging
 from collections.abc import Callable
 from enum import Enum
 from typing import Any
-
 from haive.core.graph.node.agent_node_v3 import AgentNodeV3Config
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.schema.prebuilt.multi_agent_state import MultiAgentState
 from haive.core.schema.state_schema import StateSchema
 from langgraph.graph import END, START
 from pydantic import Field, model_validator
-
 from haive.agents.base.agent import Agent
 
 logger = logging.getLogger(__name__)
@@ -47,8 +45,7 @@ class MultiAgentV2(Agent):
         default=ExecutionMode.SEQUENCE, description="How agents are executed"
     )
     state_schema: type[StateSchema] = Field(
-        default=MultiAgentState,
-        description="State schema (defaults to MultiAgentState)",
+        default=MultiAgentState, description="State schema (defaults to MultiAgentState)"
     )
     use_prebuilt_base: bool = Field(
         default=True, description="Use MultiAgentState as base for composition"
@@ -80,9 +77,7 @@ class MultiAgentV2(Agent):
             raise ValueError("state_schema must extend MultiAgentState")
         if self.execution_mode == ExecutionMode.CONDITIONAL:
             if not self.routing_function or not self.route_map:
-                raise ValueError(
-                    "Conditional mode requires routing_function and route_map"
-                )
+                raise ValueError("Conditional mode requires routing_function and route_map")
         return self
 
     @classmethod
@@ -105,17 +100,12 @@ class MultiAgentV2(Agent):
             MultiAgentV2 instance
         """
         return cls(
-            name=name or "multi_agent",
-            agents=agents,
-            execution_mode=execution_mode,
-            **kwargs,
+            name=name or "multi_agent", agents=agents, execution_mode=execution_mode, **kwargs
         )
 
     @classmethod
     def from_config(
-        cls,
-        config: dict[str, Any],
-        agents: list[Agent] | dict[str, Agent] | None = None,
+        cls, config: dict[str, Any], agents: list[Agent] | dict[str, Agent] | None = None
     ) -> "MultiAgentV2":
         """Create MultiAgent from configuration dict.
 
@@ -132,10 +122,7 @@ class MultiAgentV2(Agent):
 
     @classmethod
     def rebuild_with_agents(
-        cls,
-        original: "MultiAgentV2",
-        new_agents: list[Agent] | dict[str, Agent],
-        **kwargs,
+        cls, original: "MultiAgentV2", new_agents: list[Agent] | dict[str, Agent], **kwargs
     ) -> "MultiAgentV2":
         """Rebuild MultiAgent with new agents.
 

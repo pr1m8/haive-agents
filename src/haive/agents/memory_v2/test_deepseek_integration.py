@@ -79,16 +79,8 @@ async def test_memory_with_deepseek():
 
     # Add some memories
     memories = [
-        (
-            "Alice is an AI researcher at TechCorp",
-            MemoryType.FACTUAL,
-            ImportanceLevel.HIGH,
-        ),
-        (
-            "Meeting with Alice on Monday at 2 PM",
-            MemoryType.CONVERSATIONAL,
-            ImportanceLevel.HIGH,
-        ),
+        ("Alice is an AI researcher at TechCorp", MemoryType.FACTUAL, ImportanceLevel.HIGH),
+        ("Meeting with Alice on Monday at 2 PM", MemoryType.CONVERSATIONAL, ImportanceLevel.HIGH),
         ("Bob is the CTO of DataCorp", MemoryType.FACTUAL, ImportanceLevel.MEDIUM),
     ]
 
@@ -120,7 +112,6 @@ async def test_custom_memory_agent():
         """Simple agent with memory capabilities."""
 
         def __init__(self, *args, **kwargs):
-            """Init  ."""
             super().__init__(*args, **kwargs)
             self.memory_state = MemoryState(user_id="default")
             print("✅ Initialized MemoryAgent with memory state")
@@ -158,8 +149,7 @@ async def test_custom_memory_agent():
     deepseek_config = DeepSeekLLMConfig(model="deepseek-chat")
 
     aug_config = AugLLMConfig(
-        llm_config=deepseek_config,
-        system_message="You are a helpful assistant with memory.",
+        llm_config=deepseek_config, system_message="You are a helpful assistant with memory."
     )
 
     # Create memory agent

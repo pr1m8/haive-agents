@@ -35,9 +35,7 @@ def test_execution_plan() -> None:
     step1 = BasicStep(description="First step")
     step2 = BasicStep(description="Second step", depends_on=[step1.id])
 
-    plan = ExecutionPlan(
-        name="Test Plan", description="A test plan", steps=[step1, step2]
-    )
+    plan = ExecutionPlan(name="Test Plan", description="A test plan", steps=[step1, step2])
 
     assert plan.step_count == 2
     assert plan.has_dependencies
@@ -54,9 +52,7 @@ def test_parallel_execution() -> None:
     step3 = BasicStep(description="Step 3", depends_on=[step1.id, step2.id])
 
     plan = ExecutionPlan(
-        name="Parallel Plan",
-        description="A plan with parallel steps",
-        steps=[step1, step2, step3],
+        name="Parallel Plan", description="A plan with parallel steps", steps=[step1, step2, step3]
     )
 
     assert plan.max_parallelism == 2
@@ -75,9 +71,7 @@ def test_circular_dependency_detection() -> None:
     step2.id = "step_2"
 
     with pytest.raises(ValueError, match="Circular dependency detected"):
-        ExecutionPlan(
-            name="Circular Plan", description="This should fail", steps=[step1, step2]
-        )
+        ExecutionPlan(name="Circular Plan", description="This should fail", steps=[step1, step2])
 
 
 if __name__ == "__main__":

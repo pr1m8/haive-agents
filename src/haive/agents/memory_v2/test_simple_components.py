@@ -18,9 +18,7 @@ async def test_simple_memory():
     """Test SimpleMemoryAgent alone."""
     try:
         agent = SimpleMemoryAgent(
-            name="test_simple",
-            engine=AugLLMConfig(temperature=0.1),
-            user_id="test_user",
+            name="test_simple", engine=AugLLMConfig(temperature=0.1), user_id="test_user"
         )
 
         # Store memory
@@ -41,9 +39,7 @@ async def test_react_memory():
         )
 
         # Store memory
-        await agent.arun(
-            "Store this memory: Bob is the CTO of DataCorp", auto_save=True
-        )
+        await agent.arun("Store this memory: Bob is the CTO of DataCorp", auto_save=True)
 
         # Query memory
         await agent.arun("Search memories for: Who is Bob?", auto_save=False)
@@ -55,9 +51,7 @@ async def test_react_memory():
 async def test_longterm_memory():
     """Test LongTermMemoryAgent alone."""
     try:
-        agent = LongTermMemoryAgent(
-            user_id="test_user", llm_config=AugLLMConfig(temperature=0.1)
-        )
+        agent = LongTermMemoryAgent(user_id="test_user", llm_config=AugLLMConfig(temperature=0.1))
 
         # Store memory
         await agent.run("Carol is a researcher at MIT", extract_memories=True)

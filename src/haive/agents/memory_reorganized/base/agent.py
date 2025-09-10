@@ -12,7 +12,7 @@ Functions:
 import json
 import logging
 from datetime import datetime
-from typing import Any
+from typing import Any, Optional
 
 from agents.memory_agent.memory_utils import (
     create_memory_vectorstore,
@@ -566,7 +566,7 @@ class MemoryAgent(ReactAgent):
         return self.config.memory_save_node_name
 
     def run(
-        self, input_data: str | dict[str, Any], user_id: str | None = None, **kwargs
+        self, input_data: str | dict[str, Any], user_id: Optional[str] = None, **kwargs
     ) -> dict[str, Any]:
         """Run the memory agent.
 

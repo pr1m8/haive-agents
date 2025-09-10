@@ -75,7 +75,7 @@ submod_attrs = {
     "base": ["Agent"],
     "simple": ["SimpleAgent"],
     "react": ["ReactAgent"],
-    "multi": ["MultiAgent", "MultiAgent"],
+    "multi": ["MultiAgent", "EnhancedMultiAgentV4"],
     "rag": ["BaseRAGAgent", "SimpleRAGAgent"],
     "planning": ["PlanAndExecuteAgent"],
     "memory": ["BaseMemoryAgent"],
@@ -101,7 +101,7 @@ from .react import ReactAgent
 from .simple import SimpleAgent
 
 # Add eager imports to __all__
-__all__ += ["Agent", "MultiAgent", "ReactAgent", "SimpleAgent"]
+__all__ += ["Agent", "SimpleAgent", "ReactAgent", "MultiAgent"]
 
 # Note: Heavy agent implementations and specialized modules are lazy loaded
 # to improve import performance and reduce memory usage

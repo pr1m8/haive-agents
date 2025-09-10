@@ -29,7 +29,7 @@ Available tools: {tools}""",
         ),
         (
             "human",
-            """Original query: {input_query}.
+            """Original query: {input_query}
 
 Current trajectory:
 {current_trajectory}
@@ -59,7 +59,7 @@ Score from 0-10 where:
         ),
         (
             "human",
-            """Original query: {input_query}.
+            """Original query: {input_query}
 
 Response to evaluate:
 {response_to_evaluate}
@@ -83,7 +83,7 @@ Tree uses Upper Confidence Bound (UCT) scoring to balance exploration vs exploit
         ),
         (
             "human",
-            """Query: {input_query}.
+            """Query: {input_query}
 
 Tree statistics:
 {tree_statistics}

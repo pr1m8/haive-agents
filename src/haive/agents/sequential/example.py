@@ -37,11 +37,6 @@ agent = SequentialAgentConfig.from_components(
 
 
 def run_example() -> Any:
-    """Run Example.
-
-    Returns:
-        [TODO: Add return description]
-    """
     # Define a task
     task = "Design an algorithm to detect fraudulent credit card transactions"
 

@@ -7,12 +7,10 @@ optional judging/scoring capabilities.
 
 import logging
 from typing import Any, Literal
-
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, SystemMessage
 from langgraph.types import Command
 from pydantic import BaseModel, Field, model_validator
-
 from haive.agents.conversation.base.agent import BaseConversationAgent
 from haive.agents.conversation.debate.state import DebateState
 from haive.agents.simple.agent import SimpleAgent
@@ -35,15 +33,12 @@ class DebateConversation(BaseConversationAgent):
     - Configurable argument requirements
     """
 
-    mode: Literal["debate"] = Field(
-        default="debate", description="Conversation mode identifier"
-    )
+    mode: Literal["debate"] = Field(default="debate", description="Conversation mode identifier")
     state_schema: type[BaseModel] = Field(
         default=DebateState, description="State schema class to use for this agent"
     )
     debate_positions: dict[str, str] = Field(
-        default_factory=dict,
-        description="Mapping of participant names to their debate positions",
+        default_factory=dict, description="Mapping of participant names to their debate positions"
     )
     enable_opening_statements: bool = Field(
         default=True, description="Whether to include opening statements phase"
@@ -52,10 +47,7 @@ class DebateConversation(BaseConversationAgent):
         default=True, description="Whether to include closing statements phase"
     )
     arguments_per_side: int = Field(
-        default=3,
-        ge=1,
-        le=10,
-        description="Number of main arguments each participant should make",
+        default=3, ge=1, le=10, description="Number of main arguments each participant should make"
     )
     enable_judge: bool = Field(
         default=False, description="Whether to include a judge for scoring the debate"
@@ -64,8 +56,7 @@ class DebateConversation(BaseConversationAgent):
         default="Judge", description="Name identifier for the judge participant"
     )
     enforce_position_consistency: bool = Field(
-        default=True,
-        description="Ensure participants argue for their assigned positions",
+        default=True, description="Ensure participants argue for their assigned positions"
     )
     require_evidence: bool = Field(
         default=False, description="Require participants to cite evidence for claims"
@@ -101,9 +92,7 @@ class DebateConversation(BaseConversationAgent):
         self.state_schema = DebateState
         self.set_schema = True
         super().setup_agent()
-        logger.debug(
-            f"DebateConversation setup complete with state schema: {self.state_schema}"
-        )
+        logger.debug(f"DebateConversation setup complete with state schema: {self.state_schema}")
 
     def get_conversation_state_schema(self) -> type[DebateState]:
         """Return the DebateState schema for this conversation."""
@@ -127,9 +116,7 @@ class DebateConversation(BaseConversationAgent):
             "arguments_per_side": self.arguments_per_side,
             "opening_statements_complete": not self.enable_opening_statements,
             "closing_statements_complete": False,
-            "current_phase": (
-                "opening" if self.enable_opening_statements else "arguments"
-            ),
+            "current_phase": "opening" if self.enable_opening_statements else "arguments",
             "phase_transitions": [("start", 0)],
             "argument_scores": {},
             "judge_feedback": [],
@@ -141,9 +128,7 @@ class DebateConversation(BaseConversationAgent):
         """Create the debate introduction message."""
         positions = self.debate_positions if self.debate_positions is not None else {}
         positions_str = (
-            "\n".join(
-                [f"  • {name}: {position}" for name, position in positions.items()]
-            )
+            "\n".join([f"  • {name}: {position}" for name, position in positions.items()])
             if positions
             else "No positions assigned yet"
         )
@@ -159,9 +144,7 @@ class DebateConversation(BaseConversationAgent):
         )
         phase_num += 1
         if self.enable_opening_statements or self.enable_closing_statements:
-            structure.append(
-                f"{phase_num}. Rebuttals - Participants respond to opposing arguments"
-            )
+            structure.append(f"{phase_num}. Rebuttals - Participants respond to opposing arguments")
             phase_num += 1
         if self.enable_closing_statements:
             structure.append(
@@ -178,9 +161,7 @@ class DebateConversation(BaseConversationAgent):
         if self.enforce_position_consistency:
             rules.append("Participants must argue for their assigned position")
         rules_str = (
-            "\n".join([f"  • {rule}" for rule in rules])
-            if rules
-            else "Standard debate rules apply"
+            "\n".join([f"  • {rule}" for rule in rules]) if rules else "Standard debate rules apply"
         )
         return HumanMessage(
             content=f"🎭 Welcome to the Formal Debate!\n\n📋 **Topic**: {self.topic}\n\n👥 **Participants and Positions**:\n{positions_str}\n\n📜 **Debate Format** ({self.debate_format}):\n{structure_str}\n\n⚖️ **Rules**:\n{rules_str}\n\nLet us begin! {(next(iter(positions.keys())) if positions else 'Participants')}, please present your opening statement."
@@ -194,13 +175,9 @@ class DebateConversation(BaseConversationAgent):
         )
         if state.should_end_debate:
             logger.info("Debate should end based on computed property")
-            return Command(
-                update={"conversation_ended": True, "current_phase": "complete"}
-            )
+            return Command(update={"conversation_ended": True, "current_phase": "complete"})
         if state.phase_should_transition:
-            logger.info(
-                f"Phase should transition: {state.current_phase} -> {state.next_phase}"
-            )
+            logger.info(f"Phase should transition: {state.current_phase} -> {state.next_phase}")
             transition_updates = self._transition_to_phase(state, state.next_phase)
             return Command(update=transition_updates)
         if state.current_phase == "opening":
@@ -218,9 +195,7 @@ class DebateConversation(BaseConversationAgent):
         updates.update(speaker_update)
         return Command(update=updates)
 
-    def _transition_to_phase(
-        self, state: DebateState, new_phase: str
-    ) -> dict[str, Any]:
+    def _transition_to_phase(self, state: DebateState, new_phase: str) -> dict[str, Any]:
         """Create state updates for transitioning to a new phase."""
         messages = {
             "arguments": "Opening statements complete. Moving to main arguments.",
@@ -273,7 +248,7 @@ class DebateConversation(BaseConversationAgent):
             if progress < 1.0:
                 candidates.append(speaker)
         if candidates:
-            min_args = min(len(state.arguments_made.get(s, [])) for s in candidates)
+            min_args = min((len(state.arguments_made.get(s, [])) for s in candidates))
             for speaker in candidates:
                 if len(state.arguments_made.get(speaker, [])) == min_args:
                     return {"current_speaker": speaker}
@@ -285,9 +260,7 @@ class DebateConversation(BaseConversationAgent):
             speaker: len(rebuttals) for speaker, rebuttals in state.rebuttals.items()
         }
         candidates = [
-            speaker
-            for speaker in state.debate_positions
-            if rebuttal_counts.get(speaker, 0) == 0
+            speaker for speaker in state.debate_positions if rebuttal_counts.get(speaker, 0) == 0
         ]
         if candidates:
             return {"current_speaker": candidates[0]}
@@ -301,13 +274,10 @@ class DebateConversation(BaseConversationAgent):
                 if msg.name in state.debate_positions:
                     content_lower = str(msg.content).lower()
                     if any(
-                        word in content_lower
-                        for word in [
-                            "closing",
-                            "conclusion",
-                            "final statement",
-                            "summary",
-                        ]
+                        (
+                            word in content_lower
+                            for word in ["closing", "conclusion", "final statement", "summary"]
+                        )
                     ):
                         closing_speakers.add(msg.name)
                     if len(closing_speakers) == len(state.debate_positions):
@@ -317,9 +287,7 @@ class DebateConversation(BaseConversationAgent):
                 return {"current_speaker": speaker}
         return {}
 
-    def _prepare_agent_input(
-        self, state: DebateState, agent_name: str
-    ) -> dict[str, Any]:
+    def _prepare_agent_input(self, state: DebateState, agent_name: str) -> dict[str, Any]:
         """Prepare input for a specific agent with debate context."""
         base_input = super()._prepare_agent_input(state, agent_name)
         participant_info = state.get_participant_summary(agent_name)
@@ -426,8 +394,7 @@ class DebateConversation(BaseConversationAgent):
                     if msg.name in state.debate_positions:
                         content_lower = str(msg.content).lower()
                         if any(
-                            word in content_lower
-                            for word in ["closing", "conclusion", "final"]
+                            (word in content_lower for word in ["closing", "conclusion", "final"])
                         ):
                             closing_speakers.add(msg.name)
             if len(closing_speakers) >= len(state.debate_positions):
@@ -445,20 +412,20 @@ class DebateConversation(BaseConversationAgent):
         opponents = [p for p in state.debate_positions if p != speaker]
         return opponents[0] if opponents else None
 
-    def _extract_debate_winner(
-        self, judge_content: str, state: DebateState
-    ) -> str | None:
+    def _extract_debate_winner(self, judge_content: str, state: DebateState) -> str | None:
         """Extract winner from judge's decision."""
         content_lower = judge_content.lower()
         for participant in state.debate_positions:
             if any(
-                phrase in content_lower
-                for phrase in [
-                    f"{participant.lower()} wins",
-                    f"winner is {participant.lower()}",
-                    f"victory to {participant.lower()}",
-                    f"{participant.lower()} has won",
-                ]
+                (
+                    phrase in content_lower
+                    for phrase in [
+                        f"{participant.lower()} wins",
+                        f"winner is {participant.lower()}",
+                        f"victory to {participant.lower()}",
+                        f"{participant.lower()} has won",
+                    ]
+                )
             ):
                 return participant
         return None

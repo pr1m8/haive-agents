@@ -1,11 +1,10 @@
 from collections.abc import Sequence
 from typing import Annotated, Any
 
+from haive.agents.tot.modular.models import Candidate
 from langchain_core.messages import BaseMessage
 from langgraph.graph import add_messages
 from pydantic import BaseModel, Field
-
-from haive.agents.tot.modular.models import Candidate
 
 
 def update_candidates(
@@ -77,6 +76,4 @@ class ToTState(BaseModel):
     answer: str | None = Field(default=None, description="Final answer to the problem")
 
     # Extra metadata
-    metadata: dict[str, Any] = Field(
-        default_factory=dict, description="Additional metadata"
-    )
+    metadata: dict[str, Any] = Field(default_factory=dict, description="Additional metadata")

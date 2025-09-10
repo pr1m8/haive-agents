@@ -1,7 +1,6 @@
+from haive.agents.wiki_writer.models import Outline, Perspectives, RelatedSubjects
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.prompts import ChatPromptTemplate
-
-from haive.agents.wiki_writer.models import Outline, Perspectives, RelatedSubjects
 
 DIRECT_GEN_OUTLINE_PROMPT = ChatPromptTemplate.from_messages(
     [
@@ -37,7 +36,7 @@ GEN_PERSPECTIVES_PROMPT = ChatPromptTemplate.from_messages(
     [
         (
             "system",
-            """You need to select a diverse (and distinct) group of Wikipedia editors who will work together to create a comprehensive article on the topic. Each of them represents a different perspective, role, or affiliation related to this topic.\.
+            """You need to select a diverse (and distinct) group of Wikipedia editors who will work together to create a comprehensive article on the topic. Each of them represents a different perspective, role, or affiliation related to this topic.\
     You can use other Wikipedia pages of related topics for inspiration. For each editor, add a description of what they will focus on.
 
     Wiki page outlines of related topics for inspiration:

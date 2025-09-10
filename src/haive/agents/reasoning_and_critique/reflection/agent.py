@@ -4,6 +4,9 @@ import logging
 from datetime import datetime
 from typing import Any
 
+from haive.agents.reasoning_and_critique.reflection.config import ReflectionAgentConfig
+from haive.agents.reasoning_and_critique.reflection.state import ReflectionAgentState
+from haive.agents.simple.agent import SimpleAgent
 from haive.core.engine.agent.agent import register_agent
 from haive.core.graph.dynamic_graph_builder import DynamicGraph
 from langchain_core.messages import AIMessage
@@ -11,10 +14,6 @@ from langchain_core.output_parsers.openai_tools import PydanticToolsParser
 from langchain_core.prompts import ChatPromptTemplate
 from langgraph.graph import END, START
 from langgraph.types import Command
-
-from haive.agents.reasoning_and_critique.reflection.config import ReflectionAgentConfig
-from haive.agents.reasoning_and_critique.reflection.state import ReflectionAgentState
-from haive.agents.simple.agent import SimpleAgent
 
 # Set up logging
 logger = logging.getLogger(__name__)
@@ -27,6 +26,7 @@ class ReflectionAgent(SimpleAgent):
     This agent extends SimpleAgent by adding reflection and improvement steps
     to iteratively refine responses based on self-critique.
     """
+
     def __init__(self, config: ReflectionAgentConfig):
         """Initialize the reflection agent with the provided configuration."""
         super().__init__(config)
@@ -122,16 +122,9 @@ class ReflectionAgent(SimpleAgent):
 
     def _create_initial_response_function(self):
         """Create a function for the initial response node."""
+
         # This is similar to the simple agent's node
         def initial_response_function(state: ReflectionAgentState) -> dict[str, Any]:
-            """Initial Response Function.
-
-Args:
-    state: [TODO: Add description]
-
-Returns:
-    [TODO: Add return description]
-"""
             try:
                 # Use the engine to generate an initial response
                 result = self.engine.invoke({"messages": state.messages})
@@ -174,14 +167,6 @@ Returns:
         )
 
         def reflection_function(state: ReflectionAgentState) -> dict[str, Any]:
-            """Reflection Function.
-
-Args:
-    state: [TODO: Add description]
-
-Returns:
-    [TODO: Add return description]
-"""
             try:
                 # Extract needed fields
                 original_request = state.original_request
@@ -255,14 +240,6 @@ Returns:
         )
 
         def search_function(state: ReflectionAgentState) -> dict[str, Any]:
-            """Search Function.
-
-Args:
-    state: [TODO: Add description]
-
-Returns:
-    [TODO: Add return description]
-"""
             try:
                 # Extract needed fields
                 original_request = state.original_request
@@ -316,14 +293,6 @@ Returns:
         )
 
         def improvement_function(state: ReflectionAgentState) -> dict[str, Any]:
-            """Improvement Function.
-
-Args:
-    state: [TODO: Add description]
-
-Returns:
-    [TODO: Add return description]
-"""
             try:
                 # Extract needed fields
                 original_request = state.original_request
@@ -391,6 +360,7 @@ Returns:
 
     def _create_evaluation_function(self):
         """Create a function to evaluate if the improved response is good enough."""
+
         def evaluation_function(state: ReflectionAgentState) -> dict[str, Any]:
             """Simple evaluation based on round count and auto-accept threshold."""
             reflection_round = state.reflection_round

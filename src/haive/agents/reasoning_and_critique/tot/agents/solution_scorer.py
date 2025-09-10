@@ -8,7 +8,7 @@ the beam search process.
 from haive.core.engine.aug_llm import AugLLMConfig
 from pydantic import BaseModel, Field
 
-from haive.agents.simple.agent import SimpleAgent
+from haive.agents.simple.agent_v3 import SimpleAgentV3
 
 
 class ScoredSolution(BaseModel):
@@ -69,7 +69,7 @@ For each solution:
 - Give clear reasoning for your score
 - Mark whether it's complete and error-free"""
 
-        self.agent = SimpleAgent(
+        self.agent = SimpleAgentV3(
             name=name,
             engine=engine,
             system_message=system_message,
@@ -91,10 +91,7 @@ For each solution:
         """
         # Format the prompt
         candidates_text = "\n".join(
-            [
-                f"Candidate {i + 1}: {candidate}"
-                for i, candidate in enumerate(candidates)
-            ]
+            [f"Candidate {i + 1}: {candidate}" for i, candidate in enumerate(candidates)]
         )
 
         prompt = f"""Score the following candidate solutions for this problem:
@@ -119,9 +116,7 @@ Evaluate each candidate carefully and provide scores with clear reasoning."""
         # Fallback parsing if needed
         return self._parse_scoring_output(str(result), candidates)
 
-    def _parse_scoring_output(
-        self, output: str, candidates: list[str]
-    ) -> SolutionScoring:
+    def _parse_scoring_output(self, output: str, candidates: list[str]) -> SolutionScoring:
         """Parse scoring output as fallback."""
         # Simple fallback - assign default scores
         scored_solutions = []
@@ -159,9 +154,7 @@ Evaluate each candidate carefully and provide scores with clear reasoning."""
         scoring = await self.score_solutions(problem, candidates, context)
 
         # Extract and sort by score
-        solution_scores = [
-            (scored.solution, scored.score) for scored in scoring.scored_solutions
-        ]
+        solution_scores = [(scored.solution, scored.score) for scored in scoring.scored_solutions]
         solution_scores.sort(key=lambda x: x[1], reverse=True)
 
         return solution_scores[:top_k]

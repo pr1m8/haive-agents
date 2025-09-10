@@ -105,9 +105,7 @@ class ResearchState(TopicState, ArticleState):
         ..., description="The interview results of the research"
     )
     # The final sections output
-    sections: list[WikiSection] = Field(
-        ..., description="The final sections of the research"
-    )
+    sections: list[WikiSection] = Field(..., description="The final sections of the research")
 
     @computed_field
     @property

@@ -7,12 +7,10 @@ and the existing multi-agent base classes, ensuring seamless interoperability.
 import logging
 from collections.abc import Sequence
 from typing import Any, Optional
-
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.schema.agent_schema_composer import AgentSchemaComposer
 from haive.core.schema.schema_composer import SchemaComposer
 from pydantic import Field, model_validator
-
 from haive.agents.base.agent import Agent
 from haive.agents.multi.compatibility import ExecutionMode, MultiAgent
 from haive.agents.supervisor.integrated_supervisor import IntegratedDynamicSupervisor
@@ -46,10 +44,7 @@ class DynamicMultiAgentSupervisor(MultiAgent):
     @model_validator(mode="after")
     def setup_dynamic_supervisor(self) -> "DynamicMultiAgentSupervisor":
         """Set up the dynamic supervisor if needed."""
-        if (
-            self.execution_mode == ExecutionMode.HIERARCHICAL
-            and self.enable_dynamic_management
-        ):
+        if self.execution_mode == ExecutionMode.HIERARCHICAL and self.enable_dynamic_management:
             self._dynamic_supervisor = IntegratedDynamicSupervisor(
                 name=f"{self.name}_supervisor",
                 engine=self.supervisor_engine,
@@ -70,10 +65,7 @@ class DynamicMultiAgentSupervisor(MultiAgent):
 
     def _setup_schemas(self) -> None:
         """Enhanced schema setup that integrates dynamic supervisor state."""
-        if (
-            self.enable_dynamic_management
-            and self.execution_mode == ExecutionMode.HIERARCHICAL
-        ):
+        if self.enable_dynamic_management and self.execution_mode == ExecutionMode.HIERARCHICAL:
             self._setup_hybrid_schema()
         else:
             super()._setup_schemas()
@@ -113,10 +105,7 @@ class DynamicMultiAgentSupervisor(MultiAgent):
 
     def build_graph(self) -> BaseGraph:
         """Build graph with dynamic supervisor integration."""
-        if (
-            self.enable_dynamic_management
-            and self.execution_mode == ExecutionMode.HIERARCHICAL
-        ):
+        if self.enable_dynamic_management and self.execution_mode == ExecutionMode.HIERARCHICAL:
             return self._build_dynamic_supervisor_graph()
         return super().build_graph()
 
@@ -201,9 +190,7 @@ class DynamicMultiAgentSupervisor(MultiAgent):
 
         return management_node
 
-    async def register_agent_dynamically(
-        self, agent: Agent, capability: str | None = None
-    ) -> bool:
+    async def register_agent_dynamically(self, agent: Agent, capability: str | None = None) -> bool:
         """Register an agent dynamically at runtime."""
         if not self._dynamic_supervisor:
             logger.warning("Dynamic supervisor not available for agent registration")
@@ -230,9 +217,7 @@ class DynamicMultiAgentSupervisor(MultiAgent):
         try:
             success = await self._dynamic_supervisor.unregister_agent(agent_name)
             if success:
-                self.agents = [
-                    agent for agent in self.agents if agent.name != agent_name
-                ]
+                self.agents = [agent for agent in self.agents if agent.name != agent_name]
                 logger.info(f"Successfully unregistered {agent_name} dynamically")
             return success
         except Exception as e:
@@ -271,10 +256,7 @@ class ReactMultiAgentSupervisor(DynamicMultiAgentSupervisor):
         graph = super().build_graph()
         if self._dynamic_supervisor and hasattr(graph, "nodes"):
             for node_name in list(graph.nodes.keys()):
-                if (
-                    node_name.startswith("managed_")
-                    and "dynamic_supervisor" in graph.nodes
-                ):
+                if node_name.startswith("managed_") and "dynamic_supervisor" in graph.nodes:
                     pass
         return graph
 

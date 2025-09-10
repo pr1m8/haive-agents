@@ -11,22 +11,15 @@ Functions:
     setup_workflow: Setup Workflow functionality.
 """
 
+from haive.agents.memory_reorganized.agents.long_term_memory.aug_llm import lt_mem_agent_aug_llm
+from haive.agents.memory_reorganized.agents.long_term_memory.state import LongTermMemoryState
+from haive.agents.memory_reorganized.agents.long_term_memory.tools import search_recall_memories
+from haive.agents.memory_reorganized.agents.react_agent2.agent import ReactAgentConfig
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.vectorstore.base import VectorStoreConfig
 from langchain_core.messages import get_buffer_string, tokenizer
 from langchain_core.runnables import RunnableConfig
 from pydantic import Field
-
-from haive.agents.memory_reorganized.agents.long_term_memory.aug_llm import (
-    lt_mem_agent_aug_llm,
-)
-from haive.agents.memory_reorganized.agents.long_term_memory.state import (
-    LongTermMemoryState,
-)
-from haive.agents.memory_reorganized.agents.long_term_memory.tools import (
-    search_recall_memories,
-)
-from haive.agents.memory_reorganized.agents.react_agent2.agent import ReactAgentConfig
 
 
 class LongTermMemoryAgentConfig(ReactAgentConfig):
@@ -44,11 +37,6 @@ class LongTermMemoryAgent(ReactAgent):
     config: LongTermMemoryAgentConfig
 
     def __init__(self, config: LongTermMemoryAgentConfig):
-        """Init  .
-
-        Args:
-            config: [TODO: Add description]
-        """
         super().__init__(config)
 
     def load_memories(self, state: State, config: RunnableConfig) -> State:
@@ -69,11 +57,6 @@ class LongTermMemoryAgent(ReactAgent):
         }
 
     def setup_workflow(self) -> None:
-        """Setup Workflow.
-
-        Returns:
-            [TODO: Add return description]
-        """
         self.graph.add_node(load_memories)
         self.graph.add_node(agent)
         self.graph.add_node("tools", ToolNode(tools))

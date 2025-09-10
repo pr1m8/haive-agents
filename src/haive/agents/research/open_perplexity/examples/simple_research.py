@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Simple example demonstrating how to use the Open Perplexity research agent.
+"""Simple example demonstrating how to use the Open Perplexity research agent
 for a specific research topic.
 """
 

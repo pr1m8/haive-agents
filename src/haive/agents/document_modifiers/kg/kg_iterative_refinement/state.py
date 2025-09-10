@@ -16,11 +16,6 @@ class IterativeGraphTransformerState(BaseModel):
     graph_doc: GraphDocument | None = Field(default=None)
 
     def should_refine(self) -> Literal["refine_summary", "__end__"]:
-        """Should Refine.
-
-        Returns:
-            [TODO: Add return description]
-        """
         return "refine_summary" if self.index < len(self.contents) else "__end__"
 
     @model_validator(mode="before")
@@ -47,9 +42,7 @@ class IterativeGraphTransformerState(BaseModel):
                         f"Unsupported content type in `contents` at index {i}: {type(item)}"
                     )
         else:
-            raise ValueError(
-                f"Expected `contents` to be str or list, got {type(contents)}"
-            )
+            raise ValueError(f"Expected `contents` to be str or list, got {type(contents)}")
 
         values["contents"] = docs
         return values

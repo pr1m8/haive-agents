@@ -68,13 +68,9 @@ class ResearchState(BaseModel):
     )
 
     # Research topic and question
-    research_topic: str | None = Field(
-        default=None, description="Main topic of research"
-    )
+    research_topic: str | None = Field(default=None, description="Main topic of research")
 
-    research_question: str | None = Field(
-        default=None, description="Specific research question"
-    )
+    research_question: str | None = Field(default=None, description="Specific research question")
 
     # Context and parameters
     input_context: str | None = Field(
@@ -82,8 +78,7 @@ class ResearchState(BaseModel):
     )
 
     search_parameters: dict[str, Any] = Field(
-        default_factory=dict,
-        description="Parameters for search and research customization",
+        default_factory=dict, description="Parameters for search and research customization"
     )
 
     # Report sections and organization
@@ -135,18 +130,12 @@ class ResearchState(BaseModel):
     )
 
     # Final report
-    final_report: str | None = Field(
-        default=None, description="Final research report content"
-    )
+    final_report: str | None = Field(default=None, description="Final research report content")
 
     # Process management
-    current_step: str = Field(
-        default="start", description="Current step in the workflow"
-    )
+    current_step: str = Field(default="start", description="Current step in the workflow")
 
-    error: str | None = Field(
-        default=None, description="Error message if any step fails"
-    )
+    error: str | None = Field(default=None, description="Error message if any step fails")
 
 
 class ResearchInputState(BaseModel):
@@ -168,8 +157,7 @@ class ResearchInputState(BaseModel):
         default=None, description="Additional context provided for the research"
     )
     research_parameters: dict[str, Any] | None = Field(
-        default=None,
-        description="Optional parameters to customize the research process",
+        default=None, description="Optional parameters to customize the research process"
     )
 
 
@@ -214,12 +202,8 @@ class WebSearchQuery(BaseModel):
 
     query: str = Field(description="The search query text")
     purpose: str = Field(description="Purpose of this search query")
-    data_source: str = Field(
-        description="Data source to query (web, github, academic, news, etc.)"
-    )
-    completed: bool = Field(
-        default=False, description="Whether this query has been executed"
-    )
+    data_source: str = Field(description="Data source to query (web, github, academic, news, etc.)")
+    completed: bool = Field(default=False, description="Whether this query has been executed")
     results: list[dict] = Field(default_factory=list, description="Search results")
 
 
@@ -248,10 +232,7 @@ class ReportSection(BaseModel):
     queries: list[WebSearchQuery] = Field(
         default_factory=list, description="Search queries for this section"
     )
-    sources: list[dict] = Field(
-        default_factory=list, description="Sources used in this section"
-    )
+    sources: list[dict] = Field(default_factory=list, description="Sources used in this section")
     status: str = Field(
-        default="pending",
-        description="Section status (pending, in_progress, completed)",
+        default="pending", description="Section status (pending, in_progress, completed)"
     )

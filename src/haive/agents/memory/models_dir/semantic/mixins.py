@@ -1,6 +1,5 @@
 from datetime import datetime
 from typing import Any, Literal
-
 from pydantic import BaseModel, Field, field_validator, model_validator
 
 
@@ -38,18 +37,14 @@ class TemporalMixin:
 class PersonalityTraits(BaseModel):
     """Sophisticated personality modeling."""
 
-    communication_style: Literal[
-        "formal", "casual", "technical", "friendly", "direct"
-    ] = Field(default="friendly", description="Preferred communication style")
-    expertise_areas: list[str] = Field(
-        default_factory=list, description="Known expertise areas"
+    communication_style: Literal["formal", "casual", "technical", "friendly", "direct"] = Field(
+        default="friendly", description="Preferred communication style"
     )
+    expertise_areas: list[str] = Field(default_factory=list, description="Known expertise areas")
     interaction_preferences: dict[str, Any] = Field(
         default_factory=dict, description="Interaction preferences"
     )
-    cultural_context: str | None = Field(
-        None, description="Cultural background context"
-    )
+    cultural_context: str | None = Field(None, description="Cultural background context")
     language_preferences: list[str] = Field(
         default_factory=lambda: ["English"], description="Preferred languages"
     )
@@ -65,10 +60,7 @@ class PersonalityTraits(BaseModel):
     @model_validator(mode="after")
     def validate_personality_consistency(self) -> "PersonalityTraits":
         """Ensure personality traits are consistent."""
-        if (
-            self.communication_style == "technical"
-            and "Technology" not in self.expertise_areas
-        ):
+        if self.communication_style == "technical" and "Technology" not in self.expertise_areas:
             self.expertise_areas.append("Technology")
         return self
 
@@ -79,9 +71,7 @@ class UserPreferences(BaseModel):
     notification_settings: dict[str, bool] = Field(default_factory=dict)
     privacy_level: Literal["public", "private", "restricted"] = Field(default="private")
     data_retention_days: int = Field(default=365, ge=1, le=3650)
-    preferred_response_length: Literal["brief", "moderate", "detailed"] = Field(
-        default="moderate"
-    )
+    preferred_response_length: Literal["brief", "moderate", "detailed"] = Field(default="moderate")
     topics_of_interest: list[str] = Field(default_factory=list)
     avoided_topics: list[str] = Field(default_factory=list)
 
@@ -92,9 +82,7 @@ class UserPreferences(BaseModel):
         avoided_set = set(self.avoided_topics)
         overlap = interest_set & avoided_set
         if overlap:
-            raise ValueError(
-                f"Topics cannot be both interesting and avoided: {overlap}"
-            )
+            raise ValueError(f"Topics cannot be both interesting and avoided: {overlap}")
         return self
 
 

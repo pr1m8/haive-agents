@@ -22,16 +22,12 @@ from haive.agents.memory.models_dir.meta import MemoryValidationMeta
 
 
 class BaseMemoryModel(BaseModel, metaclass=MemoryValidationMeta):
-    """Enhanced base memory model with sophisticated validation patterns and automatic.
+    """Enhanced base memory model with sophisticated validation patterns and automatic
     metadata management.
     """
 
-    memory_id: UUID = Field(
-        default_factory=uuid4, description="Unique memory identifier"
-    )
-    created_at: datetime = Field(
-        default_factory=datetime.now, description="Creation timestamp"
-    )
+    memory_id: UUID = Field(default_factory=uuid4, description="Unique memory identifier")
+    created_at: datetime = Field(default_factory=datetime.now, description="Creation timestamp")
     last_accessed: datetime = Field(
         default_factory=datetime.now, description="Last access timestamp"
     )
@@ -40,9 +36,7 @@ class BaseMemoryModel(BaseModel, metaclass=MemoryValidationMeta):
     # Memory lifecycle management
     expires_at: datetime | None = Field(None, description="Expiration timestamp")
     is_archived: bool = Field(default=False, description="Archive status")
-    priority_level: int = Field(
-        default=1, ge=1, le=10, description="Memory priority (1-10)"
-    )
+    priority_level: int = Field(default=1, ge=1, le=10, description="Memory priority (1-10)")
 
     # Validation and integrity
     checksum: str | None = Field(None, description="Data integrity checksum")
@@ -51,9 +45,7 @@ class BaseMemoryModel(BaseModel, metaclass=MemoryValidationMeta):
     )
 
     # Metadata and relationships
-    tags: list[str] = Field(
-        default_factory=list, description="Memory classification tags"
-    )
+    tags: list[str] = Field(default_factory=list, description="Memory classification tags")
     relationships: dict[str, list[UUID]] = Field(
         default_factory=dict, description="Related memory IDs"
     )

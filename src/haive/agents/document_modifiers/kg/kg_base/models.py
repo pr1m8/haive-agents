@@ -191,9 +191,7 @@ class GraphTransformer(BaseDocumentTransformer):
             llm, "supports_function_calling", False
         ):
             graph_transformer_kwargs["node_properties"] = node_properties
-            graph_transformer_kwargs["relationship_properties"] = (
-                relationship_properties
-            )
+            graph_transformer_kwargs["relationship_properties"] = relationship_properties
 
         # Create the graph transformer and process documents
         graph_transformer = LLMGraphTransformer(**graph_transformer_kwargs)

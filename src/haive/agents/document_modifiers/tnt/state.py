@@ -4,7 +4,7 @@ This module defines the state schema used throughout the taxonomy generation pro
 It provides a structured way to track documents, their groupings into minibatches,
 and the evolution of taxonomy clusters over multiple iterations.
 
-Examples:
+Example:
     Basic usage of the state class::
 
         state = TaxonomyGenerationState(
@@ -45,7 +45,7 @@ class TaxonomyGenerationState(BaseModel):
             - name: Category name
             - description: Category description
 
-    Examples:
+    Example:
         >>> docs = [Doc(id="1", content="text")]
         >>> state = TaxonomyGenerationState(
         ...     documents=docs,
@@ -57,9 +57,7 @@ class TaxonomyGenerationState(BaseModel):
     # The raw docs; we inject summaries within them in the first step
     documents: list[Doc] = Field(description="The raw documents.")
     # Indices to be concise
-    minibatches: list[list[int]] = Field(
-        default=[], description="The indices to be concise."
-    )
+    minibatches: list[list[int]] = Field(default=[], description="The indices to be concise.")
     # Candidate Taxonomies (full trajectory)
     clusters: Annotated[list[list[dict]], operator.add] = Field(
         default=[], description="The candidate taxonomies."

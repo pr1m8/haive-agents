@@ -1,13 +1,8 @@
 import re
 from typing import Any
-
 from pydantic import Field, field_validator, model_validator
-
 from haive.agents.memory.models_dir.base import BaseMemoryModel
-from haive.agents.memory.models_dir.semantic.mixins import (
-    TemporalMixin,
-    UserContextMixin,
-)
+from haive.agents.memory.models_dir.semantic.mixins import TemporalMixin, UserContextMixin
 
 
 class SemanticMemory(BaseMemoryModel, UserContextMixin, TemporalMixin):
@@ -15,9 +10,7 @@ class SemanticMemory(BaseMemoryModel, UserContextMixin, TemporalMixin):
 
     __memory_type__ = "semantic"
     __validation_level__ = "enterprise"
-    user_id: str = Field(
-        ..., min_length=1, max_length=100, description="User identifier"
-    )
+    user_id: str = Field(..., min_length=1, max_length=100, description="User identifier")
     personality_profile: PersonalityTraits = Field(default_factory=PersonalityTraits)
     preferences: UserPreferences = Field(default_factory=UserPreferences)
     factual_knowledge: dict[str, Any] = Field(
@@ -33,9 +26,7 @@ class SemanticMemory(BaseMemoryModel, UserContextMixin, TemporalMixin):
         default=1.0, ge=0.0, le=1.0, description="Temporal relevance weight"
     )
     embedding_vector: list[float] | None = Field(None, description="Semantic embedding")
-    semantic_keywords: list[str] = Field(
-        default_factory=list, description="Optimized keywords"
-    )
+    semantic_keywords: list[str] = Field(default_factory=list, description="Optimized keywords")
 
     @field_validator("user_id")
     @classmethod
@@ -63,9 +54,7 @@ class SemanticMemory(BaseMemoryModel, UserContextMixin, TemporalMixin):
         """Advanced semantic consistency validation."""
         for belief, strength in self.belief_system.items():
             if not 0.0 <= strength <= 1.0:
-                raise ValueError(
-                    f"Belief strength for '{belief}' must be between 0.0 and 1.0"
-                )
+                raise ValueError(f"Belief strength for '{belief}' must be between 0.0 and 1.0")
         if not self.semantic_keywords and self.factual_knowledge:
             self.semantic_keywords = self._extract_keywords(self.factual_knowledge)
         return self

@@ -21,7 +21,6 @@ Example:
 """
 
 from typing import Any
-
 from pydantic import BaseModel, Field, field_serializer, model_validator
 
 
@@ -76,12 +75,8 @@ class AgentInfo(BaseModel):
         if not self.description:
             if hasattr(self.agent, "description"):
                 self.description = self.agent.description
-            elif hasattr(self.agent, "engine") and hasattr(
-                self.agent.engine, "system_message"
-            ):
-                self.description = (
-                    self.agent.engine.system_message or "Agent specialist"
-                )
+            elif hasattr(self.agent, "engine") and hasattr(self.agent.engine, "system_message"):
+                self.description = self.agent.engine.system_message or "Agent specialist"
             else:
                 self.description = f"{self.name} specialist"
         if not self.capabilities and self.description:
@@ -135,8 +130,10 @@ class AgentInfo(BaseModel):
         """
         required_lower = required.lower()
         return any(
-            cap.lower() in required_lower or required_lower in cap.lower()
-            for cap in self.capabilities
+            (
+                cap.lower() in required_lower or required_lower in cap.lower()
+                for cap in self.capabilities
+            )
         )
 
 
@@ -203,21 +200,13 @@ class AgentRequest(BaseModel):
             )
     """
 
-    capability: str = Field(
-        ..., description="Required capability (e.g., 'translation', 'math')"
-    )
-    task_context: str = Field(
-        ..., description="Context about why this capability is needed"
-    )
-    suggested_name: str | None = Field(
-        default=None, description="Suggested name for the new agent"
-    )
+    capability: str = Field(..., description="Required capability (e.g., 'translation', 'math')")
+    task_context: str = Field(..., description="Context about why this capability is needed")
+    suggested_name: str | None = Field(default=None, description="Suggested name for the new agent")
     requirements: list[str] = Field(
         default_factory=list, description="Specific requirements or constraints"
     )
-    priority: str = Field(
-        default="medium", description="Priority level: low, medium, high"
-    )
+    priority: str = Field(default="medium", description="Priority level: low, medium, high")
 
 
 class RoutingDecision(BaseModel):
@@ -237,9 +226,7 @@ class RoutingDecision(BaseModel):
     agent_name: str = Field(..., description="Agent to route to or 'END'")
     task: str = Field(default="", description="Task for the agent")
     reasoning: str = Field(default="", description="Explanation of routing decision")
-    confidence: float = Field(
-        default=1.0, ge=0.0, le=1.0, description="Confidence in decision"
-    )
+    confidence: float = Field(default=1.0, ge=0.0, le=1.0, description="Confidence in decision")
     alternatives: list[str] = Field(
         default_factory=list, description="Alternative agents that could handle this"
     )

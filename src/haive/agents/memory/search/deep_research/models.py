@@ -11,16 +11,10 @@ from haive.agents.memory.search.base import SearchResponse
 class Config(BaseModel):
     """Configuration for Deep Research Agent."""
 
-    research_depth: int = Field(
-        default=3, ge=1, le=5, description="Research depth level"
-    )
+    research_depth: int = Field(default=3, ge=1, le=5, description="Research depth level")
     max_sources: int = Field(default=50, description="Maximum sources to examine")
-    include_fact_checking: bool = Field(
-        default=True, description="Include fact checking"
-    )
-    generate_report: bool = Field(
-        default=True, description="Generate structured report"
-    )
+    include_fact_checking: bool = Field(default=True, description="Include fact checking")
+    generate_report: bool = Field(default=True, description="Generate structured report")
 
 
 class ResearchSource(BaseModel):
@@ -29,16 +23,12 @@ class ResearchSource(BaseModel):
     url: str = Field(..., description="Source URL")
     title: str = Field(..., description="Source title")
     author: str | None = Field(default=None, description="Author if available")
-    publication_date: datetime | None = Field(
-        default=None, description="Publication date"
-    )
+    publication_date: datetime | None = Field(default=None, description="Publication date")
     domain: str = Field(..., description="Source domain")
     credibility_score: float = Field(
         default=0.5, ge=0.0, le=1.0, description="Credibility assessment"
     )
-    relevance_score: float = Field(
-        default=0.5, ge=0.0, le=1.0, description="Relevance to query"
-    )
+    relevance_score: float = Field(default=0.5, ge=0.0, le=1.0, description="Relevance to query")
     content_snippet: str = Field(default="", description="Relevant content excerpt")
     source_type: str = Field(
         default="web", description="Type of source (web, academic, news, etc.)"
@@ -53,9 +43,7 @@ class ResearchSection(BaseModel):
     sources: list[ResearchSource] = Field(
         default_factory=list, description="Sources for this section"
     )
-    key_points: list[str] = Field(
-        default_factory=list, description="Key points from this section"
-    )
+    key_points: list[str] = Field(default_factory=list, description="Key points from this section")
     confidence_level: float = Field(
         default=0.5, ge=0.0, le=1.0, description="Confidence in this section"
     )
@@ -65,13 +53,9 @@ class ResearchQuery(BaseModel):
     """Model for individual research queries performed."""
 
     query: str = Field(..., description="The research query")
-    query_type: str = Field(
-        ..., description="Type of query (background, specific, validation)"
-    )
+    query_type: str = Field(..., description="Type of query (background, specific, validation)")
     results_found: int = Field(default=0, description="Number of results found")
-    processing_time: float = Field(
-        default=0.0, description="Time to process this query"
-    )
+    processing_time: float = Field(default=0.0, description="Time to process this query")
     success: bool = Field(default=True, description="Whether query was successful")
 
 
@@ -81,31 +65,19 @@ class DeepResearchResponse(SearchResponse):
     Extends the base SearchResponse with deep research specific fields.
     """
 
-    search_type: str = Field(
-        default="DeepResearch", description="Type of search performed"
-    )
+    search_type: str = Field(default="DeepResearch", description="Type of search performed")
     research_sections: list[ResearchSection] = Field(
         default_factory=list, description="Research report sections"
     )
-    executive_summary: str = Field(
-        default="", description="Executive summary of findings"
-    )
+    executive_summary: str = Field(default="", description="Executive summary of findings")
     research_queries: list[ResearchQuery] = Field(
         default_factory=list, description="Queries performed"
     )
     total_sources_examined: int = Field(default=0, description="Total sources examined")
-    high_quality_sources: int = Field(
-        default=0, description="High quality sources found"
-    )
-    research_depth: int = Field(
-        default=1, ge=1, le=5, description="Research depth level"
-    )
-    limitations: list[str] = Field(
-        default_factory=list, description="Research limitations"
-    )
-    related_topics: list[str] = Field(
-        default_factory=list, description="Related topics discovered"
-    )
+    high_quality_sources: int = Field(default=0, description="High quality sources found")
+    research_depth: int = Field(default=1, ge=1, le=5, description="Research depth level")
+    limitations: list[str] = Field(default_factory=list, description="Research limitations")
+    related_topics: list[str] = Field(default_factory=list, description="Related topics discovered")
     fact_checks: list[dict[str, Any]] = Field(
         default_factory=list, description="Fact checking results"
     )
@@ -161,25 +133,15 @@ class DeepResearchRequest(BaseModel):
     """Request model for deep research operations."""
 
     query: str = Field(..., min_length=1, max_length=2000, description="Research query")
-    research_depth: int = Field(
-        default=3, ge=1, le=5, description="Research depth level (1-5)"
-    )
-    focus_areas: list[str] = Field(
-        default_factory=list, description="Specific areas to focus on"
-    )
-    source_types: list[str] = Field(
-        default_factory=list, description="Preferred source types"
-    )
+    research_depth: int = Field(default=3, ge=1, le=5, description="Research depth level (1-5)")
+    focus_areas: list[str] = Field(default_factory=list, description="Specific areas to focus on")
+    source_types: list[str] = Field(default_factory=list, description="Preferred source types")
     time_period: str | None = Field(
         default=None, description="Time period for sources (e.g., 'last_5_years')"
     )
-    include_fact_checking: bool = Field(
-        default=True, description="Include fact checking"
-    )
+    include_fact_checking: bool = Field(default=True, description="Include fact checking")
     max_sources: int = Field(default=50, description="Maximum sources to examine")
-    generate_report: bool = Field(
-        default=True, description="Generate structured report"
-    )
+    generate_report: bool = Field(default=True, description="Generate structured report")
 
     class Config:
         """Pydantic configuration."""

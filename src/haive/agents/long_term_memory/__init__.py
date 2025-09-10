@@ -1,9 +1,6 @@
 """Module exports."""
 
-from haive.agents.long_term_memory.agent import (
-    LongTermMemoryAgent,
-    LongTermMemoryAgentConfig,
-)
+from haive.agents.long_term_memory.agent import LongTermMemoryAgent, LongTermMemoryAgentConfig
 from haive.agents.long_term_memory.models import KnowledgeTriple
 from haive.agents.long_term_memory.nodes import load_memories
 from haive.agents.long_term_memory.state import LongTermMemoryState

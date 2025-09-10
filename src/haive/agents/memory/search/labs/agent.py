@@ -336,7 +336,7 @@ Remember: You are automating complex workflows and creating professional-grade d
 
     def get_search_instructions(self) -> str:
         """Get specific search instructions for Labs operations."""
-        return """LABS PROJECT INSTRUCTIONS:.
+        return """LABS PROJECT INSTRUCTIONS:
 
 1. PROJECT ANALYSIS:
    - Understand the project requirements thoroughly
@@ -808,7 +808,7 @@ Execute each project with professional standards and comprehensive automation.""
 # Standalone function exports for backward compatibility
 def create_interactive_app(app_type: str, title: str, description: str) -> InteractiveApp:
     """Create an interactive app."""
-    LabsAgent()
+    agent = LabsAgent()
     return InteractiveApp(
         app_id=str(uuid.uuid4()),
         app_type=app_type,

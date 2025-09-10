@@ -6,10 +6,7 @@ import traceback
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import DeepSeekLLMConfig
 
-from haive.agents.memory_v2.simple_memory_agent import (
-    SimpleMemoryAgent,
-    TokenAwareMemoryConfig,
-)
+from haive.agents.memory_v2.simple_memory_agent import SimpleMemoryAgent, TokenAwareMemoryConfig
 
 
 def test_simple_memory_agent_with_deepseek():
@@ -58,13 +55,9 @@ async def test_async_memory_agent():
         llm_config=deepseek_config, system_message="You are a helpful memory assistant."
     )
 
-    memory_config = TokenAwareMemoryConfig(
-        max_context_tokens=2000, storage_backend="in_memory"
-    )
+    memory_config = TokenAwareMemoryConfig(max_context_tokens=2000, storage_backend="in_memory")
 
-    agent = SimpleMemoryAgent(
-        name="test_async", engine=aug_config, memory_config=memory_config
-    )
+    agent = SimpleMemoryAgent(name="test_async", engine=aug_config, memory_config=memory_config)
 
     # Test async operation
     await agent.arun("Remember that async works!")

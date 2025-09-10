@@ -128,9 +128,7 @@ class LLMCompilerV3Agent:
         """
         # Create input model
         compiler_input = CompilerInput(
-            query=query,
-            context=context,
-            execution_preferences=kwargs.get("execution_preferences"),
+            query=query, context=context, execution_preferences=kwargs.get("execution_preferences")
         )
 
         # Initialize state
@@ -157,9 +155,7 @@ class LLMCompilerV3Agent:
             # Handle errors gracefully
             return self._create_error_output(str(e), initial_state)
 
-    def run(
-        self, query: str, context: dict[str, Any] | None = None, **kwargs
-    ) -> CompilerOutput:
+    def run(self, query: str, context: dict[str, Any] | None = None, **kwargs) -> CompilerOutput:
         """Execute LLM Compiler pattern synchronously."""
         return asyncio.run(self.arun(query, context, **kwargs))
 
@@ -169,8 +165,7 @@ class LLMCompilerV3Agent:
         """Execute planning phase to create task DAG."""
         # Generate contextual planner prompt
         planner_prompt = get_planner_prompt(
-            query=compiler_input.query,
-            available_tools=[tool.name for tool in self.tools],
+            query=compiler_input.query, available_tools=[tool.name for tool in self.tools]
         )
 
         # Execute planner agent
@@ -196,9 +191,7 @@ class LLMCompilerV3Agent:
 
         return state
 
-    async def _execution_phase(
-        self, state: LLMCompilerStateSchema
-    ) -> LLMCompilerStateSchema:
+    async def _execution_phase(self, state: LLMCompilerStateSchema) -> LLMCompilerStateSchema:
         """Execute tasks with parallel coordination."""
         max_iterations = 20  # Prevent infinite loops
         iteration = 0
@@ -207,10 +200,7 @@ class LLMCompilerV3Agent:
             iteration += 1
 
             # Check if we should replan
-            if (
-                state.should_replan()
-                and state.replan_count < self.config.max_replan_attempts
-            ):
+            if state.should_replan() and state.replan_count < self.config.max_replan_attempts:
                 state = await self._replan_phase(state)
                 continue
 
@@ -239,9 +229,7 @@ class LLMCompilerV3Agent:
     ) -> None:
         """Execute multiple tasks in parallel."""
         # Limit tasks based on configuration
-        tasks_to_execute = tasks[
-            : state.max_parallel_tasks - len(state.currently_executing)
-        ]
+        tasks_to_execute = tasks[: state.max_parallel_tasks - len(state.currently_executing)]
 
         if not tasks_to_execute:
             return
@@ -251,9 +239,7 @@ class LLMCompilerV3Agent:
             state.mark_task_executing(task.task_id)
 
         # Create execution coroutines
-        execution_tasks = [
-            self._execute_single_task(state, task) for task in tasks_to_execute
-        ]
+        execution_tasks = [self._execute_single_task(state, task) for task in tasks_to_execute]
 
         # Execute tasks concurrently
         results = await asyncio.gather(*execution_tasks, return_exceptions=True)
@@ -381,9 +367,7 @@ class LLMCompilerV3Agent:
             # Fallback synthesis
             return self._create_fallback_output(state, str(e))
 
-    async def _replan_phase(
-        self, state: LLMCompilerStateSchema
-    ) -> LLMCompilerStateSchema:
+    async def _replan_phase(self, state: LLMCompilerStateSchema) -> LLMCompilerStateSchema:
         """Execute replanning when execution encounters issues."""
         # Create replan request
         replan_request = ReplanRequest(
@@ -399,13 +383,9 @@ class LLMCompilerV3Agent:
         replanner_input = CompilerInput(
             query=state.original_query,
             context={
-                "previous_plan": (
-                    state.current_plan.model_dump() if state.current_plan else None
-                ),
+                "previous_plan": (state.current_plan.model_dump() if state.current_plan else None),
                 "failed_tasks": state.failed_task_ids,
-                "successful_results": {
-                    r.task_id: r.result for r in state.get_successful_results()
-                },
+                "successful_results": {r.task_id: r.result for r in state.get_successful_results()},
                 "replan_feedback": replan_request.feedback,
             },
         )
@@ -457,9 +437,7 @@ class LLMCompilerV3Agent:
                 answer_parts.append(f"{result.task_id}: {result.result}")
             final_answer = "\\n".join(answer_parts)
         else:
-            final_answer = (
-                f"Unable to complete task due to synthesis error: {error_message}"
-            )
+            final_answer = f"Unable to complete task due to synthesis error: {error_message}"
 
         return CompilerOutput(
             final_answer=final_answer,

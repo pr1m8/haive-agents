@@ -1,9 +1,7 @@
 from datetime import datetime
 from typing import Any
 from uuid import UUID, uuid4
-
 from pydantic import BaseModel, Field, field_validator, model_validator
-
 from haive.agents.memory.models_dir.base import BaseMemoryModel
 from haive.agents.memory.models_dir.semantic.mixins import TemporalMixin
 
@@ -25,16 +23,8 @@ class InstructionComponent(BaseModel):
         v = v.strip()
         if not v.endswith(".") and (not v.endswith("!")) and (not v.endswith("?")):
             v += "."
-        imperative_starters = [
-            "use",
-            "avoid",
-            "ensure",
-            "always",
-            "never",
-            "when",
-            "if",
-        ]
-        if not any(v.lower().startswith(starter) for starter in imperative_starters):
+        imperative_starters = ["use", "avoid", "ensure", "always", "never", "when", "if"]
+        if not any((v.lower().startswith(starter) for starter in imperative_starters)):
             pass
         return v
 
@@ -80,9 +70,7 @@ class ProceduralMemory(BaseMemoryModel, TemporalMixin):
 
     @field_validator("core_instructions")
     @classmethod
-    def validate_instruction_set(
-        cls, v: list[InstructionComponent]
-    ) -> list[InstructionComponent]:
+    def validate_instruction_set(cls, v: list[InstructionComponent]) -> list[InstructionComponent]:
         """Validate instruction set consistency."""
         if len(v) == 0:
             raise ValueError("At least one core instruction required")
@@ -103,11 +91,9 @@ class ProceduralMemory(BaseMemoryModel, TemporalMixin):
         """Validate overall procedural memory integrity."""
         if self.core_instructions:
             total_effectiveness = sum(
-                instr.effectiveness_score for instr in self.core_instructions
+                (instr.effectiveness_score for instr in self.core_instructions)
             )
-            self.overall_effectiveness = total_effectiveness / len(
-                self.core_instructions
-            )
+            self.overall_effectiveness = total_effectiveness / len(self.core_instructions)
         if self.should_trigger_reflection():
             self._add_reflection_trigger("Performance threshold reached")
         return self
@@ -186,12 +172,8 @@ def validate_instruction_set(
 def validate_procedural_integrity(memory: ProceduralMemory) -> ProceduralMemory:
     """Validate overall procedural memory integrity."""
     if memory.core_instructions:
-        total_effectiveness = sum(
-            instr.effectiveness_score for instr in memory.core_instructions
-        )
-        memory.overall_effectiveness = total_effectiveness / len(
-            memory.core_instructions
-        )
+        total_effectiveness = sum((instr.effectiveness_score for instr in memory.core_instructions))
+        memory.overall_effectiveness = total_effectiveness / len(memory.core_instructions)
     return memory
 
 
@@ -232,9 +214,7 @@ def generate_instruction_text(memory: ProceduralMemory) -> str:
     return "\n".join(sections)
 
 
-def adapt_from_reflection(
-    memory: ProceduralMemory, reflection: ReflectionCycle
-) -> None:
+def adapt_from_reflection(memory: ProceduralMemory, reflection: ReflectionCycle) -> None:
     """Adapt instructions based on reflection cycle."""
     if reflection.confidence_score < 0.6:
         return

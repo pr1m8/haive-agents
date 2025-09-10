@@ -47,6 +47,7 @@ class EnhancedAgentBase:
 
     def run(self, input_data: Any) -> Any:
         """Sync run method."""
+
         return asyncio.run(self.arun(input_data))
 
 
@@ -128,23 +129,13 @@ class SimpleAgent(EnhancedAgentBase):
 
             # Conditional routing based on tool calls
             def check_tools(state: dict[str, Any]) -> Literal["tools", "end"]:
-                """Check Tools.
-
-                Args:
-                    state: [TODO: Add description]
-
-                Returns:
-                    [TODO: Add return description]
-                """
                 messages = state.get("messages", [])
                 if messages and isinstance(messages[-1], AIMessage):
                     if messages[-1].tool_calls:
                         return "tools"
                 return "end"
 
-            graph.add_conditional_edges(
-                "agent", check_tools, {"tools": "tools", "end": END}
-            )
+            graph.add_conditional_edges("agent", check_tools, {"tools": "tools", "end": END})
             graph.add_edge("tools", END)
         else:
             graph.add_edge("agent", END)

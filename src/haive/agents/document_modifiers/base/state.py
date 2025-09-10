@@ -6,14 +6,13 @@ foundation for all document processing agents in the haive framework.
 """
 
 from typing import Any
-
 from haive.core.schema import StateSchema
 from langchain_core.documents import Document
 from pydantic import Field, computed_field, field_validator, model_validator
 
 
 class DocumentModifierState(StateSchema):
-    r"""Base state schema for document modification agents.
+    """Base state schema for document modification agents.
 
     This class provides the core state management for all document processing
     operations. It handles document collections, provides computed properties
@@ -60,15 +59,11 @@ class DocumentModifierState(StateSchema):
         is present to prevent processing empty collections.
     """
 
-    name: str | None = Field(
-        default=None, description="The name of the document modifier."
-    )
+    name: str | None = Field(default=None, description="The name of the document modifier.")
     description: str | None = Field(
         default=None, description="The description of the document modifier."
     )
-    documents: list[Document] = Field(
-        default_factory=list, description="The documents to process."
-    )
+    documents: list[Document] = Field(default_factory=list, description="The documents to process.")
 
     @classmethod
     def from_documents(cls, documents: list[Document]) -> "DocumentModifierState":
@@ -97,7 +92,7 @@ class DocumentModifierState(StateSchema):
     @computed_field
     @property
     def documents_text(self) -> str:
-        r"""Get the combined text content of all documents.
+        """Get the combined text content of all documents.
 
         This property concatenates the page_content of all documents
         in the collection, separated by newlines. Useful for operations

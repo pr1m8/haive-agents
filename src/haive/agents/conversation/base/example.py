@@ -16,6 +16,8 @@ from typing import Any
 class ConversationError(Exception):
     """Placeholder for conversation errors."""
 
+    pass
+
 
 from langchain_core.messages import AIMessage, HumanMessage
 from pydantic import Field
@@ -83,9 +85,7 @@ class CustomConversationAgent(BaseConversationAgent):
                 # Sort by recent activity (those who spoke more recently)
                 recent_speakers = state.speaker_history[-len(state.speakers) :]
                 active_remaining = [
-                    s
-                    for s in state.remaining_speakers_this_round
-                    if s in recent_speakers
+                    s for s in state.remaining_speakers_this_round if s in recent_speakers
                 ]
                 if active_remaining:
                     return active_remaining[0]
@@ -279,9 +279,7 @@ async def main():
 
     # Create custom conversation agent
     conversation = CustomConversationAgent(
-        name="education_discussion",
-        participants=[alice, bob, charlie],
-        initial_state=initial_state,
+        name="education_discussion", participants=[alice, bob, charlie], initial_state=initial_state
     )
 
     # Run the conversation

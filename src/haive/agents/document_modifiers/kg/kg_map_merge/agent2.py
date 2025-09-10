@@ -108,8 +108,7 @@ class StructuredKGAgent(Agent[ParallelKGAgentConfig]):
         except Exception:
             # Fallback to empty schema
             return Command(
-                update={"node_types": [], "relationship_types": []},
-                goto="distribute_documents",
+                update={"node_types": [], "relationship_types": []}, goto="distribute_documents"
             )
 
     def distribute_documents(self, state: ParallelKGState):
@@ -295,25 +294,19 @@ class StructuredKGAgent(Agent[ParallelKGAgentConfig]):
                 graph2 = valid_graphs[index2]
                 sends.append(
                     Send(
-                        "merge_pair",
-                        {"graph1": graph1, "graph2": graph2, "pair_index": pair_index},
+                        "merge_pair", {"graph1": graph1, "graph2": graph2, "pair_index": pair_index}
                     )
                 )
             else:
                 # If only one graph in the pair, pass it directly
                 sends.append(
-                    Send(
-                        "collect_merged",
-                        {"merged_graph": graph1, "pair_index": pair_index},
-                    )
+                    Send("collect_merged", {"merged_graph": graph1, "pair_index": pair_index})
                 )
 
         if not sends:
             if valid_graphs:
                 # If no pairs but we have graphs, use the first one
-                return Command(
-                    update={"merged_graph": valid_graphs[0]}, goto="finalize_graph"
-                )
+                return Command(update={"merged_graph": valid_graphs[0]}, goto="finalize_graph")
             # No valid graphs
             return Command(goto="finalize_graph")
 
@@ -329,10 +322,7 @@ class StructuredKGAgent(Agent[ParallelKGAgentConfig]):
 
             # Format node and relationship information for the prompt
             existing_nodes = "\n".join(
-                [
-                    f"- {node.id} ({node.type}): {node.properties}"
-                    for node in graph1.nodes
-                ]
+                [f"- {node.id} ({node.type}): {node.properties}" for node in graph1.nodes]
             )
 
             existing_relationships = "\n".join(
@@ -343,10 +333,7 @@ class StructuredKGAgent(Agent[ParallelKGAgentConfig]):
             )
 
             new_nodes = "\n".join(
-                [
-                    f"- {node.id} ({node.type}): {node.properties}"
-                    for node in graph2.nodes
-                ]
+                [f"- {node.id} ({node.type}): {node.properties}" for node in graph2.nodes]
             )
 
             new_relationships = "\n".join(
@@ -403,12 +390,8 @@ class StructuredKGAgent(Agent[ParallelKGAgentConfig]):
 
                 if not exists:
                     # Find the source and target nodes in the merged graph
-                    source_node = next(
-                        (n for n in merged_graph.nodes if n.id == source_id), None
-                    )
-                    target_node = next(
-                        (n for n in merged_graph.nodes if n.id == target_id), None
-                    )
+                    source_node = next((n for n in merged_graph.nodes if n.id == source_id), None)
+                    target_node = next((n for n in merged_graph.nodes if n.id == target_id), None)
 
                     if source_node and target_node:
                         # Create and add the relationship
@@ -535,13 +518,9 @@ class StructuredKGAgent(Agent[ParallelKGAgentConfig]):
         if final_graph is None:
             # Try to get from merged_results or graph_documents
             if state.merged_results and any(state.merged_results):
-                final_graph = next(
-                    (g for g in state.merged_results if g is not None), None
-                )
+                final_graph = next((g for g in state.merged_results if g is not None), None)
             elif state.graph_documents and any(state.graph_documents):
-                final_graph = next(
-                    (g for g in state.graph_documents if g is not None), None
-                )
+                final_graph = next((g for g in state.graph_documents if g is not None), None)
 
         if final_graph:
             # Extract schema statistics
@@ -569,9 +548,7 @@ class StructuredKGAgent(Agent[ParallelKGAgentConfig]):
         self.graph.add_node("extract_schema", self.extract_schema)
         self.graph.add_node("distribute_documents", self.distribute_documents)
         self.graph.add_node("process_document", self.process_document)
-        self.graph.add_node(
-            "distribute_graph_document_pairs", self.distribute_graph_document_pairs
-        )
+        self.graph.add_node("distribute_graph_document_pairs", self.distribute_graph_document_pairs)
         self.graph.add_node("merge_pair", self.merge_pair)
         self.graph.add_node("collect_merged", self.collect_merged)
         self.graph.add_node("finalize_graph", self.finalize_graph)
@@ -622,8 +599,7 @@ class StructuredKGAgent(Agent[ParallelKGAgentConfig]):
             "collect_merged",
             lambda state: (
                 "distribute_graph_document_pairs"
-                if not state.merged_graph
-                and len([g for g in state.merged_results if g]) > 1
+                if not state.merged_graph and len([g for g in state.merged_results if g]) > 1
                 else "finalize_graph"
             ),
             {

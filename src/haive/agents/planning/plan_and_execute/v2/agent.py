@@ -1,14 +1,9 @@
-"""Plan and Execute Agent v2 using MultiAgent pattern."""
+"""Plan and Execute Agent v2 using ProperMultiAgent pattern."""
 
 from haive.core.engine.aug_llm import AugLLMConfig
 
-from haive.agents.multi.agent import MultiAgent
-from haive.agents.planning.plan_and_execute.v2.models import (
-    Act,
-    ExecutionResult,
-    Plan,
-    Response,
-)
+from haive.agents.multi.proper_base import ProperMultiAgent
+from haive.agents.planning.plan_and_execute.v2.models import Act, ExecutionResult, Plan, Response
 from haive.agents.planning.plan_and_execute.v2.prompts import (
     EXECUTOR_PROMPT,
     PLANNER_PROMPT,
@@ -19,7 +14,7 @@ from haive.agents.react.agent import ReactAgent
 from haive.agents.simple.agent import SimpleAgent
 
 
-class PlanAndExecuteAgent(MultiAgent):
+class PlanAndExecuteAgent(ProperMultiAgent):
     """Plan and Execute agent using multi-agent sequential pattern.
 
     Flow: Planner → Executor → Replanner (loop until complete)
@@ -125,9 +120,7 @@ class PlanAndExecuteAgent(MultiAgent):
 
         return state
 
-    def process_replan_result(
-        self, state: PlanAndExecuteState, result: Act
-    ) -> PlanAndExecuteState:
+    def process_replan_result(self, state: PlanAndExecuteState, result: Act) -> PlanAndExecuteState:
         """Process replanning result and update state."""
         if isinstance(result.action, Response):
             # Final response - we're done

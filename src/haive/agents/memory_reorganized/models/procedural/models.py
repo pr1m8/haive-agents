@@ -108,9 +108,7 @@ class ProceduralMemory(BaseMemoryModel, TemporalMixin):
 
     @field_validator("core_instructions")
     @classmethod
-    def validate_instruction_set(
-        cls, v: List[InstructionComponent]
-    ) -> List[InstructionComponent]:
+    def validate_instruction_set(cls, v: List[InstructionComponent]) -> List[InstructionComponent]:
         """Validate instruction set consistency."""
         if len(v) == 0:
             raise ValueError("At least one core instruction required")
@@ -138,12 +136,8 @@ class ProceduralMemory(BaseMemoryModel, TemporalMixin):
         """Validate overall procedural memory integrity."""
         # Update overall effectiveness based on components
         if self.core_instructions:
-            total_effectiveness = sum(
-                instr.effectiveness_score for instr in self.core_instructions
-            )
-            self.overall_effectiveness = total_effectiveness / len(
-                self.core_instructions
-            )
+            total_effectiveness = sum(instr.effectiveness_score for instr in self.core_instructions)
+            self.overall_effectiveness = total_effectiveness / len(self.core_instructions)
 
         # Check if reflection is needed
         if self.should_trigger_reflection():

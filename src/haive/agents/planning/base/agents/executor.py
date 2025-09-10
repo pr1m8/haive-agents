@@ -4,16 +4,12 @@ This module provides the foundational executor agent designed to carry out
 specific steps from plans using available tools, particularly search capabilities.
 """
 
+from haive.agents.react.agent import ReactAgent
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.tools.tools.search_tools import (
-    tavily_qna,
-    tavily_search_context,
-    tavily_search_tool,
-)
+from haive.tools.tools.search_tools import tavily_search_tool, tavily_qna, tavily_search_context
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import Field
-
-from haive.agents.react.agent import ReactAgent
+from typing import List, Optional, Any
 
 
 class BaseExecutorAgent(ReactAgent):
@@ -211,7 +207,7 @@ Remember: Your role is to be the reliable execution partner who transforms plann
         )
     )
 
-    tools: list = Field(
+    tools: List = Field(
         default_factory=lambda: [tavily_search_tool, tavily_qna, tavily_search_context]
     )
 
@@ -221,7 +217,7 @@ Remember: Your role is to be the reliable execution partner who transforms plann
                 ("system", "System message configured in AugLLMConfig"),
                 (
                     "human",
-                    """Execute this specific step from our plan:.
+                    """Execute this specific step from our plan:
 
 **Step to Execute:** {step_description}
 
@@ -250,7 +246,7 @@ def create_base_executor(
     name: str = "base_executor",
     model: str = "gpt-4o-mini",
     temperature: float = 0.1,
-    additional_tools: list | None = None,
+    additional_tools: Optional[List] = None,
 ) -> BaseExecutorAgent:
     """Create a base executor agent with default configuration.
 

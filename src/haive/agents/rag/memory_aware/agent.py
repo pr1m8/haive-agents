@@ -54,9 +54,7 @@ class MemoryItem(BaseModel):
     importance: MemoryImportance = Field(description="Importance level")
     confidence: float = Field(ge=0.0, le=1.0, description="Confidence in this memory")
     created_at: datetime = Field(default_factory=datetime.now)
-    keywords: list[str] = Field(
-        default_factory=list, description="Key terms for retrieval"
-    )
+    keywords: list[str] = Field(default_factory=list, description="Key terms for retrieval")
 
 
 class MemoryRetrievalAgent(Agent):
@@ -64,9 +62,7 @@ class MemoryRetrievalAgent(Agent):
 
     name: str = "Memory Retrieval"
 
-    def __init__(
-        self, llm_config: LLMConfig | None = None, max_memories: int = 10, **kwargs
-    ):
+    def __init__(self, llm_config: LLMConfig | None = None, max_memories: int = 10, **kwargs):
         """Initialize memory retrieval agent."""
         self.llm_config = llm_config or AzureLLMConfig(
             deployment_name="gpt-4",
@@ -99,9 +95,7 @@ class MemoryRetrievalAgent(Agent):
 
             # Sort by relevance and take top memories
             relevant_memories.sort(key=lambda x: x[1], reverse=True)
-            selected_memories = [
-                mem for mem, _ in relevant_memories[: self.max_memories]
-            ]
+            selected_memories = [mem for mem, _ in relevant_memories[: self.max_memories]]
 
             # Format memory context
             memory_context = (
@@ -153,9 +147,7 @@ class MemoryAwareRAGAgent(SequentialAgent):
         )
 
         # Step 2: Document retrieval
-        doc_retrieval = BaseRAGAgent.from_documents(
-            documents=documents, name="Document Retrieval"
-        )
+        doc_retrieval = BaseRAGAgent.from_documents(documents=documents, name="Document Retrieval")
 
         # Step 3: Memory integration and response
         memory_integration = SimpleAgent(
@@ -198,9 +190,7 @@ def create_memory_aware_rag_agent(
     else:  # adaptive
         kwargs.setdefault("max_memories", 100)
 
-    return MemoryAwareRAGAgent.from_documents(
-        documents=documents, llm_config=llm_config, **kwargs
-    )
+    return MemoryAwareRAGAgent.from_documents(documents=documents, llm_config=llm_config, **kwargs)
 
 
 def get_memory_aware_rag_io_schema() -> dict[str, list[str]]:

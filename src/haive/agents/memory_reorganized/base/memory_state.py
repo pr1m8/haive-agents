@@ -48,15 +48,10 @@ class MemoryMetadata(BaseModel):
     )
 
     confidence: float = Field(
-        default=0.5,
-        ge=0.0,
-        le=1.0,
-        description="Confidence score for the memory accuracy",
+        default=0.5, ge=0.0, le=1.0, description="Confidence score for the memory accuracy"
     )
 
-    timestamp: str | None = Field(
-        default=None, description="ISO timestamp when memory was created"
-    )
+    timestamp: str | None = Field(default=None, description="ISO timestamp when memory was created")
 
     source: str = Field(
         default="user_input",
@@ -64,9 +59,7 @@ class MemoryMetadata(BaseModel):
         pattern="^(user_input|agent_inference|system|reflection|improvement)$",
     )
 
-    tags: list[str] = Field(
-        default_factory=list, description="Tags for categorization and search"
-    )
+    tags: list[str] = Field(default_factory=list, description="Tags for categorization and search")
 
     entities: list[str] = Field(
         default_factory=list, description="Named entities extracted from the memory"
@@ -109,8 +102,7 @@ class MemoryEntry(BaseModel):
     content: str = Field(..., min_length=1, description="The actual memory content")
 
     metadata: MemoryMetadata = Field(
-        default_factory=MemoryMetadata,
-        description="Structured metadata about the memory",
+        default_factory=MemoryMetadata, description="Structured metadata about the memory"
     )
 
     embedding: list[float] | None = Field(
@@ -197,8 +189,7 @@ class MemoryState(MessagesState):
 
     # Operation tracking
     last_operation: dict[str, Any] = Field(
-        default_factory=dict,
-        description="Information about the last memory operation performed",
+        default_factory=dict, description="Information about the last memory operation performed"
     )
 
     memory_context: dict[str, Any] = Field(
@@ -207,8 +198,7 @@ class MemoryState(MessagesState):
 
     # Search and filtering
     active_filters: dict[str, Any] = Field(
-        default_factory=dict,
-        description="Currently active filters for memory search/retrieval",
+        default_factory=dict, description="Currently active filters for memory search/retrieval"
     )
 
     # Memory management
@@ -217,8 +207,7 @@ class MemoryState(MessagesState):
     )
 
     memory_cache: dict[str, Any] = Field(
-        default_factory=dict,
-        description="In-memory cache for frequently accessed memories",
+        default_factory=dict, description="In-memory cache for frequently accessed memories"
     )
 
     def add_memory(self, memory: MemoryEntry) -> None:
@@ -239,22 +228,17 @@ class MemoryState(MessagesState):
         else:
             self.memory_stats.memories_by_importance[importance] = 1
 
-    def update_retrieval_stats(
-        self, memories: list[MemoryEntry], retrieval_time: float
-    ) -> None:
+    def update_retrieval_stats(self, memories: list[MemoryEntry], retrieval_time: float) -> None:
         """Update statistics after memory retrieval."""
         self.retrieved_memories = memories
         self.memory_stats.total_retrievals += 1
 
         # Update average retrieval time
         total_time = (
-            self.memory_stats.avg_retrieval_time
-            * (self.memory_stats.total_retrievals - 1)
+            self.memory_stats.avg_retrieval_time * (self.memory_stats.total_retrievals - 1)
             + retrieval_time
         )
-        self.memory_stats.avg_retrieval_time = (
-            total_time / self.memory_stats.total_retrievals
-        )
+        self.memory_stats.avg_retrieval_time = total_time / self.memory_stats.total_retrievals
 
         # Update retrieval counts for individual memories
         for memory in memories:

@@ -1,17 +1,15 @@
-from typing import Any
-
-import tiktoken
-from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.models.vectorstore.base import VectorStoreConfig
-from langchain_core.messages import get_buffer_string
-from langchain_core.runnables import RunnableConfig
-from pydantic import Field
-
 from haive.agents.long_term_memory.aug_llm import lt_mem_agent_aug_llm
 from haive.agents.long_term_memory.state import LongTermMemoryState
 from haive.agents.long_term_memory.tools import search_recall_memories
 from haive.agents.react.agent import ReactAgent
 from haive.agents.react.config import ReactAgentConfig
+from haive.core.engine.aug_llm import AugLLMConfig
+from haive.core.models.vectorstore.base import VectorStoreConfig
+from langchain_core.messages import get_buffer_string
+import tiktoken
+from langchain_core.runnables import RunnableConfig
+from pydantic import Field
+from typing import Dict, Any
 
 
 class LongTermMemoryAgentConfig(ReactAgentConfig):
@@ -29,16 +27,9 @@ class LongTermMemoryAgent(ReactAgent):
     config: LongTermMemoryAgentConfig
 
     def __init__(self, config: LongTermMemoryAgentConfig):
-        """Init  .
-
-        Args:
-            config: [TODO: Add description]
-        """
         super().__init__(config)
 
-    def load_memories(
-        self, state: dict[str, Any], config: RunnableConfig
-    ) -> dict[str, Any]:
+    def load_memories(self, state: Dict[str, Any], config: RunnableConfig) -> Dict[str, Any]:
         """Load memories for the current conversation.
 
         Args:
@@ -59,11 +50,6 @@ class LongTermMemoryAgent(ReactAgent):
         }
 
     def setup_workflow(self) -> None:
-        """Setup Workflow.
-
-        Returns:
-            [TODO: Add return description]
-        """
         self.graph.add_node(load_memories)
         self.graph.add_node(agent)
         self.graph.add_node("tools", ToolNode(tools))

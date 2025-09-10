@@ -5,6 +5,9 @@ import logging
 from datetime import datetime
 from typing import Any
 
+from haive.agents.simple.agent import SimpleAgent
+from haive.agents.simple.state import SimpleAgentState
+from haive.agents.simple.config import SimpleAgentConfig
 from haive.core.engine.agent.agent import register_agent
 from haive.core.engine.aug_llm import AugLLMConfig, compose_runnable
 from haive.core.graph.dynamic_graph_builder import DynamicGraph
@@ -14,10 +17,6 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langgraph.graph import END
 from pydantic import BaseModel, Field
-
-from haive.agents.simple.agent import SimpleAgent
-from haive.agents.simple.config import SimpleAgentConfig
-from haive.agents.simple.state import SimpleAgentState
 
 # Set up logging
 

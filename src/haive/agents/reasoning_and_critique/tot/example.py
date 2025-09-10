@@ -71,7 +71,9 @@ async def run_math_example():
     agent = ToTAgent(config)
 
     # Define a Game of 24 problem
-    problem = "Use the numbers 4, 7, 8, and 9 exactly once with basic operations (+, -, *, /) to get 24."
+    problem = (
+        "Use the numbers 4, 7, 8, and 9 exactly once with basic operations (+, -, *, /) to get 24."
+    )
 
     # Run the agent
     result = await agent.run(problem)

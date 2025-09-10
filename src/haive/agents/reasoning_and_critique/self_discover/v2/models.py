@@ -9,13 +9,9 @@ from pydantic import BaseModel, Field
 class Config(BaseModel):
     """Configuration model for Self-Discovery reasoning system."""
 
-    modules: list[str] = Field(
-        default_factory=list, description="Available reasoning modules"
-    )
+    modules: list[str] = Field(default_factory=list, description="Available reasoning modules")
     max_iterations: int = Field(default=3, description="Maximum reasoning iterations")
-    confidence_threshold: float = Field(
-        default=0.8, description="Confidence threshold for answers"
-    )
+    confidence_threshold: float = Field(default=0.8, description="Confidence threshold for answers")
 
 
 class SelectedModules(BaseModel):
@@ -65,8 +61,7 @@ class FinalAnswer(BaseModel):
 
     answer: str = Field(description="The final answer to the task")
     reasoning_steps: dict[str, str] = Field(
-        default_factory=dict,
-        description="Filled out reasoning structure with specific values",
+        default_factory=dict, description="Filled out reasoning structure with specific values"
     )
     confidence: float | None = Field(
         default=None, ge=0.0, le=1.0, description="Confidence level in the answer (0-1)"

@@ -4,7 +4,7 @@ from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from langgraph.graph import END, START
 
-from haive.agents.multi.agent import MultiAgent
+from haive.agents.multi.clean import MultiAgent
 from haive.agents.planning.plan_and_execute.v2.models import Act, ExecutionResult, Plan
 from haive.agents.planning.plan_and_execute.v2.prompts import (
     EXECUTOR_PROMPT,
@@ -85,11 +85,6 @@ class PlanAndExecuteAgent(MultiAgent):
 
         # Conditional edge from replanner
         def should_continue(state: Dict[str, Any]):
-            """Should Continue.
-
-            Args:
-                state: [TODO: Add description]
-            """
             return "executor" if not state.is_plan_complete() else END
 
         graph.add_conditional_edges(

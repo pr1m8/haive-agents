@@ -1,13 +1,11 @@
-from haive.core.engine.aug_llm import AugLLMConfig
-
 from haive.agents.reflexion.models import AnswerQuestion, ReviseAnswer
 from haive.agents.reflexion.prompts import actor_prompt_template
+from haive.core.engine.aug_llm import AugLLMConfig
 
 # from langchain_core.tools import PydanticToolsParser
 
 initial_answer_prompt = actor_prompt_template.partial(
-    first_instruction="Provide a detailed 1000 word essay.",
-    function_name=AnswerQuestion.__name__,
+    first_instruction="Provide a detailed 1000 word essay.", function_name=AnswerQuestion.__name__
 )
 initial_answer_chain_config = AugLLMConfig(
     tools=[AnswerQuestion], prompt_template=initial_answer_prompt, name="responder"

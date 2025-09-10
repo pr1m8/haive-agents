@@ -52,54 +52,30 @@ class QueryAnalysis(BaseModel):
     original_query: str = Field(description="Original query text")
 
     # Complexity Analysis
-    complexity_level: QueryComplexity = Field(
-        description="Overall complexity assessment"
-    )
-    complexity_score: float = Field(
-        ge=0.0, le=1.0, description="Complexity score (0-1)"
-    )
+    complexity_level: QueryComplexity = Field(description="Overall complexity assessment")
+    complexity_score: float = Field(ge=0.0, le=1.0, description="Complexity score (0-1)")
 
     # Query Characteristics
-    requires_factual_accuracy: bool = Field(
-        description="Needs highly accurate factual information"
-    )
-    requires_multiple_perspectives: bool = Field(
-        description="Benefits from multiple viewpoints"
-    )
-    requires_domain_expertise: bool = Field(
-        description="Needs specialized domain knowledge"
-    )
-    requires_recent_information: bool = Field(
-        description="Needs up-to-date information"
-    )
-    requires_reasoning: bool = Field(
-        description="Involves logical reasoning or inference"
-    )
+    requires_factual_accuracy: bool = Field(description="Needs highly accurate factual information")
+    requires_multiple_perspectives: bool = Field(description="Benefits from multiple viewpoints")
+    requires_domain_expertise: bool = Field(description="Needs specialized domain knowledge")
+    requires_recent_information: bool = Field(description="Needs up-to-date information")
+    requires_reasoning: bool = Field(description="Involves logical reasoning or inference")
 
     # Technical Indicators
     named_entities: list[str] = Field(description="Identified named entities")
     domain_topics: list[str] = Field(description="Domain-specific topics")
-    query_intent: str = Field(
-        description="Primary intent (factual, analytical, creative, etc.)"
-    )
+    query_intent: str = Field(description="Primary intent (factual, analytical, creative, etc.)")
 
     # Preprocessing Requirements
-    needs_decomposition: bool = Field(
-        description="Would benefit from query decomposition"
-    )
+    needs_decomposition: bool = Field(description="Would benefit from query decomposition")
     needs_expansion: bool = Field(description="Needs query expansion/reformulation")
     needs_context_enrichment: bool = Field(description="Requires additional context")
 
     # Routing Recommendations
-    primary_strategy: RoutingStrategy = Field(
-        description="Primary recommended strategy"
-    )
-    fallback_strategies: list[RoutingStrategy] = Field(
-        description="Alternative strategies"
-    )
-    confidence: float = Field(
-        ge=0.0, le=1.0, description="Confidence in routing decision"
-    )
+    primary_strategy: RoutingStrategy = Field(description="Primary recommended strategy")
+    fallback_strategies: list[RoutingStrategy] = Field(description="Alternative strategies")
+    confidence: float = Field(ge=0.0, le=1.0, description="Confidence in routing decision")
 
     reasoning: str = Field(description="Detailed reasoning for routing decision")
 
@@ -118,14 +94,10 @@ class IterativePlan(BaseModel):
 
     # Loop control
     convergence_criteria: str = Field(description="When to stop iterating")
-    quality_threshold: float = Field(
-        ge=0.0, le=1.0, description="Quality threshold for completion"
-    )
+    quality_threshold: float = Field(ge=0.0, le=1.0, description="Quality threshold for completion")
 
     # State tracking
-    accumulated_context: str = Field(
-        description="Context accumulated across iterations"
-    )
+    accumulated_context: str = Field(description="Context accumulated across iterations")
     iteration_results: dict[str, str] = Field(description="Results from each iteration")
     should_continue: bool = Field(description="Whether to continue iterations")
 
@@ -139,9 +111,7 @@ class RoutingDecision(BaseModel):
     execution_plan: dict[str, Any] = Field(description="Detailed execution parameters")
 
     # Quality assurance
-    expected_quality: float = Field(
-        ge=0.0, le=1.0, description="Expected result quality"
-    )
+    expected_quality: float = Field(ge=0.0, le=1.0, description="Expected result quality")
     risk_factors: list[str] = Field(description="Potential risks or limitations")
     mitigation_strategies: list[str] = Field(description="Risk mitigation approaches")
 
@@ -151,9 +121,7 @@ class RoutingDecision(BaseModel):
 
     # Fallback planning
     fallback_enabled: bool = Field(description="Whether fallback is configured")
-    fallback_trigger: str | None = Field(
-        description="Conditions for fallback activation"
-    )
+    fallback_trigger: str | None = Field(description="Conditions for fallback activation")
 
 
 # Enhanced prompts with structured output
@@ -192,7 +160,7 @@ Provide detailed, structured analysis for routing optimization.""",
         ),
         (
             "human",
-            """Analyze this query for optimal RAG routing:.
+            """Analyze this query for optimal RAG routing:
 
 **Query:** {query}
 
@@ -242,7 +210,7 @@ Design efficient iterative plans that balance thoroughness with performance.""",
         ),
         (
             "human",
-            """Create an iterative plan for this query processing:.
+            """Create an iterative plan for this query processing:
 
 **Query:** {query}
 **Query Analysis:** {query_analysis}
@@ -289,7 +257,7 @@ Make data-driven routing decisions with clear justification.""",
         ),
         (
             "human",
-            """Make routing decision for this query:.
+            """Make routing decision for this query:
 
 **Query:** {query}
 **Query Analysis:** {query_analysis}
@@ -317,10 +285,7 @@ class QueryAnalyzerAgent(Agent):
     name: str = "Query Analyzer"
 
     def __init__(
-        self,
-        llm_config: LLMConfig | None = None,
-        analysis_depth: str = "comprehensive",
-        **kwargs,
+        self, llm_config: LLMConfig | None = None, analysis_depth: str = "comprehensive", **kwargs
     ):
         """Initialize query analyzer.
 
@@ -352,9 +317,7 @@ class QueryAnalyzerAgent(Agent):
         def analyze_query(state: dict[str, Any]) -> dict[str, Any]:
             """Perform comprehensive query analysis."""
             query = getattr(state, "query", "")
-            context = getattr(state, "context", "") or getattr(
-                state, "retrieved_documents", ""
-            )
+            context = getattr(state, "context", "") or getattr(state, "retrieved_documents", "")
 
             # Format context for analysis
             if isinstance(context, list):
@@ -370,9 +333,7 @@ class QueryAnalyzerAgent(Agent):
                 )
             else:
                 context_str = (
-                    str(context)[:500] + "..."
-                    if len(str(context)) > 500
-                    else str(context)
+                    str(context)[:500] + "..." if len(str(context)) > 500 else str(context)
                 )
 
             # Extract domain information from query
@@ -439,9 +400,7 @@ class IterativePlannerAgent(Agent):
 
     name: str = "Iterative Planner"
 
-    def __init__(
-        self, llm_config: LLMConfig | None = None, max_iterations: int = 3, **kwargs
-    ):
+    def __init__(self, llm_config: LLMConfig | None = None, max_iterations: int = 3, **kwargs):
         """Initialize iterative planner.
 
         Args:
@@ -503,9 +462,7 @@ class IterativePlannerAgent(Agent):
                 {
                     "query": query,
                     "query_analysis": (
-                        str(query_analysis)
-                        if query_analysis
-                        else "No analysis available"
+                        str(query_analysis) if query_analysis else "No analysis available"
                     ),
                     "available_strategies": ", ".join(available_strategies),
                     "current_context": (
@@ -518,9 +475,7 @@ class IterativePlannerAgent(Agent):
             )
 
             # Ensure plan doesn't exceed max iterations
-            plan_result.total_iterations = min(
-                plan_result.total_iterations, self.max_iterations
-            )
+            plan_result.total_iterations = min(plan_result.total_iterations, self.max_iterations)
 
             return {
                 "iterative_plan": plan_result,
@@ -543,12 +498,7 @@ class RoutingDecisionAgent(Agent):
 
     name: str = "Routing Decision Engine"
 
-    def __init__(
-        self,
-        llm_config: LLMConfig | None = None,
-        enable_fallback: bool = True,
-        **kwargs,
-    ):
+    def __init__(self, llm_config: LLMConfig | None = None, enable_fallback: bool = True, **kwargs):
         """Initialize routing decision agent.
 
         Args:
@@ -583,21 +533,15 @@ class RoutingDecisionAgent(Agent):
             iterative_plan = getattr(state, "iterative_plan", None)
 
             # Available resources and performance requirements
-            available_resources = (
-                "standard"  # Could be configured based on system state
-            )
-            performance_requirements = (
-                "balanced"  # Could be derived from query analysis
-            )
+            available_resources = "standard"  # Could be configured based on system state
+            performance_requirements = "balanced"  # Could be derived from query analysis
 
             # Make routing decision
             decision_result = decision_engine.invoke(
                 {
                     "query": query,
                     "query_analysis": (
-                        str(query_analysis)
-                        if query_analysis
-                        else "No analysis available"
+                        str(query_analysis) if query_analysis else "No analysis available"
                     ),
                     "iterative_plan": (
                         str(iterative_plan) if iterative_plan else "No iterative plan"
@@ -669,16 +613,12 @@ class SelfRouteRAGAgent(SequentialAgent):
 
         # Step 2: Iterative planning with loop structure
         iterative_planner = IterativePlannerAgent(
-            llm_config=llm_config,
-            max_iterations=max_iterations,
-            name="Iterative Planner",
+            llm_config=llm_config, max_iterations=max_iterations, name="Iterative Planner"
         )
 
         # Step 3: Final routing decision
         routing_decision = RoutingDecisionAgent(
-            llm_config=llm_config,
-            enable_fallback=enable_fallback,
-            name="Routing Decision Engine",
+            llm_config=llm_config, enable_fallback=enable_fallback, name="Routing Decision Engine"
         )
 
         # Step 4: Strategy executor (would execute the chosen strategy)
@@ -745,9 +685,7 @@ def create_self_route_rag_agent(
         kwargs.setdefault("max_iterations", 3)
         kwargs.setdefault("enable_fallback", True)
 
-    return SelfRouteRAGAgent.from_documents(
-        documents=documents, llm_config=llm_config, **kwargs
-    )
+    return SelfRouteRAGAgent.from_documents(documents=documents, llm_config=llm_config, **kwargs)
 
 
 # I/O schema for compatibility

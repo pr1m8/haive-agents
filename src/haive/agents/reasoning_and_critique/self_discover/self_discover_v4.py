@@ -1,8 +1,8 @@
-"""Self-Discover V4 - Using SimpleAgentV3 and MultiAgent.
+"""Self-Discover V4 - Using SimpleAgentV3 and EnhancedMultiAgentV4.
 
 Clean implementation following CLAUDE.md patterns:
 - SimpleAgentV3 for individual agents
-- MultiAgent for orchestration
+- EnhancedMultiAgentV4 for orchestration
 - No custom __init__ overrides
 - Proper state handling
 """
@@ -15,8 +15,8 @@ from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field
 
-from haive.agents.multi.agent import MultiAgent
-from haive.agents.simple.agent import SimpleAgent
+from haive.agents.multi.enhanced_multi_agent_v4 import EnhancedMultiAgentV4
+from haive.agents.simple.agent_v3 import SimpleAgentV3
 
 # ==========================
 # Pydantic Models (Unified)
@@ -26,9 +26,7 @@ from haive.agents.simple.agent import SimpleAgent
 class SelectedModule(BaseModel):
     """A reasoning module selected for the task."""
 
-    module_number: int = Field(
-        description="Module number from the list (1-20)", ge=1, le=20
-    )
+    module_number: int = Field(description="Module number from the list (1-20)", ge=1, le=20)
     module_name: str = Field(description="Name of the reasoning module")
     explanation: str = Field(description="Why this module is relevant")
 
@@ -97,16 +95,14 @@ class FinalAnswer(BaseModel):
 
     reasoning_process: str = Field(description="Step-by-step reasoning")
     answer: str = Field(description="Final answer")
-    confidence: str = Field(
-        description="HIGH, MEDIUM, or LOW", pattern="^(HIGH|MEDIUM|LOW)$"
-    )
+    confidence: str = Field(description="HIGH, MEDIUM, or LOW", pattern="^(HIGH|MEDIUM|LOW)$")
 
 
 # ==========================
 # Default Reasoning Modules
 # ==========================
 
-REASONING_MODULES = """1. Critical Thinking: Question assumptions, evaluate evidence.
+REASONING_MODULES = """1. Critical Thinking: Question assumptions, evaluate evidence
 2. Systems Analysis: Break down complex systems and relationships
 3. Root Cause Analysis: Identify underlying causes
 4. Pattern Recognition: Identify recurring themes and structures
@@ -133,9 +129,9 @@ REASONING_MODULES = """1. Critical Thinking: Question assumptions, evaluate evid
 # ==========================
 
 
-def create_selector() -> SimpleAgent:
+def create_selector() -> SimpleAgentV3:
     """Create the module selector agent."""
-    return SimpleAgent(
+    return SimpleAgentV3(
         name="selector",
         engine=AugLLMConfig(
             temperature=0.3,
@@ -147,7 +143,7 @@ def create_selector() -> SimpleAgent:
                 ("system", "{system_message}"),
                 (
                     "human",
-                    """Available Modules:.
+                    """Available Modules:
 {modules}
 
 Task: {task}
@@ -159,9 +155,9 @@ Select the most relevant modules and explain why.""",
     )
 
 
-def create_adapter() -> SimpleAgent:
+def create_adapter() -> SimpleAgentV3:
     """Create the module adapter agent."""
-    return SimpleAgent(
+    return SimpleAgentV3(
         name="adapter",
         engine=AugLLMConfig(
             temperature=0.5,
@@ -173,7 +169,7 @@ def create_adapter() -> SimpleAgent:
                 ("system", "{system_message}"),
                 (
                     "human",
-                    """Task: {task}.
+                    """Task: {task}
 
 {selected}
 
@@ -184,9 +180,9 @@ Adapt each module with a specific approach for this task.""",
     )
 
 
-def create_structurer() -> SimpleAgent:
+def create_structurer() -> SimpleAgentV3:
     """Create the plan structurer agent."""
-    return SimpleAgent(
+    return SimpleAgentV3(
         name="structurer",
         engine=AugLLMConfig(
             temperature=0.3,
@@ -198,7 +194,7 @@ def create_structurer() -> SimpleAgent:
                 ("system", "{system_message}"),
                 (
                     "human",
-                    """Task: {task}.
+                    """Task: {task}
 
 {adapted}
 
@@ -209,9 +205,9 @@ Create a step-by-step plan using these modules.""",
     )
 
 
-def create_executor() -> SimpleAgent:
+def create_executor() -> SimpleAgentV3:
     """Create the plan executor agent."""
-    return SimpleAgent(
+    return SimpleAgentV3(
         name="executor",
         engine=AugLLMConfig(
             temperature=0.7,
@@ -223,7 +219,7 @@ def create_executor() -> SimpleAgent:
                 ("system", "{system_message}"),
                 (
                     "human",
-                    """Task: {task}.
+                    """Task: {task}
 
 {plan}
 
@@ -239,12 +235,12 @@ Execute this plan step-by-step and provide the answer.""",
 # ==========================
 
 
-class SelfDiscoverV4(MultiAgent):
+class SelfDiscoverV4(EnhancedMultiAgentV4):
     """Self-Discover agent using V4 architecture.
 
     This is a clean implementation that:
     1. Uses SimpleAgentV3 for all agents
-    2. Uses MultiAgent for orchestration
+    2. Uses EnhancedMultiAgentV4 for orchestration
     3. Properly handles state between agents
     4. No custom __init__ overrides
     """
@@ -260,13 +256,9 @@ class SelfDiscoverV4(MultiAgent):
         ]
 
         # Initialize parent with sequential execution
-        super().__init__(
-            agents=agents, execution_mode="sequential", name=name, **kwargs
-        )
+        super().__init__(agents=agents, execution_mode="sequential", name=name, **kwargs)
 
-    def prepare_initial_state(
-        self, task: str, modules: str | None = None
-    ) -> dict[str, Any]:
+    def prepare_initial_state(self, task: str, modules: str | None = None) -> dict[str, Any]:
         """Prepare the initial state for execution.
 
         Args:
@@ -338,7 +330,7 @@ if __name__ == "__main__":
         agent = create_self_discover_v4()
 
         # Example task
-        task = """Analyze this SVG path and determine what shape it draws:.
+        task = """Analyze this SVG path and determine what shape it draws:
 <path d="M 55.57,80.69 L 57.38,65.80 M 57.38,65.80 L 48.90,57.46 M 48.90,57.46 L
 45.58,47.78 M 45.58,47.78 L 53.25,36.07 L 66.29,48.90 L 78.69,61.09 L 55.57,80.69"/>
 

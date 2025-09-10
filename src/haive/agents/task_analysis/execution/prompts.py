@@ -40,7 +40,7 @@ Phase Design Principles:
         ),
         (
             "human",
-            """Create an execution plan for this task analysis:.
+            """Create an execution plan for this task analysis:
 
 **Task Overview**: {task_description}
 **Total Tasks**: {total_tasks}
@@ -116,7 +116,7 @@ PHASE_OPTIMIZATION_PROMPT = ChatPromptTemplate.from_messages(
         ),
         (
             "human",
-            """Optimize these execution phases:.
+            """Optimize these execution phases:
 
 Current Phases:
 {current_phases}
@@ -158,7 +158,7 @@ Considerations:
         ),
         (
             "human",
-            """Design join strategy for:.
+            """Design join strategy for:
 
 **Join Point**: {join_point_id}
 **Incoming Tasks**: {input_tasks}
@@ -189,7 +189,7 @@ RESOURCE_ALLOCATION_PROMPT = ChatPromptTemplate.from_messages(
         ),
         (
             "human",
-            """Plan resource allocation for:.
+            """Plan resource allocation for:
 
 **Execution Phases**: {phases}
 **Available Resources**: {available_resources}

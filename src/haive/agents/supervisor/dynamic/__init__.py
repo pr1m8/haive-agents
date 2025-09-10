@@ -11,9 +11,9 @@ from haive.agents.supervisor.dynamic.dynamic_supervisor import (
 )
 
 __all__ = [
-    "DynamicMultiAgent",
     "DynamicSupervisor",
     "DynamicSupervisorState",
+    "DynamicMultiAgent",
     "create_agent_management_tools",
     "register_agent_constructor",
 ]

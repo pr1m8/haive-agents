@@ -14,11 +14,6 @@ class StateWrapper:
     """
 
     def __init__(self) -> None:
-        """Init  .
-
-        Returns:
-            [TODO: Add return description]
-        """
         # Store global instances of non-serializable objects
         self._page_instance: Page | None = None
         self._other_objects: dict[str, Any] = {}

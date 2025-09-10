@@ -20,18 +20,7 @@ from haive.agents.simple import SimpleAgent
 class FLAREAgentV2(MultiAgent, StateConfigMixin):
     """FLARE V2 - Configuration stored in FLAREState."""
 
-    def __init__(
-        self,
-        uncertainty_threshold: float = 0.3,
-        max_retrieval_rounds: int = 3,
-        **kwargs,
-    ):
-        """Init  .
-
-        Args:
-            uncertainty_threshold: [TODO: Add description]
-            max_retrieval_rounds: [TODO: Add description]
-        """
+    def __init__(self, uncertainty_threshold: float = 0.3, max_retrieval_rounds: int = 3, **kwargs):
         generation_monitor = SimpleAgent(
             name="generation_monitor",
             instructions="""
@@ -89,10 +78,7 @@ class FLAREAgentV2(MultiAgent, StateConfigMixin):
         ]
 
         super().__init__(
-            agents=agents,
-            execution_mode="conditional",
-            state_schema=FLAREState,
-            **kwargs,
+            agents=agents, execution_mode="conditional", state_schema=FLAREState, **kwargs
         )
 
         self._initial_config = {
@@ -123,13 +109,6 @@ class DynamicRAGAgentV2(MultiAgent, StateConfigMixin):
         performance_threshold: float = 0.6,
         **kwargs,
     ):
-        """Init  .
-
-        Args:
-            min_retrievers: [TODO: Add description]
-            max_retrievers: [TODO: Add description]
-            performance_threshold: [TODO: Add description]
-        """
         retriever_manager = SimpleAgent(
             name="retriever_manager",
             instructions="""
@@ -188,10 +167,7 @@ class DynamicRAGAgentV2(MultiAgent, StateConfigMixin):
         ]
 
         super().__init__(
-            agents=agents,
-            execution_mode="sequential",
-            state_schema=DynamicRAGState,
-            **kwargs,
+            agents=agents, execution_mode="sequential", state_schema=DynamicRAGState, **kwargs
         )
 
         self._initial_config = {
@@ -224,14 +200,6 @@ class DebateRAGAgentV2(MultiAgent, StateConfigMixin):
         enable_judge: bool = True,
         **kwargs,
     ):
-        """Init  .
-
-        Args:
-            position_names: [TODO: Add description]
-            max_debate_rounds: [TODO: Add description]
-            require_consensus: [TODO: Add description]
-            enable_judge: [TODO: Add description]
-        """
         if position_names is None:
             position_names = ["Affirmative", "Negative", "Neutral"]
 
@@ -299,10 +267,7 @@ class DebateRAGAgentV2(MultiAgent, StateConfigMixin):
         agents.append(synthesis_judge)
 
         super().__init__(
-            agents=agents,
-            execution_mode="conditional",
-            state_schema=DebateRAGState,
-            **kwargs,
+            agents=agents, execution_mode="conditional", state_schema=DebateRAGState, **kwargs
         )
 
         self._initial_config = {
@@ -344,14 +309,6 @@ class AdaptiveThresholdRAGAgentV2(MultiAgent, StateConfigMixin):
         max_threshold: float = 0.95,
         **kwargs,
     ):
-        """Init  .
-
-        Args:
-            initial_threshold: [TODO: Add description]
-            threshold_step: [TODO: Add description]
-            min_threshold: [TODO: Add description]
-            max_threshold: [TODO: Add description]
-        """
         query_analyzer = SimpleAgent(
             name="query_analyzer",
             instructions="""

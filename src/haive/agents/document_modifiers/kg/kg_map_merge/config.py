@@ -38,7 +38,7 @@ class ParallelKGTransformerConfig(AgentConfig):
                     ),
                     (
                         "human",
-                        """Merge these knowledge graphs:.
+                        """Merge these knowledge graphs:
                 {graph_contexts}
 
                 Provide a unified and refined knowledge graph.""",
@@ -56,13 +56,11 @@ class ParallelKGAgentConfig(AgentConfig):
     """Configuration for the Parallel Knowledge Graph Agent with structured extraction."""
 
     contents: list[Document] = Field(
-        default_factory=list,
-        description="Documents to process for knowledge graph extraction",
+        default_factory=list, description="Documents to process for knowledge graph extraction"
     )
 
     max_parallel_workers: int = Field(
-        default=4,
-        description="Maximum number of parallel workers for document processing",
+        default=4, description="Maximum number of parallel workers for document processing"
     )
 
     schema_extraction_config: AugLLMConfig = Field(

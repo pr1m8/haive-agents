@@ -41,7 +41,7 @@ Please provide your response in the following format:
         ),
         (
             "human",
-            """Write a detailed document that would contain the answer to this question:.
+            """Write a detailed document that would contain the answer to this question:
 
 Question: {query}""",
         ),
@@ -51,13 +51,10 @@ Question: {query}""",
 
 HYDE_RETRIEVAL_PROMPT = ChatPromptTemplate.from_messages(
     [
-        (
-            "system",
-            "Transform the hypothetical document into an effective search query.",
-        ),
+        ("system", "Transform the hypothetical document into an effective search query."),
         (
             "human",
-            """Based on this hypothetical answer document, create a search query to find similar real documents:.
+            """Based on this hypothetical answer document, create a search query to find similar real documents:
 
 Hypothetical Document:
 {hypothetical_doc}
@@ -89,14 +86,11 @@ class HyDERetrieverAgent(Agent):
             # Extract hypothetical document or fall back to refined query
             if isinstance(hyde_result, dict):
                 hyp_doc = hyde_result.get(
-                    "hypothetical_doc",
-                    hyde_result.get("refined_query", state.get("query", "")),
+                    "hypothetical_doc", hyde_result.get("refined_query", state.get("query", ""))
                 )
             else:
                 # If it's a HyDEResult object
-                hyp_doc = getattr(
-                    hyde_result, "hypothetical_doc", state.get("query", "")
-                )
+                hyp_doc = getattr(hyde_result, "hypothetical_doc", state.get("query", ""))
 
             # Use it as the query for retrieval
             return {
@@ -109,9 +103,7 @@ class HyDERetrieverAgent(Agent):
         graph.add_node("transform", transform_to_query)
 
         # Add the base retriever's graph as a subgraph
-        retriever_node = EngineNodeConfig(
-            engine=self.base_retriever.engine, name="retriever"
-        )
+        retriever_node = EngineNodeConfig(engine=self.base_retriever.engine, name="retriever")
         graph.add_node("retriever", retriever_node)
 
         # Connect: START -> transform -> retriever -> END
@@ -166,15 +158,11 @@ class HyDERAGAgentV2(SequentialAgent):
         )
 
         # Step 3: Create HyDE retriever that uses hypothetical doc
-        hyde_retriever = HyDERetrieverAgent(
-            base_retriever=base_retriever, name="HyDE Retriever"
-        )
+        hyde_retriever = HyDERetrieverAgent(base_retriever=base_retriever, name="HyDE Retriever")
 
         # Step 4: Generate final answer using standard RAG prompt
         answer_agent = SimpleAgent(
-            engine=AugLLMConfig(
-                llm_config=llm_config, prompt_template=RAG_ANSWER_STANDARD
-            ),
+            engine=AugLLMConfig(llm_config=llm_config, prompt_template=RAG_ANSWER_STANDARD),
             name="Answer Generator",
         )
 

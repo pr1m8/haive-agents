@@ -5,7 +5,7 @@ Haive architecture patterns, enhanced agents, and modern multi-agent orchestrati
 
 ## Key Features
 
-- **MultiAgent**: Latest multi-agent orchestration with state management
+- **EnhancedMultiAgentV4**: Latest multi-agent orchestration with state management
 - **SimpleAgentV3**: Enhanced planning and replanning with hooks system
 - **ReactAgent**: Advanced tool-based execution with real-time feedback
 - **Custom Pydantic Models**: Structured output designed for planning workflows
@@ -15,56 +15,62 @@ Haive architecture patterns, enhanced agents, and modern multi-agent orchestrati
 
 ## Architecture
 
-        PlannerAgentV3 (SimpleAgentV3)
-            ↓ (structured Plan model)
-        ExecutorAgentV3 (ReactAgent) ←─┐
-            ↓ (execution results)       │
-        Routing Logic ──→ Continue ────┘
-            ↓
-        ReplannerAgentV3 (SimpleAgentV3)
-            ↓ (structured Decision model)
-        Final Response or Loop Back
+```
+PlannerAgentV3 (SimpleAgentV3)
+    ↓ (structured Plan model)
+ExecutorAgentV3 (ReactAgent) ←─┐
+    ↓ (execution results)       │
+Routing Logic ──→ Continue ────┘
+    ↓
+ReplannerAgentV3 (SimpleAgentV3)
+    ↓ (structured Decision model)
+Final Response or Loop Back
+```
 
 ## Usage
 
 ### Basic Usage
-        from haive.agents.planning.enhanced_plan_execute_v5 import create_enhanced_plan_execute_v5
+```python
+from haive.agents.planning.enhanced_plan_execute_v5 import create_enhanced_plan_execute_v5
 
-        # Create with default tools
-        agent = create_enhanced_plan_execute_v5()
-        result = await agent.arun("Calculate compound interest on $1000 at 5% for 10 years")
+# Create with default tools
+agent = create_enhanced_plan_execute_v5()
+result = await agent.arun("Calculate compound interest on $1000 at 5% for 10 years")
 
-        # Create with custom tools
-        from haive.tools import web_search_tool, calculator_tool
-        agent = create_enhanced_plan_execute_v5(
-            name="research_planner",
-            tools=[web_search_tool, calculator_tool]
-        )
-        result = await agent.arun("Research Tesla stock performance and calculate ROI")
+# Create with custom tools
+from haive.tools import web_search_tool, calculator_tool
+agent = create_enhanced_plan_execute_v5(
+    name="research_planner",
+    tools=[web_search_tool, calculator_tool]
+)
+result = await agent.arun("Research Tesla stock performance and calculate ROI")
+```
 
 ### Advanced Configuration
-        agent = create_enhanced_plan_execute_v5(
-            name="advanced_planner",
-            planner_config=AugLLMConfig(
-                model="gpt-4",
-                temperature=0.2,
-                system_message="You are an expert strategic planner."
-            ),
-            executor_config=AugLLMConfig(
-                model="gpt-4-turbo",
-                temperature=0.1
-            ),
-            tools=[custom_tool1, custom_tool2],
-            max_iterations=10,
-            enable_hooks=True
-        )
+```python
+agent = create_enhanced_plan_execute_v5(
+    name="advanced_planner",
+    planner_config=AugLLMConfig(
+        model="gpt-4",
+        temperature=0.2,
+        system_message="You are an expert strategic planner."
+    ),
+    executor_config=AugLLMConfig(
+        model="gpt-4-turbo",
+        temperature=0.1
+    ),
+    tools=[custom_tool1, custom_tool2],
+    max_iterations=10,
+    enable_hooks=True
+)
 
-        # Add custom hooks
-        @agent.before_run
-        def track_execution(context):
-            print(f"Starting planning workflow: {context.agent_name}")
+# Add custom hooks
+@agent.before_run
+def track_execution(context):
+    print(f"Starting planning workflow: {context.agent_name}")
 
-        result = await agent.arun("Complex multi-step research task")
+result = await agent.arun("Complex multi-step research task")
+```
 
 ## Custom Models
 
@@ -98,17 +104,16 @@ of the enhanced base agent pattern and modern multi-agent orchestration.
 from __future__ import annotations
 
 import logging
-from typing import Literal
+from typing import Any, Literal, Optional
 
+from haive.agents.multi.enhanced.multi_agent_v4 import EnhancedMultiAgentV4
+from haive.agents.react.agent import ReactAgent
+from haive.agents.simple.agent_v3 import SimpleAgentV3
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.schema.prebuilt.multi_agent_state import MultiAgentState
 from langchain_core.prompts import ChatPromptTemplate
 from langgraph.graph import END, START
 from pydantic import BaseModel, Field
-
-from haive.agents.multi.enhanced.multi_agent_v4 import MultiAgent
-from haive.agents.react.agent import ReactAgent
-from haive.agents.simple.agent import SimpleAgent
 
 logger = logging.getLogger(__name__)
 
@@ -122,16 +127,14 @@ class TaskStep(BaseModel):
 
     step_id: str = Field(..., description="Unique identifier for this step")
     description: str = Field(..., description="Clear description of what to do")
-    expected_outcome: str = Field(
-        ..., description="What result this step should produce"
-    )
+    expected_outcome: str = Field(..., description="What result this step should produce")
     tools_needed: list[str] = Field(
         default_factory=list, description="Tools required for this step"
     )
     priority: Literal["high", "medium", "low"] = Field(
         default="medium", description="Priority level for execution"
     )
-    estimated_time: str | None = Field(
+    estimated_time: Optional[str] = Field(
         default=None, description="Estimated time to complete (e.g., '5 minutes')"
     )
     dependencies: list[str] = Field(
@@ -142,15 +145,11 @@ class TaskStep(BaseModel):
 class TaskPlan(BaseModel):
     """Comprehensive task plan with metadata and tracking."""
 
-    objective: str = Field(
-        ..., description="The main objective we're trying to achieve"
-    )
+    objective: str = Field(..., description="The main objective we're trying to achieve")
     steps: list[TaskStep] = Field(..., description="List of steps to execute in order")
     reasoning: str = Field(..., description="Explanation of the planning approach")
-    success_criteria: str = Field(
-        ..., description="How we'll know the objective has been achieved"
-    )
-    estimated_total_time: str | None = Field(
+    success_criteria: str = Field(..., description="How we'll know the objective has been achieved")
+    estimated_total_time: Optional[str] = Field(
         default=None, description="Estimated total time for all steps"
     )
 
@@ -161,10 +160,8 @@ class ExecutionResult(BaseModel):
     step_id: str = Field(..., description="The step that was executed")
     success: bool = Field(..., description="Whether the step completed successfully")
     output: str = Field(..., description="The actual output/result from execution")
-    tools_used: list[str] = Field(
-        default_factory=list, description="Tools that were actually used"
-    )
-    execution_time: str | None = Field(
+    tools_used: list[str] = Field(default_factory=list, description="Tools that were actually used")
+    execution_time: Optional[str] = Field(
         default=None, description="How long the step took to execute"
     )
     issues_encountered: list[str] = Field(
@@ -182,16 +179,14 @@ class PlanningDecision(BaseModel):
         ..., description="What action to take next"
     )
     reasoning: str = Field(..., description="Why this action was chosen")
-    confidence: float = Field(
-        ..., ge=0.0, le=1.0, description="Confidence in this decision (0-1)"
-    )
-    final_answer: str | None = Field(
+    confidence: float = Field(..., ge=0.0, le=1.0, description="Confidence in this decision (0-1)")
+    final_answer: Optional[str] = Field(
         default=None, description="Final answer if the task is complete"
     )
-    new_plan: TaskPlan | None = Field(
+    new_plan: Optional[TaskPlan] = Field(
         default=None, description="Revised plan if replanning is needed"
     )
-    next_step_id: str | None = Field(
+    next_step_id: Optional[str] = Field(
         default=None, description="Next step to execute if continuing"
     )
 
@@ -201,13 +196,11 @@ class EnhancedPlanExecuteState(MultiAgentState):
 
     # Core planning fields
     original_objective: str = Field(default="", description="The original user request")
-    current_plan: TaskPlan | None = Field(
-        default=None, description="The current execution plan"
-    )
+    current_plan: Optional[TaskPlan] = Field(default=None, description="The current execution plan")
     execution_results: list[ExecutionResult] = Field(
         default_factory=list, description="Results from completed steps"
     )
-    current_step_id: str | None = Field(
+    current_step_id: Optional[str] = Field(
         default=None, description="ID of step currently being executed"
     )
 
@@ -215,25 +208,21 @@ class EnhancedPlanExecuteState(MultiAgentState):
     completed_steps: list[str] = Field(
         default_factory=list, description="IDs of successfully completed steps"
     )
-    failed_steps: list[str] = Field(
-        default_factory=list, description="IDs of steps that failed"
-    )
+    failed_steps: list[str] = Field(default_factory=list, description="IDs of steps that failed")
     iteration_count: int = Field(default=0, description="Number of planning iterations")
     replan_count: int = Field(default=0, description="Number of times we've replanned")
 
     # Decision tracking
-    last_decision: PlanningDecision | None = Field(
+    last_decision: Optional[PlanningDecision] = Field(
         default=None, description="The most recent planning decision made"
     )
-    final_answer: str | None = Field(
+    final_answer: Optional[str] = Field(
         default=None, description="Final answer when task is complete"
     )
 
     # Metadata
-    planning_start_time: str | None = Field(
-        default=None, description="When planning started"
-    )
-    total_execution_time: str | None = Field(
+    planning_start_time: Optional[str] = Field(default=None, description="When planning started")
+    total_execution_time: Optional[str] = Field(
         default=None, description="Total time for entire workflow"
     )
 
@@ -270,7 +259,7 @@ PLANNER_PROMPT_TEMPLATE = ChatPromptTemplate.from_messages(
         ("system", PLANNER_SYSTEM_MESSAGE),
         (
             "human",
-            """Please create a detailed plan for this objective:.
+            """Please create a detailed plan for this objective:
 
 Objective: {objective}
 
@@ -307,7 +296,7 @@ EXECUTOR_PROMPT_TEMPLATE = ChatPromptTemplate.from_messages(
         ("system", EXECUTOR_SYSTEM_MESSAGE),
         (
             "human",
-            """Execute this specific step from our plan:.
+            """Execute this specific step from our plan:
 
 Step: {step_description}
 Expected Outcome: {expected_outcome}
@@ -348,7 +337,7 @@ REPLANNER_PROMPT_TEMPLATE = ChatPromptTemplate.from_messages(
         ("system", REPLANNER_SYSTEM_MESSAGE),
         (
             "human",
-            """Analyze the current progress and make a decision about next steps:.
+            """Analyze the current progress and make a decision about next steps:
 
 Original Objective: {objective}
 Current Plan: {current_plan}
@@ -379,9 +368,9 @@ def should_continue_enhanced(state: EnhancedPlanExecuteState) -> str:
     if state.last_decision:
         if state.last_decision.action == "complete":
             return END
-        if state.last_decision.action == "continue":
+        elif state.last_decision.action == "continue":
             return "executor"
-        if state.last_decision.action == "replan":
+        elif state.last_decision.action == "replan":
             return "replanner"
 
     # If we have a current plan and next step, continue execution
@@ -396,7 +385,7 @@ def should_continue_enhanced(state: EnhancedPlanExecuteState) -> str:
     return "replanner"
 
 
-def get_next_step_id(plan: TaskPlan, completed_steps: list[str]) -> str | None:
+def get_next_step_id(plan: TaskPlan, completed_steps: list[str]) -> Optional[str]:
     """Get the next step ID to execute based on plan and completed steps."""
     if not plan or not plan.steps:
         return None
@@ -417,13 +406,13 @@ def get_next_step_id(plan: TaskPlan, completed_steps: list[str]) -> str | None:
 
 def create_enhanced_plan_execute_v5(
     name: str = "EnhancedPlanExecuteV5",
-    planner_config: AugLLMConfig | None = None,
-    executor_config: AugLLMConfig | None = None,
-    replanner_config: AugLLMConfig | None = None,
-    tools: list | None = None,
+    planner_config: Optional[AugLLMConfig] = None,
+    executor_config: Optional[AugLLMConfig] = None,
+    replanner_config: Optional[AugLLMConfig] = None,
+    tools: Optional[list] = None,
     max_iterations: int = 20,
     enable_hooks: bool = True,
-) -> MultiAgent:
+) -> EnhancedMultiAgentV4:
     """Create enhanced Plan & Execute agent using modern Haive patterns.
 
     Args:
@@ -436,7 +425,7 @@ def create_enhanced_plan_execute_v5(
         enable_hooks: Whether to enable the hooks system
 
     Returns:
-        MultiAgent: Complete planning workflow system
+        EnhancedMultiAgentV4: Complete planning workflow system
 
     Examples:
         Basic usage::
@@ -467,16 +456,14 @@ def create_enhanced_plan_execute_v5(
 
     if replanner_config is None:
         replanner_config = AugLLMConfig(
-            model="gpt-4o-mini",
-            temperature=0.2,
-            system_message=REPLANNER_SYSTEM_MESSAGE,
+            model="gpt-4o-mini", temperature=0.2, system_message=REPLANNER_SYSTEM_MESSAGE
         )
 
     if tools is None:
         tools = []
 
     # Create enhanced planning agent
-    planner = SimpleAgent(
+    planner = SimpleAgentV3(
         name="planner",
         engine=planner_config,
         prompt_template=PLANNER_PROMPT_TEMPLATE,
@@ -497,7 +484,7 @@ def create_enhanced_plan_execute_v5(
     )
 
     # Create enhanced replanning agent
-    replanner = SimpleAgent(
+    replanner = SimpleAgentV3(
         name="replanner",
         engine=replanner_config,
         prompt_template=REPLANNER_PROMPT_TEMPLATE,
@@ -507,7 +494,7 @@ def create_enhanced_plan_execute_v5(
     )
 
     # Create the multi-agent workflow
-    workflow = MultiAgent(
+    workflow = EnhancedMultiAgentV4(
         name=name,
         agents=[planner, executor, replanner],
         execution_mode="conditional",
@@ -548,34 +535,19 @@ def create_enhanced_plan_execute_v5(
     return workflow
 
 
-def _add_monitoring_hooks(workflow: MultiAgent) -> None:
+def _add_monitoring_hooks(workflow: EnhancedMultiAgentV4) -> None:
     """Add comprehensive monitoring hooks to the workflow."""
 
     @workflow.before_run
     def log_workflow_start(context):
-        """Log Workflow Start.
-
-        Args:
-            context: [TODO: Add description]
-        """
         logger.info(f"🚀 Starting enhanced planning workflow: {context.agent_name}")
 
     @workflow.after_run
     def log_workflow_complete(context):
-        """Log Workflow Complete.
-
-        Args:
-            context: [TODO: Add description]
-        """
         logger.info(f"✅ Planning workflow completed: {context.agent_name}")
 
     @workflow.on_error
     def log_workflow_error(context):
-        """Log Workflow Error.
-
-        Args:
-            context: [TODO: Add description]
-        """
         logger.error(f"❌ Planning workflow error: {context.error}")
 
 
@@ -584,14 +556,12 @@ def _add_monitoring_hooks(workflow: MultiAgent) -> None:
 # ============================================================================
 
 
-def create_simple_enhanced_plan_execute(tools: list | None = None) -> MultiAgent:
+def create_simple_enhanced_plan_execute(tools: Optional[list] = None) -> EnhancedMultiAgentV4:
     """Create a simple enhanced plan and execute agent with default settings."""
-    return create_enhanced_plan_execute_v5(
-        name="SimpleEnhancedPlanExecute", tools=tools or []
-    )
+    return create_enhanced_plan_execute_v5(name="SimpleEnhancedPlanExecute", tools=tools or [])
 
 
-def create_research_plan_execute(tools: list | None = None) -> MultiAgent:
+def create_research_plan_execute(tools: Optional[list] = None) -> EnhancedMultiAgentV4:
     """Create a plan and execute agent optimized for research tasks."""
     from haive.tools import duckduckgo_search_tool
 
@@ -624,9 +594,7 @@ if __name__ == "__main__":
         agent = create_simple_enhanced_plan_execute()
 
         # Test with a simple task
-        result = await agent.arun(
-            "What is the capital of France and what is its population?"
-        )
+        result = await agent.arun("What is the capital of France and what is its population?")
         print(f"Result: {result}")
 
     # Run the test

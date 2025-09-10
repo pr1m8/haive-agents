@@ -62,7 +62,7 @@ class CompatibilityEnhancedMultiAgent(MultiAgent):
     - Detailed compatibility reporting
     - Multiple compatibility modes (strict, adaptive, permissive, auto-fix)
 
-    Examples:
+    Example:
         >>> system = CompatibilityEnhancedMultiAgent(
         ...     agents=[retrieval_agent, grading_agent, answer_agent],
         ...     compatibility_mode=CompatibilityMode.ADAPTIVE
@@ -78,11 +78,6 @@ class CompatibilityEnhancedMultiAgent(MultiAgent):
     compatibility_report_level: str = "summary"  # "none", "summary", "detailed"
 
     def __init__(self, **kwargs) -> None:
-        """  Init  .
-
-Returns:
-    [TODO: Add return description]
-"""
         # Initialize compatibility components
         self._compatibility_checker = CompatibilityChecker()
         self._type_analyzer = TypeAnalyzer()
@@ -529,11 +524,6 @@ class CompatibilityEnhancedSequentialAgent(CompatibilityEnhancedMultiAgent):
     """Sequential agent with built-in compatibility checking."""
 
     def __init__(self, **kwargs) -> None:
-        """  Init  .
-
-Returns:
-    [TODO: Add return description]
-"""
         kwargs["execution_mode"] = ExecutionMode.SEQUENCE
         super().__init__(**kwargs)
 
@@ -542,11 +532,6 @@ class CompatibilityEnhancedConditionalAgent(CompatibilityEnhancedMultiAgent):
     """Conditional agent with built-in compatibility checking."""
 
     def __init__(self, **kwargs) -> None:
-        """  Init  .
-
-Returns:
-    [TODO: Add return description]
-"""
         kwargs["execution_mode"] = ExecutionMode.CONDITIONAL
         super().__init__(**kwargs)
 
@@ -555,11 +540,6 @@ class CompatibilityEnhancedParallelAgent(CompatibilityEnhancedMultiAgent):
     """Parallel agent with built-in compatibility checking."""
 
     def __init__(self, **kwargs) -> None:
-        """  Init  .
-
-Returns:
-    [TODO: Add return description]
-"""
         kwargs["execution_mode"] = ExecutionMode.PARALLEL
         super().__init__(**kwargs)
 

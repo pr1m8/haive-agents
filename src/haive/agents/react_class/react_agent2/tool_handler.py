@@ -54,9 +54,7 @@ def process_messages(messages: list[dict[str, Any]]) -> list[dict[str, Any]]:
             # Find the previous AI message with a matching tool call
             for j in range(i - 1, -1, -1):
                 prev = processed[j]
-                if prev.get("type") == "ai" and "tool_calls" in prev.get(
-                    "additional_kwargs", {}
-                ):
+                if prev.get("type") == "ai" and "tool_calls" in prev.get("additional_kwargs", {}):
                     tool_calls = prev["additional_kwargs"]["tool_calls"]
                     for tool_call in tool_calls:
                         if tool_call.get("name") == msg.get("name"):

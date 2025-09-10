@@ -1,13 +1,12 @@
 from collections.abc import Callable
 from datetime import datetime
 
+from haive.agents.tot.modular.state import ToTState
 from haive.core.engine.agent.agent import AgentConfig
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import AzureLLMConfig
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field
-
-from haive.agents.tot.modular.state import ToTState
 
 
 class ToTAgentConfig(AgentConfig):
@@ -26,26 +25,18 @@ class ToTAgentConfig(AgentConfig):
     )
 
     # Node names
-    expand_node_name: str = Field(
-        default="expand", description="Name for the expansion node"
-    )
+    expand_node_name: str = Field(default="expand", description="Name for the expansion node")
 
-    score_node_name: str = Field(
-        default="score", description="Name for the scoring node"
-    )
+    score_node_name: str = Field(default="score", description="Name for the scoring node")
 
-    prune_node_name: str = Field(
-        default="prune", description="Name for the pruning node"
-    )
+    prune_node_name: str = Field(default="prune", description="Name for the pruning node")
 
     # ToT parameters
     max_depth: int = Field(default=5, description="Maximum search depth")
 
     threshold: float = Field(default=0.9, description="Score threshold for success")
 
-    beam_size: int = Field(
-        default=3, description="Number of candidates to keep after pruning"
-    )
+    beam_size: int = Field(default=3, description="Number of candidates to keep after pruning")
 
     candidates_per_expansion: int = Field(
         default=3, description="Number of candidates to generate in each expansion"
@@ -69,9 +60,7 @@ class ToTAgentConfig(AgentConfig):
     )
 
     # Customization
-    visualize: bool = Field(
-        default=True, description="Whether to visualize the ToT graph"
-    )
+    visualize: bool = Field(default=True, description="Whether to visualize the ToT graph")
 
     @classmethod
     def from_scratch(
@@ -116,10 +105,7 @@ class ToTAgentConfig(AgentConfig):
         if score_prompt is None and "score_function" not in kwargs:
             score_prompt = ChatPromptTemplate.from_messages(
                 [
-                    (
-                        "system",
-                        "Rate the following solution attempt on a scale of 0.0 to 1.0.",
-                    ),
+                    ("system", "Rate the following solution attempt on a scale of 0.0 to 1.0."),
                     ("system", "Provide feedback on the reasoning and accuracy."),
                     ("user", "Problem: {problem}"),
                     ("user", "Solution attempt: {candidate}"),
@@ -127,9 +113,7 @@ class ToTAgentConfig(AgentConfig):
             )
 
         # Set up LLM configs
-        llm_config = AzureLLMConfig(
-            model=model, parameters={"temperature": temperature}
-        )
+        llm_config = AzureLLMConfig(model=model, parameters={"temperature": temperature})
 
         # Create expand LLM config
         expand_llm = AugLLMConfig(
@@ -140,9 +124,7 @@ class ToTAgentConfig(AgentConfig):
         score_llm = None
         if score_prompt is not None and "score_function" not in kwargs:
             score_llm = AugLLMConfig(
-                name="tot_score_llm",
-                llm_config=llm_config,
-                prompt_template=score_prompt,
+                name="tot_score_llm", llm_config=llm_config, prompt_template=score_prompt
             )
 
         # Create and return the config

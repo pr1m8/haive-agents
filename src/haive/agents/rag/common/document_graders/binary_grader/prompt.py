@@ -22,7 +22,7 @@ Provide clear PASS/FAIL decisions with thorough justifications.""",
         ),
         (
             "human",
-            """Query: {query}.
+            """Query: {query}
 
 Documents to evaluate:
 {retrieved_documents}

@@ -5,9 +5,7 @@ multiple criteria with individual scores and weights.
 """
 
 from typing import Any
-
 from pydantic import BaseModel, Field, field_validator, model_validator
-
 from haive.agents.common.models.grade.base import Grade, GradeType
 
 
@@ -48,10 +46,7 @@ class RubricCriterion(BaseModel):
         ..., description="Score achieved for this criterion", examples=[8.5, 7, 4.2, 9]
     )
     max_score: int | float = Field(
-        ...,
-        description="Maximum possible score for this criterion",
-        gt=0,
-        examples=[10, 5, 100, 4],
+        ..., description="Maximum possible score for this criterion", gt=0, examples=[10, 5, 100, 4]
     )
     weight: float = Field(
         default=1.0,
@@ -191,17 +186,12 @@ class RubricGrade(Grade):
         default=GradeType.RUBRIC, description="Type of grade model (always rubric)"
     )
     criteria: list[RubricCriterion] = Field(
-        ...,
-        description="List of individual rubric criteria",
-        min_length=1,
-        max_length=20,
+        ..., description="List of individual rubric criteria", min_length=1, max_length=20
     )
 
     @field_validator("criteria")
     @classmethod
-    def validate_criteria_names_unique(
-        cls, v: list[RubricCriterion]
-    ) -> list[RubricCriterion]:
+    def validate_criteria_names_unique(cls, v: list[RubricCriterion]) -> list[RubricCriterion]:
         """Validate that all criterion names are unique.
 
         Args:
@@ -229,10 +219,9 @@ class RubricGrade(Grade):
         if not self.criteria:
             return 0.0
         total_weighted_score = sum(
-            criterion.get_normalized_score() * criterion.weight
-            for criterion in self.criteria
+            (criterion.get_normalized_score() * criterion.weight for criterion in self.criteria)
         )
-        total_weight = sum(criterion.weight for criterion in self.criteria)
+        total_weight = sum((criterion.weight for criterion in self.criteria))
         if total_weight == 0:
             return 0.0
         return total_weighted_score / total_weight
@@ -243,7 +232,7 @@ class RubricGrade(Grade):
         Returns:
             Sum of all weighted scores
         """
-        return sum(criterion.get_weighted_score() for criterion in self.criteria)
+        return sum((criterion.get_weighted_score() for criterion in self.criteria))
 
     def get_max_weighted_score(self) -> float:
         """Get the maximum possible weighted score.
@@ -251,7 +240,7 @@ class RubricGrade(Grade):
         Returns:
             Sum of all weighted maximum scores
         """
-        return sum(criterion.get_weighted_max_score() for criterion in self.criteria)
+        return sum((criterion.get_weighted_max_score() for criterion in self.criteria))
 
     def is_passing(self, threshold: float | None = None) -> bool:
         """Determine if the rubric grade represents a passing score.
@@ -432,8 +421,6 @@ class RubricGrade(Grade):
                     ),
                 )
             else:
-                raise ValueError(
-                    f"Invalid score data for criterion '{name}': {score_data}"
-                )
+                raise ValueError(f"Invalid score data for criterion '{name}': {score_data}")
             criteria.append(criterion)
         return cls(criteria=criteria, justification=justification, **kwargs)

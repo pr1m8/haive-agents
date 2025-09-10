@@ -1,7 +1,7 @@
 """Tree of Thoughts (TOT) reasoning module for Haive.
 
 This module implements the Tree of Thoughts algorithm using a multi-agent
-approach with MultiAgent. The implementation uses two specialized
+approach with EnhancedMultiAgentV4. The implementation uses two specialized
 agents:
 
 1. CandidateGenerator - Generates diverse solution candidates
@@ -10,23 +10,25 @@ agents:
 The TreeOfThoughtsOrchestrator coordinates these agents to perform
 beam search through the solution space.
 
-Examples:
-            from haive.agents.reasoning_and_critique.tot import create_tot_solver
+Example:
+    ```python
+    from haive.agents.reasoning_and_critique.tot import create_tot_solver
 
-            # Create a TOT solver
-            solver = await create_tot_solver(
-                beam_width=5,
-                max_iterations=3
-            )
+    # Create a TOT solver
+    solver = await create_tot_solver(
+        beam_width=5,
+        max_iterations=3
+    )
 
-            # Solve a problem
-            result = await solver.solve(
-                problem="Use numbers 3, 3, 8, 8 to make 24",
-                context="Each number must be used exactly once"
-            )
+    # Solve a problem
+    result = await solver.solve(
+        problem="Use numbers 3, 3, 8, 8 to make 24",
+        context="Each number must be used exactly once"
+    )
 
-            print(f"Best solution: {result.best_solution}")
-            print(f"Score: {result.score}")
+    print(f"Best solution: {result.best_solution}")
+    print(f"Score: {result.score}")
+    ```
 """
 
 # Import the legacy TOT implementation
@@ -39,9 +41,7 @@ except ImportError:
 from haive.agents.reasoning_and_critique.tot.agents.candidate_generator import (
     CandidateGeneration as NewCandidateGeneration,
 )
-from haive.agents.reasoning_and_critique.tot.agents.candidate_generator import (
-    CandidateGenerator,
-)
+from haive.agents.reasoning_and_critique.tot.agents.candidate_generator import CandidateGenerator
 from haive.agents.reasoning_and_critique.tot.agents.solution_scorer import (
     ScoredSolution,
     SolutionScorer,
@@ -104,7 +104,7 @@ _exports = [
     "SolutionScorer",
     "SolutionScoring",
     "ScoredSolution",
-    # New MultiAgent-based TOT
+    # New EnhancedMultiAgentV4-based TOT
     "TreeOfThoughtsAgent",
     "TOTCommand",
     "TOTIteration",

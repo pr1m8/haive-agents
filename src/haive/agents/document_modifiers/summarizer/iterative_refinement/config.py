@@ -17,16 +17,13 @@ class IterativeSummarizerConfig(AgentConfig):
     """The configuration for the iterative summarizer."""
 
     input_schema: IterativeSummarizerInput = Field(
-        default=IterativeSummarizerInput,
-        description="The input of the iterative summarizer.",
+        default=IterativeSummarizerInput, description="The input of the iterative summarizer."
     )
     output_schema: IterativeSummarizerOutput = Field(
-        default=IterativeSummarizerOutput,
-        description="The output of the iterative summarizer.",
+        default=IterativeSummarizerOutput, description="The output of the iterative summarizer."
     )
     state_schema: IterativeSummarizerState = Field(
-        default=IterativeSummarizerState,
-        description="The state of the iterative summarizer.",
+        default=IterativeSummarizerState, description="The state of the iterative summarizer."
     )
     engines: dict[str, AugLLMConfig] = Field(
         default={

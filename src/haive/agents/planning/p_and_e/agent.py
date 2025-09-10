@@ -11,11 +11,7 @@ from pydantic import Field
 
 from haive.agents.base.agent import Agent
 from haive.agents.planning.p_and_e.models import Act, Plan, Response
-from haive.agents.planning.p_and_e.prompts import (
-    executor_prompt,
-    planner_prompt,
-    replan_prompt,
-)
+from haive.agents.planning.p_and_e.prompts import executor_prompt, planner_prompt, replan_prompt
 from haive.agents.planning.p_and_e.state import PlanExecuteState
 
 logger = logging.getLogger(__name__)
@@ -69,9 +65,7 @@ class PlanAndExecuteAgent(Agent):
 
     # Set schemas
     state_schema: type = Field(default=PlanExecuteState)
-    use_prebuilt_base: bool = Field(
-        default=True
-    )  # Enable schema composition with prebuilt base
+    use_prebuilt_base: bool = Field(default=True)  # Enable schema composition with prebuilt base
 
     # Tools available to the agent
     tools: list[BaseTool] = Field(
@@ -119,22 +113,16 @@ class PlanAndExecuteAgent(Agent):
         graph = BaseGraph(name=self.name)
 
         # Add planner node
-        planner_node = EngineNodeConfig(
-            name="create_plan", engine=self.engines["planner"]
-        )
+        planner_node = EngineNodeConfig(name="create_plan", engine=self.engines["planner"])
         graph.add_node("create_plan", planner_node)
         graph.add_edge(START, "create_plan")
 
         # Add executor node
-        executor_node = EngineNodeConfig(
-            name="execute_step", engine=self.engines["executor"]
-        )
+        executor_node = EngineNodeConfig(name="execute_step", engine=self.engines["executor"])
         graph.add_node("execute_step", executor_node)
 
         # Add evaluation/replan node
-        replan_node = EngineNodeConfig(
-            name="evaluate_progress", engine=self.engines["replanner"]
-        )
+        replan_node = EngineNodeConfig(name="evaluate_progress", engine=self.engines["replanner"])
         graph.add_node("evaluate_progress", replan_node)
 
         # Add edges

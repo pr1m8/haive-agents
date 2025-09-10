@@ -34,10 +34,7 @@ class ReactManyToolsAgent(ReactAgent):
         self.config = config
 
         # Set up tool embeddings if semantic search is enabled
-        if (
-            self.config.tool_selection_mode == "semantic"
-            and self.config.embeddings_model
-        ):
+        if self.config.tool_selection_mode == "semantic" and self.config.embeddings_model:
             self._create_tool_embeddings()
 
         # Initialize RAG components if enabled
@@ -117,9 +114,7 @@ class ReactManyToolsAgent(ReactAgent):
         logger.debug(f"Setting up workflow for ReactManyToolsAgent {self.config.name}")
 
         # Create dynamic graph builder
-        gb = DynamicGraph(
-            components=[self.config.engine], state_schema=self.config.state_schema
-        )
+        gb = DynamicGraph(components=[self.config.engine], state_schema=self.config.state_schema)
 
         # Add query extraction node first
         gb.add_node("extract_query", self._extract_query, "filter_tools")
@@ -255,10 +250,7 @@ class ReactManyToolsAgent(ReactAgent):
             # If we have answer generation capability, route there
             next_node = (
                 "generate_answer"
-                if (
-                    hasattr(self, "has_answer_generation")
-                    and self.has_answer_generation
-                )
+                if (hasattr(self, "has_answer_generation") and self.has_answer_generation)
                 else "add_system"
             )
 
@@ -277,8 +269,7 @@ class ReactManyToolsAgent(ReactAgent):
         except Exception as e:
             logger.exception(f"Error retrieving documents: {e!s}")
             return Command(
-                update={"error": f"Error retrieving documents: {e!s}"},
-                goto="add_system",
+                update={"error": f"Error retrieving documents: {e!s}"}, goto="add_system"
             )
 
     def _generate_answer(self, state: dict[str, Any]) -> Command:
@@ -298,17 +289,14 @@ class ReactManyToolsAgent(ReactAgent):
 
         try:
             # If we have a RAG agent with answer generation
-            if hasattr(self, "rag_agent") and hasattr(
-                self.rag_agent, "generate_answer"
-            ):
+            if hasattr(self, "rag_agent") and hasattr(self.rag_agent, "generate_answer"):
                 # Convert documents to expected format if needed
                 rag_documents = []
                 for doc in documents:
                     if isinstance(doc, dict) and "page_content" in doc:
                         rag_documents.append(
                             Document(
-                                page_content=doc["page_content"],
-                                metadata=doc.get("metadata", {}),
+                                page_content=doc["page_content"], metadata=doc.get("metadata", {})
                             )
                         )
                     elif isinstance(doc, Document):
@@ -319,9 +307,7 @@ class ReactManyToolsAgent(ReactAgent):
                 result = self.rag_agent.generate_answer(rag_state)
 
                 # Extract answer
-                answer = (
-                    result.update.get("answer") if hasattr(result, "update") else None
-                )
+                answer = result.update.get("answer") if hasattr(result, "update") else None
 
             # Otherwise use our answer generator
             elif self.config.answer_generator:
@@ -334,11 +320,7 @@ class ReactManyToolsAgent(ReactAgent):
                         (
                             doc.get("page_content", str(doc))
                             if isinstance(doc, dict)
-                            else (
-                                doc.page_content
-                                if hasattr(doc, "page_content")
-                                else str(doc)
-                            )
+                            else (doc.page_content if hasattr(doc, "page_content") else str(doc))
                         )
                         for doc in documents
                     ]
@@ -357,9 +339,7 @@ class ReactManyToolsAgent(ReactAgent):
                 response = answer_gen.invoke(messages)
 
                 # Extract answer
-                answer = (
-                    response.content if hasattr(response, "content") else str(response)
-                )
+                answer = response.content if hasattr(response, "content") else str(response)
 
             # Fallback to simple concatenation
             else:
@@ -367,9 +347,7 @@ class ReactManyToolsAgent(ReactAgent):
                 answer = "Based on the retrieved information:\n\n"
                 for i, doc in enumerate(documents[:3]):  # Limit to 3 documents
                     content = (
-                        doc.get("page_content", str(doc))
-                        if isinstance(doc, dict)
-                        else str(doc)
+                        doc.get("page_content", str(doc)) if isinstance(doc, dict) else str(doc)
                     )
                     answer += f"Source {i + 1}: {content[:200]}...\n\n"
 
@@ -378,9 +356,7 @@ class ReactManyToolsAgent(ReactAgent):
 
         except Exception as e:
             logger.exception(f"Error generating answer: {e}")
-            return Command(
-                update={"answer": f"Error generating answer: {e}"}, goto="add_system"
-            )
+            return Command(update={"answer": f"Error generating answer: {e}"}, goto="add_system")
 
     def _filter_tools(self, state: dict[str, Any]) -> dict[str, Any]:
         """Filter tools based on the query.
@@ -458,9 +434,7 @@ class ReactManyToolsAgent(ReactAgent):
         if messages:
             # Look for the last user message
             for msg in reversed(messages):
-                if isinstance(msg, HumanMessage) or (
-                    isinstance(msg, tuple) and msg[0] == "human"
-                ):
+                if isinstance(msg, HumanMessage) or (isinstance(msg, tuple) and msg[0] == "human"):
                     content = msg.content if hasattr(msg, "content") else msg[1]
                     return str(content)
 
@@ -494,15 +468,10 @@ class ReactManyToolsAgent(ReactAgent):
                 similarities[tool_name] = similarity
 
             # Sort tools by similarity
-            sorted_tools = sorted(
-                similarities.items(), key=lambda x: x[1], reverse=True
-            )
+            sorted_tools = sorted(similarities.items(), key=lambda x: x[1], reverse=True)
 
             # Return top N tool names
-            return [
-                tool_name
-                for tool_name, _ in sorted_tools[: self.config.max_tools_per_request]
-            ]
+            return [tool_name for tool_name, _ in sorted_tools[: self.config.max_tools_per_request]]
 
         except Exception as e:
             logger.exception(f"Error in semantic tool filtering: {e}")
@@ -595,9 +564,7 @@ class ReactManyToolsAgent(ReactAgent):
             general_tools = [
                 t.name
                 for t in self.tools
-                if "search" in t.name.lower()
-                or "find" in t.name.lower()
-                or "get" in t.name.lower()
+                if "search" in t.name.lower() or "find" in t.name.lower() or "get" in t.name.lower()
             ]
 
             # Add general tools that aren't already in our list
@@ -607,12 +574,8 @@ class ReactManyToolsAgent(ReactAgent):
 
             # If still too few, add some random tools
             if len(sorted_tools) < 3 and len(self.tools) > 3:
-                remaining_tools = [
-                    t.name for t in self.tools if t.name not in sorted_tools
-                ]
-                random_tools = random.sample(
-                    remaining_tools, min(3, len(remaining_tools))
-                )
+                remaining_tools = [t.name for t in self.tools if t.name not in sorted_tools]
+                random_tools = random.sample(remaining_tools, min(3, len(remaining_tools)))
                 sorted_tools.extend(random_tools)
 
         return sorted_tools
@@ -626,16 +589,12 @@ class ReactManyToolsAgent(ReactAgent):
 
             # Check if we already have a system message
             has_system = any(
-                isinstance(m, SystemMessage)
-                for m in messages
-                if isinstance(m, BaseMessage)
+                isinstance(m, SystemMessage) for m in messages if isinstance(m, BaseMessage)
             )
 
             # Add system message if none exists
             if not has_system:
-                base_content = (
-                    self.config.system_prompt or "You are a helpful assistant."
-                )
+                base_content = self.config.system_prompt or "You are a helpful assistant."
 
                 # Add context from retrieved documents if available
                 documents = state.get("retrieved_documents", [])
@@ -665,23 +624,13 @@ class ReactManyToolsAgent(ReactAgent):
 
         # Create a wrapper for the LLM that binds only the filtered tools
         def llm_with_filtered_tools(state: dict[str, Any]) -> dict[str, Any]:
-            """Llm With Filtered Tools.
-
-            Args:
-                state: [TODO: Add description]
-
-            Returns:
-                [TODO: Add return description]
-            """
             # Get filtered tool names
             filtered_tool_names = state.get("filtered_tools", [])
 
             # Get the corresponding tool objects
             tool_name_map = {tool.name: tool for tool in self.tools}
             filtered_tools = [
-                tool_name_map[name]
-                for name in filtered_tool_names
-                if name in tool_name_map
+                tool_name_map[name] for name in filtered_tool_names if name in tool_name_map
             ]
 
             # If no tools were filtered, use a few default tools

@@ -7,7 +7,6 @@ in the Plan and Execute agent architecture.
 from datetime import datetime
 from enum import Enum
 from typing import Literal, Union
-
 from pydantic import (
     BaseModel,
     ConfigDict,
@@ -45,23 +44,18 @@ class PlanStep(BaseModel):
 
     model_config = ConfigDict()
     step_id: int = Field(description="Unique identifier for this step (1-based index)")
-    description: str = Field(
-        description="Clear, actionable description of what needs to be done"
-    )
+    description: str = Field(description="Clear, actionable description of what needs to be done")
     step_type: StepType = Field(
         default=StepType.ACTION,
         description="Type of step to help executor choose appropriate approach",
     )
     dependencies: list[int] = Field(
-        default_factory=list,
-        description="List of step IDs that must be completed before this step",
+        default_factory=list, description="List of step IDs that must be completed before this step"
     )
     expected_output: str = Field(
         description="Description of the expected output/outcome from this step"
     )
-    status: StepStatus = Field(
-        default=StepStatus.PENDING, description="Current status of the step"
-    )
+    status: StepStatus = Field(default=StepStatus.PENDING, description="Current status of the step")
     result: str | None = Field(
         default=None, description="Actual result/output from executing this step"
     )
@@ -108,9 +102,7 @@ class Plan(BaseModel):
     """Complete execution plan with steps and metadata."""
 
     model_config = ConfigDict()
-    objective: str = Field(
-        description="The main objective/goal this plan aims to achieve"
-    )
+    objective: str = Field(description="The main objective/goal this plan aims to achieve")
     steps: list[PlanStep] = Field(description="Ordered list of steps to execute")
     total_steps: int = Field(description="Total number of steps in the plan")
     created_at: datetime = Field(
@@ -140,13 +132,9 @@ class Plan(BaseModel):
         """Ensure dependencies reference valid step IDs."""
         step_ids = {step.step_id for step in steps}
         for step in steps:
-            invalid_deps = [
-                d for d in step.dependencies if d not in step_ids or d >= step.step_id
-            ]
+            invalid_deps = [d for d in step.dependencies if d not in step_ids or d >= step.step_id]
             if invalid_deps:
-                raise ValueError(
-                    f"Step {step.step_id} has invalid dependencies: {invalid_deps}"
-                )
+                raise ValueError(f"Step {step.step_id} has invalid dependencies: {invalid_deps}")
         return steps
 
     @model_validator(mode="after")
@@ -180,7 +168,7 @@ class Plan(BaseModel):
         completed_ids = {s.step_id for s in self.completed_steps}
         for step in self.steps:
             if step.status == StepStatus.PENDING:
-                if all(dep_id in completed_ids for dep_id in step.dependencies):
+                if all((dep_id in completed_ids for dep_id in step.dependencies)):
                     return step
         return None
 
@@ -196,13 +184,13 @@ class Plan(BaseModel):
     @property
     def is_complete(self) -> bool:
         """Check if all steps are completed."""
-        return all(s.status == StepStatus.COMPLETED for s in self.steps)
+        return all((s.status == StepStatus.COMPLETED for s in self.steps))
 
     @computed_field
     @property
     def has_failures(self) -> bool:
         """Check if any steps have failed."""
-        return any(s.status == StepStatus.FAILED for s in self.steps)
+        return any((s.status == StepStatus.FAILED for s in self.steps))
 
     def get_step(self, step_id: int) -> PlanStep | None:
         """Get a specific step by ID."""
@@ -212,11 +200,7 @@ class Plan(BaseModel):
         return None
 
     def update_step_status(
-        self,
-        step_id: int,
-        status: StepStatus,
-        result: str | None = None,
-        error: str | None = None,
+        self, step_id: int, status: StepStatus, result: str | None = None, error: str | None = None
     ) -> bool:
         """Update the status of a specific step."""
         step = self.get_step(step_id)
@@ -261,9 +245,7 @@ class ExecutionResult(BaseModel):
     success: bool = Field(description="Whether execution was successful")
     output: str = Field(description="Output/result from the execution")
     error: str | None = Field(default=None, description="Error message if failed")
-    execution_time: float | None = Field(
-        default=None, description="Time taken in seconds"
-    )
+    execution_time: float | None = Field(default=None, description="Time taken in seconds")
 
     def to_prompt_format(self) -> str:
         """Format result for inclusion in prompts."""
@@ -311,9 +293,7 @@ ReplanAction = Union[Plan, str]
 class Response(BaseModel):
     """Response to user with final answer."""
 
-    response: str = Field(
-        description="The final response/answer to provide to the user"
-    )
+    response: str = Field(description="The final response/answer to provide to the user")
 
 
 class Act(BaseModel):

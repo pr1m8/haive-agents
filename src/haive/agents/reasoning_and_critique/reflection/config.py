@@ -2,12 +2,11 @@
 
 import logging
 
-from haive.core.engine.aug_llm import AugLLMConfig
-from pydantic import BaseModel, Field
-
 from haive.agents.reflection.models import ReflectionOutput, ReflectionResult
 from haive.agents.reflection.state import ReflectionAgentState
 from haive.agents.simple.config import SimpleAgentConfig
+from haive.core.engine.aug_llm import AugLLMConfig
+from pydantic import BaseModel, Field
 
 # Setup logging
 logger = logging.getLogger(__name__)
@@ -23,9 +22,7 @@ class ReflectionConfig(BaseModel):
         description="LLM to use for reflection. If None, uses the same LLM as the main agent.",
     )
 
-    max_reflection_rounds: int = Field(
-        default=3, description="Maximum number of reflection rounds"
-    )
+    max_reflection_rounds: int = Field(default=3, description="Maximum number of reflection rounds")
 
     reflection_prompt_template: str = Field(
         default=(
@@ -59,8 +56,7 @@ class ReflectionConfig(BaseModel):
     )
 
     use_search: bool = Field(
-        default=False,
-        description="Whether to use search to gather additional information",
+        default=False, description="Whether to use search to gather additional information"
     )
 
     search_query_prompt_template: str = Field(
@@ -86,8 +82,7 @@ class ReflectionAgentConfig(SimpleAgentConfig):
 
     # Base configuration - inherit from SimpleAgentConfig
     state_schema: type[BaseModel] = Field(
-        default=ReflectionAgentState,
-        description="State schema for the reflection agent",
+        default=ReflectionAgentState, description="State schema for the reflection agent"
     )
 
     # Reflection-specific configuration
@@ -112,9 +107,7 @@ class ReflectionAgentConfig(SimpleAgentConfig):
         default="evaluation", description="Name of the evaluation node"
     )
 
-    search_node_name: str = Field(
-        default="search", description="Name of the search node"
-    )
+    search_node_name: str = Field(default="search", description="Name of the search node")
 
     # Structured output models
     reflection_output_model: type[BaseModel] = Field(

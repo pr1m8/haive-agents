@@ -10,6 +10,7 @@ from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field
 
+from haive.agents.simple.agent_v3 import SimpleAgentV3
 from haive.agents.structured.models import GenericStructuredOutput
 from haive.agents.structured.prompts import get_prompt_for_model
 
@@ -216,6 +217,7 @@ def create_structured_agent(
 
 
 # Import Agent for model_rebuild
+from haive.agents.base.enhanced_agent import Agent
 
 # Rebuild model to resolve forward references
 StructuredOutputAgent.model_rebuild()

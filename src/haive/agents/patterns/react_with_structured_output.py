@@ -3,7 +3,7 @@
 This pattern demonstrates ReactAgent → SimpleAgentV3 sequential execution
 using the generalized hook system for structured output workflows.
 
-Pattern: ReactAgent (reasoning/tools) → SimpleAgent (structured output)
+Pattern: ReactAgent (reasoning/tools) → SimpleAgentV3 (structured output)
 Use Cases:
 - Analysis with structured results
 - Research with formatted reports
@@ -21,9 +21,9 @@ from langchain_core.tools import tool
 from pydantic import BaseModel, Field
 
 from haive.agents.base.hooks import HookContext
-from haive.agents.multi.agent import MultiAgent
+from haive.agents.multi.enhanced_multi_agent_v4 import EnhancedMultiAgentV4
 from haive.agents.react.agent import ReactAgent
-from haive.agents.simple.agent import SimpleAgent
+from haive.agents.simple.agent_v3 import SimpleAgentV3
 
 
 # Example structured output models
@@ -32,9 +32,7 @@ class AnalysisResult(BaseModel):
 
     summary: str = Field(description="Brief summary of analysis")
     key_findings: list[str] = Field(description="Main findings from analysis")
-    confidence_score: float = Field(
-        ge=0.0, le=1.0, description="Confidence in analysis"
-    )
+    confidence_score: float = Field(ge=0.0, le=1.0, description="Confidence in analysis")
     recommendations: list[str] = Field(description="Recommended actions")
     supporting_evidence: list[str] = Field(
         default_factory=list, description="Evidence supporting findings"
@@ -58,9 +56,7 @@ class ProblemSolution(BaseModel):
 
     problem_statement: str = Field(description="Clear problem statement")
     root_causes: list[str] = Field(description="Identified root causes")
-    proposed_solutions: list[dict[str, Any]] = Field(
-        description="Proposed solutions with details"
-    )
+    proposed_solutions: list[dict[str, Any]] = Field(description="Proposed solutions with details")
     implementation_steps: list[str] = Field(description="Step-by-step implementation")
     success_metrics: list[str] = Field(description="How to measure success")
     risks_and_mitigation: list[dict[str, str]] = Field(
@@ -68,7 +64,7 @@ class ProblemSolution(BaseModel):
     )
 
 
-class ReactWithStructuredOutput(MultiAgent):
+class ReactWithStructuredOutput(EnhancedMultiAgentV4):
     """ReactAgent → SimpleAgentV3 with structured output pattern.
 
     This pattern uses ReactAgent for reasoning and tool usage, then
@@ -76,12 +72,8 @@ class ReactWithStructuredOutput(MultiAgent):
     """
 
     # Configuration fields
-    reasoning_agent: ReactAgent = Field(
-        ..., description="Agent for reasoning and tool usage"
-    )
-    structuring_agent: SimpleAgentV3 = Field(
-        ..., description="Agent for structured output"
-    )
+    reasoning_agent: ReactAgent = Field(..., description="Agent for reasoning and tool usage")
+    structuring_agent: SimpleAgentV3 = Field(..., description="Agent for structured output")
     structured_output_model: type[BaseModel] = Field(
         ..., description="Pydantic model for output structure"
     )
@@ -90,13 +82,11 @@ class ReactWithStructuredOutput(MultiAgent):
     preserve_reasoning: bool = Field(
         default=True, description="Preserve reasoning details in output"
     )
-    include_tool_calls: bool = Field(
-        default=True, description="Include tool call information"
-    )
+    include_tool_calls: bool = Field(default=True, description="Include tool call information")
 
     def __init__(self, **data):
         """Initialize the pattern with agents."""
-        # Set up agents list for MultiAgent
+        # Set up agents list for EnhancedMultiAgentV4
         if "agents" not in data:
             data["agents"] = [
                 data.get("reasoning_agent"),
@@ -116,50 +106,25 @@ class ReactWithStructuredOutput(MultiAgent):
 
         @self.before_run
         def log_pattern_start(context: HookContext):
-            """Log Pattern Start.
-
-            Args:
-                context: [TODO: Add description]
-            """
             pass
 
         @self.after_run
         def log_pattern_completion(context: HookContext):
-            """Log Pattern Completion.
-
-            Args:
-                context: [TODO: Add description]
-            """
             pass
 
         # Hook into the reasoning agent
         @self.reasoning_agent.after_run
         def track_reasoning_completion(context: HookContext):
-            """Track Reasoning Completion.
-
-            Args:
-                context: [TODO: Add description]
-            """
             if context.output_data and isinstance(context.output_data, dict):
                 context.output_data.get("messages", [])
 
         # Hook into the structuring agent
         @self.structuring_agent.before_structured_output
         def track_structuring_start(context: HookContext):
-            """Track Structuring Start.
-
-            Args:
-                context: [TODO: Add description]
-            """
             pass
 
         @self.structuring_agent.after_structured_output
         def track_structuring_completion(context: HookContext):
-            """Track Structuring Completion.
-
-            Args:
-                context: [TODO: Add description]
-            """
             if context.structured_data:
                 pass
 
@@ -199,18 +164,15 @@ class ReactWithStructuredOutput(MultiAgent):
             name=f"{name}_reasoner", engine=reasoning_config, tools=tools or []
         )
 
-        structuring_agent = SimpleAgent(
+        structuring_agent = SimpleAgentV3(
             name=f"{name}_structurer",
             engine=structuring_config,
             prompt_template=ChatPromptTemplate.from_messages(
                 [
-                    (
-                        "system",
-                        "Convert the following analysis into structured format.",
-                    ),
+                    ("system", "Convert the following analysis into structured format."),
                     (
                         "human",
-                        """Analysis Results:.
+                        """Analysis Results:
 {reasoning_output}
 
 Convert this analysis into a structured format with:
@@ -259,7 +221,7 @@ Ensure all fields are properly filled based on the analysis.""",
             name=f"{name}_researcher", engine=reasoning_config, tools=tools or []
         )
 
-        structuring_agent = SimpleAgent(
+        structuring_agent = SimpleAgentV3(
             name=f"{name}_formatter",
             engine=structuring_config,
             prompt_template=ChatPromptTemplate.from_messages(
@@ -267,7 +229,7 @@ Ensure all fields are properly filled based on the analysis.""",
                     ("system", "Format research findings into a structured report."),
                     (
                         "human",
-                        """Research Findings:.
+                        """Research Findings:
 {reasoning_output}
 
 Create a comprehensive research report with:
@@ -318,18 +280,15 @@ Ensure the report is professional and well-structured.""",
             name=f"{name}_solver", engine=reasoning_config, tools=tools or []
         )
 
-        structuring_agent = SimpleAgent(
+        structuring_agent = SimpleAgentV3(
             name=f"{name}_architect",
             engine=structuring_config,
             prompt_template=ChatPromptTemplate.from_messages(
                 [
-                    (
-                        "system",
-                        "Structure problem-solving results into actionable solutions.",
-                    ),
+                    ("system", "Structure problem-solving results into actionable solutions."),
                     (
                         "human",
-                        """Problem Analysis:.
+                        """Problem Analysis:
 {reasoning_output}
 
 Create a structured solution with:
@@ -399,9 +358,7 @@ def create_react_problem_solving_workflow(
     Returns:
         Configured problem-solving workflow
     """
-    return ReactWithStructuredOutput.create_problem_solving_pattern(
-        name=name, tools=tools
-    )
+    return ReactWithStructuredOutput.create_problem_solving_pattern(name=name, tools=tools)
 
 
 # Example tools for demonstration

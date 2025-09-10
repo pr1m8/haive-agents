@@ -5,9 +5,7 @@ different grade types into a single comprehensive evaluation.
 """
 
 from typing import Any
-
 from pydantic import Field, field_validator, model_validator
-
 from haive.agents.common.models.grade.base import Grade, GradeType
 
 
@@ -51,14 +49,10 @@ class CompositeGrade(Grade):
     """
 
     grade_type: GradeType = Field(
-        default=GradeType.COMPOSITE,
-        description="Type of grade model (always composite)",
+        default=GradeType.COMPOSITE, description="Type of grade model (always composite)"
     )
     grades: list[Grade] = Field(
-        ...,
-        description="List of individual grades to combine",
-        min_length=2,
-        max_length=10,
+        ..., description="List of individual grades to combine", min_length=2, max_length=10
     )
     weights: list[float] | None = Field(
         default=None,
@@ -68,13 +62,7 @@ class CompositeGrade(Grade):
     combination_method: str = Field(
         default="weighted_average",
         description="Method for combining grades",
-        examples=[
-            "weighted_average",
-            "simple_average",
-            "median",
-            "conservative",
-            "optimistic",
-        ],
+        examples=["weighted_average", "simple_average", "median", "conservative", "optimistic"],
     )
     primary_grade_index: int | None = Field(
         default=None,
@@ -112,9 +100,7 @@ class CompositeGrade(Grade):
             "primary_with_validation",
         }
         if v not in valid_methods:
-            raise ValueError(
-                f"combination_method must be one of: {sorted(valid_methods)}"
-            )
+            raise ValueError(f"combination_method must be one of: {sorted(valid_methods)}")
         return v
 
     @model_validator(mode="after")
@@ -132,7 +118,7 @@ class CompositeGrade(Grade):
                 raise ValueError(
                     f"Number of weights ({len(self.weights)}) must match number of grades ({len(self.grades)})"
                 )
-            if any(w < 0 for w in self.weights):
+            if any((w < 0 for w in self.weights)):
                 raise ValueError("All weights must be non-negative")
             if sum(self.weights) == 0:
                 raise ValueError("Sum of weights cannot be zero")
@@ -171,9 +157,7 @@ class CompositeGrade(Grade):
             return sum(scores) / len(scores)
         if self.combination_method == "weighted_average":
             weights = self.get_normalized_weights()
-            return sum(
-                (score * weight for score, weight in zip(scores, weights, strict=False))
-            )
+            return sum((score * weight for score, weight in zip(scores, weights, strict=False)))
         if self.combination_method == "median":
             sorted_scores = sorted(scores)
             n = len(sorted_scores)
@@ -192,27 +176,16 @@ class CompositeGrade(Grade):
             if self.primary_grade_index is not None:
                 primary_score = scores[self.primary_grade_index]
                 avg_others = sum(
-                    scores[i]
-                    for i in range(len(scores))
-                    if i != self.primary_grade_index
+                    (scores[i] for i in range(len(scores)) if i != self.primary_grade_index)
                 ) / (len(scores) - 1)
                 if abs(primary_score - avg_others) <= 0.2:
                     return primary_score
                 weights = self.get_normalized_weights()
-                return sum(
-                    (
-                        score * weight
-                        for score, weight in zip(scores, weights, strict=False)
-                    )
-                )
+                return sum((score * weight for score, weight in zip(scores, weights, strict=False)))
             weights = self.get_normalized_weights()
-            return sum(
-                (score * weight for score, weight in zip(scores, weights, strict=False))
-            )
+            return sum((score * weight for score, weight in zip(scores, weights, strict=False)))
         weights = self.get_normalized_weights()
-        return sum(
-            (score * weight for score, weight in zip(scores, weights, strict=False))
-        )
+        return sum((score * weight for score, weight in zip(scores, weights, strict=False)))
 
     def get_normalized_score_using_method(self, method: str) -> float:
         """Get normalized score using a specific combination method.
@@ -255,7 +228,7 @@ class CompositeGrade(Grade):
         mean_score = sum(scores) / len(scores)
         if mean_score == 0:
             return True
-        variance = sum((score - mean_score) ** 2 for score in scores) / len(scores)
+        variance = sum(((score - mean_score) ** 2 for score in scores)) / len(scores)
         std_dev = variance**0.5
         cv = std_dev / mean_score
         return cv <= 1.0 - self.consensus_threshold
@@ -270,7 +243,7 @@ class CompositeGrade(Grade):
         if not scores:
             return {}
         mean_score = sum(scores) / len(scores)
-        variance = sum((score - mean_score) ** 2 for score in scores) / len(scores)
+        variance = sum(((score - mean_score) ** 2 for score in scores)) / len(scores)
         std_dev = variance**0.5
         sorted_scores = sorted(scores)
         n = len(sorted_scores)
@@ -309,11 +282,9 @@ class CompositeGrade(Grade):
                     "weighted_contribution": grade.get_normalized_score() * weights[i],
                     "is_primary": i == self.primary_grade_index,
                     "is_passing": grade.is_passing(),
-                    "justification_preview": (
-                        grade.justification[:50] + "..."
-                        if len(grade.justification) > 50
-                        else grade.justification
-                    ),
+                    "justification_preview": grade.justification[:50] + "..."
+                    if len(grade.justification) > 50
+                    else grade.justification,
                 }
             )
         return breakdown
@@ -346,7 +317,9 @@ class CompositeGrade(Grade):
         consensus_level = (
             "high"
             if stats.get("cv", 1.0) < 0.1
-            else "medium" if stats.get("cv", 1.0) < 0.3 else "low"
+            else "medium"
+            if stats.get("cv", 1.0) < 0.3
+            else "low"
         )
         return {
             "has_consensus": self.has_consensus(),
@@ -385,7 +358,7 @@ class CompositeGrade(Grade):
                 return False
             if len(value) < 2:
                 return False
-            return all(isinstance(item, Grade) for item in value)
+            return all((isinstance(item, Grade) for item in value))
         except Exception:
             return False
 
@@ -420,11 +393,7 @@ class CompositeGrade(Grade):
 
     @classmethod
     def create_consensus_grade(
-        cls,
-        grades: list[Grade],
-        justification: str,
-        consensus_threshold: float = 0.8,
-        **kwargs,
+        cls, grades: list[Grade], justification: str, consensus_threshold: float = 0.8, **kwargs
     ) -> "CompositeGrade":
         """Create a CompositeGrade focused on consensus building.
 

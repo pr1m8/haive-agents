@@ -47,17 +47,14 @@ class TestJoinStep:
         assert sequential.join_complexity == "sequential"
 
         # Test simple parallel
-        simple_parallel = JoinStep(
-            description="Simple parallel", depends_on=["step_1", "step_2"]
-        )
+        simple_parallel = JoinStep(description="Simple parallel", depends_on=["step_1", "step_2"])
         assert simple_parallel.is_join_point
         assert simple_parallel.parallel_branch_count == 2
         assert simple_parallel.join_complexity == "simple_parallel"
 
         # Test complex parallel
         complex_parallel = JoinStep(
-            description="Complex parallel",
-            depends_on=[f"step_{i}" for i in range(1, 8)],
+            description="Complex parallel", depends_on=[f"step_{i}" for i in range(1, 8)]
         )
         assert complex_parallel.join_complexity == "complex_parallel"
         assert complex_parallel.parallel_branch_count == 7
@@ -85,9 +82,7 @@ class TestJoinStep:
 
         # Test WAIT_MAJORITY
         wait_majority = JoinStep(
-            description="Wait majority",
-            depends_on=deps,
-            join_strategy=JoinStrategy.WAIT_MAJORITY,
+            description="Wait majority", depends_on=deps, join_strategy=JoinStrategy.WAIT_MAJORITY
         )
         assert not wait_majority.can_execute(set())
         assert not wait_majority.can_execute({"step_1"})
@@ -155,15 +150,11 @@ class TestJoinStep:
         assert two_deps.join_function == "merge_two"
 
         # Multiple dependencies should suggest merge_multiple
-        multi_deps = JoinStep(
-            description="Multi deps", depends_on=["step_1", "step_2", "step_3"]
-        )
+        multi_deps = JoinStep(description="Multi deps", depends_on=["step_1", "step_2", "step_3"])
         assert multi_deps.join_function == "merge_multiple"
 
         # Many dependencies should suggest reduce_complex
-        many_deps = JoinStep(
-            description="Many deps", depends_on=[f"step_{i}" for i in range(1, 8)]
-        )
+        many_deps = JoinStep(description="Many deps", depends_on=[f"step_{i}" for i in range(1, 8)])
         assert many_deps.join_function == "reduce_complex"
 
     def test_execution_with_different_strategies(self) -> None:
@@ -197,8 +188,7 @@ class TestJoinStep:
         step3 = BasicStep(description="Depends on 1", depends_on=[step1.id])
 
         join_step = JoinStep(
-            description="Join independent branches",
-            depends_on=[step1.id, step2.id, step3.id],
+            description="Join independent branches", depends_on=[step1.id, step2.id, step3.id]
         )
 
         all_steps = [step1, step2, step3, join_step]
@@ -265,9 +255,7 @@ class TestJoinStepDAGAnalysis:
         step4 = BasicStep(description="Process 2", depends_on=[step2.id])
 
         # This step joins two parallel branches
-        join_step = JoinStep(
-            description="Join parallel branches", depends_on=[step3.id, step4.id]
-        )
+        join_step = JoinStep(description="Join parallel branches", depends_on=[step3.id, step4.id])
 
         # This step has multiple dependencies but isn't a JoinStep
         final_step = BasicStep(
@@ -341,9 +329,7 @@ class TestJoinStepIntegration:
         )
 
         # Final step after join
-        final_step = BasicStep(
-            description="Final processing", depends_on=[join_step.id]
-        )
+        final_step = BasicStep(description="Final processing", depends_on=[join_step.id])
 
         plan = ExecutionPlan(
             name="Join Step Plan",
@@ -404,8 +390,7 @@ if __name__ == "__main__":
     # Test basic join creation
     with contextlib.suppress(Exception):
         join_step = JoinStep(
-            description="Test join with auto-detection",
-            depends_on=["step_1", "step_2", "step_3"],
+            description="Test join with auto-detection", depends_on=["step_1", "step_2", "step_3"]
         )
 
     # Test join strategies

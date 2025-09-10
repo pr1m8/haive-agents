@@ -1,19 +1,15 @@
 from collections.abc import Callable
 from typing import Any
 
+from haive.agents.reflexion.agent import ReflexionAgent
+from haive.agents.reflexion.aug_llms import initial_answer_chain_config, revision_chain_config
+from haive.agents.reflexion.models import AnswerQuestion, ReviseAnswer
+from haive.agents.reflexion.state import ReflexionState
+from haive.agents.reflexion.tools import run_queries
 from haive.core.engine.agent.agent import AgentConfig
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.tools import BaseTool
 from pydantic import BaseModel
-
-from haive.agents.reflexion.agent import ReflexionAgent
-from haive.agents.reflexion.aug_llms import (
-    initial_answer_chain_config,
-    revision_chain_config,
-)
-from haive.agents.reflexion.models import AnswerQuestion, ReviseAnswer
-from haive.agents.reflexion.state import ReflexionState
-from haive.agents.reflexion.tools import run_queries
 
 
 class ReflexionConfig(AgentConfig):
@@ -31,9 +27,4 @@ class ReflexionConfig(AgentConfig):
 
     @classmethod
     def create_agent(cls) -> Any:
-        """Create Agent.
-
-        Returns:
-            [TODO: Add return description]
-        """
         return ReflexionAgent(config=cls())

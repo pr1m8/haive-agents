@@ -55,17 +55,11 @@ class TokenTrackingAgent(Agent):
     """
 
     # Token tracking configuration
-    track_costs: bool = Field(
-        default=True, description="Whether to calculate token costs"
-    )
+    track_costs: bool = Field(default=True, description="Whether to calculate token costs")
 
-    input_cost_per_1k: float = Field(
-        default=0.0, description="Cost per 1000 input tokens"
-    )
+    input_cost_per_1k: float = Field(default=0.0, description="Cost per 1000 input tokens")
 
-    output_cost_per_1k: float = Field(
-        default=0.0, description="Cost per 1000 output tokens"
-    )
+    output_cost_per_1k: float = Field(default=0.0, description="Cost per 1000 output tokens")
 
     cached_input_cost_per_1k: float | None = Field(
         default=None, description="Cost per 1000 cached input tokens (if applicable)"
@@ -109,9 +103,7 @@ class TokenTrackingAgent(Agent):
             if use_token_tracking and hasattr(temp_schema, "messages"):
                 # Use MessagesStateWithTokenUsage directly
                 self.state_schema = type(
-                    f"{self.__class__.__name__}StateWithTokens",
-                    (MessagesStateWithTokenUsage),
-                    {},
+                    f"{self.__class__.__name__}StateWithTokens", (MessagesStateWithTokenUsage), {}
                 )
                 logger.debug("Using MessagesStateWithTokenUsage for token tracking")
             else:

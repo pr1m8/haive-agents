@@ -4,9 +4,7 @@ from typing import Annotated, Literal
 from langchain_core.messages import AnyMessage
 from pydantic import BaseModel, Field
 
-from haive.agents.document_modifiers.complex_extraction.utils import (
-    add_or_overwrite_messages,
-)
+from haive.agents.document_modifiers.complex_extraction.utils import add_or_overwrite_messages
 
 # from
 
@@ -23,8 +21,7 @@ class ComplexExtractionOutput(BaseModel):
     """The output for the complex extraction agent."""
 
     extracted_data: list[AnyMessage] | None = Field(
-        default=[],
-        description="The data to be extracted from the conversation history.",
+        default=[], description="The data to be extracted from the conversation history."
     )
 
 
@@ -32,8 +29,7 @@ class ComplexExtractionState(ComplexExtractionInput, ComplexExtractionOutput):
     """State for complex extraction."""
 
     attempt_number: Annotated[int, operator.add] = Field(
-        default=0,
-        description="The number of attempts to extract the complex information.",
+        default=0, description="The number of attempts to extract the complex information."
     )
     initial_num_messages: int | None = Field(
         default=None, description="The number of messages in the conversation history."

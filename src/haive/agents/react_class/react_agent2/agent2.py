@@ -90,9 +90,7 @@ class MessageNormalizingToolNode:
             normalized_messages = []
             for msg in state_dict["messages"]:
                 # Already a proper message object
-                if isinstance(
-                    msg, AIMessage | HumanMessage | SystemMessage | ToolMessage
-                ):
+                if isinstance(msg, AIMessage | HumanMessage | SystemMessage | ToolMessage):
                     normalized_messages.append(msg)
                 # Dict representation of a message
                 elif isinstance(msg, dict):
@@ -102,9 +100,7 @@ class MessageNormalizingToolNode:
                     if msg_type == "ai":
                         additional_kwargs = msg.get("additional_kwargs", {})
                         normalized_messages.append(
-                            AIMessage(
-                                content=content, additional_kwargs=additional_kwargs
-                            )
+                            AIMessage(content=content, additional_kwargs=additional_kwargs)
                         )
                     elif msg_type == "human":
                         normalized_messages.append(HumanMessage(content=content))
@@ -114,9 +110,7 @@ class MessageNormalizingToolNode:
                         tool_call_id = msg.get("tool_call_id")
                         name = msg.get("name", "")
                         normalized_messages.append(
-                            ToolMessage(
-                                content=content, tool_call_id=tool_call_id, name=name
-                            )
+                            ToolMessage(content=content, tool_call_id=tool_call_id, name=name)
                         )
                 # Unknown type, default to HumanMessage
                 else:
@@ -201,15 +195,11 @@ class ReactAgent(Agent[ReactAgentConfig]):
 
         # Create DynamicGraph with our state schema
         graph_builder = DynamicGraph(
-            name=self.config.name,
-            components=[self.config.engine],
-            state_schema=self.state_schema,
+            name=self.config.name, components=[self.config.engine], state_schema=self.state_schema
         )
 
         # 1. Add agent node (LLM reasoning)
-        graph_builder.add_node(
-            name=self.config.agent_node_name, config=self.config.engine
-        )
+        graph_builder.add_node(name=self.config.agent_node_name, config=self.config.engine)
 
         # 2. Add the tool node
         graph_builder.add_node(name=self.config.tool_node_name, config=self.tool_node)
@@ -226,9 +216,7 @@ class ReactAgent(Agent[ReactAgentConfig]):
         def should_use_tools(state: dict[str, Any]):
             """Determine if we should route to tools based on the last message."""
             # Normalize state if needed
-            state_dict = (
-                state.model_dump() if hasattr(state, "model_dump") else dict(state)
-            )
+            state_dict = state.model_dump() if hasattr(state, "model_dump") else dict(state)
 
             # Check if the last message has tool calls
             return has_tool_calls(state_dict)
@@ -271,9 +259,7 @@ class ReactAgent(Agent[ReactAgentConfig]):
             """Generate structured output from conversation history."""
             try:
                 # Convert state to dict if needed
-                state_dict = (
-                    state.model_dump() if hasattr(state, "model_dump") else dict(state)
-                )
+                state_dict = state.model_dump() if hasattr(state, "model_dump") else dict(state)
 
                 # Get the LLM from engine
                 llm = self.config.engine.llm_config.instantiate()
@@ -374,17 +360,13 @@ class ReactAgent(Agent[ReactAgentConfig]):
         config = {**self.config.runnable_config, **kwargs}
 
         if self.config.debug:
-            logger.debug(
-                f"Running agent {self.config.name} with input: {processed_input}"
-            )
+            logger.debug(f"Running agent {self.config.name} with input: {processed_input}")
         else:
             logger.info(f"Running agent {self.config.name}")
 
         try:
             # Run the agent
-            result = self.app.invoke(
-                processed_input, config=config, debug=self.config.debug
-            )
+            result = self.app.invoke(processed_input, config=config, debug=self.config.debug)
 
             # Save state history if requested
             if self.config.save_history:
@@ -458,9 +440,7 @@ class ReactAgent(Agent[ReactAgentConfig]):
                     if isinstance(normalized_msg, AIMessage):
                         pass
 
-    def stream(
-        self, input_data: str | list[str] | dict[str, Any] | BaseModel, **kwargs
-    ):
+    def stream(self, input_data: str | list[str] | dict[str, Any] | BaseModel, **kwargs):
         """Stream the agent execution with given input.
 
         Args:
@@ -487,10 +467,7 @@ class ReactAgent(Agent[ReactAgentConfig]):
 
         try:
             yield from self.app.stream(
-                processed_input,
-                config=config,
-                stream_mode="values",
-                debug=self.config.debug,
+                processed_input, config=config, stream_mode="values", debug=self.config.debug
             )
 
             # Save state history if requested
@@ -576,6 +553,7 @@ def create_react_agent(
 
 def chat() -> None:
     """Module-level chat function."""
+    pass
 
 
 def run(agent, input_data):
@@ -585,6 +563,7 @@ def run(agent, input_data):
 
 def setup_workflow():
     """Module-level setup_workflow function."""
+    pass
 
 
 def should_use_tools(state):

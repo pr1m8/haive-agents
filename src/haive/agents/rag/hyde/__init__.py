@@ -15,7 +15,6 @@ from haive.agents.rag.hyde.enhanced_agent import (
     create_enhanced_hyde_agent,
     demonstrate_enhancement_vs_traditional,
 )
-
 # Commented out due to Pydantic schema issues with SequentialAgent inheritance
 # from haive.agents.rag.hyde.enhanced_agent_v2 import (
 #     AdaptiveHyDEGenerator,

@@ -8,7 +8,7 @@ knowledge graph generation, and multi-agent coordination.
 import asyncio
 import logging
 from datetime import datetime
-from typing import Any
+from typing import Any, Dict, List, Optional, Union
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.persistence.store.types import StoreType
@@ -23,22 +23,14 @@ from haive.agents.memory_reorganized.coordination.multi_agent_coordinator import
     MultiAgentCoordinatorConfig,
     MultiAgentMemoryCoordinator,
 )
-from haive.agents.memory_reorganized.core.classifier import (
-    MemoryClassifier,
-    MemoryClassifierConfig,
-)
-from haive.agents.memory_reorganized.core.stores import (
-    MemoryStoreConfig,
-    MemoryStoreManager,
-)
+from haive.agents.memory_reorganized.core.classifier import MemoryClassifier, MemoryClassifierConfig
+from haive.agents.memory_reorganized.core.stores import MemoryStoreConfig, MemoryStoreManager
 from haive.agents.memory_reorganized.core.types import MemoryType
 from haive.agents.memory_reorganized.knowledge.kg_generator_agent import (
     KGGeneratorAgent,
     KGGeneratorAgentConfig,
 )
-from haive.agents.memory_reorganized.retrieval.enhanced_retriever import (
-    EnhancedRetrieverConfig,
-)
+from haive.agents.memory_reorganized.retrieval.enhanced_retriever import EnhancedRetrieverConfig
 from haive.agents.memory_reorganized.retrieval.graph_rag_retriever import (
     GraphRAGRetriever,
     GraphRAGRetrieverConfig,
@@ -114,20 +106,14 @@ class MemorySystemConfig(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
     # Store configuration
-    store_type: str = Field(
-        default="memory", description="Store type (memory, postgres, etc.)"
-    )
-    collection_name: str = Field(
-        default="haive_memories", description="Collection name"
-    )
+    store_type: str = Field(default="memory", description="Store type (memory, postgres, etc.)")
+    collection_name: str = Field(default="haive_memories", description="Collection name")
     default_namespace: tuple[str, ...] = Field(
         default=("user", "general"), description="Default namespace"
     )
 
     # LLM configuration
-    llm_config: AugLLMConfig = Field(
-        default_factory=AugLLMConfig, description="LLM configuration"
-    )
+    llm_config: AugLLMConfig = Field(default_factory=AugLLMConfig, description="LLM configuration")
 
     # Classification configuration
     enable_auto_classification: bool = Field(
@@ -138,27 +124,21 @@ class MemorySystemConfig(BaseModel):
     )
 
     # Retrieval configuration
-    enable_enhanced_retrieval: bool = Field(
-        default=True, description="Enable enhanced retrieval"
-    )
+    enable_enhanced_retrieval: bool = Field(default=True, description="Enable enhanced retrieval")
     enable_graph_rag: bool = Field(default=True, description="Enable graph RAG")
     enable_multi_agent_coordination: bool = Field(
         default=True, description="Enable multi-agent coordination"
     )
 
     # Performance configuration
-    max_concurrent_operations: int = Field(
-        default=5, description="Maximum concurrent operations"
-    )
+    max_concurrent_operations: int = Field(default=5, description="Maximum concurrent operations")
     operation_timeout_seconds: int = Field(default=300, description="Operation timeout")
 
     # Memory lifecycle
     enable_memory_consolidation: bool = Field(
         default=True, description="Enable memory consolidation"
     )
-    consolidation_interval_hours: int = Field(
-        default=24, description="Consolidation interval"
-    )
+    consolidation_interval_hours: int = Field(default=24, description="Consolidation interval")
 
 
 class MemorySystemResult(BaseModel):
@@ -228,25 +208,19 @@ class MemorySystemResult(BaseModel):
     success: bool = Field(..., description="Operation success status")
     operation: str = Field(..., description="Operation type")
     result: Any = Field(default=None, description="Operation result")
-    error: str | None = Field(default=None, description="Error message if failed")
+    error: Optional[str] = Field(default=None, description="Error message if failed")
 
     # Performance metrics
-    execution_time_ms: float = Field(
-        default=0.0, description="Execution time in milliseconds"
-    )
-    agent_used: str | None = Field(default=None, description="Agent used for operation")
+    execution_time_ms: float = Field(default=0.0, description="Execution time in milliseconds")
+    agent_used: Optional[str] = Field(default=None, description="Agent used for operation")
 
     # Quality metrics
     confidence_score: float = Field(default=0.0, description="Confidence in result")
     completeness_score: float = Field(default=0.0, description="Completeness of result")
 
     # Metadata
-    timestamp: datetime = Field(
-        default_factory=datetime.utcnow, description="Result timestamp"
-    )
-    metadata: dict[str, Any] = Field(
-        default_factory=dict, description="Additional metadata"
-    )
+    timestamp: datetime = Field(default_factory=datetime.utcnow, description="Result timestamp")
+    metadata: dict[str, Any] = Field(default_factory=dict, description="Additional metadata")
 
 
 class UnifiedMemorySystem:
@@ -478,8 +452,7 @@ class UnifiedMemorySystem:
         """Initialize the memory store."""
         # Create store manager
         store_manager = StoreManager(
-            store_config={"type": StoreType.MEMORY},
-            default_namespace=self.config.default_namespace,
+            store_config={"type": StoreType.MEMORY}, default_namespace=self.config.default_namespace
         )
 
         # Create memory store config
@@ -518,8 +491,7 @@ class UnifiedMemorySystem:
         # Enhanced retriever
         if self.config.enable_enhanced_retrieval:
             EnhancedRetrieverConfig(
-                memory_store_manager=self.memory_store,
-                memory_classifier=self.classifier,
+                memory_store_manager=self.memory_store, memory_classifier=self.classifier
             )
             # Note: We'll need to create EnhancedRetriever class
             # self.retrievers["enhanced"] = EnhancedRetriever(enhanced_config)
@@ -549,8 +521,7 @@ class UnifiedMemorySystem:
                 memory_store_manager=self.memory_store,
                 memory_classifier=self.classifier,
                 kg_generator_config=KGGeneratorAgentConfig(
-                    memory_store_manager=self.memory_store,
-                    memory_classifier=self.classifier,
+                    memory_store_manager=self.memory_store, memory_classifier=self.classifier
                 ),
                 agentic_rag_config=AgenticRAGCoordinatorConfig(
                     memory_store_manager=self.memory_store,
@@ -567,8 +538,8 @@ class UnifiedMemorySystem:
         self,
         content: str,
         namespace: tuple[str, ...] | None = None,
-        memory_type: MemoryType | None = None,
-        importance: float | None = None,
+        memory_type: Optional[MemoryType] = None,
+        importance: Optional[float] = None,
         metadata: dict[str, Any] | None = None,
     ) -> MemorySystemResult:
         """Store a memory in the system.
@@ -588,9 +559,7 @@ class UnifiedMemorySystem:
         try:
             # Use coordinator if available
             if self.coordinator:
-                result = await self.coordinator.store_memory(
-                    content=content, namespace=namespace
-                )
+                result = await self.coordinator.store_memory(content=content, namespace=namespace)
                 memory_id = result
             else:
                 # Direct store operation
@@ -654,20 +623,14 @@ class UnifiedMemorySystem:
             # Use coordinator if available and requested
             if self.coordinator and use_multi_agent:
                 memories = await self.coordinator.retrieve_memories(
-                    query=query,
-                    limit=limit,
-                    memory_types=memory_types,
-                    namespace=namespace,
+                    query=query, limit=limit, memory_types=memory_types, namespace=namespace
                 )
                 agent_used = "multi_agent_coordinator"
 
             # Use graph RAG if available and requested
             elif "graph_rag" in self.retrievers and use_graph_rag:
                 result = await self.retrievers["graph_rag"].retrieve_memories(
-                    query=query,
-                    limit=limit,
-                    memory_types=memory_types,
-                    namespace=namespace,
+                    query=query, limit=limit, memory_types=memory_types, namespace=namespace
                 )
                 memories = result.memories
                 agent_used = "graph_rag"
@@ -675,10 +638,7 @@ class UnifiedMemorySystem:
             # Use agentic RAG coordinator
             elif self.agentic_rag:
                 result = await self.agentic_rag.retrieve_memories(
-                    query=query,
-                    limit=limit,
-                    memory_types=memory_types,
-                    namespace=namespace,
+                    query=query, limit=limit, memory_types=memory_types, namespace=namespace
                 )
                 memories = result.final_memories
                 agent_used = "agentic_rag"
@@ -686,10 +646,7 @@ class UnifiedMemorySystem:
             # Fallback to direct store search
             else:
                 memories = await self.memory_store.retrieve_memories(
-                    query=query,
-                    limit=limit,
-                    namespace=namespace,
-                    memory_types=memory_types,
+                    query=query, limit=limit, namespace=namespace, memory_types=memory_types
                 )
                 agent_used = "direct_store"
 
@@ -792,10 +749,8 @@ class UnifiedMemorySystem:
                     raise Exception(result["error"])
             else:
                 # Direct KG generation
-                knowledge_graph = (
-                    await self.kg_generator.extract_knowledge_graph_from_memories(
-                        namespace=namespace
-                    )
+                knowledge_graph = await self.kg_generator.extract_knowledge_graph_from_memories(
+                    namespace=namespace
                 )
 
             self._update_operation_stats(start_time, success=True)
@@ -947,10 +902,7 @@ class UnifiedMemorySystem:
             related_memories = []
             if "graph_rag" in self.retrievers:
                 result = await self.retrievers["graph_rag"].retrieve_memories(
-                    query=entity_name,
-                    limit=10,
-                    namespace=namespace,
-                    enable_graph_traversal=True,
+                    query=entity_name, limit=10, namespace=namespace, enable_graph_traversal=True
                 )
                 related_memories = result.memories
 
@@ -1019,9 +971,7 @@ class UnifiedMemorySystem:
 
             # Test KG generator
             try:
-                kg_stats = (
-                    f"KG has {len(self.kg_generator.knowledge_graph.nodes)} nodes"
-                )
+                kg_stats = f"KG has {len(self.kg_generator.knowledge_graph.nodes)} nodes"
                 diagnostic_results["kg_generatof"] = {
                     "status": "healthy",
                     "info": kg_stats,
@@ -1227,9 +1177,7 @@ async def quick_memory_demo():
             result = await memory_system.retrieve_memories("your query")
     """
     # Create memory system
-    memory_system = await create_memory_system(
-        store_type="memory", collection_name="demo_memories"
-    )
+    memory_system = await create_memory_system(store_type="memory", collection_name="demo_memories")
 
     memory_system.get_system_info()
 
@@ -1276,10 +1224,7 @@ async def quick_memory_demo():
 
         for _mode_name, use_multi_agent, use_graph_rag in modes:
             result = await memory_system.retrieve_memories(
-                query,
-                limit=2,
-                use_multi_agent=use_multi_agent,
-                use_graph_rag=use_graph_rag,
+                query, limit=2, use_multi_agent=use_multi_agent, use_graph_rag=use_graph_rag
             )
 
             if result.success:

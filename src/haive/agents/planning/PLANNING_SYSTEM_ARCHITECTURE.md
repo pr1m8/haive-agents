@@ -16,7 +16,7 @@ We're building a sophisticated planning system from the ground up using modern H
 Planning System
 ├── base/
 │   ├── models.py          # Advanced planning models with generics
-│   ├── prompts.py         # Comprehensive system prompts
+│   ├── prompts.py         # Comprehensive system prompts  
 │   └── agents/
 │       ├── planner.py     # BasePlannerAgent (SimpleAgentV3)
 │       └── executor.py    # BaseExecutorAgent (ReactAgent)
@@ -29,7 +29,7 @@ Planning System
 ```
 BasePlannerAgent (SimpleAgentV3)
     ↓ Creates BasePlan[PlanContent]
-BaseExecutorAgent (ReactAgent + Tools)
+BaseExecutorAgent (ReactAgent + Tools)  
     ↓ Executes individual steps
 Multi-Agent Coordinator (TBD)
     ↓ Orchestrates the workflow
@@ -40,7 +40,6 @@ Multi-Agent Coordinator (TBD)
 ### Key Model Classes
 
 **BasePlan[T]** - Generic plan supporting any content type:
-
 ```python
 class BasePlan(IntelligentStatusMixin, Generic[T]):
     steps: IntelligentSequence[PlanContent]
@@ -48,19 +47,17 @@ class BasePlan(IntelligentStatusMixin, Generic[T]):
 ```
 
 **BaseStep** - Individual actionable step:
-
 ```python
 class BaseStep(IntelligentStatusMixin):
     step_id: str
     description: str
     # Note: Removing expected_outcome - too prescriptive
-    tools_needed: List[str]
+    tools_needed: List[str] 
     priority: Priority
     dependencies: List[str]
 ```
 
 **IntelligentSequence** - Event-driven sequence with undo/redo:
-
 - Auto-propagating status management
 - Tree traversal with cycle detection
 - Modifiable sequences with change tracking
@@ -70,7 +67,6 @@ class BaseStep(IntelligentStatusMixin):
 ### BasePlannerAgent (SimpleAgentV3)
 
 **Configuration:**
-
 ```python
 engine: AugLLMConfig(
     model="gpt-4o-mini",
@@ -82,9 +78,8 @@ structured_output_model=BasePlan[PlanContent]
 ```
 
 **Capabilities:**
-
 - Deep objective analysis
-- Strategic planning framework
+- Strategic planning framework  
 - Risk assessment and mitigation
 - Resource optimization
 - Comprehensive system prompts (2000+ words)
@@ -92,10 +87,9 @@ structured_output_model=BasePlan[PlanContent]
 ### BaseExecutorAgent (ReactAgent)
 
 **Configuration:**
-
 ```python
 engine: AugLLMConfig(
-    model="gpt-4o-mini",
+    model="gpt-4o-mini", 
     temperature=0.1,
     system_message=EXECUTOR_SYSTEM_MESSAGE  # Precision execution prompt
 )
@@ -104,7 +98,6 @@ tools=[tavily_search_tool, tavily_qna, tavily_search_context]
 ```
 
 **Capabilities:**
-
 - Precise task execution
 - Tool mastery (search-focused)
 - Quality assurance and validation
@@ -117,19 +110,16 @@ tools=[tavily_search_tool, tavily_qna, tavily_search_context]
 We need to properly coordinate these agents in a multi-agent system, but there are several architectural decisions to make:
 
 **1. Step-by-Step Execution Flow:**
-
 - How does the executor access the current step from the plan?
 - How do we track which step is currently being executed?
 - How do we pass context between steps?
 
 **2. Prompt Template Integration:**
-
 - The executor prompt needs access to plan model fields
 - Current step details must be dynamically injected
 - Previous results need to be accumulated and passed
 
 **3. Multi-Agent State Management:**
-
 - Shared state between planner and executor
 - Progress tracking across the workflow
 - Error handling and recovery
@@ -137,7 +127,6 @@ We need to properly coordinate these agents in a multi-agent system, but there a
 ### Specific Technical Challenges
 
 **A. ReactAgent in Multi-Agent Context:**
-
 ```python
 # How should this work?
 executor = BaseExecutorAgent(tools=[tavily_search_tool])
@@ -149,7 +138,6 @@ executor = BaseExecutorAgent(tools=[tavily_search_tool])
 ```
 
 **B. Prompt Variable Mapping:**
-
 ```python
 # Current executor prompt template:
 """Execute this specific step from our plan:
@@ -166,7 +154,6 @@ executor = BaseExecutorAgent(tools=[tavily_search_tool])
 ```
 
 **C. State Schema Design:**
-
 ```python
 # What should our multi-agent state look like?
 class PlanExecuteState(StateSchema):
@@ -180,7 +167,6 @@ class PlanExecuteState(StateSchema):
 ## 🎯 Next Steps - Decision Points
 
 ### 1. State Schema Design
-
 We need to design the state schema that will coordinate between planner and executor:
 
 ```python
@@ -188,23 +174,21 @@ class PlanExecuteState(StateSchema):
     # Plan data
     original_objective: str
     current_plan: Optional[BasePlan[PlanContent]]
-
-    # Execution tracking
+    
+    # Execution tracking  
     current_step_id: Optional[str]
     completed_steps: List[str]
     execution_results: List[???]  # What structure for results?
-
+    
     # Progress and control
     iteration_count: int
     final_answer: Optional[str]
 ```
 
 ### 2. Step Execution Interface
-
 How should the executor receive and process step information?
 
 **Option A: Direct Step Object**
-
 ```python
 # Pass the BaseStep object directly
 current_step: BaseStep = plan.get_step(current_step_id)
@@ -215,7 +199,6 @@ executor_input = {
 ```
 
 **Option B: Flattened Step Data**
-
 ```python
 # Extract step fields into flat structure
 executor_input = {
@@ -227,7 +210,6 @@ executor_input = {
 ```
 
 ### 3. Multi-Agent Orchestration Pattern
-
 Should we use:
 
 **A. EnhancedMultiAgentV4** (existing pattern)
@@ -235,7 +217,6 @@ Should we use:
 **C. Sequential agent calling**
 
 ### 4. Execution Result Structure
-
 What should execution results look like?
 
 ```python
@@ -251,23 +232,20 @@ class ExecutionResult(BaseModel):
 ## 🔬 Prototyping Approach
 
 ### Phase 1: Simple Sequential Test
-
 1. Create minimal state schema
 2. Test planner → executor flow manually
 3. Verify prompt template integration
 4. Validate step execution and result capture
 
-### Phase 2: Multi-Agent Integration
-
+### Phase 2: Multi-Agent Integration  
 1. Choose orchestration pattern
 2. Implement state management
 3. Add proper routing logic
 4. Test end-to-end workflow
 
 ### Phase 3: Enhancement and Polish
-
 1. Add error handling and recovery
-2. Implement replanning logic
+2. Implement replanning logic  
 3. Add comprehensive monitoring
 4. Performance optimization
 
@@ -294,7 +272,7 @@ class ExecutionResult(BaseModel):
 ## 📝 Notes and Considerations
 
 - **Keep it simple first** - We can add complexity later
-- **Focus on the core workflow** - Plan → Execute → Results
+- **Focus on the core workflow** - Plan → Execute → Results  
 - **Real component testing** - No mocks, test with actual LLMs
 - **Document decisions** - Capture why we chose specific approaches
 

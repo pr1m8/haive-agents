@@ -59,25 +59,21 @@ from haive.agents.supervisor import SupervisorAgent, DynamicSupervisor
 ## Module Categories
 
 ### Core (`core/`)
-
 - Basic supervisor functionality
 - Essential routing capabilities
 - Lightweight implementations
 
 ### Dynamic (`dynamic/`)
-
 - Runtime agent management
 - Dynamic graph rebuilding
 - Advanced coordination features
 
 ### Utils (`utils/`)
-
 - Support utilities
 - Integration helpers
 - Common functionality
 
 ### State (`state/`)
-
 - State schemas and models
 - Shared state definitions
 

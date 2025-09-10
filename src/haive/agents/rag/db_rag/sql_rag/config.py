@@ -35,14 +35,12 @@ Note:
 import inspect
 import os
 from typing import Any
-
 from dotenv import load_dotenv
 from haive.core.engine.agent.agent import AgentConfig
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import AzureLLMConfig, LLMConfig
 from langchain_community.utilities import SQLDatabase
 from pydantic import BaseModel, Field, field_validator
-
 from haive.agents.rag.db_rag.sql_rag.engines import default_sql_engines
 from haive.agents.rag.db_rag.sql_rag.state import InputState, OutputState, OverallState
 
@@ -117,36 +115,28 @@ class SQLDatabaseConfig(BaseModel):
         default=None, description="The database connection URI (if provided directly)"
     )
     db_user: str = Field(
-        default=os.getenv("SQL_DB_USER", "postgres"),
-        description="The database username",
+        default=os.getenv("SQL_DB_USER", "postgres"), description="The database username"
     )
     db_password: str = Field(
-        default=os.getenv("SQL_DB_PASSWORD", "postgres"),
-        description="The database password",
+        default=os.getenv("SQL_DB_PASSWORD", "postgres"), description="The database password"
     )
     db_host: str = Field(
         default=os.getenv("SQL_DB_HOST", "localhost"), description="The database host"
     )
-    db_port: str = Field(
-        default=os.getenv("SQL_DB_PORT", "5432"), description="The database port"
-    )
+    db_port: str = Field(default=os.getenv("SQL_DB_PORT", "5432"), description="The database port")
     db_name: str = Field(
         default=os.getenv("SQL_DB_NAME", "postgres"), description="The database name"
     )
     include_tables: list[str] | None = Field(
-        default_factory=lambda: (
-            os.getenv("SQL_INCLUDE_TABLES", "").split(",")
-            if os.getenv("SQL_INCLUDE_TABLES")
-            else None
-        ),
+        default_factory=lambda: os.getenv("SQL_INCLUDE_TABLES", "").split(",")
+        if os.getenv("SQL_INCLUDE_TABLES")
+        else None,
         description="Specific tables to include, if None then include all",
     )
     exclude_tables: list[str] = Field(
-        default_factory=lambda: (
-            os.getenv("SQL_EXCLUDE_TABLES", "").split(",")
-            if os.getenv("SQL_EXCLUDE_TABLES")
-            else []
-        ),
+        default_factory=lambda: os.getenv("SQL_EXCLUDE_TABLES", "").split(",")
+        if os.getenv("SQL_EXCLUDE_TABLES")
+        else [],
         description="Tables to exclude from schema",
     )
     sample_rows_in_table_info: int = Field(
@@ -324,8 +314,7 @@ class SQLRAGConfig(AgentConfig):
         default=default_sql_engines,
     )
     llm_config: LLMConfig = Field(
-        default_factory=AzureLLMConfig,
-        description="The LLM config for the SQL database agent",
+        default_factory=AzureLLMConfig, description="The LLM config for the SQL database agent"
     )
     domain_name: str = Field(
         default="database",
@@ -352,15 +341,11 @@ class SQLRAGConfig(AgentConfig):
         default=True, description="Whether to check for hallucinations in the response"
     )
     answer_grading: bool = Field(
-        default=True,
-        description="Whether to grade the answer for relevance to the question",
+        default=True, description="Whether to grade the answer for relevance to the question"
     )
-    examples_path: str | None = Field(
-        default=None, description="Path to examples JSON file"
-    )
+    examples_path: str | None = Field(default=None, description="Path to examples JSON file")
     domain_examples: dict[str, list[dict[str, str]]] = Field(
-        default_factory=dict,
-        description="Examples for different domains to guide the model",
+        default_factory=dict, description="Examples for different domains to guide the model"
     )
     max_iterations: int = Field(
         default=5, description="Maximum number of iterations for retrying SQL queries"
@@ -368,9 +353,7 @@ class SQLRAGConfig(AgentConfig):
 
     @field_validator("engines")
     @classmethod
-    def check_required_engines(
-        cls, v: dict[str, AugLLMConfig]
-    ) -> dict[str, AugLLMConfig]:
+    def check_required_engines(cls, v: dict[str, AugLLMConfig]) -> dict[str, AugLLMConfig]:
         """Validate that all required engines are present.
 
         Args:
@@ -389,11 +372,7 @@ class SQLRAGConfig(AgentConfig):
             "guardrails",
             "generate_final_answer",
         ]
-        missing = [
-            engine
-            for engine in required_engines
-            if engine not in v or v[engine] is None
-        ]
+        missing = [engine for engine in required_engines if engine not in v or v[engine] is None]
         if missing:
             raise ValueError(f"Missing required engines: {', '.join(missing)}")
         return v

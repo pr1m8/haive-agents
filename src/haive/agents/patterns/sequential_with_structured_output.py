@@ -38,8 +38,7 @@ class SequentialHooks(BaseModel):
     )
 
     intermediate_transform: Callable[[Any], dict[str, Any]] | None = Field(
-        default=None,
-        description="Function to transform output from first agent for second agent",
+        default=None, description="Function to transform output from first agent for second agent"
     )
 
     post_process: Callable[[Any], Any] | None = Field(
@@ -96,9 +95,7 @@ class SequentialAgentWithStructuredOutput(Generic[OutputT]):
             self.second_agent = second_agent
         else:
             # Create default structured output agent
-            self.second_agent = self._create_structured_output_agent(
-                structured_output_prompt
-            )
+            self.second_agent = self._create_structured_output_agent(structured_output_prompt)
 
     def _create_structured_output_agent(
         self, custom_prompt: ChatPromptTemplate | None = None
@@ -110,7 +107,7 @@ class SequentialAgentWithStructuredOutput(Generic[OutputT]):
                 [
                     (
                         "system",
-                        """You are a structured output specialist. Your role is to take the provided.
+                        """You are a structured output specialist. Your role is to take the provided
 information and organize it into the requested structured format.
 
 Ensure all required fields are populated accurately based on the input data.
@@ -183,9 +180,7 @@ Provide the structured output now:""",
                 structured_input = self.hooks.intermediate_transform(first_result)
             else:
                 # Default transformation
-                structured_input = self._default_transform(
-                    first_result, input_data, context
-                )
+                structured_input = self._default_transform(first_result, input_data, context)
 
             # Step 2: Run structured output agent
             if self.debug:
@@ -206,8 +201,7 @@ Provide the structured output now:""",
                     for tool_call in last_message.tool_calls:
                         if (
                             "name" in tool_call
-                            and tool_call["name"]
-                            == self.structured_output_model.__name__
+                            and tool_call["name"] == self.structured_output_model.__name__
                         ):
                             # Parse the structured output
 
@@ -219,10 +213,7 @@ Provide the structured output now:""",
                         if "function" in tool_call:
                             # Handle OpenAI format
                             func = tool_call["function"]
-                            if (
-                                func.get("name")
-                                == self.structured_output_model.__name__
-                            ):
+                            if func.get("name") == self.structured_output_model.__name__:
                                 args = func.get("arguments", {})
                                 if isinstance(args, str):
                                     args = json.loads(args)
@@ -240,9 +231,7 @@ Provide the structured output now:""",
                 # Try to parse as the model if it's a dict
                 if isinstance(structured_result, dict):
                     with contextlib.suppress(Exception):
-                        structured_result = self.structured_output_model(
-                            **structured_result
-                        )
+                        structured_result = self.structured_output_model(**structured_result)
 
             # Post-process if hook provided
             if self.hooks.post_process:
@@ -256,10 +245,7 @@ Provide the structured output now:""",
             raise
 
     def _default_transform(
-        self,
-        first_result: Any,
-        original_input: Any,
-        context: dict[str, Any] | None = None,
+        self, first_result: Any, original_input: Any, context: dict[str, Any] | None = None
     ) -> dict[str, Any]:
         """Default transformation of first agent output for second agent."""
         # Handle different output types
@@ -320,9 +306,7 @@ def create_react_to_structured(
     """
     react_config = react_config or {}
 
-    react_agent = ReactAgent(
-        name=f"{name}_react", tools=tools, engine=AugLLMConfig(**react_config)
-    )
+    react_agent = ReactAgent(name=f"{name}_react", tools=tools, engine=AugLLMConfig(**react_config))
 
     return SequentialAgentWithStructuredOutput(
         first_agent=react_agent,

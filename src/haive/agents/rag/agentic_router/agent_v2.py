@@ -48,7 +48,7 @@ STRATEGY_SELECTION_PROMPT = ChatPromptTemplate.from_messages(
     [
         (
             "system",
-            """Select the best RAG strategy for the query:.
+            """Select the best RAG strategy for the query:
     - simple: Basic queries needing direct retrieval
     - multi_query: Complex queries benefiting from multiple perspectives
     - hyde: Abstract queries needing hypothetical expansion

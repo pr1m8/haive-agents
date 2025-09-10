@@ -29,7 +29,7 @@ class ListMultiAgent(Agent, RecompileMixin, Sequence[Agent]):
     - Each agent manages its own tools/state
     - Message passing between agents
 
-    Examples:
+    Example:
         .. code-block:: python
 
             multi = ListMultiAgent("my_system")
@@ -54,30 +54,12 @@ class ListMultiAgent(Agent, RecompileMixin, Sequence[Agent]):
     # ========== List Interface ==========
 
     def __getitem__(self, index: int | slice) -> Agent | list[Agent]:
-        """Getitem  .
-
-        Args:
-            index: [TODO: Add description]
-
-        Returns:
-            [TODO: Add return description]
-        """
         return self.agents[index]
 
     def __len__(self) -> int:
-        """Len  .
-
-        Returns:
-            [TODO: Add return description]
-        """
         return len(self.agents)
 
     def __iter__(self) -> Iterator[Agent]:
-        """Iter  .
-
-        Returns:
-            [TODO: Add return description]
-        """
         return iter(self.agents)
 
     def append(self, agent: Agent) -> "ListMultiAgent":
@@ -107,9 +89,7 @@ class ListMultiAgent(Agent, RecompileMixin, Sequence[Agent]):
             self.agents.remove(agent)
 
         self._update_index()
-        self.mark_for_recompile(
-            f"Removed agent: {agent if isinstance(agent, str) else agent.name}"
-        )
+        self.mark_for_recompile(f"Removed agent: {agent if isinstance(agent, str) else agent.name}")
         return self
 
     def pop(self, index: int = -1) -> Agent:
@@ -159,12 +139,6 @@ class ListMultiAgent(Agent, RecompileMixin, Sequence[Agent]):
             # This keeps it simple - agents already have their tools in their
             # engine/state
             def make_agent_node(agent_instance: Any):
-                """Make Agent Node.
-
-                Args:
-                    agent_instance: [TODO: Add description]
-                """
-
                 def agent_node(state: dict[str, Any]) -> dict[str, Any]:
                     # Extract messages
                     messages = state.get("messages", [])

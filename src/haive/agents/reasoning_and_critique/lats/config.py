@@ -4,7 +4,9 @@ from haive.core.engine.agent.agent import AgentConfig
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.tools.tools.search_tools import tavily_search_tool
 from langchain_core.tools import BaseTool, StructuredTool
-from pydantic import Field
+from pydantic import BaseModel, Field
+
+from haive.agents.reasoning_and_critique.lats.state import TreeState
 
 
 class LATSAgentConfig(AgentConfig):
@@ -16,9 +18,7 @@ class LATSAgentConfig(AgentConfig):
     """
 
     # Core LATS parameters
-    max_iterations: int = Field(
-        default=5, description="Maximum number of search iterations"
-    )
+    max_iterations: int = Field(default=5, description="Maximum number of search iterations")
 
     max_depth: int = Field(default=5, description="Maximum depth of the search tree")
 
@@ -78,8 +78,5 @@ class LATSAgentConfig(AgentConfig):
             LATSAgentConfig instance
         """
         return cls(
-            reflection_engine=reflection_llm,
-            action_engine=action_llm,
-            tools=tools or [],
-            **kwargs,
+            reflection_engine=reflection_llm, action_engine=action_llm, tools=tools or [], **kwargs
         )

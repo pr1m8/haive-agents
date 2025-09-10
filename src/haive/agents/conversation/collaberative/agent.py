@@ -44,14 +44,10 @@ class CollaborativeConversation(BaseConversationAgent):
     min_contributions_per_section: int = Field(
         default=1, description="Minimum contributions per section"
     )
-    allow_revisions: bool = Field(
-        default=True, description="Allow revision of completed sections"
-    )
+    allow_revisions: bool = Field(default=True, description="Allow revision of completed sections")
 
     # Output configuration
-    output_format: Literal["markdown", "code", "outline", "report"] = Field(
-        default="markdown"
-    )
+    output_format: Literal["markdown", "code", "outline", "report"] = Field(default="markdown")
     include_attribution: bool = Field(
         default=True, description="Include contributor names in output"
     )
@@ -122,9 +118,7 @@ Let's start with: {self.sections[0] if self.sections else "open discussion"}"""
         section_contributors = {}
         for contributor, section, _ in state.contributions:
             if section == current_section:
-                section_contributors[contributor] = (
-                    section_contributors.get(contributor, 0) + 1
-                )
+                section_contributors[contributor] = section_contributors.get(contributor, 0) + 1
 
         logger.debug(f"Section contributors: {section_contributors}")
 
@@ -141,9 +135,7 @@ Let's start with: {self.sections[0] if self.sections else "open discussion"}"""
 
         # If everyone has contributed minimum, pick least active overall
         if min_count >= self.min_contributions_per_section:
-            logger.debug(
-                f"Everyone has contributed minimum ({self.min_contributions_per_section})"
-            )
+            logger.debug(f"Everyone has contributed minimum ({self.min_contributions_per_section})")
             return self._select_least_active_overall(state)
 
         logger.debug(f"Selected speaker: {min_contributor} (count: {min_count})")
@@ -187,9 +179,7 @@ Let's start with: {self.sections[0] if self.sections else "open discussion"}"""
                         "completed_sections": completed,
                         "current_section": next_section,
                         "messages": [transition_msg],
-                        "current_speaker": (
-                            state.speakers[0] if state.speakers else None
-                        ),
+                        "current_speaker": (state.speakers[0] if state.speakers else None),
                     }
                 )
             # All sections complete
@@ -213,9 +203,7 @@ Let's start with: {self.sections[0] if self.sections else "open discussion"}"""
 
         return Command(update={"current_speaker": min_speaker})
 
-    def _prepare_agent_input(
-        self, state: CollaborativeState, agent_name: str
-    ) -> dict[str, Any]:
+    def _prepare_agent_input(self, state: CollaborativeState, agent_name: str) -> dict[str, Any]:
         """Prepare input with collaboration context."""
         base_input = super()._prepare_agent_input(state, agent_name)
 
@@ -308,9 +296,7 @@ Let's start with: {self.sections[0] if self.sections else "open discussion"}"""
             }
         )
 
-    def _compile_document(
-        self, state: CollaborativeState, sections: dict[str, str]
-    ) -> str:
+    def _compile_document(self, state: CollaborativeState, sections: dict[str, str]) -> str:
         """Compile sections into final document."""
         # Get title from current document or use default
         if state.shared_document:
@@ -368,11 +354,7 @@ The final document has been compiled."""
 
     @classmethod
     def create_brainstorming_session(
-        cls,
-        topic: str,
-        participants: list[str],
-        sections: list[str] | None = None,
-        **kwargs,
+        cls, topic: str, participants: list[str], sections: list[str] | None = None, **kwargs
     ):
         """Create a brainstorming/ideation session.
 
@@ -402,9 +384,7 @@ The final document has been compiled."""
         # Each participant needs to contribute min_contributions_per_section
         # times per section
         min_contributions = kwargs.get("min_contributions_per_section", 1)
-        total_contributions_needed = (
-            len(participants) * len(sections) * min_contributions
-        )
+        total_contributions_needed = len(participants) * len(sections) * min_contributions
 
         # Add some buffer for conversation flow
         suggested_max_rounds = total_contributions_needed + len(sections) + 5

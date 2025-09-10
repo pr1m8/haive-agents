@@ -6,9 +6,7 @@ documents from local files.
 
 from pathlib import Path
 
-from haive.core.engine.document import (
-    create_file_document_engine as create_file_loader_engine,
-)
+from haive.core.engine.document import create_file_document_engine as create_file_loader_engine
 from pydantic import Field
 
 from haive.agents.document_loader.base.agent import DocumentLoaderAgent
@@ -30,17 +28,13 @@ class FileLoaderAgent(DocumentLoaderAgent):
     name: str = "File Loader Agent"
 
     # File-specific options
-    file_path: str | Path | None = Field(
-        default=None, description="Path to the file to load"
-    )
+    file_path: str | Path | None = Field(default=None, description="Path to the file to load")
 
     file_extension: str | None = Field(
         default=None, description="File extension to use for loader selection"
     )
 
-    loader_name: str | None = Field(
-        default=None, description="Explicit loader name to use"
-    )
+    loader_name: str | None = Field(default=None, description="Explicit loader name to use")
 
     def setup_agent(self) -> None:
         """Set up the agent with a file loader engine."""

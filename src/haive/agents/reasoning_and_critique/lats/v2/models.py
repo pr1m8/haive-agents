@@ -45,13 +45,9 @@ class TreeNode(BaseModel):
 class Reflection(BaseModel):
     """Output from reflection agent."""
 
-    reflections: str = Field(
-        description="Critique and reflections on the response quality"
-    )
+    reflections: str = Field(description="Critique and reflections on the response quality")
     score: float = Field(
-        ge=0,
-        le=10,
-        description="Score from 0-10 on the quality of the candidate response",
+        ge=0, le=10, description="Score from 0-10 on the quality of the candidate response"
     )
     found_solution: bool = Field(
         description="Whether the response has fully solved the question or task"
@@ -59,11 +55,6 @@ class Reflection(BaseModel):
 
     @property
     def normalized_score(self) -> float:
-        """Normalized Score.
-
-        Returns:
-            [TODO: Add return description]
-        """
         return self.score / 10.0
 
 

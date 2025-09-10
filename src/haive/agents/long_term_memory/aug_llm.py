@@ -1,11 +1,10 @@
-from haive.core.engine.aug_llm import AugLLMConfig
-from langchain_core.prompts import ChatPromptTemplate
-
 from haive.agents.long_term_memory.tools import (
     save_recall_memory,
     save_structured_recall_memory,
     search_recall_memories,
 )
+from haive.core.engine.aug_llm import AugLLMConfig
+from langchain_core.prompts import ChatPromptTemplate
 
 # Define the prompt template for the agent
 prompt = ChatPromptTemplate.from_messages(
@@ -63,6 +62,5 @@ lt_mem_agent_aug_llm = AugLLMConfig(
     prompt_template=prompt, tools=[save_recall_memory, search_recall_memories]
 )
 lt_mem_agent_aug_llm = AugLLMConfig(
-    prompt_template=prompt,
-    tools=[save_structured_recall_memory, search_recall_memories],
+    prompt_template=prompt, tools=[save_structured_recall_memory, search_recall_memories]
 )

@@ -1,12 +1,12 @@
 """Module exports."""
 
-from haive.agents.document_modifiers.base.utils import normalize_contents
 from haive.agents.document_modifiers.kg.kg_iterative_refinement.agent import (
     IterativeGraphTransformer,
 )
 from haive.agents.document_modifiers.kg.kg_iterative_refinement.config import (
     IterativeGraphTransformerConfig,
 )
+from haive.agents.document_modifiers.base.utils import normalize_contents
 from haive.agents.document_modifiers.kg.kg_iterative_refinement.state import (
     IterativeGraphTransformerState,
 )

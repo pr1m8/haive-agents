@@ -39,17 +39,6 @@ class ReactMemoryAgent:
         decay_rate: float = 0.01,
         use_time_weighting: bool = True,
     ):
-        """Init  .
-
-        Args:
-            name: [TODO: Add description]
-            engine: [TODO: Add description]
-            user_id: [TODO: Add description]
-            memory_store_path: [TODO: Add description]
-            k: [TODO: Add description]
-            decay_rate: [TODO: Add description]
-            use_time_weighting: [TODO: Add description]
-        """
         self.name = name
         self.engine = engine or AugLLMConfig(temperature=0.7)
         self.user_id = user_id or "default_user"
@@ -64,9 +53,7 @@ class ReactMemoryAgent:
         if memory_store_path:
             try:
                 self.vector_store = FAISS.load_local(
-                    memory_store_path,
-                    self.embeddings,
-                    allow_dangerous_deserialization=True,
+                    memory_store_path, self.embeddings, allow_dangerous_deserialization=True
                 )
             except:
                 # Create new if doesn't exist
@@ -206,9 +193,7 @@ Always strive to use memories to provide more helpful, personalized responses.""
                             filtered_docs.append(doc)
 
                 # Sort by timestamp and limit
-                filtered_docs.sort(
-                    key=lambda d: d.metadata.get("timestamp", ""), reverse=True
-                )
+                filtered_docs.sort(key=lambda d: d.metadata.get("timestamp", ""), reverse=True)
                 filtered_docs = filtered_docs[:k]
 
                 if not filtered_docs:
@@ -289,9 +274,7 @@ Always strive to use memories to provide more helpful, personalized responses.""
                     "user_id": self.user_id,
                 }
 
-                doc = Document(
-                    page_content=f"[UPDATED MEMORY] {new_content}", metadata=metadata
-                )
+                doc = Document(page_content=f"[UPDATED MEMORY] {new_content}", metadata=metadata)
 
                 self.vector_store.add_documents([doc])
 
@@ -319,8 +302,7 @@ Always strive to use memories to provide more helpful, personalized responses.""
                 }
 
                 doc = Document(
-                    page_content=f"[DELETED] Memory identified by: {memory_id}",
-                    metadata=metadata,
+                    page_content=f"[DELETED] Memory identified by: {memory_id}", metadata=metadata
                 )
 
                 self.vector_store.add_documents([doc])
@@ -345,9 +327,7 @@ Always strive to use memories to provide more helpful, personalized responses.""
 
                 # Sort by timestamp
                 sorted_docs = sorted(
-                    all_docs,
-                    key=lambda d: d.metadata.get("timestamp", ""),
-                    reverse=True,
+                    all_docs, key=lambda d: d.metadata.get("timestamp", ""), reverse=True
                 )[:k]
 
                 if not sorted_docs:
@@ -466,8 +446,7 @@ async def example_basic_usage():
 
     # First conversation
     response1 = await agent.arun(
-        "Hi, I'm Alice. I work as a data scientist at TechCorp and I love hiking.",
-        auto_save=True,
+        "Hi, I'm Alice. I work as a data scientist at TechCorp and I love hiking.", auto_save=True
     )
     print("Response 1:", response1)
 
@@ -476,9 +455,7 @@ async def example_basic_usage():
     print("Response 2:", response2)
 
     # Search specific memories
-    response3 = await agent.arun(
-        "Search my memories for information about hiking", auto_save=False
-    )
+    response3 = await agent.arun("Search my memories for information about hiking", auto_save=False)
     print("Response 3:", response3)
 
     # Save vector store
@@ -503,9 +480,7 @@ async def example_with_custom_tools():
 
     # Create agent with custom tool
     agent = ReactMemoryAgent.create_with_custom_tools(
-        name="enhanced_assistant",
-        custom_tools=[calculate_days_since],
-        user_id="bob_jones",
+        name="enhanced_assistant", custom_tools=[calculate_days_since], user_id="bob_jones"
     )
 
     # Use both memory and custom tools

@@ -3,10 +3,7 @@
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import DeepSeekLLMConfig
 
-from haive.agents.memory_v2.simple_memory_agent import (
-    SimpleMemoryAgent,
-    TokenAwareMemoryConfig,
-)
+from haive.agents.memory_v2.simple_memory_agent import SimpleMemoryAgent, TokenAwareMemoryConfig
 
 
 def test_memory_operations():
@@ -14,12 +11,8 @@ def test_memory_operations():
     # Create agent with DeepSeek
     agent = SimpleMemoryAgent(
         name="memory_test",
-        engine=AugLLMConfig(
-            llm_config=DeepSeekLLMConfig(model="deepseek-chat", temperature=0.1)
-        ),
-        memory_config=TokenAwareMemoryConfig(
-            max_context_tokens=2000, storage_backend="in_memory"
-        ),
+        engine=AugLLMConfig(llm_config=DeepSeekLLMConfig(model="deepseek-chat", temperature=0.1)),
+        memory_config=TokenAwareMemoryConfig(max_context_tokens=2000, storage_backend="in_memory"),
     )
 
     # Test 1: Store memories

@@ -19,8 +19,7 @@ class SelfHealingCodeAgent(AgentArchitecture):
         )
         message = HumanMessage(
             content=prompt.format(
-                function_string=self.function_string,
-                error_description=self.error_description,
+                function_string=self.function_string, error_description=self.error_description
             )
         )
         bug_report = llm.invoke([message]).content.strip()
@@ -63,7 +62,6 @@ class SelfHealingCodeAgent(AgentArchitecture):
     # Filter the top 30% of results to ensure the relevance of memories being
     # updated.
     def memory_filter_node(self: SelfHealingCodeState):
-        """Memory Filter Node."""
         for memory in self.memory_search_results:
             if memory["distance"] < 0.3:
                 self.memory_ids_to_update.append(memory["id"])
@@ -109,9 +107,7 @@ class SelfHealingCodeAgent(AgentArchitecture):
         results = collection.get(ids=[memory_to_update_id])
         memory_to_update = results["documents"][0]
         message = HumanMessage(
-            content=prompt.format(
-                bug_report=self.bug_report, memory_to_update=memory_to_update
-            )
+            content=prompt.format(bug_report=self.bug_report, memory_to_update=memory_to_update)
         )
 
         response = llm.invoke([message]).content.strip()
@@ -121,11 +117,6 @@ class SelfHealingCodeAgent(AgentArchitecture):
         return self
 
     def setup_workflow(self) -> None:
-        """Setup Workflow.
-
-        Returns:
-            [TODO: Add return description]
-        """
         self.graph.add_node("code_execution_node", code_execution_node)
         self.graph.add_node("code_update_node", code_update_node)
         self.graph.add_node("code_patching_node", code_patching_node)
@@ -142,9 +133,7 @@ class SelfHealingCodeAgent(AgentArchitecture):
         self.graph.add_conditional_edges("memory_search_node", memory_filter_router)
         self.graph.add_conditional_edges("memory_filter_node", memory_generation_router)
         self.graph.add_edge("memory_generation_node", "code_update_node")
-        self.graph.add_conditional_edges(
-            "memory_modification_node", memory_update_router
-        )
+        self.graph.add_conditional_edges("memory_modification_node", memory_update_router)
 
         self.graph.add_edge("code_update_node", "code_patching_node")
         self.graph.add_edge("code_patching_node", "code_execution_node")
@@ -173,8 +162,7 @@ class SelfHealingCodeAgent(AgentArchitecture):
         )
         message = HumanMessage(
             content=prompt.format(
-                function_string=self.function_string,
-                error_description=self.error_description,
+                function_string=self.function_string, error_description=self.error_description
             )
         )
         new_function_string = llm.invoke([message]).content.strip()

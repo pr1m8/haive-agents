@@ -14,11 +14,6 @@ class TaskTree(AutoTree[TaskNode]):
     """
 
     def __init__(self, content: TaskNode, **kwargs):
-        """Init  .
-
-        Args:
-            content: [TODO: Add description]
-        """
         super().__init__(content, **kwargs)
         # Task-specific initialization
         self._join_points: list[dict[str, Any]] = []
@@ -121,9 +116,7 @@ class TaskTree(AutoTree[TaskNode]):
                 ids.append(node.content.step_id)
         return ids
 
-    def _has_path_between(
-        self, id1: str, id2: str, dep_map: dict[str, list[str]]
-    ) -> bool:
+    def _has_path_between(self, id1: str, id2: str, dep_map: dict[str, list[str]]) -> bool:
         """Check if there's a dependency path between two tasks."""
         # BFS to find path
         visited = set()
@@ -222,9 +215,7 @@ class TaskTree(AutoTree[TaskNode]):
         return phases
 
     def expand_node(
-        self,
-        node_id: str,
-        expansion_fn: Callable[[TaskNode], list[TaskNode | ActionStep]],
+        self, node_id: str, expansion_fn: Callable[[TaskNode], list[TaskNode | ActionStep]]
     ) -> bool:
         """Expand a specific node using the provided expansion function.
         Returns True if expansion was successful.

@@ -14,50 +14,56 @@ on the clean implementation with additional capabilities.
 
 ## Architecture
 
-        Planner (SimpleAgent with Plan model)
-            ↓
-        Executor (ReactAgent with tools + ExecutionResult)
-            ↓
-        Routing Decision (should_continue)
-            ├──→ Continue: back to Executor
-            ├──→ Replan: to Replanner
-            └──→ End: final answer
-                 ↓
-        Replanner (SimpleAgent with Act model)
-            ↓
-        Routing Decision (route_after_replan)
-            ├──→ Execute: back to Executor
-            └──→ End: final answer
+```
+Planner (SimpleAgent with Plan model)
+    ↓
+Executor (ReactAgent with tools + ExecutionResult)
+    ↓
+Routing Decision (should_continue)
+    ├──→ Continue: back to Executor
+    ├──→ Replan: to Replanner
+    └──→ End: final answer
+         ↓
+Replanner (SimpleAgent with Act model)
+    ↓
+Routing Decision (route_after_replan)
+    ├──→ Execute: back to Executor
+    └──→ End: final answer
+```
 
 ## Usage
 
 ### With Search Integration
-        from haive.agents.planning import create_plan_execute_with_search
+```python
+from haive.agents.planning import create_plan_execute_with_search
 
-        agent = create_plan_execute_with_search(
-            name="research_planner",
-            planner_model="gpt-4",
-            executor_model="gpt-3.5-turbo"
-        )
+agent = create_plan_execute_with_search(
+    name="research_planner",
+    planner_model="gpt-4",
+    executor_model="gpt-3.5-turbo"
+)
 
-        result = agent.run(
-            "Research the latest AI developments and create a summary report"
-        )
+result = agent.run(
+    "Research the latest AI developments and create a summary report"
+)
+```
 
 ### Custom Configuration
-        from haive.agents.planning import create_proper_plan_execute
-        from haive.tools import custom_api_tool, database_tool
+```python
+from haive.agents.planning import create_proper_plan_execute
+from haive.tools import custom_api_tool, database_tool
 
-        agent = create_proper_plan_execute(
-            name="data_planner",
-            planner_model="gpt-4",
-            executor_model="gpt-4",
-            tools=[custom_api_tool, database_tool],
-            max_replanning_steps=5,
-            allow_parallel_execution=True
-        )
+agent = create_proper_plan_execute(
+    name="data_planner",
+    planner_model="gpt-4",
+    executor_model="gpt-4",
+    tools=[custom_api_tool, database_tool],
+    max_replanning_steps=5,
+    allow_parallel_execution=True
+)
 
-        result = agent.run("Analyze customer data and generate insights")
+result = agent.run("Analyze customer data and generate insights")
+```
 
 ## Advanced Features
 
@@ -283,11 +289,7 @@ def create_proper_plan_execute(
     # Define branches following LangGraph pattern
     branches = [
         # After execution: continue, replan, or end
-        (
-            executor,
-            should_continue,
-            {"agent": executor, "replan": replanner, "__end__": "__end__"},
-        ),
+        (executor, should_continue, {"agent": executor, "replan": replanner, "__end__": "__end__"}),
         # After replanning: continue or end
         (replanner, route_after_replan, {"agent": executor, "__end__": "__end__"}),
     ]

@@ -1,13 +1,8 @@
 import re
 from typing import Any, Literal
-
 from pydantic import Field, field_validator, model_validator
-
 from haive.agents.memory.models_dir.base import BaseMemoryModel
-from haive.agents.memory.models_dir.episodic.mixins import (
-    PerformanceMetrics,
-    TaskExecution,
-)
+from haive.agents.memory.models_dir.episodic.mixins import PerformanceMetrics, TaskExecution
 from haive.agents.memory.models_dir.semantic.mixins import TemporalMixin
 
 
@@ -20,22 +15,16 @@ class EpisodicMemory(BaseMemoryModel, TemporalMixin):
     session_id: str = Field(..., description="Session identifier")
     task_execution: TaskExecution = Field(..., description="Execution details")
     performance_metrics: PerformanceMetrics = Field(default_factory=PerformanceMetrics)
-    user_input: str = Field(
-        ..., min_length=1, max_length=5000, description="Original user input"
+    user_input: str = Field(..., min_length=1, max_length=5000, description="Original user input")
+    agent_response: str = Field(..., min_length=1, max_length=10000, description="Agent response")
+    outcome_classification: Literal["success", "partial_success", "failure", "error"] = Field(
+        default="success", description="Outcome classification"
     )
-    agent_response: str = Field(
-        ..., min_length=1, max_length=10000, description="Agent response"
-    )
-    outcome_classification: Literal[
-        "success", "partial_success", "failure", "error"
-    ] = Field(default="success", description="Outcome classification")
     environmental_context: dict[str, Any] = Field(
         default_factory=dict, description="Execution environment"
     )
     feedback_received: str | None = Field(None, description="User feedback")
-    lessons_learned: list[str] = Field(
-        default_factory=list, description="Extracted lessons"
-    )
+    lessons_learned: list[str] = Field(default_factory=list, description="Extracted lessons")
     similarity_cluster: str | None = Field(None, description="Similarity cluster ID")
     temporal_weight: float = Field(default=1.0, description="Temporal relevance weight")
 
@@ -57,14 +46,10 @@ class EpisodicMemory(BaseMemoryModel, TemporalMixin):
     @model_validator(mode="after")
     def validate_episodic_consistency(self) -> "EpisodicMemory":
         """Validate episodic memory consistency."""
-        if (
-            self.outcome_classification == "success"
-            and self.performance_metrics.success_rate < 0.5
-        ):
+        if self.outcome_classification == "success" and self.performance_metrics.success_rate < 0.5:
             self.performance_metrics.success_rate = 0.8
         elif (
-            self.outcome_classification == "failure"
-            and self.performance_metrics.success_rate > 0.5
+            self.outcome_classification == "failure" and self.performance_metrics.success_rate > 0.5
         ):
             self.performance_metrics.success_rate = 0.2
         if self.feedback_received and (not self.lessons_learned):
@@ -91,9 +76,7 @@ class EpisodicMemory(BaseMemoryModel, TemporalMixin):
         complexity_boost = self.performance_metrics.complexity_score * 0.05
         temporal_factor = self.calculate_temporal_relevance()
         feedback_boost = 0.2 if self.feedback_received else 0.0
-        return (
-            min(base_value + complexity_boost + feedback_boost, 1.0) * temporal_factor
-        )
+        return min(base_value + complexity_boost + feedback_boost, 1.0) * temporal_factor
 
 
 # Standalone functions for export

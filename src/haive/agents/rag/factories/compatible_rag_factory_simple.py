@@ -96,9 +96,7 @@ class CompatibleRAGFactory:
         cls, documents: list[Document], llm_config: LLMConfig | None = None, **kwargs
     ) -> SequentialAgent:
         """Create simple RAG workflow."""
-        return SimpleRAGAgent.from_documents(
-            documents=documents, llm_config=llm_config, **kwargs
-        )
+        return SimpleRAGAgent.from_documents(documents=documents, llm_config=llm_config, **kwargs)
 
     @classmethod
     def create_graded_hyde_workflow(
@@ -178,13 +176,9 @@ def create_plug_and_play_component(
 
     # Retrieval components
     if component_type == RAGComponent.SIMPLE_RETRIEVAL:
-        return BaseRAGAgent.from_documents(
-            documents=documents, llm_config=llm_config, **kwargs
-        )
+        return BaseRAGAgent.from_documents(documents=documents, llm_config=llm_config, **kwargs)
     if component_type == RAGComponent.HYDE_RETRIEVAL:
-        return HyDERAGAgentV2.from_documents(
-            documents=documents, llm_config=llm_config, **kwargs
-        )
+        return HyDERAGAgentV2.from_documents(documents=documents, llm_config=llm_config, **kwargs)
     if component_type == RAGComponent.MULTI_QUERY_RETRIEVAL:
         return MultiQueryRAGAgent.from_documents(
             documents=documents, llm_config=llm_config, **kwargs
@@ -193,9 +187,7 @@ def create_plug_and_play_component(
     raise TypeError(f"Unknown component type: {component_type}")
 
 
-def get_component_compatibility_info(
-    component_type: RAGComponent,
-) -> dict[str, list[str]]:
+def get_component_compatibility_info(component_type: RAGComponent) -> dict[str, list[str]]:
     """Get I/O schema information for a component type."""
     # Simplified I/O schemas for compatibility checking
     schemas = {

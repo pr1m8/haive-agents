@@ -58,6 +58,8 @@ from haive.agents.base.hooks import HookEvent
 
 if TYPE_CHECKING:
     from haive.agents.base.agent import Agent
+    from haive.agents.simple.agent import SimpleAgent
+    from haive.agents.structured_output.agent import StructuredOutputAgent
 
 logger = logging.getLogger(__name__)
 
@@ -142,10 +144,8 @@ class PrePostAgentMixin:
     """
 
     # Agent configuration
-    pre_agent: "Agent | None" = Field(default=None, description="Pre-processing agent")
-    post_agent: "Agent | None" = Field(
-        default=None, description="Post-processing agent"
-    )
+    pre_agent: Agent | None = Field(default=None, description="Pre-processing agent")
+    post_agent: Agent | None = Field(default=None, description="Post-processing agent")
 
     # Message transformation config
     use_pre_transform: bool = Field(

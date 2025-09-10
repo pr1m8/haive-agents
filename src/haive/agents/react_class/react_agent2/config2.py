@@ -77,8 +77,7 @@ class ReactAgentConfig(AgentConfig):
 
     # Execution configuration
     max_iterations: int = Field(
-        default=10,
-        description="Maximum number of iterations before forced termination.",
+        default=10, description="Maximum number of iterations before forced termination."
     )
 
     # Runtime configuration
@@ -190,9 +189,7 @@ class ReactAgentConfig(AgentConfig):
         # Import required classes
 
         # Create LLM config
-        llm_config = AzureLLMConfig(
-            model=model, parameters={"temperature": temperature}
-        )
+        llm_config = AzureLLMConfig(model=model, parameters={"temperature": temperature})
 
         # Create prompt template with system prompt
         system_prompt = system_prompt or DEFAULT_REACT_SYSTEM_PROMPT
@@ -204,9 +201,7 @@ class ReactAgentConfig(AgentConfig):
 
         # Create AugLLM config with prompt template
         aug_llm = AugLLMConfig(
-            name=f"{name or 'react'}_llm",
-            llm_config=llm_config,
-            prompt_template=prompt_template,
+            name=f"{name or 'react'}_llm", llm_config=llm_config, prompt_template=prompt_template
         )
 
         # Create and return the config
@@ -250,11 +245,9 @@ class ReactAgentConfig(AgentConfig):
 
     @classmethod
     def create_prompt_template(
-        cls,
-        system_prompt: str | None = None,
-        additional_input_vars: list[str] | None = None,
+        cls, system_prompt: str | None = None, additional_input_vars: list[str] | None = None
     ) -> ChatPromptTemplate:
-        """Create a flexible prompt template that supports system prompt.
+        """Create a flexible prompt template that supports system prompt
         and additional input variables.
 
         Args:

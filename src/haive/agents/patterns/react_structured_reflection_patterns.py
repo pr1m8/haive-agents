@@ -1,8 +1,8 @@
 """Comprehensive ReactAgent → SimpleAgent Patterns with V3, V4, and Enhanced Base Agent.
 
 This demonstrates all variations of ReactAgent → SimpleAgent workflows:
-1. V3: ReactAgent → SimpleAgent (structured output)
-2. V4: MultiAgent composition
+1. V3: ReactAgent → SimpleAgentV3 (structured output)
+2. V4: EnhancedMultiAgentV4 composition
 3. Enhanced Base: Using enhanced base agent with hooks
 4. Reflection: ReactAgent → SimpleAgentV3 → ReflectionAgent
 5. Graded Reflection: ReactAgent → GradingAgent → SimpleAgentV3 → ReflectionAgent
@@ -24,9 +24,9 @@ from haive.agents.base.pre_post_agent_mixin import (
     create_graded_reflection_agent,
     create_reflection_agent,
 )
-from haive.agents.multi.agent import MultiAgent
+from haive.agents.multi.enhanced_multi_agent_v4 import EnhancedMultiAgentV4
 from haive.agents.react.agent import ReactAgent
-from haive.agents.simple.agent import SimpleAgent
+from haive.agents.simple.agent_v3 import SimpleAgentV3
 
 
 # Structured output models
@@ -99,15 +99,6 @@ class ReactToStructuredV3:
         reasoning_config: AugLLMConfig = None,
         structuring_config: AugLLMConfig = None,
     ):
-        """Init  .
-
-        Args:
-            name: [TODO: Add description]
-            tools: [TODO: Add description]
-            structured_output_model: [TODO: Add description]
-            reasoning_config: [TODO: Add description]
-            structuring_config: [TODO: Add description]
-        """
         self.name = name
         self.structured_output_model = structured_output_model
 
@@ -123,7 +114,7 @@ class ReactToStructuredV3:
         )
 
         # Create SimpleAgentV3 for structured output
-        self.structuring_agent = SimpleAgent(
+        self.structuring_agent = SimpleAgentV3(
             name=f"{name}_structurer",
             engine=structuring_config
             or AugLLMConfig(
@@ -133,10 +124,7 @@ class ReactToStructuredV3:
             ),
             prompt_template=ChatPromptTemplate.from_messages(
                 [
-                    (
-                        "system",
-                        "Convert the following analysis into structured format.",
-                    ),
+                    ("system", "Convert the following analysis into structured format."),
                     (
                         "human",
                         """Analysis from reasoning agent:
@@ -156,38 +144,18 @@ Convert this into the required structured format. Ensure all fields are properly
 
         @self.reasoning_agent.before_run
         def log_reasoning_start(context: HookContext):
-            """Log Reasoning Start.
-
-            Args:
-                context: [TODO: Add description]
-            """
             pass
 
         @self.reasoning_agent.after_run
         def log_reasoning_complete(context: HookContext):
-            """Log Reasoning Complete.
-
-            Args:
-                context: [TODO: Add description]
-            """
             pass
 
         @self.structuring_agent.before_structured_output
         def log_structuring_start(context: HookContext):
-            """Log Structuring Start.
-
-            Args:
-                context: [TODO: Add description]
-            """
             pass
 
         @self.structuring_agent.after_structured_output
         def log_structuring_complete(context: HookContext):
-            """Log Structuring Complete.
-
-            Args:
-                context: [TODO: Add description]
-            """
             pass
 
     async def arun(self, input_data: str) -> BaseModel:
@@ -204,25 +172,18 @@ Convert this into the required structured format. Ensure all fields are properly
 
 
 # =============================================================================
-# PATTERN 2: V4 Architecture - MultiAgent Composition
+# PATTERN 2: V4 Architecture - EnhancedMultiAgentV4 Composition
 # =============================================================================
 
 
-class ReactToStructuredV4(MultiAgent):
-    """V4 Pattern: MultiAgent with ReactAgent → SimpleAgentV3."""
+class ReactToStructuredV4(EnhancedMultiAgentV4):
+    """V4 Pattern: EnhancedMultiAgentV4 with ReactAgent → SimpleAgentV3."""
 
-    reasoning_agent: ReactAgent = Field(
-        ..., description="Agent for reasoning and tool usage"
-    )
-    structuring_agent: SimpleAgentV3 = Field(
-        ..., description="Agent for structured output"
-    )
-    structured_output_model: type[BaseModel] = Field(
-        ..., description="Output model type"
-    )
+    reasoning_agent: ReactAgent = Field(..., description="Agent for reasoning and tool usage")
+    structuring_agent: SimpleAgentV3 = Field(..., description="Agent for structured output")
+    structured_output_model: type[BaseModel] = Field(..., description="Output model type")
 
     def __init__(self, **data):
-        """Init  ."""
         # Set up agents for V4 architecture
         if "agents" not in data:
             data["agents"] = [
@@ -241,38 +202,18 @@ class ReactToStructuredV4(MultiAgent):
 
         @self.before_run
         def log_v4_start(context: HookContext):
-            """Log V4 Start.
-
-            Args:
-                context: [TODO: Add description]
-            """
             pass
 
         @self.after_run
         def log_v4_complete(context: HookContext):
-            """Log V4 Complete.
-
-            Args:
-                context: [TODO: Add description]
-            """
             pass
 
         @self.reasoning_agent.after_run
         def track_reasoning_stage(context: HookContext):
-            """Track Reasoning Stage.
-
-            Args:
-                context: [TODO: Add description]
-            """
             pass
 
         @self.structuring_agent.after_structured_output
         def track_structuring_stage(context: HookContext):
-            """Track Structuring Stage.
-
-            Args:
-                context: [TODO: Add description]
-            """
             pass
 
     @classmethod
@@ -292,7 +233,7 @@ class ReactToStructuredV4(MultiAgent):
             tools=tools or [],
         )
 
-        structuring_agent = SimpleAgent(
+        structuring_agent = SimpleAgentV3(
             name=f"{name}_structurer",
             engine=AugLLMConfig(
                 system_message="Convert analysis results into structured format.",
@@ -325,15 +266,6 @@ class ReactWithReflection:
         reasoning_config: AugLLMConfig = None,
         structuring_config: AugLLMConfig = None,
     ):
-        """Init  .
-
-        Args:
-            name: [TODO: Add description]
-            tools: [TODO: Add description]
-            structured_output_model: [TODO: Add description]
-            reasoning_config: [TODO: Add description]
-            structuring_config: [TODO: Add description]
-        """
         self.name = name
         self.structured_output_model = structured_output_model
 
@@ -349,7 +281,7 @@ class ReactWithReflection:
         )
 
         # Create SimpleAgentV3 with structured output
-        base_structuring_agent = SimpleAgent(
+        base_structuring_agent = SimpleAgentV3(
             name=f"{name}_structurer",
             engine=structuring_config
             or AugLLMConfig(
@@ -369,38 +301,18 @@ class ReactWithReflection:
 
         @self.reasoning_agent.before_run
         def log_reasoning_with_reflection_start(context: HookContext):
-            """Log Reasoning With Reflection Start.
-
-            Args:
-                context: [TODO: Add description]
-            """
             pass
 
         @self.reasoning_agent.after_run
         def log_reasoning_with_reflection_complete(context: HookContext):
-            """Log Reasoning With Reflection Complete.
-
-            Args:
-                context: [TODO: Add description]
-            """
             pass
 
         @self.structuring_agent.before_reflection
         def log_reflection_start(context: HookContext):
-            """Log Reflection Start.
-
-            Args:
-                context: [TODO: Add description]
-            """
             pass
 
         @self.structuring_agent.after_reflection
         def log_reflection_complete(context: HookContext):
-            """Log Reflection Complete.
-
-            Args:
-                context: [TODO: Add description]
-            """
             pass
 
     async def arun(self, input_data: str) -> dict[str, Any]:
@@ -430,13 +342,6 @@ class ReactWithGradedReflection:
         tools: list | None = None,
         structured_output_model: type[BaseModel] = TaskAnalysis,
     ):
-        """Init  .
-
-        Args:
-            name: [TODO: Add description]
-            tools: [TODO: Add description]
-            structured_output_model: [TODO: Add description]
-        """
         self.name = name
         self.structured_output_model = structured_output_model
 
@@ -451,7 +356,7 @@ class ReactWithGradedReflection:
         )
 
         # Create base structuring agent
-        base_structuring_agent = SimpleAgent(
+        base_structuring_agent = SimpleAgentV3(
             name=f"{name}_structurer",
             engine=AugLLMConfig(
                 system_message="Convert analysis into high-quality structured format.",
@@ -470,38 +375,18 @@ class ReactWithGradedReflection:
 
         @self.structuring_agent.before_grading
         def log_grading_start(context: HookContext):
-            """Log Grading Start.
-
-            Args:
-                context: [TODO: Add description]
-            """
             pass
 
         @self.structuring_agent.after_grading
         def log_grading_complete(context: HookContext):
-            """Log Grading Complete.
-
-            Args:
-                context: [TODO: Add description]
-            """
             pass
 
         @self.structuring_agent.before_reflection
         def log_reflection_with_grade_start(context: HookContext):
-            """Log Reflection With Grade Start.
-
-            Args:
-                context: [TODO: Add description]
-            """
             pass
 
         @self.structuring_agent.after_reflection
         def log_reflection_with_grade_complete(context: HookContext):
-            """Log Reflection With Grade Complete.
-
-            Args:
-                context: [TODO: Add description]
-            """
             pass
 
     async def arun(self, input_data: str) -> dict[str, Any]:
@@ -538,7 +423,7 @@ def create_v4_pattern(
     tools: list | None = None,
     structured_output_model: type[BaseModel] = TaskAnalysis,
 ) -> ReactToStructuredV4:
-    """Create V4 pattern: MultiAgent composition."""
+    """Create V4 pattern: EnhancedMultiAgentV4 composition."""
     return ReactToStructuredV4.create_analysis_workflow(
         name=name, tools=tools, structured_output_model=structured_output_model
     )
@@ -594,9 +479,7 @@ async def example_v4_pattern():
         structured_output_model=ProblemAnalysis,
     )
 
-    result = await workflow.arun(
-        "Analyze the problem of customer service delays in our company"
-    )
+    result = await workflow.arun("Analyze the problem of customer service delays in our company")
 
     return result
 
@@ -609,9 +492,7 @@ async def example_reflection_pattern():
         structured_output_model=TaskAnalysis,
     )
 
-    result = await workflow.arun(
-        "Analyze the task of implementing a new customer feedback system"
-    )
+    result = await workflow.arun("Analyze the task of implementing a new customer feedback system")
 
     if isinstance(result, dict) and "processing_stages" in result:
         pass

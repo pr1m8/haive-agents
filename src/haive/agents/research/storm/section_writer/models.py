@@ -1,5 +1,4 @@
 from pydantic import BaseModel, Field
-
 from haive.agents.research.storm.outline_generator.models import Subsection
 
 
@@ -12,11 +11,6 @@ class SubSection(BaseModel):
 
     @property
     def as_str(self) -> str:
-        """As Str.
-
-        Returns:
-            [TODO: Add return description]
-        """
         return f"### {self.subsection_title}\n\n{self.content}".strip()
 
 
@@ -24,21 +18,13 @@ class WikiSection(BaseModel):
     section_title: str = Field(..., title="Title of the section")
     content: str = Field(..., title="Full content of the section")
     subsections: list[Subsection] | None = Field(
-        default=None,
-        title="Titles and descriptions for each subsection of the Wikipedia page.",
+        default=None, title="Titles and descriptions for each subsection of the Wikipedia page."
     )
     citations: list[str] = Field(default_factory=list)
 
     @property
     def as_str(self) -> str:
-        """As Str.
-
-        Returns:
-            [TODO: Add return description]
-        """
-        subsections = "\n\n".join(
-            subsection.as_str for subsection in self.subsections or []
-        )
+        subsections = "\n\n".join(subsection.as_str for subsection in self.subsections or [])
         citations = "\n".join([f" [{i}] {cit}" for i, cit in enumerate(self.citations)])
         return (
             f"## {self.section_title}\n\n{self.content}\n\n{subsections}".strip()

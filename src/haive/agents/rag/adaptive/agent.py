@@ -26,15 +26,9 @@ class QueryAnalysis(BaseModel):
         description="Query complexity level"
     )
     topics: list[str] = Field(description="Main topics in the query")
-    requires_multi_hop: bool = Field(
-        description="Whether query requires multiple reasoning steps"
-    )
-    temporal_sensitivity: bool = Field(
-        description="Whether query is about current/recent events"
-    )
-    domain_specific: bool = Field(
-        description="Whether query requires specialized knowledge"
-    )
+    requires_multi_hop: bool = Field(description="Whether query requires multiple reasoning steps")
+    temporal_sensitivity: bool = Field(description="Whether query is about current/recent events")
+    domain_specific: bool = Field(description="Whether query requires specialized knowledge")
     confidence: float = Field(ge=0.0, le=1.0, description="Confidence in the analysis")
 
 
@@ -59,7 +53,7 @@ Consider:
         ),
         (
             "human",
-            """Analyze this query and determine its characteristics:.
+            """Analyze this query and determine its characteristics:
 
 Query: {query}
 
@@ -71,10 +65,7 @@ Provide a structured analysis.""",
 
 DIRECT_ANSWER_PROMPT = ChatPromptTemplate.from_messages(
     [
-        (
-            "system",
-            "You are a knowledgeable assistant. Answer common questions directly.",
-        ),
+        ("system", "You are a knowledgeable assistant. Answer common questions directly."),
         ("human", "Answer this question based on general knowledge: {query}"),
     ]
 )
@@ -115,16 +106,12 @@ class AdaptiveRAGAgent(ConditionalAgent):
 
         # Direct answer agent (for known/simple queries)
         direct_agent = SimpleAgent(
-            engine=AugLLMConfig(
-                llm_config=llm_config, prompt_template=DIRECT_ANSWER_PROMPT
-            ),
+            engine=AugLLMConfig(llm_config=llm_config, prompt_template=DIRECT_ANSWER_PROMPT),
             name="Direct Answer",
         )
 
         # Simple RAG for basic queries
-        simple_rag = SimpleRAGAgent.from_documents(
-            documents=documents, llm_config=llm_config
-        )
+        simple_rag = SimpleRAGAgent.from_documents(documents=documents, llm_config=llm_config)
         simple_rag.name = "Simple RAG"
 
         # Multi-Query RAG for medium complexity

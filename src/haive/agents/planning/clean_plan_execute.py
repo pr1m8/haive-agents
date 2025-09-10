@@ -14,36 +14,42 @@ clear, understandable routing logic.
 
 ## Architecture
 
-        Planner (SimpleAgent)
-            ↓
-        Executor (ReactAgent) ←─┐
-            ↓                   │
-        Route Decision ─────────┘
-            ↓
-        Replanner (SimpleAgent)
-            ↓
-        END or back to Executor
+```
+Planner (SimpleAgent)
+    ↓
+Executor (ReactAgent) ←─┐
+    ↓                   │
+Route Decision ─────────┘
+    ↓
+Replanner (SimpleAgent)
+    ↓
+END or back to Executor
+```
 
 ## Usage
 
 ### Basic Example
-        from haive.agents.planning import create_simple_plan_execute
-        from haive.tools import calculator_tool
+```python
+from haive.agents.planning import create_simple_plan_execute
+from haive.tools import calculator_tool
 
-        agent = create_simple_plan_execute(tools=[calculator_tool])
-        result = agent.run("Calculate the compound interest on $1000 at 5% for 10 years")
+agent = create_simple_plan_execute(tools=[calculator_tool])
+result = agent.run("Calculate the compound interest on $1000 at 5% for 10 years")
+```
 
 ### Advanced Example
-        from haive.agents.planning import create_clean_plan_execute_agent
+```python
+from haive.agents.planning import create_clean_plan_execute_agent
 
-        agent = create_clean_plan_execute_agent(
-            name="MyPlanner",
-            planner_model="gpt-4",
-            executor_model="gpt-3.5-turbo",
-            tools=[web_search, calculator, file_reader]
-        )
+agent = create_clean_plan_execute_agent(
+    name="MyPlanner",
+    planner_model="gpt-4",
+    executor_model="gpt-3.5-turbo",
+    tools=[web_search, calculator, file_reader]
+)
 
-        result = agent.run("Research tech stocks and calculate potential returns")
+result = agent.run("Research tech stocks and calculate potential returns")
+```
 
 ## When to Use
 
@@ -198,11 +204,7 @@ Otherwise, fill out the plan. Only add steps to the plan that still NEED to be d
     # Define branches for routing
     branches = [
         # After execution, check if we should continue or replan
-        (
-            executor,
-            should_continue,
-            {"agent": executor, "replan": replanner, "END": "END"},
-        ),
+        (executor, should_continue, {"agent": executor, "replan": replanner, "END": "END"}),
         # After replanning, decide next action
         (replanner, route_after_replan, {"agent": executor, "END": "END"}),
     ]

@@ -161,11 +161,7 @@ async def test_memory_state_with_embeddings():
                 MemoryType.FACTUAL,
                 ImportanceLevel.HIGH,
             ),
-            (
-                "Bob Smith is the CTO of DataCorp.",
-                MemoryType.FACTUAL,
-                ImportanceLevel.HIGH,
-            ),
+            ("Bob Smith is the CTO of DataCorp.", MemoryType.FACTUAL, ImportanceLevel.HIGH),
             (
                 "DataCorp is our main technology partner.",
                 MemoryType.FACTUAL,
@@ -194,21 +190,13 @@ async def test_memory_state_with_embeddings():
         # Simple cosine similarity search
 
         def cosine_similarity(a, b):
-            """Cosine Similarity.
-
-            Args:
-                a: [TODO: Add description]
-                b: [TODO: Add description]
-            """
             return dot(a, b) / (norm(a) * norm(b))
 
         # Score all memories
         scored_memories = []
         for memory_entry in state.memories:
             if memory_entry.memory_item and memory_entry.memory_item.embedding:
-                score = cosine_similarity(
-                    query_embedding, memory_entry.memory_item.embedding
-                )
+                score = cosine_similarity(query_embedding, memory_entry.memory_item.embedding)
                 scored_memories.append((score, memory_entry))
 
         # Sort by score and get top results

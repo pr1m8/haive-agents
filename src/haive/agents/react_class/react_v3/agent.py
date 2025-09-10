@@ -49,9 +49,7 @@ class ReactAgent(Agent[ReactAgentConfig]):
             components = [self.config.engine, *self.config.tools]
             schema_composer = SchemaComposer.from_components(components)
             self.config.state_schema = schema_composer.build()
-            logger.info(
-                f"Auto-derived state schema: {self.config.state_schema.__name__}"
-            )
+            logger.info(f"Auto-derived state schema: {self.config.state_schema.__name__}")
 
         # Create dynamic graph with state schema
         gb = DynamicGraph(
@@ -130,9 +128,7 @@ class ReactAgent(Agent[ReactAgentConfig]):
 
                 if tool_name not in tools_by_name:
                     error_msg = f"Tool '{tool_name}' not found"
-                    messages.append(
-                        ToolMessage(content=error_msg, tool_call_id=tool_id)
-                    )
+                    messages.append(ToolMessage(content=error_msg, tool_call_id=tool_id))
                     continue
 
                 # Execute the tool
@@ -142,15 +138,11 @@ class ReactAgent(Agent[ReactAgentConfig]):
                     result = tool.invoke(tool_args)
 
                     # Add result as ToolMessage
-                    messages.append(
-                        ToolMessage(content=str(result), tool_call_id=tool_id)
-                    )
+                    messages.append(ToolMessage(content=str(result), tool_call_id=tool_id))
                 except Exception as e:
                     error_msg = f"Error executing tool '{tool_name}': {e!s}"
                     logger.exception(error_msg)
-                    messages.append(
-                        ToolMessage(content=error_msg, tool_call_id=tool_id)
-                    )
+                    messages.append(ToolMessage(content=error_msg, tool_call_id=tool_id))
 
             return {"messages": messages}
 
@@ -185,9 +177,7 @@ class ReactAgent(Agent[ReactAgentConfig]):
         # If we've reached max iterations, stop
         ai_messages = [m for m in messages if isinstance(m, AIMessage)]
         if len(ai_messages) >= self.config.max_iterations:
-            logger.info(
-                f"Reached maximum iterations ({self.config.max_iterations}), stopping"
-            )
+            logger.info(f"Reached maximum iterations ({self.config.max_iterations}), stopping")
             return False
 
         # If last message is from a tool, we should go back to reasoning
@@ -230,9 +220,7 @@ class ReactAgent(Agent[ReactAgentConfig]):
             return {"messages": [HumanMessage(content=input_data)]}
 
         # Handle list of messages
-        if isinstance(input_data, list) and all(
-            isinstance(m, BaseMessage) for m in input_data
-        ):
+        if isinstance(input_data, list) and all(isinstance(m, BaseMessage) for m in input_data):
             return {"messages": input_data}
 
         # Handle dictionary input
@@ -241,9 +229,7 @@ class ReactAgent(Agent[ReactAgentConfig]):
             if "messages" not in input_data:
                 for field in ["input", "query", "content"]:
                     if field in input_data and isinstance(input_data[field], str):
-                        input_data["messages"] = [
-                            HumanMessage(content=input_data[field])
-                        ]
+                        input_data["messages"] = [HumanMessage(content=input_data[field])]
                         break
             return input_data
 

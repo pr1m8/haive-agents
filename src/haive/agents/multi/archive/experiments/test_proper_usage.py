@@ -74,10 +74,7 @@ class TestProperMultiAgentUsage:
 
         assert planner_state["current_task"] == "planning"
         assert executor_state["current_task"] == "executing"
-        assert (
-            "current_task" not in planner_state
-            or planner_state["current_task"] != "executing"
-        )
+        assert "current_task" not in planner_state or planner_state["current_task"] != "executing"
 
         # Test engine syncing
         assert len(state.engines) > 0  # Engines synced from agents
@@ -140,9 +137,7 @@ class TestProperMultiAgentUsage:
         # Create agents
         planner = SimpleAgent(
             name="planner",
-            engine=AugLLMConfig(
-                structured_output_model=PlanModel, structured_output_version="v2"
-            ),
+            engine=AugLLMConfig(structured_output_model=PlanModel, structured_output_version="v2"),
         )
 
         executor = ReactAgent(name="executor", engine=AugLLMConfig(tools=[calculator]))
@@ -277,13 +272,9 @@ class TestProperMultiAgentUsage:
     def test_tool_integration(self) -> None:
         """Test that tools work properly through agents."""
         # Create agents with tools
-        math_agent = ReactAgent(
-            name="math_agent", engine=AugLLMConfig(tools=[calculator])
-        )
+        math_agent = ReactAgent(name="math_agent", engine=AugLLMConfig(tools=[calculator]))
 
-        text_agent = ReactAgent(
-            name="text_agent", engine=AugLLMConfig(tools=[word_counter])
-        )
+        text_agent = ReactAgent(name="text_agent", engine=AugLLMConfig(tools=[word_counter]))
 
         # Create multi-agent
         multi = ProperListMultiAgent(name="tool_test")

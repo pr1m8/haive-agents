@@ -42,20 +42,10 @@ class MultiAgentState(BaseModel, GetterMixin):
     @computed_field
     @property
     def selected_agent(self) -> Agent:
-        """Selected Agent.
-
-        Returns:
-            [TODO: Add return description]
-        """
         return self.selected_agents[-1] if self.selected_agents else None
 
 
 def temp_node(state: Dict[str, Any]):
-    """Temp Node.
-
-    Args:
-        state: [TODO: Add description]
-    """
     agent = state.get("selected_agent")
     if agent:
         agent.create_runnable()

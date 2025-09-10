@@ -32,9 +32,7 @@ class QueryClassification(BaseModel):
     secondary_type: QueryType | None = Field(
         default=None, description="Secondary type if applicable"
     )
-    complexity: Literal["simple", "medium", "complex"] = Field(
-        description="Query complexity"
-    )
+    complexity: Literal["simple", "medium", "complex"] = Field(description="Query complexity")
     confidence: float = Field(ge=0.0, le=1.0, description="Classification confidence")
 
 
@@ -51,17 +49,13 @@ class MergedResult(BaseModel):
     """Final merged result."""
 
     primary_answer: str = Field(description="Primary answer")
-    supporting_evidence: list[str] = Field(
-        description="Supporting evidence from branches"
-    )
+    supporting_evidence: list[str] = Field(description="Supporting evidence from branches")
     confidence_score: float = Field(ge=0.0, le=1.0, description="Overall confidence")
     sources_used: list[str] = Field(description="Sources used")
 
 
 def create_branched_rag_chain(
-    documents: list[Document],
-    llm_config: LLMConfig | None = None,
-    name: str = "Branched RAG",
+    documents: list[Document], llm_config: LLMConfig | None = None, name: str = "Branched RAG"
 ) -> ChainAgent:
     """Create a branched RAG system using ChainAgent."""
     if not llm_config:
@@ -78,7 +72,7 @@ def create_branched_rag_chain(
             [
                 (
                     "system",
-                    """Classify the query type and complexity:.
+                    """Classify the query type and complexity:
             - factual: Seeking specific facts or information
             - analytical: Requiring analysis, comparison, or reasoning
             - creative: Seeking ideas, brainstorming, or creative solutions
@@ -103,9 +97,7 @@ def create_branched_rag_chain(
         relevant_docs = [
             doc
             for doc in documents
-            if any(
-                word.lower() in doc.page_content.lower() for word in query.split()[:5]
-            )
+            if any(word.lower() in doc.page_content.lower() for word in query.split()[:5])
         ][:3]
 
         # Extract precise facts
@@ -129,7 +121,7 @@ def create_branched_rag_chain(
                 ("system", "Analyze and synthesize information for deeper insights"),
                 (
                     "human",
-                    """Query: {query}.
+                    """Query: {query}
             Available context: {documents_context}
 
             Provide analytical insights and reasoning.""",
@@ -160,7 +152,7 @@ def create_branched_rag_chain(
                 ("system", "Generate creative solutions and innovative ideas"),
                 (
                     "human",
-                    """Query: {query}.
+                    """Query: {query}
             Context for inspiration: {documents_context}
 
             Provide creative and innovative responses.""",
@@ -191,7 +183,7 @@ def create_branched_rag_chain(
                 ("system", "Extract step-by-step procedures and processes"),
                 (
                     "human",
-                    """Query: {query}.
+                    """Query: {query}
             Available procedures: {documents_context}
 
             Provide clear, step-by-step instructions.""",
@@ -232,7 +224,7 @@ def create_branched_rag_chain(
                 ),
                 (
                     "human",
-                    """Original Query: {query}.
+                    """Original Query: {query}
             Query Classification: {classification}
 
             Branch Results:
@@ -257,7 +249,7 @@ def create_branched_rag_chain(
                 ("system", "Generate the final user-facing response"),
                 (
                     "human",
-                    """Query: {query}.
+                    """Query: {query}
             Merged Analysis: {merged_result}
 
             Provide a clear, comprehensive response.""",
@@ -319,10 +311,7 @@ def create_adaptive_branched_rag(
         llm_config=llm_config,
         prompt_template=ChatPromptTemplate.from_messages(
             [
-                (
-                    "system",
-                    "Classify query type: factual, analytical, creative, or procedural",
-                ),
+                ("system", "Classify query type: factual, analytical, creative, or procedural"),
                 ("human", "{query}"),
             ]
         ),
@@ -376,14 +365,6 @@ def create_adaptive_branched_rag(
 
     # Context preparation
     def add_context(state: dict[str, Any]) -> dict[str, Any]:
-        """Add Context.
-
-        Args:
-            state: [TODO: Add description]
-
-        Returns:
-            [TODO: Add return description]
-        """
         context = "\n\n".join([doc.page_content for doc in documents[:3]])
         return {"context": context}
 
@@ -424,14 +405,6 @@ def create_parallel_branched_rag(
 
     # Context preparation
     def prepare_context(state: dict[str, Any]) -> dict[str, Any]:
-        """Prepare Context.
-
-        Args:
-            state: [TODO: Add description]
-
-        Returns:
-            [TODO: Add return description]
-        """
         context = "\n\n".join([doc.page_content for doc in documents[:5]])
         return {"context": context}
 
@@ -474,13 +447,10 @@ def create_parallel_branched_rag(
         llm_config=llm_config,
         prompt_template=ChatPromptTemplate.from_messages(
             [
-                (
-                    "system",
-                    "Synthesize all branch responses into a comprehensive answer",
-                ),
+                ("system", "Synthesize all branch responses into a comprehensive answer"),
                 (
                     "human",
-                    """Query: {query}.
+                    """Query: {query}
             Factual: {factual_response}
             Analytical: {analytical_response}
             Creative: {creative_response}

@@ -26,7 +26,7 @@ Architecture:
     execution graph whenever agents are added or removed. Tools are dynamically
     discovered and prefixed to avoid conflicts.
 
-Examples:
+Example:
     Dynamic agent management::
 
         >>> from haive.agents.supervisor import DynamicSupervisor
@@ -379,10 +379,7 @@ class DynamicSupervisor(ReactAgent):
 
     @classmethod
     def create_with_agents(
-        cls,
-        agents: list[tuple[str, Agent, str]],
-        name: str = "dynamic_supervisor",
-        **kwargs,
+        cls, agents: list[tuple[str, Agent, str]], name: str = "dynamic_supervisor", **kwargs
     ) -> "DynamicSupervisor":
         """Create dynamic supervisor with initial agents.
 

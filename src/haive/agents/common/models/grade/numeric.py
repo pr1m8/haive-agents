@@ -5,9 +5,7 @@ scores and percentage-based grading.
 """
 
 from typing import Any
-
 from pydantic import Field, field_validator, model_validator
-
 from haive.agents.common.models.grade.base import Grade, GradeType
 
 
@@ -60,14 +58,10 @@ class NumericGrade(Grade):
         ..., description="The numeric score value", examples=[8.5, 7, 92.3, 4.2]
     )
     min_value: int | float = Field(
-        default=0,
-        description="Minimum possible score in the range",
-        examples=[0, 1, -10, 200],
+        default=0, description="Minimum possible score in the range", examples=[0, 1, -10, 200]
     )
     max_value: int | float = Field(
-        default=10,
-        description="Maximum possible score in the range",
-        examples=[10, 5, 100, 800],
+        default=10, description="Maximum possible score in the range", examples=[10, 5, 100, 800]
     )
     passing_threshold: int | float | None = Field(
         default=None,
@@ -229,27 +223,15 @@ class PercentageGrade(NumericGrade):
     """
 
     grade_type: GradeType = Field(
-        default=GradeType.PERCENTAGE,
-        description="Type of grade model (always percentage)",
+        default=GradeType.PERCENTAGE, description="Type of grade model (always percentage)"
     )
-    min_value: int | float = Field(
-        default=0, description="Minimum percentage (always 0)"
-    )
-    max_value: int | float = Field(
-        default=100, description="Maximum percentage (always 100)"
-    )
+    min_value: int | float = Field(default=0, description="Minimum percentage (always 0)")
+    max_value: int | float = Field(default=100, description="Maximum percentage (always 100)")
     passing_threshold: int | float = Field(
-        default=60,
-        description="Minimum percentage considered passing (default 60%)",
-        ge=0,
-        le=100,
+        default=60, description="Minimum percentage considered passing (default 60%)", ge=0, le=100
     )
     value: int | float = Field(
-        ...,
-        description="Percentage value (0-100)",
-        ge=0,
-        le=100,
-        examples=[87.5, 92, 68.2, 45],
+        ..., description="Percentage value (0-100)", ge=0, le=100, examples=[87.5, 92, 68.2, 45]
     )
 
     @field_validator("min_value")
@@ -310,6 +292,4 @@ class PercentageGrade(NumericGrade):
         """
         letter = self.get_letter_equivalent()
         passing_status = "✅" if self.is_passing() else "❌"
-        return (
-            f"{passing_status} {self.value}% ({letter}) | {self.justification[:40]}..."
-        )
+        return f"{passing_status} {self.value}% ({letter}) | {self.justification[:40]}..."

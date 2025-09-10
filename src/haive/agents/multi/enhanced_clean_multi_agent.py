@@ -10,20 +10,21 @@ This combines the enhanced agent pattern with the clean multi-agent approach:
 """
 
 import logging
-from typing import Any, Literal
+from typing import Any, Dict, List, Literal, Optional, Union
+
+from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
+from langgraph.graph import END, START
+from pydantic import Field, field_validator, model_validator
+from typing_extensions import TypedDict
 
 from haive.core.engine.aug_llm.config import AugLLMConfig
 from haive.core.graph.node.agent_node import AgentNodeConfig
 from haive.core.graph.node.engine_node import EngineNodeConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.schema.state_schema import StateSchema
-from langchain_core.messages import BaseMessage
-from langgraph.graph import END, START
-from pydantic import Field, field_validator, model_validator
-from typing_extensions import TypedDict
 
 # Import base enhanced agent when available
-# from haive.agents.base.agent import Agent
+# from haive.agents.base.enhanced_agent import Agent
 from haive.agents.simple.enhanced_simple_real import EnhancedAgentBase as Agent
 
 logger = logging.getLogger(__name__)
@@ -33,29 +34,29 @@ logger = logging.getLogger(__name__)
 class MinimalMultiAgentState(TypedDict):
     """Minimal state for multi-agent coordination."""
 
-    current_agent: str | None
-    completed_agents: list[str]
-    final_result: Any | None
-    error: str | None
-    messages: list[BaseMessage]
+    current_agent: Optional[str]
+    completed_agents: List[str]
+    final_result: Optional[Any]
+    error: Optional[str]
+    messages: List[BaseMessage]
 
 
 class ContainerMultiAgentState(StateSchema):
     """Container pattern with isolated agent states and MetaStateSchema support."""
 
     # Agent storage
-    agents: dict[str, Agent] = Field(default_factory=dict)
-    agent_states: dict[str, dict[str, Any]] = Field(default_factory=dict)
+    agents: Dict[str, Agent] = Field(default_factory=dict)
+    agent_states: Dict[str, Dict[str, Any]] = Field(default_factory=dict)
 
     # Shared context
-    shared_context: dict[str, Any] = Field(default_factory=dict)
-    messages: list[BaseMessage] = Field(default_factory=list)
+    shared_context: Dict[str, Any] = Field(default_factory=dict)
+    messages: List[BaseMessage] = Field(default_factory=list)
 
     # Coordination fields
-    current_agent: str | None = Field(default=None)
-    completed_agents: list[str] = Field(default_factory=list)
-    final_result: Any | None = Field(default=None)
-    error: str | None = Field(default=None)
+    current_agent: Optional[str] = Field(default=None)
+    completed_agents: List[str] = Field(default_factory=list)
+    final_result: Optional[Any] = Field(default=None)
+    error: Optional[str] = Field(default=None)
 
     # MetaStateSchema compatibility
     execution_count: int = Field(default=0)
@@ -113,7 +114,7 @@ class EnhancedMultiAgent(Agent):  # Will be Agent[AugLLMConfig] when imports fix
     """
 
     # Agent storage - emulating engines dict pattern
-    agents: list[Agent] | dict[str, Agent] = Field(
+    agents: Union[List[Agent], Dict[str, Agent]] = Field(
         ..., description="Agents to coordinate - list or dict like engines"
     )
 
@@ -127,43 +128,41 @@ class EnhancedMultiAgent(Agent):  # Will be Agent[AugLLMConfig] when imports fix
         default="minimal", description="State management approach"
     )
 
-    state_schema: type[StateSchema] | None = Field(
+    state_schema: Optional[type[StateSchema]] = Field(
         default=None, description="Custom state schema if strategy is 'custom'"
     )
 
     # State sharing configuration
-    shared_fields: list[str] = Field(
-        default_factory=lambda: ["messages"],
-        description="Fields shared between all agents",
+    shared_fields: List[str] = Field(
+        default_factory=lambda: ["messages"], description="Fields shared between all agents"
     )
 
-    state_transfer_map: dict[tuple[str, str], dict[str, str]] = Field(
+    state_transfer_map: Dict[tuple[str, str], Dict[str, str]] = Field(
         default_factory=dict, description="State transfer rules between agents"
     )
 
     # Coordinator configuration
-    coordinator_prompt: str | None = Field(
-        default=None, description="Custom coordinator prompt"
-    )
+    coordinator_prompt: Optional[str] = Field(default=None, description="Custom coordinator prompt")
 
     temperature: float = Field(default=0.3, ge=0.0, le=2.0)
 
     @field_validator("agents")
     @classmethod
     def validate_agents(
-        cls, v: list[Agent] | dict[str, Agent]
-    ) -> list[Agent] | dict[str, Agent]:
+        cls, v: Union[List[Agent], Dict[str, Agent]]
+    ) -> Union[List[Agent], Dict[str, Agent]]:
         """Validate and normalize agents."""
         if isinstance(v, list):
             if not v:
                 raise ValueError("Agent list cannot be empty")
             # Convert to dict for consistency
             return {f"agent_{i}": agent for i, agent in enumerate(v)}
-        if isinstance(v, dict):
+        elif isinstance(v, dict):
             if not v:
                 raise ValueError("Agent dict cannot be empty")
             return v
-        raise ValueError("Agents must be list or dict")
+        else:
+            raise ValueError("Agents must be list or dict")
 
     @model_validator(mode="after")
     def setup_state_schema(self) -> "EnhancedMultiAgent":
@@ -177,13 +176,13 @@ class EnhancedMultiAgent(Agent):  # Will be Agent[AugLLMConfig] when imports fix
 
         return self
 
-    def get_agent_names(self) -> list[str]:
+    def get_agent_names(self) -> List[str]:
         """Get list of agent names."""
         if isinstance(self.agents, dict):
             return list(self.agents.keys())
         return [f"agent_{i}" for i in range(len(self.agents))]
 
-    def get_agent(self, name: str) -> Agent | None:
+    def get_agent(self, name: str) -> Optional[Agent]:
         """Get agent by name."""
         if isinstance(self.agents, dict):
             return self.agents.get(name)
@@ -212,9 +211,7 @@ class EnhancedMultiAgent(Agent):  # Will be Agent[AugLLMConfig] when imports fix
             [
                 f"- {name}: {type(agent).__name__}"
                 for name, agent in (
-                    self.agents.items()
-                    if isinstance(self.agents, dict)
-                    else enumerate(self.agents)
+                    self.agents.items() if isinstance(self.agents, dict) else enumerate(self.agents)
                 )
             ]
         )
@@ -237,9 +234,7 @@ Make decisions based on the current state and task requirements."""
 
     def build_graph(self) -> BaseGraph:
         """Build multi-agent execution graph."""
-        graph = BaseGraph(
-            name=f"{self.name}_multi_graph", state_schema=self.state_schema
-        )
+        graph = BaseGraph(name=f"{self.name}_multi_graph", state_schema=self.state_schema)
 
         # Add coordinator node
         coord_node = EngineNodeConfig(name="coordinator", engine=self.engine)
@@ -260,9 +255,7 @@ Make decisions based on the current state and task requirements."""
                 name=agent_name,
                 agent=agent,
                 # Agent state management
-                private_state_schema=(
-                    agent.state_schema if hasattr(agent, "state_schema") else None
-                ),
+                private_state_schema=agent.state_schema if hasattr(agent, "state_schema") else None,
                 extract_private_state=True,
                 merge_agent_output=True,
                 update_meta_state=True,
@@ -279,9 +272,7 @@ Make decisions based on the current state and task requirements."""
 
         return graph
 
-    def _build_sequential_pattern(
-        self, graph: BaseGraph, agent_names: list[str]
-    ) -> None:
+    def _build_sequential_pattern(self, graph: BaseGraph, agent_names: List[str]) -> None:
         """Build sequential execution pattern."""
         # Coordinator -> Agent1 -> Agent2 -> ... -> END
         prev_node = "coordinator"
@@ -292,29 +283,25 @@ Make decisions based on the current state and task requirements."""
 
         graph.add_edge(prev_node, END)
 
-    def _build_parallel_pattern(self, graph: BaseGraph, agent_names: list[str]) -> None:
+    def _build_parallel_pattern(self, graph: BaseGraph, agent_names: List[str]) -> None:
         """Build parallel execution pattern."""
         # Coordinator -> All Agents (parallel) -> Aggregator -> END
         for agent_name in agent_names:
             graph.add_edge("coordinator", agent_name)
 
         # Add aggregator node
-        graph.add_node(
-            "aggregator", EngineNodeConfig(name="aggregator", engine=self.engine)
-        )
+        graph.add_node("aggregator", EngineNodeConfig(name="aggregator", engine=self.engine))
 
         for agent_name in agent_names:
             graph.add_edge(agent_name, "aggregator")
 
         graph.add_edge("aggregator", END)
 
-    def _build_conditional_pattern(
-        self, graph: BaseGraph, agent_names: list[str]
-    ) -> None:
+    def _build_conditional_pattern(self, graph: BaseGraph, agent_names: List[str]) -> None:
         """Build conditional execution pattern."""
         # Coordinator decides which agent(s) to execute
 
-        def route_to_agent(state: dict[str, Any]) -> str:
+        def route_to_agent(state: Dict[str, Any]) -> str:
             """Route based on coordinator decision."""
             # In real implementation, parse coordinator output
             current = state.get("current_agent")
@@ -347,8 +334,8 @@ Make decisions based on the current state and task requirements."""
 
 # Example usage
 if __name__ == "__main__":
-    from haive.agents.react.enhanced_react_agent import ReactAgent
     from haive.agents.simple.enhanced_simple_real import SimpleAgent
+    from haive.agents.react.enhanced_react_agent import ReactAgent
 
     # Create example agents
     planner = ReactAgent(name="planner", temperature=0.3)

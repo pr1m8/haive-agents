@@ -29,7 +29,7 @@ from langchain_core.messages import HumanMessage
 from langchain_core.tools import BaseTool
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
-from haive.agents.multi.agent import MultiAgent
+from haive.agents.multi.clean import MultiAgent
 from haive.agents.react.agent import ReactAgent
 from haive.agents.simple.agent import SimpleAgent
 
@@ -69,21 +69,15 @@ class TaskPriority(str, Enum):
 class ToolAlias(BaseModel):
     """Tool alias configuration for forced tool choice."""
 
-    model_config = ConfigDict(
-        str_strip_whitespace=True, validate_assignment=True, extra="forbid"
-    )
+    model_config = ConfigDict(str_strip_whitespace=True, validate_assignment=True, extra="forbid")
 
-    alias: str = Field(
-        ..., description="The alias name for the tool", min_length=1, max_length=50
-    )
+    alias: str = Field(..., description="The alias name for the tool", min_length=1, max_length=50)
 
     actual_tool: str = Field(
         ..., description="The actual tool name to execute", min_length=1, max_length=50
     )
 
-    force_choice: bool = Field(
-        default=True, description="Whether to force this tool choice"
-    )
+    force_choice: bool = Field(default=True, description="Whether to force this tool choice")
 
     parameters: dict[str, Any] = Field(
         default_factory=dict, description="Default parameters for the tool"
@@ -101,37 +95,25 @@ class ToolAlias(BaseModel):
 class PlanTask(BaseModel):
     """A task in the planning tree - simplified for agent-based execution."""
 
-    model_config = ConfigDict(
-        str_strip_whitespace=True, validate_assignment=True, extra="forbid"
-    )
+    model_config = ConfigDict(str_strip_whitespace=True, validate_assignment=True, extra="forbid")
 
     # Identity
-    id: str = Field(
-        ..., description="Unique identifier for the task", min_length=1, max_length=100
-    )
+    id: str = Field(..., description="Unique identifier for the task", min_length=1, max_length=100)
 
     name: str = Field(
-        ...,
-        description="Human-readable name for the task",
-        min_length=1,
-        max_length=200,
+        ..., description="Human-readable name for the task", min_length=1, max_length=200
     )
 
     task_type: TaskType = Field(default=TaskType.EXECUTION, description="Type of task")
 
     description: str = Field(
-        ...,
-        description="Detailed description of the task",
-        min_length=1,
-        max_length=1000,
+        ..., description="Detailed description of the task", min_length=1, max_length=1000
     )
 
     # Agent assignment
     agent_name: str = Field(..., description="Name of the agent to execute this task")
 
-    tool_alias: str | None = Field(
-        default=None, description="Tool alias to use for execution"
-    )
+    tool_alias: str | None = Field(default=None, description="Tool alias to use for execution")
 
     # Dependencies
     dependencies: list[str] = Field(
@@ -139,41 +121,30 @@ class PlanTask(BaseModel):
     )
 
     # Results
-    result: Any | None = Field(
-        default=None, description="Result of executing this task"
-    )
+    result: Any | None = Field(default=None, description="Result of executing this task")
 
-    status: TaskStatus = Field(
-        default=TaskStatus.PENDING, description="Current status of the task"
-    )
+    status: TaskStatus = Field(default=TaskStatus.PENDING, description="Current status of the task")
 
     @field_validator("id")
     @classmethod
     def validate_id(cls, v: str) -> str:
         """Validate task ID format."""
         if not v.replace("_", "").replace("-", "").isalnum():
-            raise ValueError(
-                "Task ID must be alphanumeric with underscores and hyphens"
-            )
+            raise ValueError("Task ID must be alphanumeric with underscores and hyphens")
         return v
 
 
 class ReWOOPlan(BaseModel):
     """Complete execution plan with tasks and dependencies."""
 
-    model_config = ConfigDict(
-        str_strip_whitespace=True, validate_assignment=True, extra="forbid"
-    )
+    model_config = ConfigDict(str_strip_whitespace=True, validate_assignment=True, extra="forbid")
 
     plan_id: str = Field(
         ..., description="Unique identifier for the plan", min_length=1, max_length=100
     )
 
     name: str = Field(
-        ...,
-        description="Human-readable name for the plan",
-        min_length=1,
-        max_length=200,
+        ..., description="Human-readable name for the plan", min_length=1, max_length=200
     )
 
     problem_analysis: str = Field(
@@ -181,9 +152,7 @@ class ReWOOPlan(BaseModel):
     )
 
     # Task management
-    tasks: list[PlanTask] = Field(
-        default_factory=list, description="List of tasks in the plan"
-    )
+    tasks: list[PlanTask] = Field(default_factory=list, description="List of tasks in the plan")
 
     # Execution order (levels for parallelization)
     execution_levels: list[list[str]] = Field(
@@ -243,9 +212,7 @@ class ReWOOPlan(BaseModel):
         ready = []
         for task in self.tasks:
             if task.status == TaskStatus.PENDING:
-                deps_complete = all(
-                    dep_id in completed_tasks for dep_id in task.dependencies
-                )
+                deps_complete = all(dep_id in completed_tasks for dep_id in task.dependencies)
                 if deps_complete:
                     ready.append(task)
         return ready
@@ -279,17 +246,8 @@ class ReWOOPlannerAgent(SimpleAgent):
     available_tools: list[BaseTool] = Field(default_factory=list)
 
     def __init__(
-        self,
-        name: str = "rewoo_planner",
-        available_tools: list[BaseTool] | None = None,
-        **kwargs,
+        self, name: str = "rewoo_planner", available_tools: list[BaseTool] | None = None, **kwargs
     ):
-        """Init  .
-
-        Args:
-            name: [TODO: Add description]
-            available_tools: [TODO: Add description]
-        """
         # Create planning-specific prompt
         prompt_template = """
         You are a ReWOO Planner that creates detailed execution plans.
@@ -323,13 +281,9 @@ class ReWOOPlannerAgent(SimpleAgent):
             ),
         )
 
-        super().__init__(
-            name=name, engine=engine, available_tools=available_tools or [], **kwargs
-        )
+        super().__init__(name=name, engine=engine, available_tools=available_tools or [], **kwargs)
 
-    def create_plan(
-        self, problem: str, context: dict[str, Any] | None = None
-    ) -> ReWOOPlan:
+    def create_plan(self, problem: str, context: dict[str, Any] | None = None) -> ReWOOPlan:
         """Create a ReWOO plan for the given problem."""
         tools_list = [tool.name for tool in self.available_tools]
 
@@ -378,20 +332,9 @@ class ReWOOExecutorAgent(ReactAgent):
         tool_aliases: dict[str, ToolAlias] | None = None,
         **kwargs,
     ):
-        """Init  .
+        super().__init__(name=name, tools=tools or [], tool_aliases=tool_aliases or {}, **kwargs)
 
-        Args:
-            name: [TODO: Add description]
-            tools: [TODO: Add description]
-            tool_aliases: [TODO: Add description]
-        """
-        super().__init__(
-            name=name, tools=tools or [], tool_aliases=tool_aliases or {}, **kwargs
-        )
-
-    def execute_task(
-        self, task: PlanTask, context: dict[str, Any] | None = None
-    ) -> Any:
+    def execute_task(self, task: PlanTask, context: dict[str, Any] | None = None) -> Any:
         """Execute a single task."""
         # Check for tool alias
         if task.tool_alias and task.tool_alias in self.tool_aliases:
@@ -433,27 +376,14 @@ class ReWOOTreeAgent(MultiAgent):
         max_parallelism: int = 4,
         **kwargs,
     ):
-        """Init  .
-
-        Args:
-            name: [TODO: Add description]
-            available_tools: [TODO: Add description]
-            tool_aliases: [TODO: Add description]
-            max_planning_depth: [TODO: Add description]
-            max_parallelism: [TODO: Add description]
-        """
         # Create planner agent
-        planner = ReWOOPlannerAgent(
-            name=f"{name}_planner", available_tools=available_tools
-        )
+        planner = ReWOOPlannerAgent(name=f"{name}_planner", available_tools=available_tools)
 
         # Create executor agents (multiple for parallelism)
         executors = []
         for i in range(min(max_parallelism, 4)):
             executor = ReWOOExecutorAgent(
-                name=f"{name}_executor_{i}",
-                tools=available_tools,
-                tool_aliases=tool_aliases,
+                name=f"{name}_executor_{i}", tools=available_tools, tool_aliases=tool_aliases
             )
             executors.append(executor)
 
@@ -545,15 +475,10 @@ class ReWOOTreeAgent(MultiAgent):
             target_agents=[self.coordinator.name, "__end__"],
         )
 
-    def add_tool_alias(
-        self, alias: str, actual_tool: str, force_choice: bool = True, **params
-    ):
+    def add_tool_alias(self, alias: str, actual_tool: str, force_choice: bool = True, **params):
         """Add a tool alias for forced tool choice."""
         tool_alias = ToolAlias(
-            alias=alias,
-            actual_tool=actual_tool,
-            force_choice=force_choice,
-            parameters=params,
+            alias=alias, actual_tool=actual_tool, force_choice=force_choice, parameters=params
         )
 
         # Update tool_aliases dict
@@ -604,15 +529,7 @@ class ParallelReWOOAgent(ReWOOTreeAgent):
     - Real-time performance tracking
     """
 
-    def __init__(
-        self, name: str = "parallel_rewoo", max_parallelism: int = 8, **kwargs
-    ):
-        """Init  .
-
-        Args:
-            name: [TODO: Add description]
-            max_parallelism: [TODO: Add description]
-        """
+    def __init__(self, name: str = "parallel_rewoo", max_parallelism: int = 8, **kwargs):
         # Set higher parallelism
         super().__init__(name=name, max_parallelism=max_parallelism, **kwargs)
 
@@ -640,9 +557,7 @@ class ParallelReWOOAgent(ReWOOTreeAgent):
 
 
 def create_rewoo_agent_with_tools(
-    tools: list[BaseTool],
-    tool_aliases: dict[str, str] | None = None,
-    max_parallelism: int = 4,
+    tools: list[BaseTool], tool_aliases: dict[str, str] | None = None, max_parallelism: int = 4
 ) -> ReWOOTreeAgent:
     """Factory function to create a ReWOO agent with tools.
 

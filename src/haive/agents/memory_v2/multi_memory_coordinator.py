@@ -37,10 +37,7 @@ except ImportError:
     HAS_ADVANCED_RAG = False
 
 try:
-    from haive.agents.memory_v2.graph_memory_agent import (
-        GraphMemoryAgent,
-        GraphMemoryConfig,
-    )
+    from haive.agents.memory_v2.graph_memory_agent import GraphMemoryAgent, GraphMemoryConfig
 
     HAS_GRAPH_MEMORY = True
 except ImportError:
@@ -109,8 +106,6 @@ class MultiMemoryConfig:
     base_storage_path: str | None = None
 
     def __post_init__(self):
-        """  Post Init  .
-"""
         if self.engine is None:
             self.engine = AugLLMConfig(temperature=0.7)
 
@@ -127,11 +122,6 @@ class MultiMemoryCoordinator:
     """
 
     def __init__(self, config: MultiMemoryConfig):
-        """  Init  .
-
-Args:
-    config: [TODO: Add description]
-"""
         self.config = config
         self.logger = logger
 

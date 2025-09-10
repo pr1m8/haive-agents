@@ -15,7 +15,7 @@ from pydantic import Field, field_validator
 from haive.agents.simple.enhanced_simple_real import EnhancedAgentBase as Agent
 
 # Import base enhanced agent when available
-# from haive.agents.base.agent import Agent
+# from haive.agents.base.enhanced_agent import Agent
 
 logger = logging.getLogger(__name__)
 
@@ -75,9 +75,7 @@ class SequentialAgent(Agent):  # Will be Agent[AugLLMConfig] when imports fixed
         default=False, description="Continue pipeline if an agent fails"
     )
 
-    return_all_outputs: bool = Field(
-        default=False, description="Return all intermediate outputs"
-    )
+    return_all_outputs: bool = Field(default=False, description="Return all intermediate outputs")
 
     max_retries_per_step: int = Field(
         default=1, ge=1, le=3, description="Max retries for each step"
@@ -154,9 +152,7 @@ class SequentialAgent(Agent):  # Will be Agent[AugLLMConfig] when imports fixed
                 if self.process_between_steps:
                     self.engine.system_message = self._get_coordinator_prompt()
                 else:
-                    self.engine.system_message = (
-                        "You coordinate a sequential pipeline of agents."
-                    )
+                    self.engine.system_message = "You coordinate a sequential pipeline of agents."
 
     def _get_coordinator_prompt(self) -> str:
         """Get coordinator prompt for processing between steps."""
@@ -192,8 +188,7 @@ Always preserve key information while improving clarity and structure."""
 
             # Create node for agent
             agent_node = EngineNodeConfig(
-                name=node_name,
-                engine=agent.engine if hasattr(agent, "engine") else agent,
+                name=node_name, engine=agent.engine if hasattr(agent, "engine") else agent
             )
             graph.add_node(node_name, agent_node)
 
@@ -228,9 +223,7 @@ Always preserve key information while improving clarity and structure."""
         for i, agent in enumerate(self.agents):
             try:
                 # Execute agent
-                logger.debug(
-                    f"Executing step {i + 1}: {getattr(agent, 'name', f'agent_{i}')}"
-                )
+                logger.debug(f"Executing step {i + 1}: {getattr(agent, 'name', f'agent_{i}')}")
 
                 if hasattr(agent, "arun"):
                     output = await agent.arun(current_input)
@@ -246,9 +239,7 @@ Always preserve key information while improving clarity and structure."""
                         output = await self.arun(
                             {
                                 "previous_output": output,
-                                "next_agent": getattr(
-                                    self.agents[i + 1], "name", f"agent_{i + 1}"
-                                ),
+                                "next_agent": getattr(self.agents[i + 1], "name", f"agent_{i + 1}"),
                                 "instruction": "Process this output for the next agent",
                             }
                         )
@@ -270,9 +261,7 @@ Always preserve key information while improving clarity and structure."""
         pipeline = " → ".join(
             [getattr(agent, "name", type(agent).__name__) for agent in self.agents]
         )
-        return (
-            f"SequentialAgent[{engine_type}](name='{self.name}', pipeline=[{pipeline}])"
-        )
+        return f"SequentialAgent[{engine_type}](name='{self.name}', pipeline=[{pipeline}])"
 
 
 # Example usage
@@ -280,25 +269,11 @@ if __name__ == "__main__":
     # Mock agents for demo
     class MockAgent:
         def __init__(self, name: str, transform: str):
-            """Init  .
-
-            Args:
-                name: [TODO: Add description]
-                transform: [TODO: Add description]
-            """
             self.name = name
             self.transform = transform
             self.engine = AugLLMConfig()
 
         async def arun(self, input_data: str) -> str:
-            """Arun.
-
-            Args:
-                input_data: [TODO: Add description]
-
-            Returns:
-                [TODO: Add return description]
-            """
             return f"{self.name}: {self.transform}({input_data})"
 
     # Create sequential pipeline

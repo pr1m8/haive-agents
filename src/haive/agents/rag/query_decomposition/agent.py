@@ -38,9 +38,7 @@ class SubQuery(BaseModel):
 
     query_text: str = Field(description="The sub-query text")
     query_type: QueryType = Field(description="Type of this sub-query")
-    priority: int = Field(
-        ge=1, le=5, description="Priority level (1=highest, 5=lowest)"
-    )
+    priority: int = Field(ge=1, le=5, description="Priority level (1=highest, 5=lowest)")
     dependencies: list[int] = Field(
         default_factory=list, description="Indices of sub-queries this depends on"
     )
@@ -53,14 +51,10 @@ class QueryDecomposition(BaseModel):
 
     original_query: str = Field(description="Original complex query")
     query_type: QueryType = Field(description="Type of the original query")
-    complexity_score: float = Field(
-        ge=0.0, le=1.0, description="Query complexity (0-1)"
-    )
+    complexity_score: float = Field(ge=0.0, le=1.0, description="Query complexity (0-1)")
 
     sub_queries: list[SubQuery] = Field(description="List of decomposed sub-queries")
-    execution_order: list[int] = Field(
-        description="Suggested execution order (indices)"
-    )
+    execution_order: list[int] = Field(description="Suggested execution order (indices)")
 
     synthesis_strategy: str = Field(description="How to combine results")
     estimated_difficulty: Literal["easy", "moderate", "hard", "very_hard"] = Field(
@@ -87,15 +81,11 @@ class HierarchicalDecomposition(BaseModel):
     execution_levels: list[list[int]] = Field(
         description="Execution levels (parallel within level, sequential between levels)"
     )
-    dependency_map: dict[str, list[str]] = Field(
-        description="Dependencies between questions"
-    )
+    dependency_map: dict[str, list[str]] = Field(description="Dependencies between questions")
 
     # Integration strategy
     synthesis_plan: str = Field(description="How to synthesize answers")
-    confidence_level: float = Field(
-        ge=0.0, le=1.0, description="Confidence in decomposition"
-    )
+    confidence_level: float = Field(ge=0.0, le=1.0, description="Confidence in decomposition")
 
 
 class ContextualDecomposition(BaseModel):
@@ -105,9 +95,7 @@ class ContextualDecomposition(BaseModel):
     context_analysis: str = Field(description="Analysis of available context")
 
     # Context-driven sub-queries
-    context_dependent_queries: list[str] = Field(
-        description="Queries that require context"
-    )
+    context_dependent_queries: list[str] = Field(description="Queries that require context")
     context_independent_queries: list[str] = Field(
         description="Queries that can be answered independently"
     )
@@ -153,7 +141,7 @@ Break down the query systematically and logically.""",
         ),
         (
             "human",
-            """Decompose this complex query into manageable sub-queries:.
+            """Decompose this complex query into manageable sub-queries:
 
 **Query:** {query}
 
@@ -188,7 +176,7 @@ Higher levels provide context for lower levels.""",
         ),
         (
             "human",
-            """Create a hierarchical decomposition:.
+            """Create a hierarchical decomposition:
 
 **Query:** {query}
 **Context:** {retrieved_documents}
@@ -215,7 +203,7 @@ Consider both what can be answered with current context and what requires additi
         ),
         (
             "human",
-            """Create a context-aware decomposition:.
+            """Create a context-aware decomposition:
 
 **Query:** {query}
 
@@ -248,7 +236,7 @@ Provide multiple decomposition approaches and select the best one based on the s
         ),
         (
             "human",
-            """Create an adaptive decomposition strategy:.
+            """Create an adaptive decomposition strategy:
 
 **Query:** {query}
 **Context:** {retrieved_documents}
@@ -266,9 +254,7 @@ class QueryDecomposerAgent(Agent):
 
     name: str = "Query Decomposer"
 
-    def __init__(
-        self, llm_config: LLMConfig | None = None, max_sub_queries: int = 5, **kwargs
-    ):
+    def __init__(self, llm_config: LLMConfig | None = None, max_sub_queries: int = 5, **kwargs):
         """Initialize query decomposer.
 
         Args:
@@ -304,9 +290,7 @@ class QueryDecomposerAgent(Agent):
             # Format context info
             context_info = ""
             if retrieved_documents:
-                context_info = (
-                    f"Available documents: {len(retrieved_documents)} documents"
-                )
+                context_info = f"Available documents: {len(retrieved_documents)} documents"
                 context_info += (
                     f"\nSample content: {retrieved_documents[0].page_content[:200]}..."
                     if retrieved_documents
@@ -322,9 +306,7 @@ class QueryDecomposerAgent(Agent):
 
             # Limit number of sub-queries
             if len(decomposition.sub_queries) > self.max_sub_queries:
-                decomposition.sub_queries = decomposition.sub_queries[
-                    : self.max_sub_queries
-                ]
+                decomposition.sub_queries = decomposition.sub_queries[: self.max_sub_queries]
                 decomposition.execution_order = decomposition.execution_order[
                     : self.max_sub_queries
                 ]
@@ -353,9 +335,7 @@ class HierarchicalQueryDecomposerAgent(Agent):
 
     name: str = "Hierarchical Query Decomposer"
 
-    def __init__(
-        self, llm_config: LLMConfig | None = None, max_levels: int = 3, **kwargs
-    ):
+    def __init__(self, llm_config: LLMConfig | None = None, max_levels: int = 3, **kwargs):
         """Initialize hierarchical query decomposer.
 
         Args:
@@ -436,10 +416,7 @@ class ContextualQueryDecomposerAgent(Agent):
     name: str = "Contextual Query Decomposer"
 
     def __init__(
-        self,
-        llm_config: LLMConfig | None = None,
-        context_threshold: float = 0.7,
-        **kwargs,
+        self, llm_config: LLMConfig | None = None, context_threshold: float = 0.7, **kwargs
     ):
         """Initialize contextual query decomposer.
 
@@ -500,9 +477,7 @@ class ContextualQueryDecomposerAgent(Agent):
             )
 
             # Determine strategy based on context sufficiency
-            needs_more_context = (
-                decomposition.context_sufficiency < self.context_threshold
-            )
+            needs_more_context = decomposition.context_sufficiency < self.context_threshold
 
             return {
                 "contextual_decomposition": decomposition,
@@ -529,12 +504,7 @@ class AdaptiveQueryDecomposerAgent(Agent):
 
     name: str = "Adaptive Query Decomposer"
 
-    def __init__(
-        self,
-        llm_config: LLMConfig | None = None,
-        enable_fallback: bool = True,
-        **kwargs,
-    ):
+    def __init__(self, llm_config: LLMConfig | None = None, enable_fallback: bool = True, **kwargs):
         """Initialize adaptive query decomposer.
 
         Args:
@@ -575,16 +545,10 @@ class AdaptiveQueryDecomposerAgent(Agent):
                 # Rich context - contextual decomposition
                 strategy = "contextual"
                 decomposer = ContextualQueryDecomposerAgent(llm_config=self.llm_config)
-            elif (
-                "step" in query.lower()
-                or "first" in query.lower()
-                or "then" in query.lower()
-            ):
+            elif "step" in query.lower() or "first" in query.lower() or "then" in query.lower():
                 # Sequential indicators - hierarchical decomposition
                 strategy = "hierarchical"
-                decomposer = HierarchicalQueryDecomposerAgent(
-                    llm_config=self.llm_config
-                )
+                decomposer = HierarchicalQueryDecomposerAgent(llm_config=self.llm_config)
             else:
                 # Default to basic decomposition
                 strategy = "basic"
@@ -616,9 +580,7 @@ class AdaptiveQueryDecomposerAgent(Agent):
                     basic_decomposer = QueryDecomposerAgent(llm_config=self.llm_config)
                     result = basic_decomposer.run(state)
 
-                    result_dict = (
-                        result if isinstance(result, dict) else {"result": result}
-                    )
+                    result_dict = result if isinstance(result, dict) else {"result": result}
                     result_dict.update(
                         {
                             "decomposition_strategy_used": "basic_fallback",
@@ -639,9 +601,7 @@ class AdaptiveQueryDecomposerAgent(Agent):
 
 # Factory functions for easy creation
 def create_query_decomposer(
-    decomposer_type: Literal[
-        "basic", "hierarchical", "contextual", "adaptive"
-    ] = "basic",
+    decomposer_type: Literal["basic", "hierarchical", "contextual", "adaptive"] = "basic",
     llm_config: LLMConfig | None = None,
     **kwargs,
 ) -> Agent:

@@ -21,18 +21,14 @@ class MCTSAgentConfig(AgentConfig):
     )
 
     # Tools
-    tools: list[BaseTool] = Field(
-        default_factory=list, description="Tools available to the agent"
-    )
+    tools: list[BaseTool] = Field(default_factory=list, description="Tools available to the agent")
 
     # MCTS parameters
     max_rollouts: int = Field(default=5, description="Maximum depth of rollouts")
     candidates_per_rollout: int = Field(
         default=5, description="Number of candidates to generate per rollout"
     )
-    exploration_weight: float = Field(
-        default=1.0, description="Exploration weight for UCB"
-    )
+    exploration_weight: float = Field(default=1.0, description="Exploration weight for UCB")
 
     # Prompts
     initial_prompt_template: ChatPromptTemplate | None = Field(
@@ -99,6 +95,4 @@ class MCTSAgentConfig(AgentConfig):
             )
             kwargs["reflection_prompt_template"] = reflection_prompt
 
-        return cls(
-            llm_config=llm_config, tools=tools, system_prompt=system_prompt, **kwargs
-        )
+        return cls(llm_config=llm_config, tools=tools, system_prompt=system_prompt, **kwargs)

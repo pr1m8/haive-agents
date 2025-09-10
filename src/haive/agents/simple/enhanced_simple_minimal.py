@@ -37,12 +37,6 @@ class Agent(Workflow, Generic[EngineT]):
     """Agent = Workflow + Engine with engine-focused generics."""
 
     def __init__(self, name: str, engine: EngineT):
-        """Init  .
-
-        Args:
-            name: [TODO: Add description]
-            engine: [TODO: Add description]
-        """
         self.name = name
         self.engine = engine
 
@@ -79,7 +73,6 @@ if __name__ == "__main__":
     # Execute
 
     async def demo():
-        """Demo."""
         await agent.execute("Hello world")
 
     asyncio.run(demo())

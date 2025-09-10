@@ -69,19 +69,13 @@ class Prediction(BaseModel):
 class WebNavState(BaseModel):
     """Web Navigation State Model with Playwright Support."""
 
-    page_url: str | None = Field(
-        default=None, description="URL of the Playwright page."
-    )
+    page_url: str | None = Field(default=None, description="URL of the Playwright page.")
     input: str = Field(..., description="User request.")
     img: str | None = Field(
         default=None, description="Base64 encoded screenshot (plain, no prefix)."
     )
-    bboxes: list[BBox] = Field(
-        default_factory=list, description="Bounding boxes from annotation."
-    )
-    prediction: Prediction | None = Field(
-        default=None, description="The agent's output."
-    )
+    bboxes: list[BBox] = Field(default_factory=list, description="Bounding boxes from annotation.")
+    prediction: Prediction | None = Field(default=None, description="The agent's output.")
     scratchpad: list[BaseMessage] = Field(
         default_factory=list, description="Intermediate system messages."
     )
@@ -109,9 +103,7 @@ class WebNavState(BaseModel):
 class WebNavAgentConfig(AgentConfig):
     """Configuration for the Web Navigator Agent."""
 
-    aug_llm_config: AugLLMConfig = Field(
-        ..., description="LLM config for Web Navigator"
-    )
+    aug_llm_config: AugLLMConfig = Field(..., description="LLM config for Web Navigator")
     headless: bool = Field(default=False, description="Run browser in headless mode")
     max_steps: int = Field(default=3, description="Maximum steps")
     state_schema: type[BaseModel] = Field(
@@ -126,11 +118,6 @@ class WebNavAgent(Agent[WebNavAgentConfig]):
     """An interactive web navigation agent using Playwright & LangGraph with integrated tools."""
 
     def __init__(self, config: WebNavAgentConfig):
-        """Init  .
-
-        Args:
-            config: [TODO: Add description]
-        """
         self.config = config
         self.headless = config.headless
         self.max_steps = config.max_steps
@@ -211,11 +198,7 @@ class WebNavAgent(Agent[WebNavAgentConfig]):
         """Routes the agent's prediction to the correct tool."""
         prediction = state.get("prediction")
         if prediction:
-            action = (
-                prediction.get("action")
-                if isinstance(prediction, dict)
-                else prediction.action
-            )
+            action = prediction.get("action") if isinstance(prediction, dict) else prediction.action
             if action == "ANSWER":
                 return "ANSWER"
             if action in ["Click", "Type", "Scroll", "Wait", "GoBack", "Google"]:
@@ -268,9 +251,7 @@ class WebNavAgent(Agent[WebNavAgentConfig]):
             # attribute
             if isinstance(first_message, dict) and "content" in first_message:
                 content = first_message["content"]
-            elif hasattr(first_message, "content") and not isinstance(
-                first_message, dict
-            ):
+            elif hasattr(first_message, "content") and not isinstance(first_message, dict):
                 content = first_message.content
             else:
                 content = str(first_message)
@@ -285,9 +266,7 @@ class WebNavAgent(Agent[WebNavAgentConfig]):
             first_message = scratchpad[0]
             if isinstance(first_message, dict) and "content" in first_message:
                 text = first_message["content"]
-            elif hasattr(first_message, "content") and not isinstance(
-                first_message, dict
-            ):
+            elif hasattr(first_message, "content") and not isinstance(first_message, dict):
                 text = first_message.content
             else:
                 text = str(first_message)
@@ -356,9 +335,7 @@ class WebNavAgent(Agent[WebNavAgentConfig]):
         screenshot = await self.capture_screenshot()
 
         # Initialize state
-        self.state = WebNavState(
-            page_url=self.page.url, input="", img=screenshot, observation=""
-        )
+        self.state = WebNavState(page_url=self.page.url, input="", img=screenshot, observation="")
 
     async def stop_browser(self):
         """Closes the browser instance."""
@@ -465,9 +442,7 @@ class WebNavAgent(Agent[WebNavAgentConfig]):
                 "img": screenshot or state_dict.get("img", ""),
                 "bboxes": state_dict.get("bboxes", []),
                 "observation": f"Error during page annotation: {e!s}",
-                "page_url": (
-                    self.page.url if self.page else state_dict.get("page_url", "")
-                ),
+                "page_url": (self.page.url if self.page else state_dict.get("page_url", "")),
             }
 
     def format_descriptions(self, state: dict[str, Any]) -> str:
@@ -512,9 +487,7 @@ class WebNavAgent(Agent[WebNavAgentConfig]):
             action, action_input = split_output[0], []
         else:
             action, action_input_str = split_output
-            action_input = [
-                inp.strip().strip("[]") for inp in action_input_str.strip().split(";")
-            ]
+            action_input = [inp.strip().strip("[]") for inp in action_input_str.strip().split(";")]
 
         return {"thought": thought, "action": action.strip(), "args": action_input}
 
@@ -649,9 +622,7 @@ class WebNavAgent(Agent[WebNavAgentConfig]):
 
         target, direction = args
         scroll_amount = 500 if target.upper() == "WINDOW" else 200
-        scroll_direction = (
-            -scroll_amount if direction.lower() == "up" else scroll_amount
-        )
+        scroll_direction = -scroll_amount if direction.lower() == "up" else scroll_amount
 
         try:
             if target.upper() == "WINDOW":
@@ -782,7 +753,6 @@ class WebNavAgent(Agent[WebNavAgentConfig]):
 
 # Example usage
 async def run_web_navigator():
-    """Run Web Navigator."""
     # Import web_nav_aug_llm from your module
 
     # web_nav_aug_llm is not available - module doesn't exist
@@ -796,9 +766,7 @@ async def run_web_navigator():
     agent = WebNavAgent(config)
 
     try:
-        await agent.run(
-            "How far is Toronto Pearson airport from 1289 Queen Street West, Toronto?"
-        )
+        await agent.run("How far is Toronto Pearson airport from 1289 Queen Street West, Toronto?")
     finally:
         await agent.close()
 

@@ -141,9 +141,7 @@ PROMPT_MAPPING = {
 }
 
 
-def get_prompt_for_model(
-    model_name: str, custom_context: str | None = None
-) -> ChatPromptTemplate:
+def get_prompt_for_model(model_name: str, custom_context: str | None = None) -> ChatPromptTemplate:
     """Get the appropriate prompt for a given output model.
 
     Args:

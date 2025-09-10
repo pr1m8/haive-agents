@@ -22,9 +22,7 @@ Example:
 """
 
 from haive.agents.research.open_perplexity import ResearchAgent as OpenPerplexityAgent
-from haive.agents.research.open_perplexity import (
-    ResearchAgentConfig as OpenPerplexityConfig,
-)
+from haive.agents.research.open_perplexity import ResearchAgentConfig as OpenPerplexityConfig
 from haive.agents.research.person import PersonResearchAgent
 from haive.agents.research.storm import STORMAgentConfig
 

@@ -16,7 +16,7 @@ from collections import defaultdict
 
 
 class MemoryValidationMeta(ABCMeta):
-    """Advanced metaclass for memory models with automatic validation registration and.
+    """Advanced metaclass for memory models with automatic validation registration and
     cross-model consistency checking.
     """
 
@@ -25,14 +25,6 @@ class MemoryValidationMeta(ABCMeta):
     _lock = threading.Lock()
 
     def __new__(mcs, name: str, bases: tuple, namespace: dict, **kwargs):
-        """New  .
-
-        Args:
-            mcs: [TODO: Add description]
-            name: [TODO: Add description]
-            bases: [TODO: Add description]
-            namespace: [TODO: Add description]
-        """
         # Extract validation metadata
         memory_type = namespace.get("__memory_type__")
         validation_level = namespace.get("__validation_level__", "standard")

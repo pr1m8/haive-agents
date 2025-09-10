@@ -4,7 +4,7 @@ from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 
-from haive.agents.multi.agent import MultiAgent
+from haive.agents.multi.clean import MultiAgent
 from haive.agents.reflection.models import Critique, Improvement
 from haive.agents.simple.agent import SimpleAgent
 
@@ -60,14 +60,10 @@ class ReflectionAgent(MultiAgent):
             ),
         )
 
-        return cls(
-            name=name, agents=[critic, improver], execution_mode="sequential", **kwargs
-        )
+        return cls(name=name, agents=[critic, improver], execution_mode="sequential", **kwargs)
 
     @classmethod
-    def enhance_agent(
-        cls, base_agent: Any, name: str | None = None, **kwargs
-    ) -> "ReflectionAgent":
+    def enhance_agent(cls, base_agent: Any, name: str | None = None, **kwargs) -> "ReflectionAgent":
         """Enhance any agent with reflection capability."""
         # Create reflection agent
         reflection_agent = cls.create(name=f"{base_agent.name}_reflection", **kwargs)
@@ -76,9 +72,7 @@ class ReflectionAgent(MultiAgent):
         enhanced_name = name or f"{base_agent.name}_with_reflection"
 
         return MultiAgent.create(
-            agents=[base_agent, reflection_agent],
-            name=enhanced_name,
-            execution_mode="sequential",
+            agents=[base_agent, reflection_agent], name=enhanced_name, execution_mode="sequential"
         )
 
     async def _run_sequential(self, input_data, **kwargs):

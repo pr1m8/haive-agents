@@ -6,6 +6,9 @@ import logging
 import uuid
 from typing import Any
 
+from haive.agents.react_class.react_agent2.agent2 import ReactAgent
+from haive.agents.react_class.react_agent2.config2 import ReactAgentConfig
+from haive.agents.react_class.react_agent2.state2 import ReactAgentState
 from haive.core.engine.agent.agent import register_agent
 from haive.core.graph.branches import Branch
 from haive.core.graph.dynamic_graph_builder import DynamicGraph
@@ -20,10 +23,6 @@ from langgraph.checkpoint.memory import MemorySaver
 from langgraph.graph import END
 from pydantic import BaseModel, Field
 
-from haive.agents.react_class.react_agent2.agent2 import ReactAgent
-from haive.agents.react_class.react_agent2.config2 import ReactAgentConfig
-from haive.agents.react_class.react_agent2.state2 import ReactAgentState
-
 # Set up logging
 
 
@@ -35,8 +34,7 @@ class DynamicReactAgentState(ReactAgentState):
     """Extended schema for dynamic tool selection."""
 
     selected_tools: list[str] = Field(
-        default_factory=list,
-        description="IDs of tools selected for the current interaction",
+        default_factory=list, description="IDs of tools selected for the current interaction"
     )
     tool_registry: dict[str, Any] = Field(
         default_factory=dict, description="Registry of all available tools"
@@ -61,8 +59,7 @@ class DynamicReactAgentConfig(ReactAgentConfig):
 
     # Tool selection configuration
     tool_embedding_model: str = Field(
-        default="text-embedding-ada-002",
-        description="Embedding model for tool descriptions.",
+        default="text-embedding-ada-002", description="Embedding model for tool descriptions."
     )
 
     max_tools_per_turn: int = Field(
@@ -76,8 +73,7 @@ class DynamicReactAgentConfig(ReactAgentConfig):
 
     # Repeat tool selection behavior
     repeat_selection: bool = Field(
-        default=True,
-        description="Whether to repeat tool selection after getting tool results.",
+        default=True, description="Whether to repeat tool selection after getting tool results."
     )
 
     # Vector store configuration
@@ -88,8 +84,7 @@ class DynamicReactAgentConfig(ReactAgentConfig):
     # Tool documents (stored separately from vector store config to avoid
     # validation issues)
     tool_documents: list[Document] | None = Field(
-        default=None,
-        description="Documents for tool descriptions to be stored in vector store.",
+        default=None, description="Documents for tool descriptions to be stored in vector store."
     )
 
     # Model config to allow arbitrary types
@@ -206,9 +201,7 @@ class DynamicReactAgent(ReactAgent):
         )
 
         # 2. Add agent node (LLM reasoning)
-        graph_builder.add_node(
-            name=self.config.agent_node_name, config=self.config.engine
-        )
+        graph_builder.add_node(name=self.config.agent_node_name, config=self.config.engine)
 
         # 3. Create a ToolNode to handle tool execution
         # Fix the tool_call_id handling issue in the original implementation
@@ -260,7 +253,9 @@ class DynamicReactAgent(ReactAgent):
             function=lambda state: (
                 self.config.tools_node_name
                 if has_tool_calls(state)
-                else "structured_output_node" if self.config.response_format else END
+                else "structured_output_node"
+                if self.config.response_format
+                else END
             ),
             destinations={
                 self.config.tools_node_name: self.config.tools_node_name,
@@ -282,9 +277,7 @@ class DynamicReactAgent(ReactAgent):
                 self.config.tools_node_name, self.config.tool_selection_node_name
             )
         else:
-            graph_builder.add_edge(
-                self.config.tools_node_name, self.config.agent_node_name
-            )
+            graph_builder.add_edge(self.config.tools_node_name, self.config.agent_node_name)
 
         # 8. Set entry point to the tool selection node
         graph_builder.set_entry_point(self.config.tool_selection_node_name)
@@ -312,14 +305,10 @@ class DynamicReactAgent(ReactAgent):
         # Create documents for embedding if not provided in config
         if self.config.tool_documents:
             tool_documents = self.config.tool_documents
-            logger.info(
-                f"Using {len(tool_documents)} pre-created tool documents from src.config"
-            )
+            logger.info(f"Using {len(tool_documents)} pre-created tool documents from src.config")
         else:
             tool_documents = [
-                Document(
-                    page_content=tool.description, metadata={"tool_name": tool.name}
-                )
+                Document(page_content=tool.description, metadata={"tool_name": tool.name})
                 for tool in tools
             ]
             logger.info(f"Created {len(tool_documents)} tool documents from tools")
@@ -349,9 +338,7 @@ class DynamicReactAgent(ReactAgent):
                     embedding=self.embeddings,
                     collection_name="dynamic_react_agent_tools",
                 )
-                logger.info(
-                    "Created vector store for tool selection using provided config"
-                )
+                logger.info("Created vector store for tool selection using provided config")
 
             except Exception as e:
                 logger.exception(f"Error creating vector store from src.config: {e}")
@@ -373,14 +360,10 @@ class DynamicReactAgent(ReactAgent):
         self._vector_store = InMemoryVectorStore(embedding=self.embeddings)
 
         # Add documents to vector store
-        for tool_id, document in zip(
-            self.tool_registry.keys(), tool_documents, strict=False
-        ):
+        for tool_id, document in zip(self.tool_registry.keys(), tool_documents, strict=False):
             self._vector_store.add_texts(
                 texts=[document.page_content],
-                metadatas=[
-                    {"tool_id": tool_id, "tool_name": document.metadata["tool_name"]}
-                ],
+                metadatas=[{"tool_id": tool_id, "tool_name": document.metadata["tool_name"]}],
             )
 
         logger.info("Initialized in-memory vector store for tool selection")
@@ -499,9 +482,7 @@ class DynamicReactAgent(ReactAgent):
                 ]
             else:
                 # Use all tools if no selection
-                selected_tools = (
-                    list(tool_registry.values()) if tool_registry else self.tools
-                )
+                selected_tools = list(tool_registry.values()) if tool_registry else self.tools
 
             # Create a mapping of tool names to actual tools
             tool_map = {tool.name: tool for tool in selected_tools}
@@ -521,9 +502,7 @@ class DynamicReactAgent(ReactAgent):
 
                         # Create a ToolMessage with the result and tool_call_id
                         tool_message = ToolMessage(
-                            content=str(tool_result),
-                            name=tool_name,
-                            tool_call_id=tool_call_id,
+                            content=str(tool_result), name=tool_name, tool_call_id=tool_call_id
                         )
 
                         # Add to results

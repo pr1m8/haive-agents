@@ -11,15 +11,12 @@ Functions:
 """
 
 import re
-from typing import Any, Literal
+from typing import Any, Literal, Optional
 
 from pydantic import Field, field_validator, model_validator
 
 from haive.agents.memory_reorganized.models.base import BaseMemoryModel
-from haive.agents.memory_reorganized.models.episodic.mixins import (
-    PerformanceMetrics,
-    TaskExecution,
-)
+from haive.agents.memory_reorganized.models.episodic.mixins import PerformanceMetrics, TaskExecution
 
 
 class EpisodicMemory(BaseMemoryModel):
@@ -33,35 +30,26 @@ class EpisodicMemory(BaseMemoryModel):
 
     # Task context
     task_execution: TaskExecution = Field(
-        default_factory=lambda: TaskExecution(task_type="unknown"),
-        description="Execution details",
+        default_factory=lambda: TaskExecution(task_type="unknown"), description="Execution details"
     )
-    performance_metrics: PerformanceMetrics = Field(
-        default_factory=lambda: PerformanceMetrics()
-    )
+    performance_metrics: PerformanceMetrics = Field(default_factory=lambda: PerformanceMetrics())
 
     # Learning data
-    user_input: str = Field(
-        ..., min_length=1, max_length=5000, description="Original user input"
+    user_input: str = Field(..., min_length=1, max_length=5000, description="Original user input")
+    agent_response: str = Field(..., min_length=1, max_length=10000, description="Agent response")
+    outcome_classification: Literal["success", "partial_success", "failure", "error"] = Field(
+        default="success", description="Outcome classification"
     )
-    agent_response: str = Field(
-        ..., min_length=1, max_length=10000, description="Agent response"
-    )
-    outcome_classification: Literal[
-        "success", "partial_success", "failure", "error"
-    ] = Field(default="success", description="Outcome classification")
 
     # Context and environment
     environmental_context: dict[str, Any] = Field(
         default_factory=dict, description="Execution environment"
     )
-    feedback_received: str | None = Field(None, description="User feedback")
-    lessons_learned: list[str] = Field(
-        default_factory=list, description="Extracted lessons"
-    )
+    feedback_received: Optional[str] = Field(None, description="User feedback")
+    lessons_learned: list[str] = Field(default_factory=list, description="Extracted lessons")
 
     # Similarity and clustering
-    similarity_cluster: str | None = Field(None, description="Similarity cluster ID")
+    similarity_cluster: Optional[str] = Field(None, description="Similarity cluster ID")
     temporal_weight: float = Field(default=1.0, description="Temporal relevance weight")
 
     @field_validator("user_input", "agent_response")
@@ -89,15 +77,11 @@ class EpisodicMemory(BaseMemoryModel):
     def validate_episodic_consistency(self) -> "EpisodicMemory":
         """Validate episodic memory consistency."""
         # Performance metrics should align with outcome
-        if (
-            self.outcome_classification == "success"
-            and self.performance_metrics.success_rate < 0.5
-        ):
+        if self.outcome_classification == "success" and self.performance_metrics.success_rate < 0.5:
             self.performance_metrics.success_rate = 0.8  # Auto-correct for consistency
 
         elif (
-            self.outcome_classification == "failure"
-            and self.performance_metrics.success_rate > 0.5
+            self.outcome_classification == "failure" and self.performance_metrics.success_rate > 0.5
         ):
             self.performance_metrics.success_rate = 0.2
 
@@ -140,9 +124,7 @@ class EpisodicMemory(BaseMemoryModel):
         # Boost for memories with explicit feedback
         feedback_boost = 0.2 if self.feedback_received else 0.0
 
-        return (
-            min(base_value + complexity_boost + feedback_boost, 1.0) * temporal_factor
-        )
+        return min(base_value + complexity_boost + feedback_boost, 1.0) * temporal_factor
 
     def calculate_temporal_relevance(self) -> float:
         """Calculate temporal relevance based on age and importance.

@@ -8,7 +8,7 @@ import asyncio
 import json
 import logging
 from datetime import datetime
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Optional, Dict, List, Union
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import HumanMessage, SystemMessage
@@ -20,14 +20,9 @@ from haive.agents.memory.core.stores import MemoryStoreManager
 from haive.agents.memory.core.types import MemoryType
 from haive.agents.memory.enhanced_retriever import (
     EnhancedMemoryRetriever as EnhancedRetriever,
-)
-from haive.agents.memory.enhanced_retriever import (
     EnhancedRetrieverConfig,
 )
-from haive.agents.memory.graph_rag_retriever import (
-    GraphRAGRetriever,
-    GraphRAGRetrieverConfig,
-)
+from haive.agents.memory.graph_rag_retriever import GraphRAGRetriever, GraphRAGRetrieverConfig
 from haive.agents.memory.kg_generator_agent import KGGeneratorAgent
 from haive.agents.simple.agent import SimpleAgent
 

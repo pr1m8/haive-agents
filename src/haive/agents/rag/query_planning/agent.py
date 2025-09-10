@@ -56,9 +56,7 @@ class SubQuery(BaseModel):
     success_criteria: str = Field(description="How to determine if successful")
 
     retrieval_strategy: str = Field(description="Suggested retrieval approach")
-    estimated_difficulty: float = Field(
-        ge=0.0, le=1.0, description="Estimated difficulty"
-    )
+    estimated_difficulty: float = Field(ge=0.0, le=1.0, description="Estimated difficulty")
 
 
 class QueryPlan(BaseModel):
@@ -71,9 +69,7 @@ class QueryPlan(BaseModel):
     # Decomposition
     sub_queries: list[SubQuery] = Field(description="Decomposed sub-queries")
     execution_order: list[str] = Field(description="Order to execute sub-queries")
-    parallel_groups: list[list[str]] = Field(
-        description="Groups that can run in parallel"
-    )
+    parallel_groups: list[list[str]] = Field(description="Groups that can run in parallel")
 
     # Strategy
     retrieval_strategy: str = Field(description="Overall retrieval strategy")
@@ -107,9 +103,7 @@ class SubQueryResult(BaseModel):
 
     # Quality metrics
     relevance_score: float = Field(ge=0.0, le=1.0, description="Relevance of results")
-    completeness_score: float = Field(
-        ge=0.0, le=1.0, description="Completeness of answer"
-    )
+    completeness_score: float = Field(ge=0.0, le=1.0, description="Completeness of answer")
 
     metadata: dict[str, Any] = Field(description="Additional metadata")
 
@@ -122,12 +116,8 @@ class QueryPlanningResult(BaseModel):
 
     # Planning analytics
     query_plan: QueryPlan = Field(description="The executed query plan")
-    plan_execution_rate: float = Field(
-        ge=0.0, le=1.0, description="How much of plan was executed"
-    )
-    plan_success_rate: float = Field(
-        ge=0.0, le=1.0, description="Success rate of sub-queries"
-    )
+    plan_execution_rate: float = Field(ge=0.0, le=1.0, description="How much of plan was executed")
+    plan_success_rate: float = Field(ge=0.0, le=1.0, description="Success rate of sub-queries")
 
     # Execution analytics
     sub_query_results: list[SubQueryResult] = Field(description="All sub-query results")
@@ -135,12 +125,8 @@ class QueryPlanningResult(BaseModel):
     total_retrievals: int = Field(description="Total documents retrieved")
 
     # Quality metrics
-    answer_confidence: float = Field(
-        ge=0.0, le=1.0, description="Confidence in final answer"
-    )
-    answer_completeness: float = Field(
-        ge=0.0, le=1.0, description="Completeness of answer"
-    )
+    answer_confidence: float = Field(ge=0.0, le=1.0, description="Confidence in final answer")
+    answer_completeness: float = Field(ge=0.0, le=1.0, description="Completeness of answer")
     synthesis_quality: float = Field(ge=0.0, le=1.0, description="Quality of synthesis")
 
     # Process insights
@@ -154,7 +140,7 @@ class QueryPlanningResult(BaseModel):
 QUERY_PLANNING_PROMPT = ChatPromptTemplate.from_messages(
     [
         (
-            """system.""",
+            """system""",
             """You are an expert query planner for RAG systems.
 
 **QUERY PLANNING PRINCIPLES:**
@@ -187,8 +173,8 @@ QUERY_PLANNING_PROMPT = ChatPromptTemplate.from_messages(
 Create comprehensive, executable query plans.""",
         ),
         (
-            """human.""",
-            """Create a query execution plan:.
+            """human""",
+            """Create a query execution plan:
 
 **Query:** {query}
 
@@ -215,7 +201,7 @@ Provide a complete, actionable query plan.""",
 SUB_QUERY_EXECUTION_PROMPT = ChatPromptTemplate.from_messages(
     [
         (
-            """system.""",
+            """system""",
             """You are an expert at executing sub-queries in a query plan.
 
 **EXECUTION PRINCIPLES:**
@@ -242,8 +228,8 @@ SUB_QUERY_EXECUTION_PROMPT = ChatPromptTemplate.from_messages(
 Execute sub-queries with precision and efficiency.""",
         ),
         (
-            """human.""",
-            """Execute this sub-query:.
+            """human""",
+            """Execute this sub-query:
 
 **Sub-Query:** {sub_query}
 
@@ -273,7 +259,7 @@ Focus on this sub-query only, not the broader context.""",
 QUERY_SYNTHESIS_PROMPT = ChatPromptTemplate.from_messages(
     [
         (
-            """system.""",
+            """system""",
             """You are an expert at synthesizing sub-query results into comprehensive answers.
 
 **SYNTHESIS PRINCIPLES:**
@@ -300,8 +286,8 @@ QUERY_SYNTHESIS_PROMPT = ChatPromptTemplate.from_messages(
 Create comprehensive, high-quality synthesized answers.""",
         ),
         (
-            """human.""",
-            """Synthesize sub-query results into final answer:.
+            """human""",
+            """Synthesize sub-query results into final answer:
 
 **Original Query:** {original_query}
 
@@ -335,9 +321,7 @@ class QueryPlanningRAGAgent(Agent):
     name: str = "Query Planning RAG Agent"
     documents: list[Document] = Field(description="Documents for retrieval")
     llm_config: LLMConfig = Field(description="LLM configuration")
-    planning_depth: int = Field(
-        default=3, description="Maximum depth of query decomposition"
-    )
+    planning_depth: int = Field(default=3, description="Maximum depth of query decomposition")
 
     # Engines for different stages (initialized in setup_agent)
     planning_engine: AugLLMConfig | None = Field(
@@ -408,10 +392,7 @@ class QueryPlanningRAGAgent(Agent):
             )
 
         return cls(
-            documents=documents,
-            llm_config=llm_config,
-            planning_depth=planning_depth,
-            **kwargs,
+            documents=documents, llm_config=llm_config, planning_depth=planning_depth, **kwargs
         )
 
     def create_query_plan(self, state: dict[str, Any]) -> dict[str, Any]:
@@ -445,16 +426,11 @@ class QueryPlanningRAGAgent(Agent):
         results_by_id = state.get("results_by_id", {})
         sub_results = state.get("sub_query_results", [])
 
-        if (
-            current_idx >= len(query_plan.execution_order)
-            or current_idx >= self.planning_depth
-        ):
+        if current_idx >= len(query_plan.execution_order) or current_idx >= self.planning_depth:
             return state  # No more sub-queries to execute
 
         query_id = query_plan.execution_order[current_idx]
-        sub_query = next(
-            (sq for sq in query_plan.sub_queries if sq.query_id == query_id), None
-        )
+        sub_query = next((sq for sq in query_plan.sub_queries if sq.query_id == query_id), None)
 
         if not sub_query:
             return {**state, "current_sub_query_idx": current_idx + 1}
@@ -514,10 +490,7 @@ class QueryPlanningRAGAgent(Agent):
         query_plan = state.get("query_plan")
         current_idx = state.get("current_sub_query_idx", 0)
 
-        if (
-            current_idx < len(query_plan.execution_order)
-            and current_idx < self.planning_depth
-        ):
+        if current_idx < len(query_plan.execution_order) and current_idx < self.planning_depth:
             return "execute_sub_query"
         return "synthesize_results"
 
@@ -554,9 +527,7 @@ class QueryPlanningRAGAgent(Agent):
             }
         )
 
-        logger.info(
-            f"Query planning completed: Confidence={planning_result.answer_confidence}"
-        )
+        logger.info(f"Query planning completed: Confidence={planning_result.answer_confidence}")
 
         return {
             "response": planning_result.final_answer,

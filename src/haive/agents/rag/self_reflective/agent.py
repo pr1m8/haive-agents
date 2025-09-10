@@ -45,21 +45,13 @@ class ReflectionCritique(BaseModel):
     strengths: list[str] = Field(description="Strong points in the answer")
 
     # Improvement suggestions
-    improvement_suggestions: list[str] = Field(
-        description="Specific improvements needed"
-    )
-    requires_more_retrieval: bool = Field(
-        description="Whether more retrieval is needed"
-    )
+    improvement_suggestions: list[str] = Field(description="Specific improvements needed")
+    requires_more_retrieval: bool = Field(description="Whether more retrieval is needed")
     requires_rephrasing: bool = Field(description="Whether rephrasing is needed")
 
     # Priority
-    improvement_priority: float = Field(
-        ge=0.0, le=1.0, description="Priority of improvements"
-    )
-    estimated_improvement: float = Field(
-        ge=0.0, le=1.0, description="Potential improvement"
-    )
+    improvement_priority: float = Field(ge=0.0, le=1.0, description="Priority of improvements")
+    estimated_improvement: float = Field(ge=0.0, le=1.0, description="Potential improvement")
 
 
 class ReflectionPlan(BaseModel):
@@ -82,9 +74,7 @@ class ReflectionPlan(BaseModel):
     improvement_strategy: str = Field(description="Strategy for improvement")
     termination_reason: str = Field(description="Reason if stopping iterations")
 
-    confidence_in_plan: float = Field(
-        ge=0.0, le=1.0, description="Confidence in improvement plan"
-    )
+    confidence_in_plan: float = Field(ge=0.0, le=1.0, description="Confidence in improvement plan")
 
 
 class ImprovedAnswer(BaseModel):
@@ -125,15 +115,11 @@ class SelfReflectiveResult(BaseModel):
 
     # Retrieval statistics
     initial_retrievals: int = Field(description="Initial retrieval count")
-    additional_retrievals: int = Field(
-        description="Additional retrievals during reflection"
-    )
+    additional_retrievals: int = Field(description="Additional retrievals during reflection")
     unique_sources_used: int = Field(description="Unique sources referenced")
 
     # Process insights
-    most_effective_improvements: list[str] = Field(
-        description="Most effective improvements"
-    )
+    most_effective_improvements: list[str] = Field(description="Most effective improvements")
     persistent_challenges: list[str] = Field(description="Challenges that remained")
     termination_reason: str = Field(description="Why reflection loop ended")
 
@@ -144,15 +130,15 @@ class SelfReflectiveResult(BaseModel):
 INITIAL_ANSWER_PROMPT = ChatPromptTemplate.from_messages(
     [
         (
-            """system.""",
+            """system""",
             """You are an expert at providing comprehensive answers using retrieved information.
 
 Generate an initial answer that will later be refined through self-reflection.
 Focus on accuracy and use of evidence, knowing that the answer will be critiqued and improved.""",
         ),
         (
-            """human.""",
-            """Answer this query using the retrieved documents:.
+            """human""",
+            """Answer this query using the retrieved documents:
 
 **Query:** {query}
 
@@ -167,7 +153,7 @@ Provide a comprehensive initial answer with clear evidence references.""",
 REFLECTION_CRITIQUE_PROMPT = ChatPromptTemplate.from_messages(
     [
         (
-            """system.""",
+            """system""",
             """You are an expert critic for RAG-generated answers.
 
 **REFLECTION FRAMEWORK:**
@@ -189,8 +175,8 @@ REFLECTION_CRITIQUE_PROMPT = ChatPromptTemplate.from_messages(
 Provide constructive, actionable critique for improvement.""",
         ),
         (
-            """human.""",
-            """Critique this answer for the given query:.
+            """human""",
+            """Critique this answer for the given query:
 
 **Original Query:** {query}
 
@@ -209,7 +195,7 @@ Analyze the answer across all dimensions and provide specific improvement guidan
 IMPROVEMENT_PLANNING_PROMPT = ChatPromptTemplate.from_messages(
     [
         (
-            """system.""",
+            """system""",
             """You are an expert at planning iterative improvements for RAG answers.
 
 **PLANNING PRINCIPLES:**
@@ -236,8 +222,8 @@ IMPROVEMENT_PLANNING_PROMPT = ChatPromptTemplate.from_messages(
 Create effective improvement plans.""",
         ),
         (
-            """human.""",
-            """Plan improvements based on reflection critiques:.
+            """human""",
+            """Plan improvements based on reflection critiques:
 
 **Query:** {query}
 
@@ -258,7 +244,7 @@ Create an improvement plan or decide to terminate with reasoning.""",
 ANSWER_IMPROVEMENT_PROMPT = ChatPromptTemplate.from_messages(
     [
         (
-            """system.""",
+            """system""",
             """You are an expert at improving RAG answers based on reflection feedback.
 
 **IMPROVEMENT PRINCIPLES:**
@@ -279,8 +265,8 @@ ANSWER_IMPROVEMENT_PROMPT = ChatPromptTemplate.from_messages(
 Create improved answers that address all feedback.""",
         ),
         (
-            """human.""",
-            """Improve this answer based on the improvement plan:.
+            """human""",
+            """Improve this answer based on the improvement plan:
 
 **Query:** {query}
 
@@ -467,9 +453,7 @@ class SelfReflectiveRAGAgent(Agent):
                     "answer": current_answer,
                     "iteration": iteration + 1,
                     "previous_critiques": str(
-                        reflection_history[-1].critiques
-                        if reflection_history
-                        else "None"
+                        reflection_history[-1].critiques if reflection_history else "None"
                     ),
                 }
             )

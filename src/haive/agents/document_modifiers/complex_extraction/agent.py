@@ -62,9 +62,7 @@ from langgraph.prebuilt import ValidationNode
 from langgraph.types import Command
 from pydantic import BaseModel
 
-from haive.agents.document_modifiers.complex_extraction.config import (
-    ComplexExtractionAgentConfig,
-)
+from haive.agents.document_modifiers.complex_extraction.config import ComplexExtractionAgentConfig
 from haive.agents.document_modifiers.complex_extraction.models import (
     PatchFunctionParameters,
     RetryStrategy,
@@ -392,11 +390,6 @@ class ComplexExtractionAgent(Agent[ComplexExtractionAgentConfig]):
             """Select final message to return."""
 
             def __init__(self, aggregator: Callable[[list], AIMessage] | None = None):
-                """  Init  .
-
-Args:
-    aggregator: [TODO: Add description]
-"""
                 self._aggregator = aggregator or default_aggregator
 
             def __call__(self, state: Any) -> dict:
@@ -828,7 +821,7 @@ Args:
             - messages: Full conversation history during extraction
             - Additional metadata from the extraction process
 
-        Examples:
+        Example:
             Basic text extraction::
 
                 agent = ComplexExtractionAgent(config)
@@ -986,6 +979,7 @@ Args:
         return [
             HumanMessage(
                 content=f"Extract {self.extraction_model.__name__} from the following:\n\n{
-                    input_data!s}"
+                    input_data!s
+                }"
             )
         ]

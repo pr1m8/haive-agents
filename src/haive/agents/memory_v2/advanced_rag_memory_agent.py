@@ -19,10 +19,7 @@ from typing import Any
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain.retrievers import EnsembleRetriever
 from langchain.retrievers.contextual_compression import ContextualCompressionRetriever
-from langchain.retrievers.document_compressors import (
-    CrossEncoderReranker,
-    LLMChainExtractor,
-)
+from langchain.retrievers.document_compressors import CrossEncoderReranker, LLMChainExtractor
 from langchain.retrievers.multi_query import MultiQueryRetriever
 from langchain_community.cross_encoders import HuggingFaceCrossEncoder
 from langchain_community.embeddings import OpenAIEmbeddings
@@ -104,7 +101,6 @@ class AdvancedRAGConfig:
     max_context_length: int = 4000
 
     def __post_init__(self):
-        """Post Init  ."""
         if self.llm_config is None:
             self.llm_config = AugLLMConfig(temperature=0.7)
 
@@ -117,11 +113,6 @@ class AdvancedRAGMemoryAgent:
     """
 
     def __init__(self, config: AdvancedRAGConfig):
-        """Init  .
-
-        Args:
-            config: [TODO: Add description]
-        """
         self.config = config
         self.logger = logger
 
@@ -160,9 +151,7 @@ class AdvancedRAGMemoryAgent:
                     f"Loaded existing vector store from {self.config.memory_store_path}"
                 )
             except Exception as e:
-                self.logger.warning(
-                    f"Could not load existing store: {e}, creating new one"
-                )
+                self.logger.warning(f"Could not load existing store: {e}, creating new one")
                 self._create_new_vector_store(embeddings)
         else:
             self._create_new_vector_store(embeddings)
@@ -258,12 +247,8 @@ class AdvancedRAGMemoryAgent:
 
         try:
             # Initialize cross-encoder for reranking
-            cross_encoder = HuggingFaceCrossEncoder(
-                model_name=self.config.reranker_model
-            )
-            reranker = CrossEncoderReranker(
-                model=cross_encoder, top_k=self.config.rerank_top_k
-            )
+            cross_encoder = HuggingFaceCrossEncoder(model_name=self.config.reranker_model)
+            reranker = CrossEncoderReranker(model=cross_encoder, top_k=self.config.rerank_top_k)
 
             self.reranking_retriever = ContextualCompressionRetriever(
                 base_compressor=reranker, base_retriever=self.ensemble_retriever
@@ -289,9 +274,7 @@ class AdvancedRAGMemoryAgent:
             )
 
         # Citation generator
-        self.citation_agent = SimpleAgent(
-            name="citation_generator", engine=self.config.llm_config
-        )
+        self.citation_agent = SimpleAgent(name="citation_generator", engine=self.config.llm_config)
 
     def analyze_query_complexity(self, query: str) -> QueryComplexity:
         """Analyze query complexity to choose optimal strategy."""
@@ -299,15 +282,9 @@ class AdvancedRAGMemoryAgent:
 
         # Count indicators of complexity
         complexity_indicators = {
-            "multi_entity": len(
-                [w for w in ["and", "or", "between", "among"] if w in query_lower]
-            ),
+            "multi_entity": len([w for w in ["and", "or", "between", "among"] if w in query_lower]),
             "temporal": len(
-                [
-                    w
-                    for w in ["when", "before", "after", "during", "since"]
-                    if w in query_lower
-                ]
+                [w for w in ["when", "before", "after", "during", "since"] if w in query_lower]
             ),
             "relational": len(
                 [
@@ -317,18 +294,10 @@ class AdvancedRAGMemoryAgent:
                 ]
             ),
             "comparative": len(
-                [
-                    w
-                    for w in ["compare", "difference", "similar", "versus"]
-                    if w in query_lower
-                ]
+                [w for w in ["compare", "difference", "similar", "versus"] if w in query_lower]
             ),
             "quantitative": len(
-                [
-                    w
-                    for w in ["how many", "count", "number", "statistics"]
-                    if w in query_lower
-                ]
+                [w for w in ["how many", "count", "number", "statistics"] if w in query_lower]
             ),
         }
 
@@ -367,10 +336,7 @@ class AdvancedRAGMemoryAgent:
         return RetrievalStrategy.CONTEXTUAL
 
     async def retrieve_documents(
-        self,
-        query: str,
-        strategy: RetrievalStrategy | None = None,
-        k: int | None = None,
+        self, query: str, strategy: RetrievalStrategy | None = None, k: int | None = None
     ) -> list[Document]:
         """Retrieve documents using specified strategy."""
         if strategy is None:
@@ -427,11 +393,6 @@ class AdvancedRAGMemoryAgent:
 
         # Sort by importance, then by original ranking
         def importance_score(doc):
-            """Importance Score.
-
-            Args:
-                doc: [TODO: Add description]
-            """
             importance = doc.metadata.get("importance", "normal")
             importance_values = {"critical": 4, "high": 3, "normal": 2, "low": 1}
             base_score = importance_values.get(importance, 2)
@@ -439,18 +400,13 @@ class AdvancedRAGMemoryAgent:
 
         # Sort by importance while maintaining relative order within importance
         # levels
-        docs_with_scores = [
-            (doc, importance_score(doc), i) for i, doc in enumerate(docs)
-        ]
+        docs_with_scores = [(doc, importance_score(doc), i) for i, doc in enumerate(docs)]
         docs_with_scores.sort(key=lambda x: (-x[1], x[2]))
 
         return [doc for doc, _, _ in docs_with_scores]
 
     async def generate_with_citations(
-        self,
-        query: str,
-        retrieved_docs: list[Document],
-        include_citations: bool | None = None,
+        self, query: str, retrieved_docs: list[Document], include_citations: bool | None = None
     ) -> dict[str, Any]:
         """Generate response with citations."""
         include_citations = include_citations or self.config.include_citations
@@ -510,10 +466,7 @@ Answer:"""
         }
 
     async def add_memory(
-        self,
-        content: str,
-        metadata: dict[str, Any] | None = None,
-        importance: str = "normal",
+        self, content: str, metadata: dict[str, Any] | None = None, importance: str = "normal"
     ) -> dict[str, Any]:
         """Add new memory to the system."""
         # Prepare metadata
@@ -557,10 +510,7 @@ Answer:"""
         }
 
     async def query_memory(
-        self,
-        query: str,
-        strategy: RetrievalStrategy | None = None,
-        include_analysis: bool = True,
+        self, query: str, strategy: RetrievalStrategy | None = None, include_analysis: bool = True
     ) -> dict[str, Any]:
         """Query memory with advanced RAG capabilities."""
         start_time = datetime.now()
@@ -741,19 +691,10 @@ async def example_advanced_rag_usage():
             "Dr. Sarah Chen published a groundbreaking paper on Graph Neural Networks in Nature 2023.",
             "high",
         ),
-        (
-            "The paper introduces a new attention mechanism for graph-structured data.",
-            "high",
-        ),
-        (
-            "Sarah works at Stanford AI Lab and collaborates with Google Research.",
-            "normal",
-        ),
+        ("The paper introduces a new attention mechanism for graph-structured data.", "high"),
+        ("Sarah works at Stanford AI Lab and collaborates with Google Research.", "normal"),
         ("Her previous work on knowledge graphs was cited over 1000 times.", "high"),
-        (
-            "I met Sarah at NeurIPS 2023 where she presented her latest findings.",
-            "normal",
-        ),
+        ("I met Sarah at NeurIPS 2023 where she presented her latest findings.", "normal"),
         ("She mentioned that graph transformers could revolutionize NLP.", "critical"),
     ]
 

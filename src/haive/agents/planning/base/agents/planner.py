@@ -4,6 +4,7 @@ This module provides the foundational planner agent with an extensive system pro
 designed for creating detailed, actionable plans with thorough analysis and reasoning.
 """
 
+from haive.agents.simple.agent_v3 import SimpleAgentV3
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import Field
@@ -258,7 +259,7 @@ Remember: Your role is to be the strategic thinking partner who transforms compl
                 ("system", "System message configured in AugLLMConfig"),
                 (
                     "human",
-                    """Please create a comprehensive, strategic plan for this objective:.
+                    """Please create a comprehensive, strategic plan for this objective:
 
 **Objective:** {objective}
 
@@ -328,9 +329,7 @@ def create_base_planner(
     )
 
 
-def create_conversation_summary_planner(
-    name: str = "conversation_planner",
-) -> BasePlannerAgent:
+def create_conversation_summary_planner(name: str = "conversation_planner") -> BasePlannerAgent:
     """Create a specialized planner for conversation summary tasks.
 
     This creates a planner specifically tuned for analyzing conversations
@@ -373,7 +372,7 @@ You are particularly expert at creating plans for conversation analysis tasks:
             ("system", "System message configured in AugLLMConfig"),
             (
                 "human",
-                """Create a comprehensive plan for analyzing and summarizing this conversation or communication:.
+                """Create a comprehensive plan for analyzing and summarizing this conversation or communication:
 
 **Analysis Objective:** {objective}
 

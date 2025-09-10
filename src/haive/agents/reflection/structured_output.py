@@ -20,9 +20,7 @@ from .models import ReflectionResult
 T = TypeVar("T", bound=BaseModel)
 
 
-def extract_structured_output(
-    agent_result: dict[str, Any], model_class: type[T]
-) -> T | None:
+def extract_structured_output(agent_result: dict[str, Any], model_class: type[T]) -> T | None:
     """Generic post-processing hook to extract structured output from agent results.
 
     Args:
@@ -109,7 +107,7 @@ Be constructive and specific in your feedback."""
                 ("system", system_prompt),
                 (
                     "human",
-                    """Please analyze and provide structured feedback on this response:.
+                    """Please analyze and provide structured feedback on this response:
 
 Original Query: {query}
 Response to Analyze: {response}
@@ -176,7 +174,7 @@ maintaining the strengths identified.""",
                 ),
                 (
                     "human",
-                    """Please improve this response based on the feedback provided:.
+                    """Please improve this response based on the feedback provided:
 
 Original Query: {query}
 Original Response: {response}
@@ -193,14 +191,10 @@ Provide an improved version of the response that addresses these issues.""",
         # Create the underlying SimpleAgent
         self.agent = SimpleAgent(
             name=name,
-            engine=AugLLMConfig(
-                prompt_template=improvement_prompt, temperature=temperature
-            ),
+            engine=AugLLMConfig(prompt_template=improvement_prompt, temperature=temperature),
         )
 
-    async def improve(
-        self, query: str, response: str, reflection: ReflectionResult
-    ) -> str:
+    async def improve(self, query: str, response: str, reflection: ReflectionResult) -> str:
         """Improve a response based on reflection feedback.
 
         Args:
@@ -293,9 +287,7 @@ class ReflectionLoop:
 
             # Apply improvements if needed
             if reflection.critique.needs_revision:
-                current_response = await self.improver.improve(
-                    query, current_response, reflection
-                )
+                current_response = await self.improver.improve(query, current_response, reflection)
             else:
                 break
 
@@ -397,19 +389,14 @@ async def example_reflection_with_improvement():
     if reflection:
         # Step 2: Apply improvements if needed
         if reflection.critique.needs_revision:
-            improved_response = await improver.improve(
-                query, original_response, reflection
-            )
+            improved_response = await improver.improve(query, original_response, reflection)
 
             # Optional: Reflect on the improvement
 
             second_reflection = await reflector.reflect(query, improved_response)
 
             if second_reflection:
-                (
-                    second_reflection.critique.overall_quality
-                    - reflection.critique.overall_quality
-                )
+                (second_reflection.critique.overall_quality - reflection.critique.overall_quality)
         else:
             pass
 

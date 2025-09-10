@@ -31,7 +31,7 @@ class ReactRAGAgent(ReactAgent):
     The routing is handled by the LLM through a special retriever tool that triggers
     the retrieval node when called.
 
-    Examples:
+    Example:
         .. code-block:: python
 
             # Create ReactRAG agent with both types of tools
@@ -123,9 +123,7 @@ class ReactRAGAgent(ReactAgent):
         )
 
     @staticmethod
-    def _create_retriever_tool(
-        retriever_config: BaseRetrieverConfig | VectorStoreConfig,
-    ) -> Tool:
+    def _create_retriever_tool(retriever_config: BaseRetrieverConfig | VectorStoreConfig) -> Tool:
         """Create a retriever tool that triggers the retrieval node.
 
         This tool doesn't actually perform retrieval - it just signals
@@ -158,9 +156,7 @@ class ReactRAGAgent(ReactAgent):
         )
 
     @classmethod
-    def from_vectorstore(
-        cls, vector_store_config: VectorStoreConfig, **kwargs
-    ) -> "ReactRAGAgent":
+    def from_vectorstore(cls, vector_store_config: VectorStoreConfig, **kwargs) -> "ReactRAGAgent":
         """Create ReactRAG agent from a vector store configuration.
 
         Args:
@@ -181,9 +177,7 @@ class ReactRAGAgent(ReactAgent):
         # Add retrieval node if we have a retriever config
         if self.retriever_config:
             # Create retrieval node using EngineNodeConfig
-            retrieval_node = EngineNodeConfig(
-                engine=self.retriever_config, name="retrieval_node"
-            )
+            retrieval_node = EngineNodeConfig(engine=self.retriever_config, name="retrieval_node")
 
             # Add the retrieval node to the graph
             graph.add_node("retrieval_node", retrieval_node)
@@ -240,9 +234,7 @@ class ReactRAGAgent(ReactAgent):
         # Otherwise route to regular tools
         return "tools" if self._needs_tool_node() else "end"
 
-    def add_retriever_tool(
-        self, retriever_config: BaseRetrieverConfig | VectorStoreConfig
-    ) -> None:
+    def add_retriever_tool(self, retriever_config: BaseRetrieverConfig | VectorStoreConfig) -> None:
         """Add or update the retriever tool and rebuild graph.
 
         Args:

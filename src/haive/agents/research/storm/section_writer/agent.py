@@ -5,11 +5,6 @@ graph = BaseGraph(name="section_writer")
 
 
 async def retrieve(inputs: dict):
-    """Retrieve.
-
-    Args:
-        inputs: [TODO: Add description]
-    """
     docs = await retriever.ainvoke(inputs["topic"] + ": " + inputs["section"])
     formatted = "\n".join(
         [
@@ -21,7 +16,5 @@ async def retrieve(inputs: dict):
 
 
 section_writer = (
-    retrieve
-    | section_writer_prompt
-    | long_context_llm.with_structured_output(WikiSection)
+    retrieve | section_writer_prompt | long_context_llm.with_structured_output(WikiSection)
 )

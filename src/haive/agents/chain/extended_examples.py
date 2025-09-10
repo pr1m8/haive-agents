@@ -50,14 +50,6 @@ def example_with_agents_and_engines() -> Any:
     rag_agent = SimpleRAGAgent.from_documents(docs, llm_config)
 
     def post_processor(s) -> Dict[str, Any]:
-        """Post Processor.
-
-        Args:
-            s: [TODO: Add description]
-
-        Returns:
-            [TODO: Add return description]
-        """
         return {"final": s.get("response", "")}
 
     # Just chain them together!
@@ -95,56 +87,22 @@ def example_with_branching() -> Any:
     """Easy branching syntax."""
 
     def classifier(s) -> Dict[str, Any]:
-        """Classifier.
-
-        Args:
-            s: [TODO: Add description]
-
-        Returns:
-            [TODO: Add return description]
-        """
         return {"type": "complex" if len(s.get("input", "")) > 50 else "simple"}
 
     def simple_processor(s) -> Dict[str, Any]:
-        """Simple Processor.
-
-        Args:
-            s: [TODO: Add description]
-
-        Returns:
-            [TODO: Add return description]
-        """
         return {"result": "Simple processing"}
 
     def complex_processor(s) -> Dict[str, Any]:
-        """Complex Processor.
-
-        Args:
-            s: [TODO: Add description]
-
-        Returns:
-            [TODO: Add return description]
-        """
         return {"result": "Complex processing"}
 
     def finalizer(s) -> Dict[str, Any]:
-        """Finalizer.
-
-        Args:
-            s: [TODO: Add description]
-
-        Returns:
-            [TODO: Add return description]
-        """
         return {"output": s.get("result", "")}
 
     # Method 1: Using branch() method
     my_chain = (
         ExtendedChainAgent.from_list([classifier])
         .branch(
-            lambda s: s.get("type", "simple"),
-            simple=simple_processor,
-            complex=complex_processor,
+            lambda s: s.get("type", "simple"), simple=simple_processor, complex=complex_processor
         )
         .add_edge("node_1->node_3")  # simple to finalizer
         .add_edge("node_2->node_3")  # complex to finalizer
@@ -167,14 +125,6 @@ def example_with_loop() -> Any:
     """Easy loop creation."""
 
     def counter(s) -> Dict[str, Any]:
-        """Counter.
-
-        Args:
-            s: [TODO: Add description]
-
-        Returns:
-            [TODO: Add return description]
-        """
         return {"count": s.get("count", 0) + 1}
 
     # Create a chain with a loop
@@ -210,14 +160,6 @@ def example_rag_router_super_simple() -> Any:
     simple_rag = SimpleRAGAgent.from_documents(docs, llm_config)
 
     def complex_rag(s) -> Dict[str, Any]:
-        """Complex Rag.
-
-        Args:
-            s: [TODO: Add description]
-
-        Returns:
-            [TODO: Add return description]
-        """
         return {"response": "Complex RAG response"}
 
     # Build the router
@@ -253,36 +195,12 @@ def example_operator_chaining() -> Any:
 
     # This would need more implementation, but shows the idea
     def input_node(s) -> Dict[str, Any]:
-        """Input Node.
-
-        Args:
-            s: [TODO: Add description]
-
-        Returns:
-            [TODO: Add return description]
-        """
         return {"data": s.get("input", "")}
 
     def process_node(s) -> Dict[str, Any]:
-        """Process Node.
-
-        Args:
-            s: [TODO: Add description]
-
-        Returns:
-            [TODO: Add return description]
-        """
         return {"processed": True}
 
     def output_node(s) -> Dict[str, Any]:
-        """Output Node.
-
-        Args:
-            s: [TODO: Add description]
-
-        Returns:
-            [TODO: Add return description]
-        """
         return {"result": "Done"}
 
     # Using >> operator
@@ -310,14 +228,6 @@ def example_mixed_indices_and_names() -> Any:
     )
 
     def processor(s) -> Dict[str, Any]:
-        """Processor.
-
-        Args:
-            s: [TODO: Add description]
-
-        Returns:
-            [TODO: Add return description]
-        """
         return {"processed": True}  # Unnamed - will be node_1
 
     my_chain = chain_with_edges(

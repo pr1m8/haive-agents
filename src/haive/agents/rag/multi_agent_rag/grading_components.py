@@ -70,7 +70,7 @@ DOCUMENT_RELEVANCE_PROMPT = ChatPromptTemplate.from_messages(
         ),
         (
             "human",
-            """Query: {query}.
+            """Query: {query}
 
 Document to evaluate:
 {document}
@@ -114,7 +114,7 @@ ANSWER_QUALITY_PROMPT = ChatPromptTemplate.from_messages(
         ),
         (
             "human",
-            """Query: {query}.
+            """Query: {query}
 
 Generated Answer:
 {answer}
@@ -157,7 +157,7 @@ Be thorough and evidence-based.""",
         ),
         (
             "human",
-            """Query: {query}.
+            """Query: {query}
 
 Source Documents:
 {source_documents}
@@ -253,7 +253,7 @@ Rank documents from most to least important for answering the query.""",
         ),
         (
             "human",
-            """Query: {query}.
+            """Query: {query}
 
 Documents to prioritize:
 {documents}
@@ -303,7 +303,7 @@ QUERY_ANALYSIS_PROMPT = ChatPromptTemplate.from_messages(
         ),
         (
             "human",
-            """Analyze this query in detail:.
+            """Analyze this query in detail:
 
 Query: {query}
 
@@ -345,11 +345,6 @@ class CompositeGradingAgent:
     """Combines multiple grading components for comprehensive evaluation."""
 
     def __init__(self) -> None:
-        """Init  .
-
-        Returns:
-            [TODO: Add return description]
-        """
         self.document_grader = create_document_grader()
         self.answer_grader = create_answer_grader()
         self.hallucination_grader = create_hallucination_grader()
@@ -403,8 +398,7 @@ class CompositeGradingAgent:
         """Calculate overall pipeline score."""
         # Average document relevance
         doc_score = (
-            sum(g.get("relevance_score", 0) for g in document_grades)
-            / len(document_grades)
+            sum(g.get("relevance_score", 0) for g in document_grades) / len(document_grades)
             if document_grades
             else 0
         )
@@ -416,8 +410,6 @@ class CompositeGradingAgent:
         hallucination_penalty = hallucination_grade.get("hallucination_score", 0)
 
         # Weighted combination
-        overall = (0.3 * doc_score + 0.5 * answer_score) * (
-            1 - 0.5 * hallucination_penalty
-        )
+        overall = (0.3 * doc_score + 0.5 * answer_score) * (1 - 0.5 * hallucination_penalty)
 
         return min(max(overall, 0.0), 1.0)

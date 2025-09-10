@@ -6,7 +6,7 @@ TASK_DECOMPOSITION_PROMPT = ChatPromptTemplate.from_messages(
     [
         (
             "system",
-            """You are an expert task decomposition specialist with deep expertise in:.
+            """You are an expert task decomposition specialist with deep expertise in:
 - Hierarchical task analysis and work breakdown structures
 - Identifying atomic actions and composite tasks
 - Dependency mapping and sequencing
@@ -42,7 +42,7 @@ IMPORTANT: Return a properly structured TaskNode object with all required fields
         ),
         (
             "human",
-            """Decompose the following task into a hierarchical structure:.
+            """Decompose the following task into a hierarchical structure:
 
 **Task Description**: {task_description}
 **Domain**: {domain}
@@ -101,7 +101,7 @@ RECURSIVE_DECOMPOSITION_PROMPT = ChatPromptTemplate.from_messages(
     [
         (
             "system",
-            """You are specializing in recursive task decomposition. You excel at:.
+            """You are specializing in recursive task decomposition. You excel at:
 - Identifying when further decomposition adds value
 - Maintaining consistency across decomposition levels
 - Preserving context from parent tasks
@@ -116,7 +116,7 @@ Key principles for recursive decomposition:
         ),
         (
             "human",
-            """Continue decomposing this subtask:.
+            """Continue decomposing this subtask:
 
 **Parent Task**: {parent_task_name}
 **Parent Context**: {parent_context}
@@ -140,7 +140,7 @@ TASK_VALIDATION_PROMPT = ChatPromptTemplate.from_messages(
     [
         (
             "system",
-            """You are a task decomposition validator. Your role is to ensure decompositions are:.
+            """You are a task decomposition validator. Your role is to ensure decompositions are:
 - Complete (cover all aspects)
 - Correct (dependencies are valid)
 - Consistent (estimates align)
@@ -149,7 +149,7 @@ TASK_VALIDATION_PROMPT = ChatPromptTemplate.from_messages(
         ),
         (
             "human",
-            """Validate this task decomposition:.
+            """Validate this task decomposition:
 
 {task_tree_summary}
 

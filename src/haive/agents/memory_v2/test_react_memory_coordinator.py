@@ -90,9 +90,7 @@ class TestReactMemoryCoordinator:
         # Add initial conversation context
         initial_messages = [
             HumanMessage("Hi, I'm Sarah, a product manager at Spotify"),
-            HumanMessage(
-                "I work on recommendation algorithms and prefer morning meetings"
-            ),
+            HumanMessage("I work on recommendation algorithms and prefer morning meetings"),
         ]
 
         batch_result = await coordinator.add_conversation_batch(initial_messages)
@@ -168,9 +166,7 @@ class TestReactMemoryCoordinator:
         await coordinator.add_conversation_batch(messages)
 
         # Request memory analysis
-        result = await coordinator.run(
-            "Can you analyze my memory patterns and give me insights?"
-        )
+        result = await coordinator.run("Can you analyze my memory patterns and give me insights?")
 
         assert "response" in result
         response_text = str(result["response"])
@@ -274,12 +270,8 @@ async def test_complete_memory_workflow():
         profile_messages = [
             HumanMessage("Hi, I'm Alex, a senior software engineer at Google"),
             HumanMessage("I specialize in distributed systems and machine learning"),
-            HumanMessage(
-                "I prefer working in small teams and love collaborative coding"
-            ),
-            HumanMessage(
-                "My current project is building a real-time recommendation engine"
-            ),
+            HumanMessage("I prefer working in small teams and love collaborative coding"),
+            HumanMessage("My current project is building a real-time recommendation engine"),
         ]
 
         await coordinator.add_conversation_batch(profile_messages)

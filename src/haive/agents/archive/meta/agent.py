@@ -20,8 +20,7 @@ class MetaAgentState(StateSchema):
 
     # Meta state for embedded agent
     meta_state: MetaStateSchema = Field(
-        default_factory=MetaStateSchema,
-        description="Meta state managing embedded agent",
+        default_factory=MetaStateSchema, description="Meta state managing embedded agent"
     )
 
     # Tracking
@@ -136,15 +135,8 @@ class MetaAgent(Agent, Generic[TAgent]):
 
         # Add a single node that executes through meta state
         def meta_execute(state: dict[str, Any]):
-            """Meta Execute.
-
-            Args:
-                state: [TODO: Add description]
-            """
             # Execute wrapped agent through meta state
-            result = self.state.meta_state.execute_agent(
-                input_data=state, update_state=True
-            )
+            result = self.state.meta_state.execute_agent(input_data=state, update_state=True)
             return result
 
         graph.add_node("execute", meta_execute)
@@ -263,10 +255,10 @@ class MetaAgent(Agent, Generic[TAgent]):
     def __repr__(self) -> str:
         """String representation."""
         wrapped = self.wrapped_agent
-        wrapped_info = (
-            f"{type(wrapped).__name__}({wrapped.name})" if wrapped else "None"
+        wrapped_info = f"{type(wrapped).__name__}({wrapped.name})" if wrapped else "None"
+        return (
+            f"MetaAgent[{wrapped_info}](name={self.name}, executions={self.state.execution_count})"
         )
-        return f"MetaAgent[{wrapped_info}](name={self.name}, executions={self.state.execution_count})"
 
 
 # Module-level convenience functions
@@ -285,9 +277,7 @@ def needs_recompilation(meta_agent: MetaAgent) -> bool:
     return meta_agent.needs_recompilation()
 
 
-def recompile(
-    meta_agent: MetaAgent, reason: str = "Manual recompilation"
-) -> dict[str, Any]:
+def recompile(meta_agent: MetaAgent, reason: str = "Manual recompilation") -> dict[str, Any]:
     """Recompile a meta agent."""
     return meta_agent.recompile(reason)
 

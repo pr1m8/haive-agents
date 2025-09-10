@@ -13,7 +13,7 @@ from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.tools import tool
 
 from haive.agents.memory_v2.react_memory_agent import ReactMemoryAgent
-from haive.agents.multi.agent import MultiAgent
+from haive.agents.multi.enhanced_multi_agent_v4 import EnhancedMultiAgentV4
 from haive.agents.react.agent import ReactAgent
 
 
@@ -43,13 +43,6 @@ class MultiReactMemorySystem:
         engine: AugLLMConfig | None = None,
         memory_base_path: str | None = None,
     ):
-        """Init  .
-
-        Args:
-            user_id: [TODO: Add description]
-            engine: [TODO: Add description]
-            memory_base_path: [TODO: Add description]
-        """
         self.user_id = user_id
         self.engine = engine or AugLLMConfig(temperature=0.7)
         self.memory_base_path = memory_base_path or f"./memories/{user_id}"
@@ -271,7 +264,7 @@ class MultiReactMemorySystem:
             name="memory_router",
             engine=self.engine,
             tools=[route_memory_query, classify_memory_for_storage],
-            system_message="""You are a memory routing specialist. Your job is to:.
+            system_message="""You are a memory routing specialist. Your job is to:
 1. Determine which memory systems should handle queries
 2. Classify new memories for appropriate storage
 3. Ensure efficient memory organization
@@ -285,9 +278,9 @@ Memory types:
 
         return router_agent
 
-    def _create_coordinator(self) -> MultiAgent:
+    def _create_coordinator(self) -> EnhancedMultiAgentV4:
         """Create coordinator multi-agent."""
-        # Convert memory agents to dict for MultiAgent
+        # Convert memory agents to dict for EnhancedMultiAgentV4
         agents_dict = {
             memory_type.value: agent.agent  # Use the underlying ReactAgent
             for memory_type, agent in self.memory_agents.items()
@@ -296,7 +289,7 @@ Memory types:
         # Add router agent
         agents_dict["router"] = self.router_agent
 
-        coordinator = MultiAgent(
+        coordinator = EnhancedMultiAgentV4(
             name="memory_coordinator",
             engine=self.engine,
             agents=agents_dict,
@@ -342,9 +335,7 @@ Memory types:
             "user_id": self.user_id,
         }
 
-    async def store_memory(
-        self, content: str, memory_type: MemoryType | None = None
-    ) -> str:
+    async def store_memory(self, content: str, memory_type: MemoryType | None = None) -> str:
         """Store a memory in the appropriate system.
 
         Args:
@@ -463,9 +454,7 @@ async def example_multi_memory_system():
     )
 
     # Query that touches multiple systems
-    await system.process_query(
-        "What am I currently working on and when did I last meet with Bob?"
-    )
+    await system.process_query("What am I currently working on and when did I last meet with Bob?")
 
     # Specific procedural query
     await system.process_query("How do I make coffee?")

@@ -12,48 +12,24 @@ class Reflection(BaseModel):
         " and general quality of the response"
     )
     score: int = Field(
-        description="Score from 0-10 on the quality of the candidate response.",
-        ge=0,
-        le=10,
+        description="Score from 0-10 on the quality of the candidate response.", ge=0, le=10
     )
     found_solution: bool = Field(
         description="Whether the response has fully solved the question or task."
     )
 
     def as_message(self) -> Any:
-        """As Message.
-
-        Returns:
-            [TODO: Add return description]
-        """
-        return HumanMessage(
-            content=f"Reasoning: {self.reflections}\nScore: {self.score}"
-        )
+        return HumanMessage(content=f"Reasoning: {self.reflections}\nScore: {self.score}")
 
     @property
     def normalized_score(self) -> float:
-        """Normalized Score.
-
-        Returns:
-            [TODO: Add return description]
-        """
         return self.score / 10.0
 
 
 class Node:
     def __init__(
-        self,
-        messages: list[BaseMessage],
-        reflection: Reflection,
-        parent: Optional["Node"] = None,
+        self, messages: list[BaseMessage], reflection: Reflection, parent: Optional["Node"] = None
     ):
-        """Init  .
-
-        Args:
-            messages: [TODO: Add description]
-            reflection: [TODO: Add description]
-            parent: [TODO: Add description]
-        """
         self.messages = messages
         self.parent = parent
         self.children = []
@@ -79,11 +55,6 @@ class Node:
 
     @property
     def is_terminal(self) -> bool:
-        """Is Terminal.
-
-        Returns:
-            [TODO: Add return description]
-        """
         return not self.children
 
     @property
@@ -121,11 +92,6 @@ class Node:
             node = node.parent
 
     def get_messages(self, include_reflections: bool = True):
-        """Get Messages.
-
-        Args:
-            include_reflections: [TODO: Add description]
-        """
         if include_reflections:
             return [*self.messages, self.reflection.as_message()]
         return self.messages
@@ -135,9 +101,7 @@ class Node:
         messages = []
         node = self
         while node:
-            messages.extend(
-                node.get_messages(include_reflections=include_reflections)[::-1]
-            )
+            messages.extend(node.get_messages(include_reflections=include_reflections)[::-1])
             node = node.parent
         # Reverse the final back-tracked trajectory to return in the correct
         # order

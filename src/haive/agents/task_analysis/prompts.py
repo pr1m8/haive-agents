@@ -28,7 +28,7 @@ Output: Return a complete ExecutionPlan with phases, join points, and resource a
         ),
         (
             "human",
-            """Analyze this task structure and create an optimal execution plan:.
+            """Analyze this task structure and create an optimal execution plan:
 
 Task Tree Summary:
 {task_tree_summary}
@@ -84,7 +84,7 @@ Output: Return a ComplexityVector with detailed scoring and factors.""",
         ),
         (
             "human",
-            """Assess the complexity of this task:.
+            """Assess the complexity of this task:
 
 Task Details:
 {task_details}
@@ -136,7 +136,7 @@ Output: Return a ContextRequirement object with detailed specifications.""",
         ),
         (
             "human",
-            """Analyze context requirements for this task:.
+            """Analyze context requirements for this task:
 
 Task: {task_description}
 Task Type: {task_type}
@@ -188,7 +188,7 @@ Output: Return a JoinPoint object with complete specifications.""",
         ),
         (
             "human",
-            """Design a join strategy for these parallel tasks:.
+            """Design a join strategy for these parallel tasks:
 
 Parallel Tasks:
 {parallel_tasks}
@@ -241,7 +241,7 @@ Output: Return a comprehensive ExecutionPlan object.""",
         ),
         (
             "human",
-            """Create an execution plan for this analyzed task:.
+            """Create an execution plan for this analyzed task:
 
 Task Analysis Summary:
 {task_analysis}

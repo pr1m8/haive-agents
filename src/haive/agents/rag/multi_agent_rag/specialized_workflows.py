@@ -46,7 +46,7 @@ class DebateRAGState(RAGState):
 
 
 class FLAREAgent(MultiAgent):
-    """Forward-Looking Active REtrieval (FLARE) - generates text while actively.
+    """Forward-Looking Active REtrieval (FLARE) - generates text while actively
     predicting when retrieval would be beneficial.
     """
 
@@ -139,10 +139,7 @@ class FLAREAgent(MultiAgent):
         ]
 
         super().__init__(
-            agents=agents,
-            execution_mode="conditional",
-            state_schema=FLAREState,
-            **kwargs,
+            agents=agents, execution_mode="conditional", state_schema=FLAREState, **kwargs
         )
 
     def build_custom_graph(self) -> Any:
@@ -152,7 +149,7 @@ class FLAREAgent(MultiAgent):
 
 
 class DynamicRAGAgent(MultiAgent):
-    """Dynamic RAG with add/remove retrievers - adapts retrieval strategy.
+    """Dynamic RAG with add/remove retrievers - adapts retrieval strategy
     based on query characteristics and retriever performance.
     """
 
@@ -240,10 +237,7 @@ class DynamicRAGAgent(MultiAgent):
         ]
 
         super().__init__(
-            agents=agents,
-            execution_mode="sequential",
-            state_schema=DynamicRAGState,
-            **kwargs,
+            agents=agents, execution_mode="sequential", state_schema=DynamicRAGState, **kwargs
         )
 
     def build_custom_graph(self) -> Any:
@@ -252,7 +246,7 @@ class DynamicRAGAgent(MultiAgent):
 
 
 class DebateRAGAgent(MultiAgent):
-    """Debate RAG - multiple agents with different perspectives debate.
+    """Debate RAG - multiple agents with different perspectives debate
     to reach a comprehensive answer through dialectical reasoning.
     """
 
@@ -351,10 +345,7 @@ class DebateRAGAgent(MultiAgent):
         self._debate_positions = debate_positions
 
         super().__init__(
-            agents=agents,
-            execution_mode="conditional",
-            state_schema=DebateRAGState,
-            **kwargs,
+            agents=agents, execution_mode="conditional", state_schema=DebateRAGState, **kwargs
         )
 
     def build_custom_graph(self) -> Any:
@@ -364,7 +355,7 @@ class DebateRAGAgent(MultiAgent):
 
 
 class AdaptiveThresholdRAGAgent(MultiAgent):
-    """Adaptive Threshold RAG - dynamically adjusts retrieval thresholds.
+    """Adaptive Threshold RAG - dynamically adjusts retrieval thresholds
     based on query difficulty and answer confidence.
     """
 
@@ -455,10 +446,7 @@ class AdaptiveThresholdRAGAgent(MultiAgent):
         ]
 
         super().__init__(
-            agents=agents,
-            execution_mode="conditional",
-            state_schema=DynamicRAGState,
-            **kwargs,
+            agents=agents, execution_mode="conditional", state_schema=DynamicRAGState, **kwargs
         )
 
     def build_custom_graph(self) -> Any:

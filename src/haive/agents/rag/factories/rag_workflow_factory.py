@@ -6,7 +6,7 @@ building complex RAG systems.
 """
 
 from collections.abc import Callable
-from typing import Any
+from typing import Any, Dict
 
 from haive.core.graph.node.callable_node import CallableNodeConfig
 from haive.core.graph.node.rag_callables import *
@@ -23,15 +23,7 @@ from haive.agents.rag.base.agent import SimpleRAGAgent
 class GenericCallableAgent(Agent):
     """Generic agent that executes a sequence of callable functions."""
 
-    def __init__(
-        self, callables: list[Callable], name: str = "Generic Callable Agent", **kwargs
-    ):
-        """Init  .
-
-        Args:
-            callables: [TODO: Add description]
-            name: [TODO: Add description]
-        """
+    def __init__(self, callables: list[Callable], name: str = "Generic Callable Agent", **kwargs):
         super().__init__(name=name, **kwargs)
         self.callables = callables
 
@@ -66,13 +58,6 @@ class ConditionalCallableAgent(Agent):
         name: str = "Conditional Callable Agent",
         **kwargs,
     ):
-        """Init  .
-
-        Args:
-            router_callable: [TODO: Add description]
-            action_callables: [TODO: Add description]
-            name: [TODO: Add description]
-        """
         super().__init__(name=name, **kwargs)
         self.router_callable = router_callable
         self.action_callables = action_callables
@@ -96,15 +81,7 @@ class ConditionalCallableAgent(Agent):
             graph.add_node(action_name, action_node)
 
         # Add conditional edges from router
-        def route_condition(state: dict[str, Any]) -> str:
-            """Route Condition.
-
-            Args:
-                state: [TODO: Add description]
-
-            Returns:
-                [TODO: Add return description]
-            """
+        def route_condition(state: Dict[str, Any]) -> str:
             next_action = getattr(state, "next_action", "complete")
             if next_action in self.action_callables:
                 return next_action
@@ -113,9 +90,7 @@ class ConditionalCallableAgent(Agent):
         destinations = {name: name for name in self.action_callables}
         destinations[END] = END
 
-        graph.add_conditional_edges(
-            "router", route_condition, destinations, default=END
-        )
+        graph.add_conditional_edges("router", route_condition, destinations, default=END)
 
         # Add edges from actions back to router (for loops)
         for action_name in self.action_callables:
@@ -134,9 +109,7 @@ def create_corrective_rag_agent(
 ) -> Agent:
     """Create a CRAG agent with web search fallback."""
     # Create base retrieval agent
-    retrieval_agent = SimpleRAGAgent.from_documents(
-        documents or [], name="CRAG Retrieval"
-    )
+    retrieval_agent = SimpleRAGAgent.from_documents(documents or [], name="CRAG Retrieval")
 
     # Create conditional agent with CRAG logic
     router_callable = rag_workflow_router
@@ -165,14 +138,6 @@ def create_self_rag_agent(
 
     # Self-RAG specific router
     def self_rag_router(input_data: dict) -> dict:
-        """Self Rag Router.
-
-        Args:
-            input_data: [TODO: Add description]
-
-        Returns:
-            [TODO: Add return description]
-        """
         state = input_data["state"]
 
         if not hasattr(state, "needs_retrieval"):
@@ -198,14 +163,6 @@ def create_self_rag_agent(
 
     # Retrieval decision function
     def retrieval_decision(input_data: dict) -> dict:
-        """Retrieval Decision.
-
-        Args:
-            input_data: [TODO: Add description]
-
-        Returns:
-            [TODO: Add return description]
-        """
         state = input_data["state"]
         query = getattr(state, "query", "").lower()
 
@@ -229,9 +186,7 @@ def create_self_rag_agent(
         }
 
     # Create retrieval agent
-    retrieval_agent = SimpleRAGAgent.from_documents(
-        documents or [], name="Self-RAG Retrieval"
-    )
+    retrieval_agent = SimpleRAGAgent.from_documents(documents or [], name="Self-RAG Retrieval")
 
     # Create conditional agent
     action_callables = {
@@ -244,15 +199,11 @@ def create_self_rag_agent(
     }
 
     self_rag_agent = ConditionalCallableAgent(
-        router_callable=self_rag_router,
-        action_callables=action_callables,
-        name="Self-RAG Logic",
+        router_callable=self_rag_router, action_callables=action_callables, name="Self-RAG Logic"
     )
 
     return SequentialAgent(
-        name=name,
-        agents=[retrieval_agent, self_rag_agent],
-        state_schema=MultiAgentRAGState,
+        name=name, agents=[retrieval_agent, self_rag_agent], state_schema=MultiAgentRAGState
     )
 
 
@@ -273,15 +224,7 @@ def create_adaptive_rag_agent(
     complex_rag = create_corrective_rag_agent(documents, "Complex RAG")
 
     # Adaptive router
-    def adaptive_router(state: dict[str, Any]) -> str:
-        """Adaptive Router.
-
-        Args:
-            state: [TODO: Add description]
-
-        Returns:
-            [TODO: Add return description]
-        """
+    def adaptive_router(state: Dict[str, Any]) -> str:
         complexity = getattr(state, "complexity", QueryComplexity.UNKNOWN)
 
         if complexity == QueryComplexity.SIMPLE:
@@ -300,11 +243,6 @@ def create_adaptive_rag_agent(
     # Create conditional multi-agent
     class AdaptiveRAGAgent(ConditionalAgent):
         def __init__(self) -> None:
-            """Init  .
-
-            Returns:
-                [TODO: Add return description]
-            """
             super().__init__(
                 name=name,
                 agents=[analyzer_agent, simple_rag, multi_query_agent, complex_rag],
@@ -336,9 +274,7 @@ def create_hyde_rag_agent(
     hyde_agent = GenericCallableAgent(callables=hyde_callables, name="HYDE Generator")
 
     # Create retrieval agent
-    retrieval_agent = SimpleRAGAgent.from_documents(
-        documents or [], name="HYDE Retrieval"
-    )
+    retrieval_agent = SimpleRAGAgent.from_documents(documents or [], name="HYDE Retrieval")
 
     return SequentialAgent(
         name=name,
@@ -363,13 +299,9 @@ def create_step_back_rag_agent(
     )
 
     # Create dual retrieval (original + step-back)
-    original_retrieval = SimpleRAGAgent.from_documents(
-        documents or [], name="Original Retrieval"
-    )
+    original_retrieval = SimpleRAGAgent.from_documents(documents or [], name="Original Retrieval")
 
-    step_back_retrieval = SimpleRAGAgent.from_documents(
-        documents or [], name="Step-Back Retrieval"
-    )
+    step_back_retrieval = SimpleRAGAgent.from_documents(documents or [], name="Step-Back Retrieval")
 
     return SequentialAgent(
         name=name,
@@ -394,9 +326,7 @@ def create_multi_query_rag_agent(
     )
 
     # Multiple retrievals could be done in parallel here
-    retrieval_agent = SimpleRAGAgent.from_documents(
-        documents or [], name="Multi-Query Retrieval"
-    )
+    retrieval_agent = SimpleRAGAgent.from_documents(documents or [], name="Multi-Query Retrieval")
 
     return SequentialAgent(
         name=name,
@@ -448,9 +378,7 @@ def create_rag_workflow(
 
     if workflow_type == "simple":
         # Create simple RAG with basic validation
-        retrieval_agent = SimpleRAGAgent.from_documents(
-            documents or [], name="Simple RAG"
-        )
+        retrieval_agent = SimpleRAGAgent.from_documents(documents or [], name="Simple RAG")
         validator_agent = GenericCallableAgent(
             callables=[response_validator], name="Response Validator"
         )
@@ -462,9 +390,7 @@ def create_rag_workflow(
 
     if workflow_type not in factory_map:
         available = [*list(factory_map.keys()), "simple"]
-        raise ValueError(
-            f"Unknown workflow type: {workflow_type}. Available: {available}"
-        )
+        raise ValueError(f"Unknown workflow type: {workflow_type}. Available: {available}")
 
     return factory_map[workflow_type](documents=documents, **kwargs)
 

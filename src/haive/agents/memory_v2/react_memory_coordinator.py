@@ -24,10 +24,7 @@ from langchain_core.tools import tool
 from pydantic import BaseModel, ConfigDict, Field
 
 from haive.agents.memory_v2.conversation_memory_agent import ConversationMemoryAgent
-from haive.agents.memory_v2.long_term_memory_agent import (
-    LongTermMemoryAgent,
-    MemoryEntry,
-)
+from haive.agents.memory_v2.long_term_memory_agent import LongTermMemoryAgent, MemoryEntry
 from haive.agents.react.agent import ReactAgent
 
 # Import our memory agents

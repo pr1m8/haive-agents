@@ -29,9 +29,7 @@ class ReactAgentState(BaseModel):
 
     max_iterations: int = Field(default=10, description="Maximum number of iterations")
 
-    is_last_step: bool = Field(
-        default=False, description="Whether this is the last step"
-    )
+    is_last_step: bool = Field(default=False, description="Whether this is the last step")
 
     # Tool tracking
     tool_results: list[dict[str, Any]] = Field(

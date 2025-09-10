@@ -496,14 +496,6 @@ def sort_documents_by_relevance_and_time(
     """
 
     def score_document(doc: TimestampedDocument) -> float:
-        """Score Document.
-
-Args:
-    doc: [TODO: Add description]
-
-Returns:
-    [TODO: Add return description]
-"""
         # Base relevance from importance
         importance_scores = {"critical": 1.0, "high": 0.8, "medium": 0.6, "low": 0.4}
 

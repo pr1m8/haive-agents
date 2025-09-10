@@ -86,7 +86,7 @@ class VectorStoreConfig(BaseModel):
 
 
 class STORMAgentConfig(SequenceAgentConfig):
-    """Configuration for the STORM agent - an orchestrator that coordinates research,.
+    """Configuration for the STORM agent - an orchestrator that coordinates research,
     interviews, and writing to generate comprehensive Wikipedia-style articles.
 
     STORM follows these stages:
@@ -113,13 +113,11 @@ class STORMAgentConfig(SequenceAgentConfig):
 
     # Knowledge storage configuration
     vector_store_config: VectorStoreConfig = Field(
-        default=None,
-        description="Configuration for the vector store used to index references",
+        default=None, description="Configuration for the vector store used to index references"
     )
 
     retriever_config: BaseRetrieverConfig = Field(
-        default=None,
-        description="Configuration for the retriever used to access references",
+        default=None, description="Configuration for the retriever used to access references"
     )
 
     # Sub-agent configurations
@@ -141,16 +139,10 @@ class STORMAgentConfig(SequenceAgentConfig):
     )
 
     max_interview_turns: int = Field(
-        default=5,
-        description="Maximum number of conversation turns per interview (M parameter)",
+        default=5, description="Maximum number of conversation turns per interview (M parameter)"
     )
 
     def __init__(self, **data) -> None:
-        """Init  .
-
-        Returns:
-            [TODO: Add return description]
-        """
         # Initialize with parent class
         super().__init__(**data)
 

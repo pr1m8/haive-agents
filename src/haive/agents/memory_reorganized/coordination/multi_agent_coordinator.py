@@ -24,10 +24,7 @@ from haive.agents.memory.agentic_rag_coordinator import (
 from haive.agents.memory.core.classifier import MemoryClassifier
 from haive.agents.memory.core.stores import MemoryStoreManager
 from haive.agents.memory.core.types import MemoryType
-from haive.agents.memory.kg_generator_agent import (
-    KGGeneratorAgent,
-    KGGeneratorAgentConfig,
-)
+from haive.agents.memory.kg_generator_agent import KGGeneratorAgent, KGGeneratorAgentConfig
 from haive.agents.simple import SimpleAgent
 
 logger = logging.getLogger(__name__)

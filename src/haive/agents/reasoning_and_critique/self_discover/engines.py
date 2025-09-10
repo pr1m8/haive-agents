@@ -309,10 +309,6 @@ def create_selfdiscover_engines(
     return {
         "select": create_select_engine(model, temperature, select_prompt, **kwargs),
         "adapt": create_adapt_engine(model, temperature, adapt_prompt, **kwargs),
-        "structure": create_structure_engine(
-            model, temperature, structure_prompt, **kwargs
-        ),
-        "reasoning": create_reasoning_engine(
-            model, temperature, reasoning_prompt, **kwargs
-        ),
+        "structure": create_structure_engine(model, temperature, structure_prompt, **kwargs),
+        "reasoning": create_reasoning_engine(model, temperature, reasoning_prompt, **kwargs),
     }

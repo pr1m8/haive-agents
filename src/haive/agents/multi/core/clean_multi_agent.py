@@ -6,7 +6,7 @@ parallel execution, and conditional workflows - all in one unified implementatio
 
 **Current Status**: This is the **default MultiAgent** exported by the multi module.
 It provides stable, production-ready multi-agent coordination. For new projects requiring
-advanced features, consider using MultiAgent.
+advanced features, consider using EnhancedMultiAgentV4.
 
 The MultiAgent class extends the base Agent class to coordinate multiple agents
 using various execution patterns. It automatically detects whether to use intelligent
@@ -23,7 +23,7 @@ Key Features:
 Examples:
     Simple sequential execution::
 
-        from haive.agents.multi.agent import MultiAgent
+        from haive.agents.multi.clean import MultiAgent
         from haive.agents.simple import SimpleAgent
 
         agent1 = SimpleAgent(name="analyzer")
@@ -153,13 +153,10 @@ class MultiAgent(Agent):
 
     # Core agent management - follows same pattern as engines
     agents: dict[str, Agent] = Field(
-        default_factory=dict,
-        description="Dictionary of agents this multi-agent coordinates",
+        default_factory=dict, description="Dictionary of agents this multi-agent coordinates"
     )
 
-    agent: Agent | None = Field(
-        default=None, description="Main/default agent for this multi-agent"
-    )
+    agent: Agent | None = Field(default=None, description="Main/default agent for this multi-agent")
 
     # Execution mode
     execution_mode: str = Field(
@@ -175,8 +172,7 @@ class MultiAgent(Agent):
 
     # Branch configuration
     branches: dict[str, dict[str, Any]] = Field(
-        default_factory=dict,
-        description="Branch configurations for conditional routing",
+        default_factory=dict, description="Branch configurations for conditional routing"
     )
 
     # Entry point for execution
@@ -289,25 +285,13 @@ class MultiAgent(Agent):
                 routes = branch_config["routes"]
 
                 def make_condition_fn(fn, route_map) -> Any:
-                    """Make Condition Fn.
-
-                    Args:
-                        fn: [TODO: Add description]
-                        route_map: [TODO: Add description]
-
-                    Returns:
-                        [TODO: Add return description]
-                    """
-
                     def condition_wrapper(state: dict[str, Any]):
                         route_key = fn(state)
                         return route_map.get(route_key, next(iter(route_map.values())))
 
                     return condition_wrapper
 
-                graph.add_conditional_edges(
-                    source, make_condition_fn(condition_fn, routes)
-                )
+                graph.add_conditional_edges(source, make_condition_fn(condition_fn, routes))
                 processed_sources.add(source)
                 has_entry_edges = True
 
@@ -392,11 +376,7 @@ class MultiAgent(Agent):
 
     @classmethod
     def create(
-        cls,
-        agents: list[Agent],
-        name: str = "multi_agent",
-        execution_mode: str = "infer",
-        **kwargs,
+        cls, agents: list[Agent], name: str = "multi_agent", execution_mode: str = "infer", **kwargs
     ) -> MultiAgent:
         """Create a multi-agent from a list of agents.
 
@@ -497,9 +477,7 @@ class MultiAgent(Agent):
             "type": "conditional",
         }
 
-    def add_parallel_group(
-        self, agent_names: list[str], next_agent: str | None = None
-    ) -> None:
+    def add_parallel_group(self, agent_names: list[str], next_agent: str | None = None) -> None:
         """Add a group of agents that run in parallel.
 
         This method configures a set of agents to execute in parallel, with
@@ -595,9 +573,7 @@ class MultiAgent(Agent):
 
         self.agents = ordered_agents
 
-    def add_conditional_edges(
-        self, source: str, path: Callable[[dict[str, Any]], str]
-    ) -> None:
+    def add_conditional_edges(self, source: str, path: Callable[[dict[str, Any]], str]) -> None:
         """Add conditional edges for backward compatibility with examples.
 
         This method provides compatibility with existing examples that use
@@ -630,14 +606,6 @@ class MultiAgent(Agent):
 
         # Create a wrapper that ensures valid agent names
         def safe_path_wrapper(state: dict[str, Any]) -> str:
-            """Safe Path Wrapper.
-
-            Args:
-                state: [TODO: Add description]
-
-            Returns:
-                [TODO: Add return description]
-            """
             target = path(state)
             if target not in self.agents:
                 # Fallback to first available agent if target not found

@@ -25,19 +25,6 @@ from haive.agents.reflection.message_transformer import (
     create_reflection_context_transformer,
     create_reflection_message_flow,
 )
-from haive.agents.reflection.models import (  # Add new models
-    Critique,
-    ExpertiseConfig,
-    GradingResult,
-    Improvement,
-    ImprovementSuggestion,
-    QualityScore,
-    ReflectionConfig,
-    ReflectionOutput,
-    ReflectionResult,
-    to_prompt,
-    validate_grade_matches_score,
-)
 from haive.agents.reflection.prompts import (
     create_expert_prompt,
     create_grading_prompt,
@@ -63,6 +50,20 @@ from haive.agents.reflection.structured_output import (
 from haive.agents.reflection.structured_output import (
     create_reflection_loop,
     extract_structured_output,
+)
+
+from haive.agents.reflection.models import (  # Add new models
+    Critique,
+    ExpertiseConfig,
+    GradingResult,
+    Improvement,
+    ImprovementSuggestion,
+    QualityScore,
+    ReflectionConfig,
+    ReflectionOutput,
+    ReflectionResult,
+    to_prompt,
+    validate_grade_matches_score,
 )
 
 # Existing reflection patterns

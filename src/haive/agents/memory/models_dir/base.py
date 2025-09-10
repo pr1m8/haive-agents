@@ -2,37 +2,29 @@ import re
 from datetime import datetime
 from typing import Literal
 from uuid import UUID, uuid4
-
 from pydantic import BaseModel, Field, field_validator, model_validator
+from haive.agents.memory.models_dir.meta import MemoryValidationMeta
 
 
 class BaseMemoryModel(BaseModel):
-    """Enhanced base memory model with sophisticated validation patterns.
+    """Enhanced base memory model with sophisticated validation patterns
     and automatic metadata management.
     """
 
-    memory_id: UUID = Field(
-        default_factory=uuid4, description="Unique memory identifier"
-    )
-    created_at: datetime = Field(
-        default_factory=datetime.now, description="Creation timestamp"
-    )
+    memory_id: UUID = Field(default_factory=uuid4, description="Unique memory identifier")
+    created_at: datetime = Field(default_factory=datetime.now, description="Creation timestamp")
     last_accessed: datetime = Field(
         default_factory=datetime.now, description="Last access timestamp"
     )
     access_count: int = Field(default=0, ge=0, description="Number of times accessed")
     expires_at: datetime | None = Field(None, description="Expiration timestamp")
     is_archived: bool = Field(default=False, description="Archive status")
-    priority_level: int = Field(
-        default=1, ge=1, le=10, description="Memory priority (1-10)"
-    )
+    priority_level: int = Field(default=1, ge=1, le=10, description="Memory priority (1-10)")
     checksum: str | None = Field(None, description="Data integrity checksum")
     validation_status: Literal["pending", "validated", "invalid", "expired"] = Field(
         default="pending"
     )
-    tags: list[str] = Field(
-        default_factory=list, description="Memory classification tags"
-    )
+    tags: list[str] = Field(default_factory=list, description="Memory classification tags")
     relationships: dict[str, list[UUID]] = Field(
         default_factory=dict, description="Related memory IDs"
     )

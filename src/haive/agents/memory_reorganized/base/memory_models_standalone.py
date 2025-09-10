@@ -6,13 +6,14 @@ designed to be standalone without heavy dependencies to avoid circular imports.
 
 from __future__ import annotations
 
+import json
 import logging
 from datetime import datetime
 from enum import Enum
-from typing import Any
+from typing import Any, Dict, List, Optional, Union
 from uuid import uuid4
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 
 logger = logging.getLogger(__name__)
 
@@ -44,10 +45,8 @@ class KnowledgeTriple(BaseModel):
     subject: str = Field(..., description="Subject entity")
     predicate: str = Field(..., description="Relationship/predicate")
     object: str = Field(..., description="Object entity")
-    confidence: float = Field(
-        default=1.0, ge=0.0, le=1.0, description="Confidence score"
-    )
-    source: str | None = Field(default=None, description="Source of this knowledge")
+    confidence: float = Field(default=1.0, ge=0.0, le=1.0, description="Confidence score")
+    source: Optional[str] = Field(default=None, description="Source of this knowledge")
     timestamp: datetime = Field(
         default_factory=datetime.now, description="When this triple was created"
     )
@@ -56,7 +55,7 @@ class KnowledgeTriple(BaseModel):
         """Convert triple to readable string."""
         return f"{self.subject} {self.predicate} {self.object}"
 
-    def to_dict(self) -> dict[str, Any]:
+    def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary for storage."""
         return {
             "subject": self.subject,
@@ -68,7 +67,7 @@ class KnowledgeTriple(BaseModel):
         }
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> KnowledgeTriple:
+    def from_dict(cls, data: Dict[str, Any]) -> "KnowledgeTriple":
         """Create from dictionary."""
         if isinstance(data.get("timestamp"), str):
             data["timestamp"] = datetime.fromisoformat(data["timestamp"])
@@ -78,38 +77,28 @@ class KnowledgeTriple(BaseModel):
 class MemoryItem(BaseModel):
     """Basic memory item with core attributes."""
 
-    id: str = Field(
-        default_factory=lambda: str(uuid4()), description="Unique memory ID"
-    )
+    id: str = Field(default_factory=lambda: str(uuid4()), description="Unique memory ID")
     content: str = Field(..., description="Memory content/text")
-    memory_type: MemoryType = Field(
-        default=MemoryType.SEMANTIC, description="Type of memory"
-    )
+    memory_type: MemoryType = Field(default=MemoryType.SEMANTIC, description="Type of memory")
     importance: ImportanceLevel = Field(
         default=ImportanceLevel.MEDIUM, description="Importance level"
     )
-    timestamp: datetime = Field(
-        default_factory=datetime.now, description="When memory was created"
-    )
-    last_accessed: datetime = Field(
-        default_factory=datetime.now, description="Last access time"
-    )
+    timestamp: datetime = Field(default_factory=datetime.now, description="When memory was created")
+    last_accessed: datetime = Field(default_factory=datetime.now, description="Last access time")
     access_count: int = Field(default=0, description="Number of times accessed")
-    tags: list[str] = Field(default_factory=list, description="Memory tags")
-    metadata: dict[str, Any] = Field(
-        default_factory=dict, description="Additional metadata"
-    )
+    tags: List[str] = Field(default_factory=list, description="Memory tags")
+    metadata: Dict[str, Any] = Field(default_factory=dict, description="Additional metadata")
 
     # Knowledge graph fields
-    entities: list[str] = Field(default_factory=list, description="Extracted entities")
-    relations: list[KnowledgeTriple] = Field(
+    entities: List[str] = Field(default_factory=list, description="Extracted entities")
+    relations: List[KnowledgeTriple] = Field(
         default_factory=list, description="Knowledge relations"
     )
 
     # Context fields
-    context_id: str | None = Field(default=None, description="Context/session ID")
-    user_id: str | None = Field(default=None, description="Associated user ID")
-    source: str | None = Field(default=None, description="Source of memory")
+    context_id: Optional[str] = Field(default=None, description="Context/session ID")
+    user_id: Optional[str] = Field(default=None, description="Associated user ID")
+    source: Optional[str] = Field(default=None, description="Source of memory")
 
     @field_validator("content")
     @classmethod
@@ -121,7 +110,7 @@ class MemoryItem(BaseModel):
 
     @field_validator("tags")
     @classmethod
-    def validate_tags(cls, v: list[str]) -> list[str]:
+    def validate_tags(cls, v: List[str]) -> List[str]:
         """Validate and normalize tags."""
         return [tag.lower().strip() for tag in v if tag and tag.strip()]
 
@@ -155,7 +144,7 @@ class MemoryItem(BaseModel):
         if relation not in self.relations:
             self.relations.append(relation)
 
-    def to_dict(self) -> dict[str, Any]:
+    def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary for storage."""
         return {
             "id": self.id,
@@ -175,7 +164,7 @@ class MemoryItem(BaseModel):
         }
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> MemoryItem:
+    def from_dict(cls, data: Dict[str, Any]) -> "MemoryItem":
         """Create from dictionary."""
         # Handle datetime conversion
         for field in ["timestamp", "last_accessed"]:
@@ -202,39 +191,27 @@ class EnhancedMemoryItem(MemoryItem):
     """Enhanced memory item with additional capabilities."""
 
     # Enhanced scoring and ranking
-    relevance_score: float = Field(
-        default=0.0, ge=0.0, le=1.0, description="Relevance score"
-    )
-    quality_score: float = Field(
-        default=0.0, ge=0.0, le=1.0, description="Quality score"
-    )
-    embedding: list[float] | None = Field(default=None, description="Vector embedding")
+    relevance_score: float = Field(default=0.0, ge=0.0, le=1.0, description="Relevance score")
+    quality_score: float = Field(default=0.0, ge=0.0, le=1.0, description="Quality score")
+    embedding: Optional[List[float]] = Field(default=None, description="Vector embedding")
 
     # Enhanced relationships
-    related_memories: list[str] = Field(
-        default_factory=list, description="Related memory IDs"
-    )
-    parent_memory: str | None = Field(default=None, description="Parent memory ID")
-    child_memories: list[str] = Field(
-        default_factory=list, description="Child memory IDs"
-    )
+    related_memories: List[str] = Field(default_factory=list, description="Related memory IDs")
+    parent_memory: Optional[str] = Field(default=None, description="Parent memory ID")
+    child_memories: List[str] = Field(default_factory=list, description="Child memory IDs")
 
     # Enhanced processing
     processing_status: str = Field(default="raw", description="Processing status")
-    extracted_facts: list[str] = Field(
-        default_factory=list, description="Extracted facts"
-    )
-    sentiment: str | None = Field(default=None, description="Sentiment analysis")
-    summary: str | None = Field(default=None, description="Memory summary")
+    extracted_facts: List[str] = Field(default_factory=list, description="Extracted facts")
+    sentiment: Optional[str] = Field(default=None, description="Sentiment analysis")
+    summary: Optional[str] = Field(default=None, description="Memory summary")
 
     # Enhanced retrieval
-    retrieval_contexts: list[str] = Field(
+    retrieval_contexts: List[str] = Field(
         default_factory=list, description="Contexts where retrieved"
     )
     retrieval_count: int = Field(default=0, description="Number of retrievals")
-    last_retrieved: datetime | None = Field(
-        default=None, description="Last retrieval time"
-    )
+    last_retrieved: Optional[datetime] = Field(default=None, description="Last retrieval time")
 
     def update_retrieval(self, context: str = "") -> None:
         """Update retrieval tracking."""
@@ -304,7 +281,7 @@ class EnhancedMemoryItem(MemoryItem):
         if fact and fact not in self.extracted_facts:
             self.extracted_facts.append(fact)
 
-    def to_dict(self) -> dict[str, Any]:
+    def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary including enhanced fields."""
         base_dict = super().to_dict()
         enhanced_dict = {
@@ -320,15 +297,13 @@ class EnhancedMemoryItem(MemoryItem):
             "summary": self.summary,
             "retrieval_contexts": self.retrieval_contexts,
             "retrieval_count": self.retrieval_count,
-            "last_retrieved": (
-                self.last_retrieved.isoformat() if self.last_retrieved else None
-            ),
+            "last_retrieved": self.last_retrieved.isoformat() if self.last_retrieved else None,
         }
         base_dict.update(enhanced_dict)
         return base_dict
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> EnhancedMemoryItem:
+    def from_dict(cls, data: Dict[str, Any]) -> "EnhancedMemoryItem":
         """Create from dictionary."""
         # Handle last_retrieved datetime conversion
         if isinstance(data.get("last_retrieved"), str):
@@ -339,7 +314,7 @@ class EnhancedMemoryItem(MemoryItem):
         return cls(**base_data)
 
     @classmethod
-    def from_memory_item(cls, memory_item: MemoryItem) -> EnhancedMemoryItem:
+    def from_memory_item(cls, memory_item: MemoryItem) -> "EnhancedMemoryItem":
         """Create enhanced memory from basic memory item."""
         return cls(**memory_item.model_dump())
 
@@ -351,13 +326,14 @@ def create_memory_item(
     content: str,
     memory_type: MemoryType = MemoryType.SEMANTIC,
     importance: ImportanceLevel = ImportanceLevel.MEDIUM,
-    tags: list[str] | None = None,
-    context_id: str | None = None,
-    user_id: str | None = None,
-    source: str | None = None,
+    tags: Optional[List[str]] = None,
+    context_id: Optional[str] = None,
+    user_id: Optional[str] = None,
+    source: Optional[str] = None,
     enhanced: bool = False,
-) -> MemoryItem | EnhancedMemoryItem:
+) -> Union[MemoryItem, EnhancedMemoryItem]:
     """Create a memory item with the specified parameters."""
+
     kwargs = {
         "content": content,
         "memory_type": memory_type,
@@ -370,27 +346,20 @@ def create_memory_item(
 
     if enhanced:
         return EnhancedMemoryItem(**kwargs)
-    return MemoryItem(**kwargs)
+    else:
+        return MemoryItem(**kwargs)
 
 
 def create_knowledge_triple(
-    subject: str,
-    predicate: str,
-    object: str,
-    confidence: float = 1.0,
-    source: str | None = None,
+    subject: str, predicate: str, object: str, confidence: float = 1.0, source: Optional[str] = None
 ) -> KnowledgeTriple:
     """Create a knowledge triple."""
     return KnowledgeTriple(
-        subject=subject,
-        predicate=predicate,
-        object=object,
-        confidence=confidence,
-        source=source,
+        subject=subject, predicate=predicate, object=object, confidence=confidence, source=source
     )
 
 
-def merge_memory_items(items: list[MemoryItem]) -> EnhancedMemoryItem:
+def merge_memory_items(items: List[MemoryItem]) -> EnhancedMemoryItem:
     """Merge multiple memory items into one enhanced memory item."""
     if not items:
         raise ValueError("Cannot merge empty list of memory items")
@@ -436,12 +405,12 @@ def merge_memory_items(items: list[MemoryItem]) -> EnhancedMemoryItem:
 
 # Export all public classes and functions
 __all__ = [
-    "EnhancedMemoryItem",
-    "ImportanceLevel",
-    "KnowledgeTriple",
     "MemoryItem",
+    "EnhancedMemoryItem",
+    "KnowledgeTriple",
+    "ImportanceLevel",
     "MemoryType",
-    "create_knowledge_triple",
     "create_memory_item",
+    "create_knowledge_triple",
     "merge_memory_items",
 ]

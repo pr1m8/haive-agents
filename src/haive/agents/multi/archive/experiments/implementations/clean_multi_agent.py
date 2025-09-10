@@ -10,14 +10,12 @@ This module provides a clean multi-agent system that:
 
 import logging
 from typing import Any, Literal
-
 from haive.core.graph.node.agent_node_v3 import AgentNodeV3Config
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.schema.state_schema import StateSchema
 from langgraph.graph import END, START
 from pydantic import Field, PrivateAttr, model_validator
 from typing_extensions import TypedDict
-
 from haive.agents.base.agent import Agent
 
 logger = logging.getLogger(__name__)
@@ -53,7 +51,7 @@ class MultiAgent(Agent):
     - Supports both list and dict agent specifications
     - Maintains type safety without schema flattening
 
-    Examples:
+    Example:
         Sequential execution::
 
             multi = MultiAgent(
@@ -163,8 +161,7 @@ class MultiAgent(Agent):
         for i, agent_name in enumerate(self._agent_order[:-1]):
             node_name = f"agent_{agent_name}"
             route_map = {
-                next_agent: f"agent_{next_agent}"
-                for next_agent in self._agent_order[i + 1 :]
+                next_agent: f"agent_{next_agent}" for next_agent in self._agent_order[i + 1 :]
             }
             route_map[END] = END
             graph.add_conditional_edges(node_name, self.routing_function, route_map)
@@ -195,7 +192,7 @@ class MultiAgent(Agent):
 class SequentialAgent(MultiAgent):
     """Sequential multi-agent execution.
 
-    Examples:
+    Example:
         agent = SequentialAgent([react_agent, simple_agent])
     """
 
@@ -209,7 +206,7 @@ class SequentialAgent(MultiAgent):
 class ConditionalAgent(MultiAgent):
     """Conditional routing multi-agent.
 
-    Examples:
+    Example:
         agent = ConditionalAgent(
             agents={"analyzer": analyzer, "synthesizer": synthesizer},
             routing_function=my_router
@@ -221,8 +218,5 @@ class ConditionalAgent(MultiAgent):
     def __init__(self, agents: dict[str, Agent], routing_function: Any, **kwargs):
         """Initialize with agents dict and routing function."""
         super().__init__(
-            agents=agents,
-            mode="conditional",
-            routing_function=routing_function,
-            **kwargs,
+            agents=agents, mode="conditional", routing_function=routing_function, **kwargs
         )

@@ -104,10 +104,7 @@ def execute_tool_calls(state: LATSState) -> dict[str, Any] | list[Send]:
         if node and node.action and not node.tool_response:
             # Send to tool node
             sends.append(
-                Send(
-                    "tool_node",
-                    {**state.dict(), "messages": [{"tool_calls": [node.action]}]},
-                )
+                Send("tool_node", {**state.dict(), "messages": [{"tool_calls": [node.action]}]})
             )
 
     # Check candidate nodes
@@ -216,9 +213,7 @@ def process_reflection(state: LATSState) -> dict[str, Any]:
             node.is_solved = reflection.found_solution
 
             # Backpropagate score
-            updated_nodes = backpropagate(
-                state.nodes, node.id, reflection.normalized_score
-            )
+            updated_nodes = backpropagate(state.nodes, node.id, reflection.normalized_score)
 
             # Check for best solution
             best_id = state.best_solution_id
@@ -236,9 +231,7 @@ def process_reflection(state: LATSState) -> dict[str, Any]:
     return {}
 
 
-def backpropagate(
-    nodes: dict[str, TreeNode], node_id: str, reward: float
-) -> dict[str, TreeNode]:
+def backpropagate(nodes: dict[str, TreeNode], node_id: str, reward: float) -> dict[str, TreeNode]:
     """Backpropagate reward up the tree."""
     updated = {}
     current_id = node_id
@@ -291,11 +284,7 @@ def should_continue_search(state: LATSState) -> str:
 
 # Create LATS system
 def create_lats(
-    tools: list[Any],
-    max_depth: int = 5,
-    max_rollouts: int = 10,
-    n_candidates: int = 5,
-    **kwargs,
+    tools: list[Any], max_depth: int = 5, max_rollouts: int = 10, n_candidates: int = 5, **kwargs
 ) -> MultiAgentBase:
     """Create a Language Agent Tree Search system."""
     # Create tool node with provided tools
@@ -303,18 +292,12 @@ def create_lats(
 
     branches = [
         # Initial response flow
-        (
-            initial_agent,
-            lambda s: "process_initial",
-            {"process_initial": "process_initial"},
-        ),
+        (initial_agent, lambda s: "process_initial", {"process_initial": "process_initial"}),
         ("process_initial", lambda s: "reflector", {"reflector": reflection_agent}),
         # After reflection of initial response
         (
             reflection_agent,
-            lambda s: (
-                "selector" if s.current_node_id == s.root_id else "process_reflection"
-            ),
+            lambda s: ("selector" if s.current_node_id == s.root_id else "process_reflection"),
             {"selector": selection_agent, "process_reflection": "process_reflection"},
         ),
         # Selection leads to expansion
@@ -344,11 +327,7 @@ def create_lats(
             {"reflector": reflection_agent, "selector": selection_agent},
         ),
         # After processing reflections
-        (
-            "process_reflection",
-            should_continue_search,
-            {"selector": selection_agent, END: END},
-        ),
+        ("process_reflection", should_continue_search, {"selector": selection_agent, END: END}),
     ]
 
     workflow_nodes = {

@@ -1,8 +1,6 @@
 """Self-Discover Structurer Agent module."""
 
-from haive.agents.reasoning_and_critique.self_discover.structurer.agent import (
-    StructurerAgent,
-)
+from haive.agents.reasoning_and_critique.self_discover.structurer.agent import StructurerAgent
 from haive.agents.reasoning_and_critique.self_discover.structurer.models import (
     ReasoningStep,
     ReasoningStructure,

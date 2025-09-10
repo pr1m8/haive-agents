@@ -6,7 +6,7 @@ collections with specialized variants like BranchingMultiAgent and AdaptiveBranc
 
 For production use, consider:
 - **MultiAgent** (default): Stable production implementation
-- **MultiAgent**: Recommended for new projects
+- **EnhancedMultiAgentV4**: Recommended for new projects
 - **EnhancedMultiAgent** (V3): For generic typing with more features
 
 This implementation explores the pattern: MultiAgent[AgentsT] where AgentsT
@@ -15,7 +15,7 @@ for agent collections.
 """
 
 import logging
-from typing import Any, Generic, Literal, TypedDict, TypeVar
+from typing import Any, Generic, Literal, TypedDict, TypeVar, List
 
 from haive.core.graph.node.agent_node_v3 import AgentNodeV3Config
 from haive.core.graph.node.engine_node import EngineNodeConfig
@@ -26,7 +26,7 @@ from pydantic import Field, field_validator
 from haive.agents.simple.enhanced_simple_real import EnhancedAgentBase
 
 # Import base enhanced agent when available
-# from haive.agents.base.agent import Agent
+# from haive.agents.base.enhanced_agent import Agent
 # For now, use our working base class
 
 # Define Agent as alias to avoid import issues
@@ -216,9 +216,7 @@ class BranchingMultiAgent(MultiAgent[dict[str, Agent]]):
             return next(iter(self.agents.keys()))
 
         # Add conditional edges from router
-        graph.add_conditional_edges(
-            "router", route_condition, {name: name for name in self.agents}
-        )
+        graph.add_conditional_edges("router", route_condition, {name: name for name in self.agents})
 
         return graph
 
@@ -282,9 +280,7 @@ class AdaptiveBranchingMultiAgent(BranchingMultiAgent):
         default=0.1, ge=0.0, le=1.0, description="How quickly to adapt routing"
     )
 
-    def update_performance(
-        self, agent_name: str, success: bool, duration: float
-    ) -> None:
+    def update_performance(self, agent_name: str, success: bool, duration: float) -> None:
         """Update agent performance metrics."""
         if agent_name not in self.agent_performance:
             self.agent_performance[agent_name] = {

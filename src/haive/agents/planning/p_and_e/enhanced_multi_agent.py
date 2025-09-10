@@ -88,9 +88,7 @@ class EnhancedMultiAgent(MultiAgent):
 class PlanAndExecuteMultiAgent(EnhancedMultiAgent):
     """Plan and Execute multi-agent using enhanced base."""
 
-    def __init__(
-        self, agents: list[Any], state_schema: type[StateSchema] | None = None, **kwargs
-    ):
+    def __init__(self, agents: list[Any], state_schema: type[StateSchema] | None = None, **kwargs):
         """Initialize Plan and Execute multi-agent.
 
         Args:
@@ -167,9 +165,7 @@ class PlanAndExecuteMultiAgent(EnhancedMultiAgent):
         # Conditional routing after execution
         branch_config = self.branches["process_execution"]
         graph.add_conditional_edges(
-            "process_execution",
-            branch_config["condition"],
-            branch_config["destinations"],
+            "process_execution", branch_config["condition"], branch_config["destinations"]
         )
 
         # Replan workflow

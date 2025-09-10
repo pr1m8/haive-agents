@@ -51,8 +51,7 @@ class StructuredOutputAgent(SimpleAgent):
     )
 
     include_original_input: bool = Field(
-        default=True,
-        description="Include original task/input in processing for context",
+        default=True, description="Include original task/input in processing for context"
     )
 
     fallback_on_error: bool = Field(
@@ -210,10 +209,7 @@ Remember: Output must be valid JSON matching one of the provided schemas."""
 
     @classmethod
     def create_reflection_processor(
-        cls,
-        reflection_models: list[type[BaseModel]],
-        name: str = "reflection_processor",
-        **kwargs,
+        cls, reflection_models: list[type[BaseModel]], name: str = "reflection_processor", **kwargs
     ) -> "StructuredOutputAgent":
         """Create a processor specifically for reflection patterns.
 
@@ -251,10 +247,7 @@ Output must be valid JSON matching one of the reflection schemas."""
 
     @classmethod
     def create_validation_processor(
-        cls,
-        validation_models: list[type[BaseModel]],
-        name: str = "validation_processor",
-        **kwargs,
+        cls, validation_models: list[type[BaseModel]], name: str = "validation_processor", **kwargs
     ) -> "StructuredOutputAgent":
         """Create a processor for validation patterns.
 

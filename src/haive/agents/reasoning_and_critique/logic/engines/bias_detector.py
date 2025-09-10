@@ -167,10 +167,7 @@ Overall assessment:
 - Do they all point one direction?
 - What's the cumulative impact?""",
         ),
-        (
-            "human",
-            "Analyze this reasoning chain for biases and fallacies:\n{reasoning_chain}",
-        ),
+        ("human", "Analyze this reasoning chain for biases and fallacies:\n{reasoning_chain}"),
         MessagesPlaceholder(variable_name="messages", optional=True),
     ]
 )

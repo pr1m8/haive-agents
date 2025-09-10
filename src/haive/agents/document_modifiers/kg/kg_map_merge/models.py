@@ -1,5 +1,4 @@
 from typing import Any
-
 from langchain_community.graphs.graph_document import Node, Relationship
 from pydantic import BaseModel, Field, model_validator
 
@@ -109,7 +108,7 @@ class KnowledgeGraph(BaseModel):
         Args:
             node (EntityNode): Node to add
         """
-        if not any(existing.id == node.id for existing in self.nodes):
+        if not any((existing.id == node.id for existing in self.nodes)):
             self.nodes.append(node)
 
     def add_relationship(self, relationship: EntityRelationship):
@@ -119,10 +118,12 @@ class KnowledgeGraph(BaseModel):
             relationship (EntityRelationship): Relationship to add
         """
         if not any(
-            existing.source == relationship.source
-            and existing.target == relationship.target
-            and (existing.type == relationship.type)
-            for existing in self.relationships
+            (
+                existing.source == relationship.source
+                and existing.target == relationship.target
+                and (existing.type == relationship.type)
+                for existing in self.relationships
+            )
         ):
             self.relationships.append(relationship)
 
@@ -139,11 +140,6 @@ class KnowledgeGraph(BaseModel):
 
 
 def main() -> None:
-    """Main.
-
-    Returns:
-        [TODO: Add return description]
-    """
     person_node = EntityNode(
         id="marie_curie",
         type="Scientist",
@@ -154,9 +150,7 @@ def main() -> None:
         },
     )
     country_node = EntityNode(
-        id="poland",
-        type="Country",
-        properties={"name": "Poland", "continent": "Europe"},
+        id="poland", type="Country", properties={"name": "Poland", "continent": "Europe"}
     )
     relationship = EntityRelationship(
         source="marie_curie",

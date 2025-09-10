@@ -54,18 +54,15 @@ Examples:
 """
 
 from __future__ import annotations
-
 import asyncio
 import logging
 import time
 from typing import Any
-
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.engine.retriever import BaseRetrieverConfig
 from haive.core.engine.vectorstore import VectorStoreConfig
 from langchain_core.documents import Document
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
-
 from haive.agents.rag.base.agent import BaseRAGAgent
 from haive.agents.simple.agent import SimpleAgent
 
@@ -87,25 +84,18 @@ class RAGResponse(BaseModel):
         arbitrary_types_allowed=True,
     )
     query: str = Field(..., min_length=1, description="Original user query")
-    answer: str = Field(
-        ..., min_length=1, description="Generated answer to the user's query"
-    )
+    answer: str = Field(..., min_length=1, description="Generated answer to the user's query")
     sources: list[str] = Field(
-        default_factory=list,
-        description="List of source document identifiers or filenames",
+        default_factory=list, description="List of source document identifiers or filenames"
     )
     retrieved_documents: list[Document] = Field(
         default_factory=list, description="Full retrieved documents used for generation"
     )
     confidence_score: float = Field(
-        default=0.5,
-        ge=0.0,
-        le=1.0,
-        description="Confidence in answer quality (0.0=low, 1.0=high)",
+        default=0.5, ge=0.0, le=1.0, description="Confidence in answer quality (0.0=low, 1.0=high)"
     )
     retrieval_metadata: dict[str, Any] = Field(
-        default_factory=dict,
-        description="Metadata about the retrieval and generation process",
+        default_factory=dict, description="Metadata about the retrieval and generation process"
     )
 
 
@@ -163,29 +153,17 @@ class SimpleRAG(BaseModel):
         extra="forbid",
     )
     name: str = Field(
-        default="Simple RAG Agent",
-        min_length=1,
-        max_length=100,
-        description="Agent identifier",
+        default="Simple RAG Agent", min_length=1, max_length=100, description="Agent identifier"
     )
     retriever_config: BaseRetrieverConfig | VectorStoreConfig = Field(
-        ...,
-        description="Configuration for document retrieval (vector store or retriever)",
+        ..., description="Configuration for document retrieval (vector store or retriever)"
     )
-    llm_config: AugLLMConfig = Field(
-        ..., description="Configuration for answer generation LLM"
-    )
+    llm_config: AugLLMConfig = Field(..., description="Configuration for answer generation LLM")
     top_k: int = Field(
-        default=5,
-        ge=1,
-        le=50,
-        description="Number of documents to retrieve from vector store",
+        default=5, ge=1, le=50, description="Number of documents to retrieve from vector store"
     )
     similarity_threshold: float = Field(
-        default=0.0,
-        ge=0.0,
-        le=1.0,
-        description="Minimum similarity score for retrieved documents",
+        default=0.0, ge=0.0, le=1.0, description="Minimum similarity score for retrieved documents"
     )
     structured_output_model: type[BaseModel] | None = Field(
         default=None, description="Pydantic model for structured output formatting"
@@ -212,13 +190,9 @@ class SimpleRAG(BaseModel):
     def validate_context_template(cls, v: str) -> str:
         """Validate context template has required placeholders."""
         required_placeholders = {"{context}", "{query}"}
-        missing = required_placeholders - {
-            ph for ph in required_placeholders if ph in v
-        }
+        missing = required_placeholders - {ph for ph in required_placeholders if ph in v}
         if missing:
-            raise ValueError(
-                f"Context template missing required placeholders: {missing}"
-            )
+            raise ValueError(f"Context template missing required placeholders: {missing}")
         return v
 
     @model_validator(mode="after")
@@ -259,15 +233,10 @@ class SimpleRAG(BaseModel):
             Configured SimpleRAG instance
         """
         retriever_agent = BaseRAGAgent.from_documents(
-            documents=documents,
-            embedding_model=embedding_config,
-            name=f"{name}_retriever",
+            documents=documents, embedding_model=embedding_config, name=f"{name}_retriever"
         )
         return cls(
-            name=name,
-            retriever_config=retriever_agent.engine,
-            llm_config=llm_config,
-            **kwargs,
+            name=name, retriever_config=retriever_agent.engine, llm_config=llm_config, **kwargs
         )
 
     @classmethod
@@ -289,12 +258,7 @@ class SimpleRAG(BaseModel):
         Returns:
             Configured SimpleRAG instance
         """
-        return cls(
-            name=name,
-            retriever_config=vector_store_config,
-            llm_config=llm_config,
-            **kwargs,
-        )
+        return cls(name=name, retriever_config=vector_store_config, llm_config=llm_config, **kwargs)
 
     async def arun(
         self, input_data: str | dict[str, Any], debug: bool = False, **kwargs
@@ -335,9 +299,7 @@ class SimpleRAG(BaseModel):
                 "k": self.top_k,
                 "score_threshold": self.similarity_threshold,
             }
-            retrieval_result = await self._retriever_agent.arun(
-                retrieval_input, debug=debug
-            )
+            retrieval_result = await self._retriever_agent.arun(retrieval_input, debug=debug)
             documents = self._extract_documents(retrieval_result)
             if debug:
                 logger.info(f"📄 Retrieved {len(documents)} documents")
@@ -347,9 +309,7 @@ class SimpleRAG(BaseModel):
             if debug:
                 logger.info("🤖 Generating answer with SimpleAgent...")
             generation_input = context
-            answer_result = await self._generator_agent.arun(
-                generation_input, debug=debug
-            )
+            answer_result = await self._generator_agent.arun(generation_input, debug=debug)
             response = self._format_response(
                 query=query,
                 answer=answer_result,
@@ -399,9 +359,7 @@ class SimpleRAG(BaseModel):
                 return [doc for doc in docs if isinstance(doc, Document)]
         if hasattr(retrieval_result, "documents"):
             return list(retrieval_result.documents)
-        logger.warning(
-            "Could not extract documents from retrieval result, using fallback"
-        )
+        logger.warning("Could not extract documents from retrieval result, using fallback")
         content = str(retrieval_result)
         return [Document(page_content=content, metadata={"source": "retrieval_result"})]
 
@@ -448,12 +406,8 @@ class SimpleRAG(BaseModel):
             "execution_time": execution_time,
             "documents_retrieved": len(documents),
             "sources_used": len(sources),
-            "retriever_agent": (
-                self._retriever_agent.name if self._retriever_agent else None
-            ),
-            "generator_agent": (
-                self._generator_agent.name if self._generator_agent else None
-            ),
+            "retriever_agent": self._retriever_agent.name if self._retriever_agent else None,
+            "generator_agent": self._generator_agent.name if self._generator_agent else None,
         }
         rag_response = RAGResponse(
             query=query,
@@ -475,19 +429,11 @@ class SimpleRAG(BaseModel):
             "name": self.name,
             "retriever_agent": {
                 "name": self._retriever_agent.name if self._retriever_agent else None,
-                "type": (
-                    type(self._retriever_agent).__name__
-                    if self._retriever_agent
-                    else None
-                ),
+                "type": type(self._retriever_agent).__name__ if self._retriever_agent else None,
             },
             "generator_agent": {
                 "name": self._generator_agent.name if self._generator_agent else None,
-                "type": (
-                    type(self._generator_agent).__name__
-                    if self._generator_agent
-                    else None
-                ),
+                "type": type(self._generator_agent).__name__ if self._generator_agent else None,
             },
             "retrieval_config": {
                 "top_k": self.top_k,

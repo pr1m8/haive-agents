@@ -6,7 +6,7 @@ token limits, similar to LangMem's approach.
 
 import logging
 from datetime import datetime
-from typing import TYPE_CHECKING, Any
+from typing import Any, Optional, TYPE_CHECKING
 
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.schema import StateSchema
@@ -16,14 +16,15 @@ from langgraph.graph import END, START
 from langgraph.types import Command
 from pydantic import BaseModel, Field
 
-from haive.agents.memory_reorganized.base.memory_models_standalone import MemoryType
-from haive.agents.memory_reorganized.base.memory_state_original import (
-    MemoryState,  # Import original models for compatibility
-)
-from haive.agents.memory_reorganized.base.memory_state_original import (
+from haive.agents.simple.enhanced_agent_v3 import EnhancedSimpleAgent
+
+from haive.agents.memory_reorganized.base.memory_state_original import (  # Import original models for compatibility
     EnhancedMemoryItem,
     ImportanceLevel,
+    MemoryState,
+    MemoryType as StateMemoryType,
 )
+from haive.agents.memory_reorganized.base.memory_models_standalone import MemoryType
 from haive.agents.memory_reorganized.base.token_state import MemoryStateWithTokens
 from haive.agents.memory_reorganized.core.memory_tools import (
     MemoryConfig,
@@ -33,26 +34,16 @@ from haive.agents.memory_reorganized.core.memory_tools import (
     search_memory,
     store_memory,
 )
-from haive.agents.memory_reorganized.core.token_tracker import (
-    TokenThresholds,
-    TokenTracker,
-)
-from haive.agents.simple.enhanced_agent_v3 import EnhancedSimpleAgent
+from haive.agents.memory_reorganized.core.token_tracker import TokenThresholds, TokenTracker
 
 # Graph transformer imports - optional
 if TYPE_CHECKING:
-    from haive.agents.document_modifiers.kg.kg_base.models import (
-        GraphTransformer,  # type: ignore
-    )
-    from haive.agents.document_modifiers.kg.kg_map_merge.models import (
+    from haive.agents.document_modifiers.kg.kg_base.models import GraphTransformer  # type: ignore
+    from haive.agents.document_modifiers.kg.kg_map_merge.models import (  # type: ignore
         EntityNode,  # pyright: ignore[reportAssignmentType]
-    )
-    from haive.agents.document_modifiers.kg.kg_map_merge.models import (
         EntityRelationship,  # pyright: ignore[reportAssignmentType]
-    )
-    from haive.agents.document_modifiers.kg.kg_map_merge.models import (  # type: ignore; pyright: ignore[reportAssignmentType]
         KnowledgeGraph,
-    )
+    )  # pyright: ignore[reportAssignmentType]
 else:
     # Provide dummy types for runtime
     GraphTransformer = type("GraphTransformer", (), {})
@@ -66,11 +57,7 @@ try:
     )
     from haive.agents.document_modifiers.kg.kg_map_merge.models import (
         EntityNode as _EntityNode,
-    )
-    from haive.agents.document_modifiers.kg.kg_map_merge.models import (
         EntityRelationship as _EntityRelationship,
-    )
-    from haive.agents.document_modifiers.kg.kg_map_merge.models import (
         KnowledgeGraph as _KnowledgeGraph,
     )
 
@@ -85,7 +72,7 @@ except ImportError:
     # Create basic fallback models
     class EntityNode(BaseModel):
         name: str = Field(...)
-        id: str | None = Field(default=None)
+        id: Optional[str] = Field(default=None)
         type: str = Field(default="entity")
         properties: dict[str, Any] = Field(default_factory=dict)
 
@@ -94,7 +81,7 @@ except ImportError:
         target: str = Field(...)
         relationship: str = Field(...)
         type: str = Field(default="relationship")
-        confidence_score: float | None = Field(default=None)
+        confidence_score: Optional[float] = Field(default=None)
         supporting_evidence: list[str] = Field(default_factory=list)
         properties: dict[str, Any] = Field(default_factory=dict)
 
@@ -158,7 +145,7 @@ Guidelines:
 6. Keep the summary coherent and well-structured"""
         ),
         HumanMessage(
-            content="""Current Summary:.
+            content="""Current Summary:
 {current_summary}
 
 New Memories to Integrate:
@@ -308,7 +295,7 @@ class SimpleMemoryAgent(EnhancedSimpleAgent):
     )
 
     # State tracking
-    running_summary: str | None = Field(
+    running_summary: Optional[str] = Field(
         default=None, description="Running summary of all memories"
     )
 
@@ -317,7 +304,7 @@ class SimpleMemoryAgent(EnhancedSimpleAgent):
     )
 
     # Graph transformation components
-    graph_transformer: Any | None = Field(  # type: ignore
+    graph_transformer: Optional[Any] = Field(  # type: ignore
         default=None, description="Graph transformer for converting content to knowledge graphs"
     )
 
@@ -326,24 +313,24 @@ class SimpleMemoryAgent(EnhancedSimpleAgent):
     )
 
     # Prompts storage (since we can't add to engine)
-    memory_summarization_prompt: ChatPromptTemplate | None = Field(
+    memory_summarization_prompt: Optional[ChatPromptTemplate] = Field(
         default=None, description="Prompt for memory summarization"
     )
 
-    running_summary_prompt: ChatPromptTemplate | None = Field(
+    running_summary_prompt: Optional[ChatPromptTemplate] = Field(
         default=None, description="Prompt for running summary updates"
     )
 
-    memory_rewrite_prompt: ChatPromptTemplate | None = Field(
+    memory_rewrite_prompt: Optional[ChatPromptTemplate] = Field(
         default=None, description="Prompt for memory rewriting/compression"
     )
 
     # Graph prompts
-    entity_extraction_prompt: ChatPromptTemplate | None = Field(
+    entity_extraction_prompt: Optional[ChatPromptTemplate] = Field(
         default=None, description="Prompt for entity extraction"
     )
 
-    relationship_extraction_prompt: ChatPromptTemplate | None = Field(
+    relationship_extraction_prompt: Optional[ChatPromptTemplate] = Field(
         default=None, description="Prompt for relationship extraction"
     )
 
@@ -769,7 +756,9 @@ Focus on relationships that are explicitly mentioned or strongly implied."""
             )
 
             # Ensure content is a string
-            if isinstance(content, (list, tuple)) or not isinstance(content, str):
+            if isinstance(content, (list, tuple)):
+                content = str(content)
+            elif not isinstance(content, str):
                 content = str(content)
 
             # Determine operation type and execute

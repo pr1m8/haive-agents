@@ -34,6 +34,7 @@ from haive.agents.base.mixins.persistence_mixin import PersistenceMixin
 from haive.agents.base.mixins.state_mixin import StateMixin
 from haive.agents.base.pre_post_agent_mixin import PrePostAgentMixin
 from haive.agents.base.serialization_mixin import SerializationMixin
+from haive.agents.base.workflow import Workflow
 
 logger = logging.getLogger(__name__)
 try:
@@ -197,7 +198,7 @@ class Agent(
         return values
 
     @model_validator(mode="after")
-    def complete_agent_setup(self):
+    def complete_agent_setup(self) -> "Agent":
         """STEP 2-5: Complete agent setup in proper order."""
         try:
             self._setup_hooks()
@@ -230,29 +231,6 @@ class Agent(
 
         Override this method in subclasses for custom setup logic.
         """
-        # SYNC structured_output_model from engine to agent
-        if not getattr(self, "structured_output_model", None):
-            # Priority 1: Check main engine
-            if self.engine and hasattr(self.engine, "structured_output_model"):
-                self.structured_output_model = self.engine.structured_output_model
-                if getattr(self, "debug", False):
-                    logger.debug(
-                        f"Synced structured_output_model from engine: {self.structured_output_model}"
-                    )
-
-            # Priority 2: Check engines dict
-            elif hasattr(self, "engines") and self.engines:
-                for name, engine in self.engines.items():
-                    if (
-                        hasattr(engine, "structured_output_model")
-                        and engine.structured_output_model
-                    ):
-                        self.structured_output_model = engine.structured_output_model
-                        if getattr(self, "debug", False):
-                            logger.debug(
-                                f"Synced structured_output_model from engines[{name}]: {self.structured_output_model}"
-                            )
-                        break
 
     def _auto_derive_io_schemas(self) -> None:
         """Automatically derive input and output schemas with intelligent defaults.
@@ -410,8 +388,6 @@ class Agent(
         is_structured_handler = (
             self.__class__.__name__ == "StructuredOutputAgent"
             or self.__class__.__name__ == "MultiAgent"
-            or self.__class__.__name__
-            == "SimpleAgent"  # SimpleAgent handles structured output natively
             or hasattr(self, "_is_structured_output_handler")
         )
 
@@ -453,6 +429,7 @@ class Agent(
         from haive.core.engine.aug_llm import AugLLMConfig
 
         from haive.agents.multi.agent import MultiAgent
+        from haive.agents.structured.agent import StructuredOutputAgent
 
         # Create a copy of self without structured output
         base_agent = self.model_copy()
@@ -479,7 +456,7 @@ class Agent(
                     ("system", "{system_message}"),
                     (
                         "human",
-                        """Based on the previous agent's analysis:.
+                        """Based on the previous agent's analysis:
 
 {messages}
 

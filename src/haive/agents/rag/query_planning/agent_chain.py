@@ -31,9 +31,7 @@ class SubQueryResult(BaseModel):
 
 
 def create_query_planning_chain(
-    documents: list[Document],
-    llm_config: LLMConfig | None = None,
-    name: str = "Query Planning RAG",
+    documents: list[Document], llm_config: LLMConfig | None = None, name: str = "Query Planning RAG"
 ) -> ChainAgent:
     """Create query planning RAG using ChainAgent."""
     if not llm_config:
@@ -83,7 +81,7 @@ def create_query_planning_chain(
                 ("system", "Synthesize sub-query results into a comprehensive answer"),
                 (
                     "human",
-                    """Original query: {query}.
+                    """Original query: {query}
             Sub-query results: {sub_results}
 
             Create a complete, coherent response.""",
@@ -124,14 +122,6 @@ def create_simple_decomposition_chain(
 
     # Step 2: Answer each (simplified)
     def answer_all(state: dict[str, Any]) -> dict[str, Any]:
-        """Answer All.
-
-        Args:
-            state: [TODO: Add description]
-
-        Returns:
-            [TODO: Add return description]
-        """
         sub_queries = state.get("sub_queries", "").split("\n")
         answers = [f"Answer: {q}" for q in sub_queries if q.strip()]
         return {"answers": answers}
@@ -185,9 +175,7 @@ def create_adaptive_planning_chain(
     )
 
     # Complex planning chain
-    complex_planning = create_query_planning_chain(
-        documents, llm_config, "Complex Planning"
-    )
+    complex_planning = create_query_planning_chain(documents, llm_config, "Complex Planning")
 
     # Route based on complexity
     return flow_with_edges(

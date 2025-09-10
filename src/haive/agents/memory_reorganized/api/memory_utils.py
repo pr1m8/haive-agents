@@ -125,9 +125,7 @@ def save_unstructured_memories(
 
 
 def save_structured_memories(
-    memories: list[dict[str, Any] | KnowledgeTriple],
-    vector_store: VectorStore,
-    user_id: str,
+    memories: list[dict[str, Any] | KnowledgeTriple], vector_store: VectorStore, user_id: str
 ) -> list[dict[str, Any]]:
     """Save structured memories (knowledge triples) to vector store.
 
@@ -221,14 +219,6 @@ def retrieve_memories(
     if filter_fn is None:
 
         def filter_fn(doc) -> Any:
-            """Filter Fn.
-
-            Args:
-                doc: [TODO: Add description]
-
-            Returns:
-                [TODO: Add return description]
-            """
             return doc.metadata.get("user_id") == user_id
 
     try:
@@ -264,9 +254,7 @@ def create_memory_tools(vector_store: VectorStore):
         return f"Memory saved: {memory}"
 
     @tool
-    def save_structured_memory(
-        subject: str, predicate: str, object_: str, user_id: str
-    ) -> str:
+    def save_structured_memory(subject: str, predicate: str, object_: str, user_id: str) -> str:
         """Save a structured memory as a knowledge triple."""
         triple = {
             "subject": subject,

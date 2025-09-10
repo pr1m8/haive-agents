@@ -16,14 +16,12 @@ class SelfCorrectiveRAGConfig(BaseRAGConfig):
 
     # State schema
     state_schema: type = Field(
-        default=SelfCorrectiveRAGState,
-        description="State schema for self-corrective RAG",
+        default=SelfCorrectiveRAGState, description="State schema for self-corrective RAG"
     )
 
     # LLM Configurations for evaluation and correction
     answer_evaluator_config: AugLLMConfig | None = Field(
-        default=None,
-        description="Configuration for the LLM that evaluates answer quality",
+        default=None, description="Configuration for the LLM that evaluates answer quality"
     )
 
     answer_corrector_config: AugLLMConfig | None = Field(

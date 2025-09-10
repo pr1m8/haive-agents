@@ -4,10 +4,11 @@ This module provides the tools that supervisor agents can use to manage
 other agents, delegate tasks, and coordinate multi-agent workflows.
 """
 
-from typing import Any
-
-from langchain_core.tools import Tool
+from typing import Any, Dict, List, Optional
+from langchain_core.tools import Tool, tool
 from pydantic import BaseModel, Field
+
+from haive.agents.experiments.supervisor.state_models import AgentMetadata, ExecutionContext
 
 
 class AgentHandoffInput(BaseModel):
@@ -15,7 +16,7 @@ class AgentHandoffInput(BaseModel):
 
     agent_name: str = Field(..., description="Name of the agent to delegate to")
     task: str = Field(..., description="Task description for the agent")
-    context: dict[str, Any] | None = Field(None, description="Additional context")
+    context: Optional[Dict[str, Any]] = Field(None, description="Additional context")
 
 
 class AgentCreationInput(BaseModel):
@@ -24,14 +25,14 @@ class AgentCreationInput(BaseModel):
     name: str = Field(..., description="Name for the new agent")
     description: str = Field(..., description="Description of agent capabilities")
     agent_type: str = Field(default="simple", description="Type of agent to create")
-    config: dict[str, Any] | None = Field(None, description="Agent configuration")
+    config: Optional[Dict[str, Any]] = Field(None, description="Agent configuration")
 
 
 class ListAgentsInput(BaseModel):
     """Input model for listing agents."""
 
     include_inactive: bool = Field(default=False, description="Include inactive agents")
-    filter_by_type: str | None = Field(None, description="Filter by agent type")
+    filter_by_type: Optional[str] = Field(None, description="Filter by agent type")
 
 
 def create_supervisor_handoff_tool(supervisor) -> Tool:
@@ -45,7 +46,7 @@ def create_supervisor_handoff_tool(supervisor) -> Tool:
     """
 
     def delegate_to_agent(
-        agent_name: str, task: str, context: dict[str, Any] | None = None
+        agent_name: str, task: str, context: Optional[Dict[str, Any]] = None
     ) -> str:
         """Delegate a task to a specific agent.
 
@@ -68,7 +69,7 @@ def create_supervisor_handoff_tool(supervisor) -> Tool:
             return f"Task delegated to {agent_name}. Result: {result}"
 
         except Exception as e:
-            return f"Error delegating task to {agent_name}: {e!s}"
+            return f"Error delegating task to {agent_name}: {str(e)}"
 
     return Tool(
         name="delegate_task",
@@ -87,9 +88,7 @@ def create_list_agents_tool(supervisor) -> Tool:
         Tool for listing agents
     """
 
-    def list_agents(
-        include_inactive: bool = False, filter_by_type: str | None = None
-    ) -> str:
+    def list_agents(include_inactive: bool = False, filter_by_type: Optional[str] = None) -> str:
         """List all available agents.
 
         Args:
@@ -113,10 +112,7 @@ def create_list_agents_tool(supervisor) -> Tool:
                     continue
 
                 # Filter by type
-                if (
-                    filter_by_type
-                    and metadata.agent_type.lower() != filter_by_type.lower()
-                ):
+                if filter_by_type and metadata.agent_type.lower() != filter_by_type.lower():
                     continue
 
                 filtered_agents[name] = metadata
@@ -132,12 +128,10 @@ def create_list_agents_tool(supervisor) -> Tool:
                     f"- {name} ({metadata.agent_type}): {metadata.description} [{status}]"
                 )
 
-            return f"Available agents ({len(filtered_agents)}):\n" + "\n".join(
-                agent_list
-            )
+            return f"Available agents ({len(filtered_agents)}):\n" + "\n".join(agent_list)
 
         except Exception as e:
-            return f"Error listing agents: {e!s}"
+            return f"Error listing agents: {str(e)}"
 
     return Tool(
         name="list_agents",
@@ -187,7 +181,7 @@ def create_execution_status_tool(supervisor) -> Tool:
             return "\n".join(output)
 
         except Exception as e:
-            return f"Error getting execution status: {e!s}"
+            return f"Error getting execution status: {str(e)}"
 
     return Tool(
         name="execution_status",
@@ -210,7 +204,7 @@ def create_agent_creation_tool(supervisor) -> Tool:
         name: str,
         description: str,
         agent_type: str = "simple",
-        config: dict[str, Any] | None = None,
+        config: Optional[Dict[str, Any]] = None,
     ) -> str:
         """Create a new agent dynamically.
 
@@ -243,10 +237,11 @@ def create_agent_creation_tool(supervisor) -> Tool:
 
             if success:
                 return f"Successfully created agent '{name}' of type '{agent_type}'"
-            return f"Failed to create agent '{name}'"
+            else:
+                return f"Failed to create agent '{name}'"
 
         except Exception as e:
-            return f"Error creating agent: {e!s}"
+            return f"Error creating agent: {str(e)}"
 
     return Tool(
         name="create_agent",
@@ -255,7 +250,7 @@ def create_agent_creation_tool(supervisor) -> Tool:
     )
 
 
-def build_supervisor_tools(supervisor) -> list[Tool]:
+def build_supervisor_tools(supervisor) -> List[Tool]:
     """Build all standard supervisor tools.
 
     Args:
@@ -277,7 +272,7 @@ def build_supervisor_tools(supervisor) -> list[Tool]:
     return tools
 
 
-def sync_tools_with_state(supervisor, tools: list[Tool]) -> None:
+def sync_tools_with_state(supervisor, tools: List[Tool]) -> None:
     """Synchronize tools with supervisor state.
 
     This function updates the supervisor's tool mappings based on available tools.
@@ -302,6 +297,6 @@ def sync_tools_with_state(supervisor, tools: list[Tool]) -> None:
             )
             supervisor.supervisor_state.tool_mappings.append(mapping)
 
-    except Exception:
+    except Exception as e:
         # Silently handle errors to avoid breaking supervisor functionality
         pass

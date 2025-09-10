@@ -17,7 +17,7 @@ from langchain_core.messages import AIMessage
 from langgraph.graph import END, START
 from pydantic import Field, model_validator
 
-from haive.agents.base.agent import Agent
+from haive.agents.base.enhanced_agent import Agent
 
 logger = logging.getLogger(__name__)
 
@@ -83,13 +83,9 @@ class EnhancedSimpleAgent(Agent[AugLLMConfig]):
         default=None, ge=1, description="Maximum tokens for LLM responses"
     )
 
-    system_message: str | None = Field(
-        default=None, description="System message for the LLM"
-    )
+    system_message: str | None = Field(default=None, description="System message for the LLM")
 
-    tools: list[Any] = Field(
-        default_factory=list, description="Tools available to the agent"
-    )
+    tools: list[Any] = Field(default_factory=list, description="Tools available to the agent")
 
     # ========================================================================
     # ENGINE SETUP - ENHANCED PATTERN
@@ -176,14 +172,6 @@ class EnhancedSimpleAgent(Agent[AugLLMConfig]):
 
             # Conditional routing based on tool calls
             def has_tool_calls(state: dict[str, Any]) -> Literal["tools", "end"]:
-                """Has Tool Calls.
-
-                Args:
-                    state: [TODO: Add description]
-
-                Returns:
-                    [TODO: Add return description]
-                """
                 messages = state.get("messages", [])
                 if messages:
                     last_msg = messages[-1]
@@ -287,7 +275,7 @@ def create_simple_agent(
     Returns:
         Configured EnhancedSimpleAgent instance.
 
-    Examples:
+    Example:
         agent = create_simple_agent(
             name="helper",
             temperature=0.5,

@@ -24,13 +24,7 @@ from haive.agents.multi.enhanced_multi_agent_v3 import EnhancedMultiAgent
 from haive.agents.react.agent import ReactAgent
 from haive.agents.simple.agent import SimpleAgent
 
-from .models import (
-    EvidenceCollection,
-    ReWOOPlan,
-    ReWOOSolution,
-    ReWOOV3Input,
-    ReWOOV3Output,
-)
+from .models import EvidenceCollection, ReWOOPlan, ReWOOSolution, ReWOOV3Input, ReWOOV3Output
 from .prompts import planner_prompt, solver_prompt, worker_prompt
 from .state import ReWOOV3State
 
@@ -105,9 +99,7 @@ class ReWOOV3Agent:
         planner_config.prompt_template = planner_prompt  # NOT system_message!
 
         self.planner = SimpleAgent(
-            name=f"{self.name}_planner",
-            engine=planner_config,
-            structured_output_model=ReWOOPlan,
+            name=f"{self.name}_planner", engine=planner_config, structured_output_model=ReWOOPlan
         )
 
         # Worker Agent: ReactAgent with all available tools
@@ -126,9 +118,7 @@ class ReWOOV3Agent:
         solver_config.prompt_template = solver_prompt
 
         self.solver = SimpleAgent(
-            name=f"{self.name}_solver",
-            engine=solver_config,
-            structured_output_model=ReWOOSolution,
+            name=f"{self.name}_solver", engine=solver_config, structured_output_model=ReWOOSolution
         )
 
     async def arun(
@@ -190,18 +180,10 @@ class ReWOOV3Agent:
             execution_time = 0.0
             solving_time = 0.0
 
-            if (
-                hasattr(result, "planning_completed_at")
-                and result.planning_completed_at
-            ):
-                planning_time = (
-                    result.planning_completed_at - result.started_at
-                ).total_seconds()
+            if hasattr(result, "planning_completed_at") and result.planning_completed_at:
+                planning_time = (result.planning_completed_at - result.started_at).total_seconds()
 
-            if (
-                hasattr(result, "execution_completed_at")
-                and result.execution_completed_at
-            ):
+            if hasattr(result, "execution_completed_at") and result.execution_completed_at:
                 execution_time = (
                     result.execution_completed_at - result.planning_completed_at
                 ).total_seconds()
@@ -256,9 +238,7 @@ class ReWOOV3Agent:
         Returns:
             Structured output with ReWOO results
         """
-        return asyncio.run(
-            self.arun(query, context, max_steps, tools_preference, **kwargs)
-        )
+        return asyncio.run(self.arun(query, context, max_steps, tools_preference, **kwargs))
 
     def _format_output(
         self,

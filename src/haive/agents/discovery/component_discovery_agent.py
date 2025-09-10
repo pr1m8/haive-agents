@@ -10,13 +10,11 @@ Based on: @project_docs/active/patterns/dynamic_activation_pattern.md
 import logging
 from pathlib import Path
 from typing import Any
-
 from haive.core.engine.retriever import BaseRetrieverConfig
 from haive.core.schema.prebuilt.meta_state import MetaStateSchema
 from haive.core.utils.haive_discovery import HaiveComponentDiscovery
 from langchain_core.documents import Document
 from pydantic import BaseModel, ConfigDict, Field, PrivateAttr, model_validator
-
 from haive.agents.rag.base.agent import BaseRAGAgent
 
 logger = logging.getLogger(__name__)
@@ -96,9 +94,7 @@ class ComponentDiscoveryAgent(BaseModel):
     model_config = ConfigDict(
         arbitrary_types_allowed=True, validate_assignment=True, extra="forbid"
     )
-    document_path: str = Field(
-        ..., description="Path to documentation or component sources"
-    )
+    document_path: str = Field(..., description="Path to documentation or component sources")
     discovery_agent: BaseRAGAgent | None = Field(
         default=None, description="BaseRAGAgent for performing retrieval"
     )
@@ -151,9 +147,7 @@ class ComponentDiscoveryAgent(BaseModel):
                         "document_count": len(self._documents),
                     },
                 )
-                logger.info(
-                    f"Initialized discovery agent with {len(self._documents)} documents"
-                )
+                logger.info(f"Initialized discovery agent with {len(self._documents)} documents")
             except Exception as e:
                 logger.exception(f"Failed to initialize discovery agent: {e}")
                 self._setup_fallback_agent()
@@ -175,12 +169,8 @@ class ComponentDiscoveryAgent(BaseModel):
             page_content="Fallback component discovery agent",
             metadata={"source": "fallback", "type": "system"},
         )
-        retriever_config = BaseRetrieverConfig(
-            name="fallback_retriever", documents=[fallback_doc]
-        )
-        self.discovery_agent = BaseRAGAgent(
-            name="fallback_discovery", engine=retriever_config
-        )
+        retriever_config = BaseRetrieverConfig(name="fallback_retriever", documents=[fallback_doc])
+        self.discovery_agent = BaseRAGAgent(name="fallback_discovery", engine=retriever_config)
         self.meta_state = MetaStateSchema(
             agent=self.discovery_agent,
             agent_state={"discovery_mode": "fallback"},
@@ -221,9 +211,7 @@ class ComponentDiscoveryAgent(BaseModel):
         try:
             haive_root = "/home/will/Projects/haive/backend/haive"
             self._haive_discovery = HaiveComponentDiscovery(haive_root)
-            all_components = self._haive_discovery.discover_all_categorized(
-                create_tools=True
-            )
+            all_components = self._haive_discovery.discover_all_categorized(create_tools=True)
             for category, components in all_components.items():
                 for component in components:
                     doc = Document(
@@ -290,9 +278,7 @@ class ComponentDiscoveryAgent(BaseModel):
                                     "source": str(file_path),
                                     "type": "file",
                                     "filename": file_path.name,
-                                    "relative_path": str(
-                                        file_path.relative_to(path_obj)
-                                    ),
+                                    "relative_path": str(file_path.relative_to(path_obj)),
                                 },
                             )
                             documents.append(doc)
@@ -389,9 +375,7 @@ class ComponentDiscoveryAgent(BaseModel):
         if name and name in output_text:
             return True
         keywords = ["tool", "agent", "component", "function", "class"]
-        return any(
-            keyword in doc_text and keyword in output_text for keyword in keywords
-        )
+        return any((keyword in doc_text and keyword in output_text for keyword in keywords))
 
     def _extract_description(self, doc: Document) -> str:
         """Extract description from document content.
@@ -418,9 +402,7 @@ class ComponentDiscoveryAgent(BaseModel):
             "description", f"Component from {metadata.get('source', 'unknown source')}"
         )
 
-    async def load_component_from_doc(
-        self, component_doc: dict[str, Any]
-    ) -> Any | None:
+    async def load_component_from_doc(self, component_doc: dict[str, Any]) -> Any | None:
         """Load actual component instance from component document.
 
         Args:
@@ -474,9 +456,7 @@ class ComponentDiscoveryAgent(BaseModel):
                 print(f"Cached queries: {stats['cached_queries']}")
                 print(f"Total components: {stats['total_components']}")
         """
-        total_components = sum(
-            len(components) for components in self.component_cache.values()
-        )
+        total_components = sum((len(components) for components in self.component_cache.values()))
         return {
             "cached_queries": len(self.component_cache),
             "total_components": total_components,

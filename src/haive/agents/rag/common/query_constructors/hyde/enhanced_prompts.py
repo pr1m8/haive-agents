@@ -350,9 +350,7 @@ def get_perspective_prompt(
     )
 
 
-def get_ensemble_prompt(
-    num_documents: int = 3, target_length: int = 1000
-) -> ChatPromptTemplate:
+def get_ensemble_prompt(num_documents: int = 3, target_length: int = 1000) -> ChatPromptTemplate:
     """Get an ensemble generation prompt for multiple documents.
 
     Args:
@@ -362,9 +360,7 @@ def get_ensemble_prompt(
     Returns:
         Configured ChatPromptTemplate
     """
-    return HYDE_ENSEMBLE_PROMPT.partial(
-        num_documents=num_documents, target_length=target_length
-    )
+    return HYDE_ENSEMBLE_PROMPT.partial(num_documents=num_documents, target_length=target_length)
 
 
 # ==============================================================================
@@ -384,12 +380,8 @@ class HyDEPromptConfig(BaseModel):
     target_length: int = Field(
         default=1000, description="Target character length for generated documents"
     )
-    use_ensemble: bool = Field(
-        default=False, description="Whether to generate multiple documents"
-    )
-    num_documents: int = Field(
-        default=3, description="Number of documents for ensemble generation"
-    )
+    use_ensemble: bool = Field(default=False, description="Whether to generate multiple documents")
+    num_documents: int = Field(default=3, description="Number of documents for ensemble generation")
 
 
 def select_prompt_automatically(query: str) -> HyDEPromptType:

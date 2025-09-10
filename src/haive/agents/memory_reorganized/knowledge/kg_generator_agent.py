@@ -6,7 +6,7 @@ building entity relationships and semantic connections across the memory system.
 
 import logging
 from datetime import datetime
-from typing import Any
+from typing import Any, Optional
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import HumanMessage, SystemMessage
@@ -961,7 +961,7 @@ Extract relationships now:""",
         """Generate unique relationship ID."""
         return f"{source_id}_{rel_type}_{target_id}".lower().replace(" ", "_")
 
-    def _find_entity_id(self, entity_name: str) -> str | None:
+    def _find_entity_id(self, entity_name: str) -> Optional[str]:
         """Find entity ID by name."""
         entity_name_lower = entity_name.lower()
         for node in self.knowledge_graph.nodes.values():
@@ -969,7 +969,7 @@ Extract relationships now:""",
                 return node.id
         return None
 
-    def _parse_json_response(self, response: str) -> dict[str, Any] | None:
+    def _parse_json_response(self, response: str) -> Optional[dict[str, Any]]:
         """Parse JSON response from LLM."""
         try:
             import json
@@ -985,7 +985,7 @@ Extract relationships now:""",
         return None
 
     async def extract_entities_from_memories(
-        self, limit: int | None = None, namespace: tuple[str, ...] | None = None
+        self, limit: Optional[int] = None, namespace: Optional[tuple[str, ...]] = None
     ) -> list[KnowledgeGraphNode]:
         """Extract entities from memories and return them as a list.
 
@@ -1014,7 +1014,7 @@ Extract relationships now:""",
             return []
 
     async def extract_relationships_from_memories(
-        self, limit: int | None = None, namespace: tuple[str, ...] | None = None
+        self, limit: Optional[int] = None, namespace: tuple[str, ...] | None = None
     ) -> list[KnowledgeGraphRelationship]:
         """Extract relationships from memories and return them as a list.
 

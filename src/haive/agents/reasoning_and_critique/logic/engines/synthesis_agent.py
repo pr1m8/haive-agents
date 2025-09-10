@@ -210,10 +210,7 @@ Provide comprehensive synthesis including:
 
 Remember: Great synthesis doesn't just summarize - it creates new understanding by connecting disparate pieces into a coherent whole.""",
         ),
-        (
-            "human",
-            "Synthesize these reasoning analyses into a final report:\n{analyses}",
-        ),
+        ("human", "Synthesize these reasoning analyses into a final report:\n{analyses}"),
         MessagesPlaceholder(variable_name="messages", optional=True),
     ]
 )

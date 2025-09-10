@@ -35,10 +35,7 @@ Paragraph:""",
 
 HYDE_ANSWER_PROMPT = ChatPromptTemplate.from_messages(
     [
-        (
-            "system",
-            "You are an expert assistant. Answer based on the retrieved documents.",
-        ),
+        ("system", "You are an expert assistant. Answer based on the retrieved documents."),
         (
             "human",
             """Answer the question using the retrieved documents.
@@ -80,24 +77,18 @@ class HyDERAGAgent(MultiAgent):
 
         # Step 1: Generate hypothetical document
         hyde_generator = SimpleAgent(
-            engine=AugLLMConfig(
-                llm_config=llm_config, prompt_template=HYDE_GENERATION_PROMPT
-            ),
+            engine=AugLLMConfig(llm_config=llm_config, prompt_template=HYDE_GENERATION_PROMPT),
             name="hyde_generator",
         )
 
         # Step 2: Use hypothetical doc for retrieval
         # In a full implementation, we'd embed the hypothetical doc
         # For now, we'll use it as the query
-        retrieval_agent = BaseRAGAgent.from_documents(
-            documents=documents, name="hyde_retriever"
-        )
+        retrieval_agent = BaseRAGAgent.from_documents(documents=documents, name="hyde_retriever")
 
         # Step 3: Generate final answer
         answer_agent = SimpleAgent(
-            engine=AugLLMConfig(
-                llm_config=llm_config, prompt_template=HYDE_ANSWER_PROMPT
-            ),
+            engine=AugLLMConfig(llm_config=llm_config, prompt_template=HYDE_ANSWER_PROMPT),
             name="hyde_answer_generator",
         )
 

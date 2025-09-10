@@ -22,9 +22,7 @@ def example_classroom_discussion() -> None:
         max_rounds=3,
     )
 
-    result = classroom.run(
-        {}, debug=True, config={"configurable": {"recursion_limit": 50}}
-    )
+    result = classroom.run({}, debug=True, config={"configurable": {"recursion_limit": 50}})
 
     # Display conversation
     for msg in result.get("messages", []):
@@ -103,9 +101,7 @@ def example_team_meeting() -> None:
             content = msg.content
             for participant in participants:
                 if f"@{participant}" in content:
-                    content = str(content).replace(
-                        f"@{participant}", f"**@{participant}**"
-                    )
+                    content = str(content).replace(f"@{participant}", f"**@{participant}**")
 
 
 def example_customer_support() -> None:
@@ -157,10 +153,7 @@ def example_customer_support() -> None:
                 HumanMessage(
                     content="Customer: My application keeps crashing when I try to export data. This is urgent!"
                 ),
-                AIMessage(
-                    content="I'll help you with that. Let me check...",
-                    name="SupportBot",
-                ),
+                AIMessage(content="I'll help you with that. Let me check...", name="SupportBot"),
             ]
         },
         debug=True,

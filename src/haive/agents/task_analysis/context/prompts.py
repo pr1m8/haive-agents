@@ -36,7 +36,7 @@ Domain Expertise Levels:
         ),
         (
             "human",
-            """Analyze context requirements for:.
+            """Analyze context requirements for:
 
 **Task Description**: {task_description}
 **Task Type**: {task_type}
@@ -100,7 +100,7 @@ CONTEXT_FLOW_PROMPT = ChatPromptTemplate.from_messages(
         ),
         (
             "human",
-            """Map context flow for:.
+            """Map context flow for:
 
 **Task Tree**: {task_tree}
 **Task Dependencies**: {dependencies}
@@ -125,7 +125,7 @@ CONTEXT_OPTIMIZATION_PROMPT = ChatPromptTemplate.from_messages(
         ),
         (
             "human",
-            """Optimize context strategy for:.
+            """Optimize context strategy for:
 
 **Context Requirements**: {context_requirements}
 **Memory Constraints**: {memory_limits}
@@ -151,7 +151,7 @@ DOMAIN_EXPERTISE_PROMPT = ChatPromptTemplate.from_messages(
         ),
         (
             "human",
-            """Analyze domain expertise for:.
+            """Analyze domain expertise for:
 
 **Task**: {task_description}
 **Subtasks**: {subtask_list}

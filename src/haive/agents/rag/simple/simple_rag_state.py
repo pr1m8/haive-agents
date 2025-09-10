@@ -66,25 +66,18 @@ class DocumentRetrieval(BaseModel):
     retrieved_count: int = Field(
         default=0, description="Number of documents successfully retrieved"
     )
-    query_processed: str = Field(
-        default="", description="Processed version of the input query"
-    )
+    query_processed: str = Field(default="", description="Processed version of the input query")
 
 
 class AnswerGeneration(BaseModel):
     """Output from the answer generation agent."""
 
-    answer: str = Field(
-        default="", description="Generated answer based on retrieved documents"
-    )
+    answer: str = Field(default="", description="Generated answer based on retrieved documents")
     sources: list[str] = Field(
         default_factory=list, description="Source references used in the answer"
     )
     confidence: float = Field(
-        default=0.0,
-        ge=0.0,
-        le=1.0,
-        description="Confidence score for the generated answer",
+        default=0.0, ge=0.0, le=1.0, description="Confidence score for the generated answer"
     )
 
 
@@ -115,9 +108,7 @@ class SimpleRAGState(MultiAgentState):
 
     query: str = Field(default="", description="User query for RAG processing")
 
-    top_k: int = Field(
-        default=5, ge=1, le=50, description="Number of documents to retrieve"
-    )
+    top_k: int = Field(default=5, ge=1, le=50, description="Number of documents to retrieve")
 
     # =============================
     # Retriever Agent Outputs
@@ -131,27 +122,20 @@ class SimpleRAGState(MultiAgentState):
         default=0, description="Number of documents successfully retrieved"
     )
 
-    query_processed: str = Field(
-        default="", description="Processed version of the input query"
-    )
+    query_processed: str = Field(default="", description="Processed version of the input query")
 
     # =============================
     # Generator Agent Outputs
     # =============================
 
-    answer: str = Field(
-        default="", description="Generated answer based on retrieved documents"
-    )
+    answer: str = Field(default="", description="Generated answer based on retrieved documents")
 
     sources: list[str] = Field(
         default_factory=list, description="Source references used in the answer"
     )
 
     confidence: float = Field(
-        default=0.0,
-        ge=0.0,
-        le=1.0,
-        description="Confidence score for the generated answer",
+        default=0.0, ge=0.0, le=1.0, description="Confidence score for the generated answer"
     )
 
     # =============================
@@ -251,9 +235,7 @@ def create_simple_rag_workflow(
 # ================================
 
 
-async def execute_simple_rag(
-    state: SimpleRAGState, debug: bool = False
-) -> SimpleRAGState:
+async def execute_simple_rag(state: SimpleRAGState, debug: bool = False) -> SimpleRAGState:
     """Execute the complete SimpleRAG workflow.
 
     This follows the working pattern from the guides:
@@ -327,10 +309,7 @@ def run_simple_rag(
     """
     # Create workflow
     state = create_simple_rag_workflow(
-        query=query,
-        vector_store_config=vector_store_config,
-        llm_config=llm_config,
-        top_k=top_k,
+        query=query, vector_store_config=vector_store_config, llm_config=llm_config, top_k=top_k
     )
 
     # Execute

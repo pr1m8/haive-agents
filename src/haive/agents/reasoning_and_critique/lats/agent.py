@@ -8,17 +8,14 @@ from typing import Any
 from haive.core.engine.agent.agent import Agent, AgentConfig, register_agent
 from haive.core.models.llm.base import AzureLLMConfig
 from langchain_core.messages import AIMessage, HumanMessage
-from langchain_core.output_parsers.openai_tools import (
-    JsonOutputToolsParser,
-    PydanticToolsParser,
-)
+from langchain_core.output_parsers.openai_tools import JsonOutputToolsParser, PydanticToolsParser
 from langchain_core.prompt_values import ChatPromptValue
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.runnables import RunnableConfig
 from langchain_core.runnables import chain as as_runnable
 from langgraph.graph import END, START, StateGraph
 from langgraph.prebuilt import ToolNode
-from pydantic import Field
+from pydantic import BaseModel, Field
 
 from haive.agents.reasoning_and_critique.lats.models import Node, Reflection
 from haive.agents.reasoning_and_critique.lats.state import TreeState
@@ -46,9 +43,7 @@ class LATSAgentConfig(AgentConfig):
         default=5, description="Number of candidates to generate per expansion"
     )
     max_tree_height: int = Field(default=5, description="Maximum height of the tree")
-    exploration_weight: float = Field(
-        default=1.0, description="Exploration weight for UCB1"
-    )
+    exploration_weight: float = Field(default=1.0, description="Exploration weight for UCB1")
 
     # Tools
     tools: list[Any] = Field(default_factory=list, description="Tools for the agent")
@@ -101,8 +96,7 @@ class LATSAgentConfig(AgentConfig):
 
         # Use provided system prompt or default
         system_prompt = (
-            system_prompt
-            or "You are an AI assistant that provides accurate, helpful responses."
+            system_prompt or "You are an AI assistant that provides accurate, helpful responses."
         )
 
         return cls(
@@ -124,7 +118,7 @@ class LATSAgentConfig(AgentConfig):
 
 @register_agent(LATSAgentConfig)
 class LATSAgent(Agent[LATSAgentConfig]):
-    """A Look-Ahead Tree Search (LATS) agent that uses tree search to.
+    """A Look-Ahead Tree Search (LATS) agent that uses tree search to
     explore multiple response candidates and find optimal solutions.
 
     This agent builds a tree of possible responses and evaluates them
@@ -173,23 +167,15 @@ class LATSAgent(Agent[LATSAgentConfig]):
         # Reflection chain
         self.reflection_llm_chain = (
             reflection_prompt
-            | self.llm.bind_tools(
-                tools=[Reflection], tool_choice="Reflection"
-            ).with_config(run_name="Reflection")
+            | self.llm.bind_tools(tools=[Reflection], tool_choice="Reflection").with_config(
+                run_name="Reflection"
+            )
             | PydanticToolsParser(tools=[Reflection])
         )
 
         # Define the reflection chain
         @as_runnable
         def reflection_chain(inputs) -> Reflection:
-            """Reflection Chain.
-
-            Args:
-                inputs: [TODO: Add description]
-
-            Returns:
-                [TODO: Add return description]
-            """
             tool_choices = self.reflection_llm_chain.invoke(inputs)
             reflection = tool_choices[0]
             if not isinstance(inputs["candidate"][-1], AIMessage):
@@ -200,15 +186,7 @@ class LATSAgent(Agent[LATSAgentConfig]):
 
         # Define the candidate generation function
         def generate_candidates(messages: ChatPromptValue, config: RunnableConfig):
-            """Generate Candidates.
-
-            Args:
-                messages: [TODO: Add description]
-                config: [TODO: Add description]
-            """
-            n = config.get("configurable", {}).get(
-                "N", self.config.candidates_per_expansion
-            )
+            n = config.get("configurable", {}).get("N", self.config.candidates_per_expansion)
             bound_kwargs = self.llm.bind_tools(tools=self.config.tools).kwargs
             chat_result = self.llm.generate(
                 [messages.to_messages()],
@@ -221,11 +199,6 @@ class LATSAgent(Agent[LATSAgentConfig]):
 
         # Create expansion chain (using manual composition instead of pipe operator)
         def expansion_chain(input_data):
-            """Expansion Chain.
-
-            Args:
-                input_data: [TODO: Add description]
-            """
             messages = prompt_template.invoke(input_data)
             return generate_candidates(messages, input_data.get("config", {}))
 
@@ -342,14 +315,7 @@ class LATSAgent(Agent[LATSAgentConfig]):
                         logger.exception(f"Error executing tool: {e}")
                         # Create an error message
                         tool_responses.append(
-                            (
-                                i,
-                                {
-                                    "messages": [
-                                        AIMessage(content=f"Error executing tool: {e}")
-                                    ]
-                                },
-                            )
+                            (i, {"messages": [AIMessage(content=f"Error executing tool: {e}")]})
                         )
 
                 # Collect tool responses by candidate index
@@ -415,9 +381,7 @@ class LATSAgent(Agent[LATSAgentConfig]):
                 "best_node": best_node,
                 "output": best_messages[-1].content if best_messages else "",
                 "messages": (
-                    [*state.get("messages", []), best_messages[-1]]
-                    if best_messages
-                    else []
+                    [*state.get("messages", []), best_messages[-1]] if best_messages else []
                 ),
             }
 
@@ -449,9 +413,7 @@ class LATSAgent(Agent[LATSAgentConfig]):
         node = root
         while node.children:
             # Select child with highest UCB
-            max_child = max(
-                node.children, key=lambda child: child.upper_confidence_bound()
-            )
+            max_child = max(node.children, key=lambda child: child.upper_confidence_bound())
             node = max_child
 
         return node
@@ -464,14 +426,6 @@ class LATSAgent(Agent[LATSAgentConfig]):
 
         # Recursively check all nodes
         def check_node(node) -> Any:
-            """Check Node.
-
-            Args:
-                node: [TODO: Add description]
-
-            Returns:
-                [TODO: Add return description]
-            """
             if node.is_solved:
                 return True
             return any(check_node(child) for child in node.children)
@@ -484,14 +438,6 @@ class LATSAgent(Agent[LATSAgentConfig]):
         all_nodes = []
 
         def collect_nodes(node) -> None:
-            """Collect Nodes.
-
-            Args:
-                node: [TODO: Add description]
-
-            Returns:
-                [TODO: Add return description]
-            """
             all_nodes.append(node)
             for child in node.children:
                 collect_nodes(child)
@@ -499,9 +445,7 @@ class LATSAgent(Agent[LATSAgentConfig]):
         collect_nodes(root)
 
         # Find the node with highest reflection score
-        return max(
-            all_nodes, key=lambda node: node.reflection.score if node.reflection else 0
-        )
+        return max(all_nodes, key=lambda node: node.reflection.score if node.reflection else 0)
 
     def run(self, input_text: str | dict[str, Any]) -> dict[str, Any]:
         """Run the LATS agent with the given input."""

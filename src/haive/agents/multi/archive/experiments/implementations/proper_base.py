@@ -1,6 +1,6 @@
 """Proper multi-agent base following exact engines dict pattern."""
 
-from typing import Any
+from typing import Any, Dict
 
 from haive.core.graph.node import agent_node_v3
 from haive.core.graph.node.agent_node_v3 import AgentNodeV3Config, create_agent_node_v3
@@ -40,13 +40,10 @@ class ProperMultiAgent(Agent):
 
     # Agent management - exact same pattern as engines
     agents: dict[str, Agent] = Field(
-        default_factory=dict,
-        description="Dictionary of agents this multi-agent coordinates",
+        default_factory=dict, description="Dictionary of agents this multi-agent coordinates"
     )
 
-    agent: Agent | None = Field(
-        default=None, description="Main/default agent for this multi-agent"
-    )
+    agent: Agent | None = Field(default=None, description="Main/default agent for this multi-agent")
 
     # Execution configuration
     execution_mode: str = Field(
@@ -278,9 +275,7 @@ class ProperMultiAgent(Agent):
             next_agent = agent_names[i + 1]
 
             # Add condition evaluator
-            def condition_evaluator(
-                state: dict[str, Any], current=current_agent, next=next_agent
-            ):
+            def condition_evaluator(state: dict[str, Any], current=current_agent, next=next_agent):
                 """Evaluate condition to determine next agent."""
                 # Simple condition evaluation
                 if self.branch_condition:

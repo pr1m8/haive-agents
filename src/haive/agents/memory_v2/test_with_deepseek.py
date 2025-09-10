@@ -29,8 +29,7 @@ async def test_deepseek_config():
 
         # Create AugLLMConfig with DeepSeek
         aug_config = AugLLMConfig(
-            llm_config=deepseek_config,
-            system_message="You are a helpful memory assistant.",
+            llm_config=deepseek_config, system_message="You are a helpful memory assistant."
         )
 
         return aug_config
@@ -47,9 +46,7 @@ async def test_simple_memory_with_deepseek():
         return
 
     try:
-        agent = SimpleMemoryAgent(
-            name="test_deepseek", engine=aug_config, user_id="test_user"
-        )
+        agent = SimpleMemoryAgent(name="test_deepseek", engine=aug_config, user_id="test_user")
 
         # Test storing memory
         await agent.arun("Remember: Alice works at TechCorp as an AI researcher")
@@ -107,10 +104,7 @@ async def test_models_only():
 
     for content, mem_type, importance in memories:
         memory = EnhancedMemoryItem(
-            content=content,
-            memory_type=mem_type,
-            importance=importance,
-            user_id="test_user",
+            content=content, memory_type=mem_type, importance=importance, user_id="test_user"
         )
         state.add_memory_item(memory)
 

@@ -30,13 +30,15 @@ def extract_memory_items(memory_data: Any) -> list[str]:
     # Handle different memory data formats
     if isinstance(memory_data, list):
         return [str(item) for item in memory_data]
-    if isinstance(memory_data, dict):
+    elif isinstance(memory_data, dict):
         if "items" in memory_data:
             return [str(item) for item in memory_data["items"]]
-        if "memories" in memory_data:
+        elif "memories" in memory_data:
             return [str(item) for item in memory_data["memories"]]
-        return [f"{key}: {value}" for key, value in memory_data.items()]
-    return [str(memory_data)]
+        else:
+            return [f"{key}: {value}" for key, value in memory_data.items()]
+    else:
+        return [str(memory_data)]
 
 
 class SearchResponse(BaseModel):
@@ -44,19 +46,11 @@ class SearchResponse(BaseModel):
 
     query: str = Field(..., description="The original search query")
     response: str = Field(..., description="The search response content")
-    sources: list[str] = Field(
-        default_factory=list, description="Source URLs or references"
-    )
-    confidence: float = Field(
-        default=0.0, ge=0.0, le=1.0, description="Confidence score"
-    )
+    sources: list[str] = Field(default_factory=list, description="Source URLs or references")
+    confidence: float = Field(default=0.0, ge=0.0, le=1.0, description="Confidence score")
     search_type: str = Field(..., description="Type of search performed")
-    processing_time: float = Field(
-        default=0.0, description="Time taken to process in seconds"
-    )
-    metadata: dict[str, Any] = Field(
-        default_factory=dict, description="Additional metadata"
-    )
+    processing_time: float = Field(default=0.0, description="Time taken to process in seconds")
+    metadata: dict[str, Any] = Field(default_factory=dict, description="Additional metadata")
 
 
 class BaseSearchAgent(ReactAgent, ABC):
@@ -67,11 +61,7 @@ class BaseSearchAgent(ReactAgent, ABC):
     """
 
     def __init__(
-        self,
-        name: str,
-        engine: AugLLMConfig,
-        search_tools: list[Tool] | None = None,
-        **kwargs,
+        self, name: str, engine: AugLLMConfig, search_tools: list[Tool] | None = None, **kwargs
     ):
         """Initialize the search agent.
 
@@ -177,10 +167,7 @@ class BaseSearchAgent(ReactAgent, ABC):
         return memory_items
 
     async def process_search(
-        self,
-        query: str,
-        context: dict[str, Any] | None = None,
-        save_to_memory: bool = True,
+        self, query: str, context: dict[str, Any] | None = None, save_to_memory: bool = True
     ) -> SearchResponse:
         """Process a search query with memory integration.
 

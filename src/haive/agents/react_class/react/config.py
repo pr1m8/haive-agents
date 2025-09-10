@@ -1,9 +1,7 @@
 import logging
 from typing import Any, Literal
-
 from langchain_core.tools import BaseTool
 from pydantic import BaseModel, Field, model_validator
-
 from haive.agents.react_class.react.state import ReactAgentState
 from haive.agents.simple.config import SimpleAgentConfig
 
@@ -25,9 +23,7 @@ class ReactAgentConfig(SimpleAgentConfig):
     structured_output_schema: type[BaseModel] | None = Field(
         default=None, description="Schema for structured output"
     )
-    system_prompt: str | None = Field(
-        default=None, description="System prompt for the agent"
-    )
+    system_prompt: str | None = Field(default=None, description="System prompt for the agent")
     tool_choice: Literal["auto", "any", "none"] | dict[str, Any] | None = Field(
         default="auto", description="Tool choice configuration for the LLM"
     )

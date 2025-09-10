@@ -1,6 +1,6 @@
 """Enhanced MultiAgent V4 - Advanced multi-agent orchestration with enhanced base agent pattern.
 
-This module provides the MultiAgent class, which represents the **recommended**
+This module provides the EnhancedMultiAgentV4 class, which represents the **recommended**
 multi-agent coordination implementation in the Haive framework. It leverages the enhanced
 base agent pattern to provide sophisticated agent orchestration with clean, intuitive APIs.
 
@@ -8,7 +8,7 @@ base agent pattern to provide sophisticated agent orchestration with clean, intu
 for new projects. It provides the cleanest API, best performance, and most complete feature
 set for multi-agent coordination.
 
-The MultiAgent extends the base Agent class and implements the required
+The EnhancedMultiAgentV4 extends the base Agent class and implements the required
 build_graph() abstract method, enabling it to participate fully in the Haive ecosystem
 while providing advanced multi-agent capabilities.
 
@@ -23,7 +23,7 @@ Key Features:
     - **Hot Agent Addition**: Add agents dynamically with automatic recompilation
 
 Architecture:
-    The MultiAgent follows a hierarchical architecture:
+    The EnhancedMultiAgentV4 follows a hierarchical architecture:
 
     1. **Agent Layer**: Individual agents with their own state and logic
     2. **Orchestration Layer**: Coordination logic and routing decisions
@@ -33,7 +33,7 @@ Architecture:
 Example:
     Basic sequential workflow::
 
-        >>> from haive.agents.multi.agent import MultiAgent
+        >>> from haive.agents.multi.enhanced_multi_agent_v4 import EnhancedMultiAgentV4
         >>> from haive.agents.simple import SimpleAgent
         >>> from haive.agents.react import ReactAgent
         >>>
@@ -42,7 +42,7 @@ Example:
         >>> formatter = SimpleAgent(name="formatter")
         >>>
         >>> # Create multi-agent workflow
-        >>> workflow = MultiAgent(
+        >>> workflow = EnhancedMultiAgentV4(
         ...     name="analysis_pipeline",
         ...     agents=[analyzer, formatter],
         ...     execution_mode="sequential"
@@ -54,7 +54,7 @@ Example:
     Advanced conditional routing::
 
         >>> # Create workflow with conditional execution
-        >>> workflow = MultiAgent(
+        >>> workflow = EnhancedMultiAgentV4(
         ...     name="smart_processor",
         ...     agents=[classifier, simple_processor, complex_processor],
         ...     execution_mode="conditional"
@@ -71,7 +71,7 @@ Example:
     Parallel execution with convergence::
 
         >>> # Create parallel workflow
-        >>> workflow = MultiAgent(
+        >>> workflow = EnhancedMultiAgentV4(
         ...     name="parallel_analysis",
         ...     agents=[analyzer1, analyzer2, analyzer3, aggregator],
         ...     execution_mode="manual"
@@ -104,7 +104,7 @@ from __future__ import annotations
 
 import logging
 from collections.abc import Callable
-from typing import TYPE_CHECKING, Any, Literal
+from typing import TYPE_CHECKING, Any, Literal, List, Optional, Dict
 
 try:
     from typing import Self
@@ -127,7 +127,7 @@ logger = logging.getLogger(__name__)
 # Import Agent for runtime
 
 
-class MultiAgent(Agent):
+class EnhancedMultiAgentV4(Agent):
     """Enhanced MultiAgent V4 using enhanced base agent pattern.
 
     This class properly extends the enhanced base Agent class and implements
@@ -136,14 +136,14 @@ class MultiAgent(Agent):
 
     Example:
         >>> # Simple sequential
-        >>> workflow = MultiAgent(
+        >>> workflow = EnhancedMultiAgentV4(
         ...     name="my_workflow",
         ...     agents=[planner, executor, reviewer],
         ...     execution_mode="sequential"
         ... )
         >>>
         >>> # With conditional branching
-        >>> workflow = MultiAgent(
+        >>> workflow = EnhancedMultiAgentV4(
         ...     name="smart_workflow",
         ...     agents=[classifier, simple_processor, complex_processor],
         ...     execution_mode="conditional",
@@ -232,9 +232,7 @@ class MultiAgent(Agent):
 
         # Ensure state schema is MultiAgentState (already set as default)
         if self.state_schema != MultiAgentState:
-            logger.warning(
-                f"State schema overridden from {self.state_schema} to MultiAgentState"
-            )
+            logger.warning(f"State schema overridden from {self.state_schema} to MultiAgentState")
             self.state_schema = MultiAgentState
 
     def _convert_agents_to_dict(self, agents: list[Agent]) -> dict[str, Agent]:
@@ -265,9 +263,7 @@ class MultiAgent(Agent):
             if agent.name in agent_dict:
                 # Handle duplicates by adding index
                 agent_dict[f"{agent.name}_{i}"] = agent
-                logger.warning(
-                    f"Duplicate agent name '{agent.name}', using '{agent.name}_{i}'"
-                )
+                logger.warning(f"Duplicate agent name '{agent.name}', using '{agent.name}_{i}'")
             else:
                 agent_dict[agent.name] = agent
 
@@ -304,7 +300,7 @@ class MultiAgent(Agent):
 
         Example:
             >>> # Manual build mode
-            >>> workflow = MultiAgent(
+            >>> workflow = EnhancedMultiAgentV4(
             ...     name="custom",
             ...     agents=[agent1, agent2],
             ...     build_mode="manual"
@@ -315,9 +311,7 @@ class MultiAgent(Agent):
         if not self.agent_dict:
             raise ValueError("No agents to build graph with")
 
-        logger.info(
-            f"Building {self.execution_mode} graph with {len(self.agent_dict)} agents"
-        )
+        logger.info(f"Building {self.execution_mode} graph with {len(self.agent_dict)} agents")
 
         # Create BaseGraph with MultiAgentState
         graph = BaseGraph(
@@ -374,9 +368,7 @@ class MultiAgent(Agent):
             return
 
         # Determine entry point
-        start_agent = (
-            self.entry_point if self.entry_point in agent_names else agent_names[0]
-        )
+        start_agent = self.entry_point if self.entry_point in agent_names else agent_names[0]
 
         # START -> first agent
         graph.add_edge(START, start_agent)
@@ -415,9 +407,7 @@ class MultiAgent(Agent):
         """
         # Start with entry point or first agent
         agent_names = list(self.agent_dict.keys())
-        start_agent = (
-            self.entry_point if self.entry_point in agent_names else agent_names[0]
-        )
+        start_agent = self.entry_point if self.entry_point in agent_names else agent_names[0]
         graph.add_edge(START, start_agent)
 
         # Add configured conditional edges
@@ -440,9 +430,7 @@ class MultiAgent(Agent):
         # Ensure unconnected agents go to END
         for agent_name in agent_names:
             # Check if agent has outgoing edges configured
-            has_outgoing = any(
-                edge["from_agent"] == agent_name for edge in self.conditional_edges
-            )
+            has_outgoing = any(edge["from_agent"] == agent_name for edge in self.conditional_edges)
             if not has_outgoing and agent_name != start_agent:
                 graph.add_edge(agent_name, END)
 
@@ -456,14 +444,10 @@ class MultiAgent(Agent):
         """
         # Just ensure START connects to entry point
         agent_names = list(self.agent_dict.keys())
-        start_agent = (
-            self.entry_point if self.entry_point in agent_names else agent_names[0]
-        )
+        start_agent = self.entry_point if self.entry_point in agent_names else agent_names[0]
         graph.add_edge(START, start_agent)
 
-        logger.info(
-            "Manual mode - user must add edges with add_edge() or add_conditional_edge()"
-        )
+        logger.info("Manual mode - user must add edges with add_edge() or add_conditional_edge()")
 
     # ========================================================================
     # USER-FRIENDLY EDGE METHODS
@@ -483,7 +467,7 @@ class MultiAgent(Agent):
             ValueError: If from_agent doesn't exist or to_agent is invalid.
 
         Example:
-            >>> workflow = MultiAgent(
+            >>> workflow = EnhancedMultiAgentV4(
             ...     agents=[agent1, agent2, agent3],
             ...     execution_mode="manual"
             ... )
@@ -565,9 +549,7 @@ class MultiAgent(Agent):
             )
             logger.info(f"Added conditional edge from {from_agent}")
 
-        logger.info(
-            f"Configured conditional edge: {from_agent} -> {true_agent}/{false_agent}"
-        )
+        logger.info(f"Configured conditional edge: {from_agent} -> {true_agent}/{false_agent}")
 
     def add_multi_conditional_edge(
         self,
@@ -620,10 +602,7 @@ class MultiAgent(Agent):
         # If graph is built, add edge directly
         if hasattr(self, "graph") and self.graph:
             self.graph.add_conditional_edges(
-                source_node=from_agent,
-                condition=condition,
-                destinations=routes,
-                default=default,
+                source_node=from_agent, condition=condition, destinations=routes, default=default
             )
 
         logger.info(

@@ -67,8 +67,7 @@ CORRECT_CYPHER_PROMPT_TEMPLATE = ChatPromptTemplate.from_messages(
 )
 
 correct_cypher_aug_llm_config = AugLLMConfig(
-    prompt_template=CORRECT_CYPHER_PROMPT_TEMPLATE,
-    structured_output_model=CypherQueryOutput,
+    prompt_template=CORRECT_CYPHER_PROMPT_TEMPLATE, structured_output_model=CypherQueryOutput
 )
 """Engine for correcting Cypher queries based on validation errors.
 
@@ -94,7 +93,7 @@ VALIDATE_CYPHER_SYSTEM_PROMPT = (
     """You are a Cypher expert reviewing a statement written by a junior developer."""
 )
 
-VALIDATE_CYPHER_USER_PROMPT = """You must check the following:.
+VALIDATE_CYPHER_USER_PROMPT = """You must check the following:
 * Are there any syntax errors in the Cypher statement?
 * Are there any missing or undefined variables in the Cypher statement?
 * Are any node labels missing from the schema?
@@ -219,7 +218,7 @@ Output:
 # FINAL ANSWER GENERATION ENGINE
 # ============================================================================
 
-GENERATE_FINAL_HUMAN_PROMPT = """Use the following results retrieved from a database to provide.
+GENERATE_FINAL_HUMAN_PROMPT = """Use the following results retrieved from a database to provide
 a succinct, definitive answer to the user's question.
 
 Respond as if you are answering the question directly.

@@ -86,15 +86,6 @@ class CorrectiveRAGAgent(ConditionalAgent):
         documents: list[Document] | None = None,
         **kwargs,
     ):
-        """Init  .
-
-        Args:
-            retrieval_agent: [TODO: Add description]
-            grading_agent: [TODO: Add description]
-            requery_agent: [TODO: Add description]
-            answer_agent: [TODO: Add description]
-            documents: [TODO: Add description]
-        """
         # Create default agents if not provided
         if not retrieval_agent:
             retrieval_agent = SimpleRAGAgent.from_documents(
@@ -114,10 +105,7 @@ class CorrectiveRAGAgent(ConditionalAgent):
         agents = [retrieval_agent, grading_agent, requery_agent, answer_agent]
 
         super().__init__(
-            name="Corrective RAG Agent",
-            agents=agents,
-            state_schema=MultiAgentRAGState,
-            **kwargs,
+            name="Corrective RAG Agent", agents=agents, state_schema=MultiAgentRAGState, **kwargs
         )
 
         self.retrieval_agent = retrieval_agent
@@ -180,14 +168,6 @@ class HYDERAGAgent(SequentialAgent):
         documents: list[Document] | None = None,
         **kwargs,
     ):
-        """Init  .
-
-        Args:
-            hypothesis_agent: [TODO: Add description]
-            retrieval_agent: [TODO: Add description]
-            answer_agent: [TODO: Add description]
-            documents: [TODO: Add description]
-        """
         # Create hypothesis generator
         if not hypothesis_agent:
             hyde_prompt = ChatPromptTemplate.from_messages(
@@ -201,8 +181,7 @@ class HYDERAGAgent(SequentialAgent):
             )
 
             hypothesis_agent = SimpleAgent(
-                name="HYDE Hypothesis Generator",
-                engine=AugLLMConfig(prompt_template=hyde_prompt),
+                name="HYDE Hypothesis Generator", engine=AugLLMConfig(prompt_template=hyde_prompt)
             )
 
         # Create retrieval agent that will use hypothesis for similarity search
@@ -234,15 +213,6 @@ class SelfRAGAgent(ConditionalAgent):
         documents: list[Document] | None = None,
         **kwargs,
     ):
-        """Init  .
-
-        Args:
-            retrieval_decision_agent: [TODO: Add description]
-            retrieval_agent: [TODO: Add description]
-            relevance_agent: [TODO: Add description]
-            generation_agent: [TODO: Add description]
-            documents: [TODO: Add description]
-        """
         # Create retrieval decision agent
         if not retrieval_decision_agent:
             retrieval_prompt = ChatPromptTemplate.from_messages(
@@ -270,14 +240,10 @@ class SelfRAGAgent(ConditionalAgent):
             )
 
         if not relevance_agent:
-            relevance_agent = SimpleAgent(
-                name="Self-RAG Relevance Checker", engine=AugLLMConfig()
-            )
+            relevance_agent = SimpleAgent(name="Self-RAG Relevance Checker", engine=AugLLMConfig())
 
         if not generation_agent:
-            generation_agent = SimpleAgent(
-                name="Self-RAG Generator", engine=AugLLMConfig()
-            )
+            generation_agent = SimpleAgent(name="Self-RAG Generator", engine=AugLLMConfig())
 
         agents = [
             retrieval_decision_agent,
@@ -287,10 +253,7 @@ class SelfRAGAgent(ConditionalAgent):
         ]
 
         super().__init__(
-            name="Self-RAG Agent",
-            agents=agents,
-            state_schema=MultiAgentRAGState,
-            **kwargs,
+            name="Self-RAG Agent", agents=agents, state_schema=MultiAgentRAGState, **kwargs
         )
 
         self.retrieval_decision_agent = retrieval_decision_agent
@@ -306,10 +269,7 @@ class SelfRAGAgent(ConditionalAgent):
         def self_rag_router(state: MultiAgentRAGState) -> str:
             """Route based on Self-RAG reflection logic."""
             # Check if we need retrieval decision
-            if (
-                not hasattr(state, "needs_retrieval_decision")
-                or not state.needs_retrieval_decision
-            ):
+            if not hasattr(state, "needs_retrieval_decision") or not state.needs_retrieval_decision:
                 return self._get_agent_node_name(self.retrieval_decision_agent)
 
             # If retrieval is needed and not done

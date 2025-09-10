@@ -1,13 +1,13 @@
-"""Declarative chain building for complex agent workflows.
+"""
+Declarative chain building for complex agent workflows.
 
 Provides declarative specification and building of complex agent chains
-with branching, loops, and conditional execution."""
+with branching, loops, and conditional execution.
+"""
 
-from collections.abc import Callable
+from typing import Any, Callable, Dict, List, Optional, Union
+from pydantic import BaseModel, Field
 from dataclasses import dataclass
-from typing import Any
-
-from pydantic import Field
 
 
 @dataclass
@@ -23,7 +23,7 @@ class NodeSpec:
 class SequenceSpec:
     """Specification for a sequence of nodes."""
 
-    nodes: list[str]
+    nodes: List[str]
 
 
 @dataclass
@@ -31,9 +31,9 @@ class BranchSpec:
     """Specification for conditional branching."""
 
     from_node: str
-    condition: str | Callable[[dict[str, Any]], Any]
-    branches: dict[Any, str]
-    default: str | None = None
+    condition: Union[str, Callable[[Dict[str, Any]], Any]]
+    branches: Dict[Any, str]
+    default: Optional[str] = None
 
 
 @dataclass
@@ -42,7 +42,7 @@ class LoopSpec:
 
     start_node: str
     end_node: str
-    condition: str | Callable[[dict[str, Any]], bool]
+    condition: Union[str, Callable[[Dict[str, Any]], bool]]
     max_iterations: int = 10
 
 
@@ -50,34 +50,27 @@ class LoopSpec:
 class ChainSpec:
     """Complete specification for a declarative chain."""
 
-    nodes: list[NodeSpec]
-    sequences: list[SequenceSpec] = Field(default_factory=list)
-    branches: list[BranchSpec] = Field(default_factory=list)
-    loops: list[LoopSpec] = Field(default_factory=list)
+    nodes: List[NodeSpec]
+    sequences: List[SequenceSpec] = Field(default_factory=list)
+    branches: List[BranchSpec] = Field(default_factory=list)
+    loops: List[LoopSpec] = Field(default_factory=list)
     entry_point: str = "START"
-    exit_points: list[str] = Field(default_factory=lambda: ["END"])
+    exit_points: List[str] = Field(default_factory=lambda: ["END"])
 
 
 class ChainBuilder:
     """Builder for creating declarative chains."""
 
     def __init__(self, name: str):
-        """Init  .
-
-        Args:
-            name: [TODO: Add description]
-        """
         self.name = name
-        self.nodes: list[NodeSpec] = []
-        self.sequences: list[SequenceSpec] = []
-        self.branches: list[BranchSpec] = []
-        self.loops: list[LoopSpec] = []
+        self.nodes: List[NodeSpec] = []
+        self.sequences: List[SequenceSpec] = []
+        self.branches: List[BranchSpec] = []
+        self.loops: List[LoopSpec] = []
         self.entry_point = "START"
         self.exit_points = ["END"]
 
-    def add_node(
-        self, name: str, node: Any, node_type: str = "agent"
-    ) -> "ChainBuilder":
+    def add_node(self, name: str, node: Any, node_type: str = "agent") -> "ChainBuilder":
         """Add a node to the chain."""
         self.nodes.append(NodeSpec(name=name, node=node, node_type=node_type))
         return self
@@ -91,18 +84,13 @@ class ChainBuilder:
     def add_branch(
         self,
         from_node: str,
-        condition: str | Callable,
-        branches: dict[Any, str],
-        default: str | None = None,
+        condition: Union[str, Callable],
+        branches: Dict[Any, str],
+        default: Optional[str] = None,
     ) -> "ChainBuilder":
         """Add conditional branching."""
         self.branches.append(
-            BranchSpec(
-                from_node=from_node,
-                condition=condition,
-                branches=branches,
-                default=default,
-            )
+            BranchSpec(from_node=from_node, condition=condition, branches=branches, default=default)
         )
         return self
 
@@ -110,7 +98,7 @@ class ChainBuilder:
         self,
         start_node: str,
         end_node: str,
-        condition: str | Callable,
+        condition: Union[str, Callable],
         max_iterations: int = 10,
     ) -> "ChainBuilder":
         """Add a loop."""
@@ -141,12 +129,6 @@ class DeclarativeChainAgent:
     """Agent that executes a declaratively defined chain."""
 
     def __init__(self, name: str, chain_spec: ChainSpec):
-        """Init  .
-
-        Args:
-            name: [TODO: Add description]
-            chain_spec: [TODO: Add description]
-        """
         self.name = name
         self.chain_spec = chain_spec
         self._compiled_graph = None
@@ -155,8 +137,9 @@ class DeclarativeChainAgent:
         """Compile the chain specification into an executable graph."""
         # This would build a LangGraph or similar executable graph
         # For now, this is a placeholder
+        pass
 
-    def run(self, input_data: dict[str, Any]) -> dict[str, Any]:
+    def run(self, input_data: Dict[str, Any]) -> Dict[str, Any]:
         """Execute the chain."""
         if self._compiled_graph is None:
             self._compile_graph()
@@ -164,7 +147,7 @@ class DeclarativeChainAgent:
         # For now, return placeholder
         return {"status": "placeholder", "input": input_data}
 
-    async def arun(self, input_data: dict[str, Any]) -> dict[str, Any]:
+    async def arun(self, input_data: Dict[str, Any]) -> Dict[str, Any]:
         """Execute the chain asynchronously."""
         return self.run(input_data)
 

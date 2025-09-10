@@ -62,9 +62,7 @@ def should_continue(state: dict[str, Any]) -> bool:
         return True
 
     # Check for structured output needs
-    return bool(
-        hasattr(state, "structured_output_model") and state.structured_output_model
-    )
+    return bool(hasattr(state, "structured_output_model") and state.structured_output_model)
 
 
 # ========================================================================
@@ -175,10 +173,7 @@ class EnhancedSimpleAgent(Agent):
     # ========================================================================
 
     temperature: float | None = Field(
-        default=None,
-        ge=0.0,
-        le=2.0,
-        description="Temperature for the LLM (syncs to engine)",
+        default=None, ge=0.0, le=2.0, description="Temperature for the LLM (syncs to engine)"
     )
 
     max_tokens: int | None = Field(
@@ -197,9 +192,7 @@ class EnhancedSimpleAgent(Agent):
         default=None, description="Structured output model (syncs to engine)"
     )
 
-    system_message: str | None = Field(
-        default=None, description="System message (syncs to engine)"
-    )
+    system_message: str | None = Field(default=None, description="System message (syncs to engine)")
 
     llm_config: LLMConfig | dict[str, Any] | None = Field(
         default=None, description="LLM config (syncs to engine)"
@@ -219,21 +212,15 @@ class EnhancedSimpleAgent(Agent):
     )
 
     # Enhanced capabilities
-    multi_engine_mode: bool = Field(
-        default=False, description="Enable multiple engines per agent"
-    )
+    multi_engine_mode: bool = Field(default=False, description="Enable multiple engines per agent")
 
     advanced_routing: bool = Field(
         default=False, description="Enable sophisticated tool/engine routing"
     )
 
-    performance_mode: bool = Field(
-        default=False, description="Enable caching and optimization"
-    )
+    performance_mode: bool = Field(default=False, description="Enable caching and optimization")
 
-    debug_mode: bool = Field(
-        default=False, description="Enable rich debugging and observability"
-    )
+    debug_mode: bool = Field(default=False, description="Enable rich debugging and observability")
 
     persistence_config: dict[str, Any] | None = Field(
         default=None, description="Advanced persistence configuration"
@@ -252,9 +239,7 @@ class EnhancedSimpleAgent(Agent):
         if isinstance(v, dict):
             return AugLLMConfig(**v)
         if not isinstance(v, AugLLMConfig):
-            raise ValueError(
-                f"EnhancedSimpleAgent requires AugLLMConfig, got {type(v)}"
-            )
+            raise ValueError(f"EnhancedSimpleAgent requires AugLLMConfig, got {type(v)}")
         return v
 
     @field_validator("temperature")
@@ -342,9 +327,7 @@ class EnhancedSimpleAgent(Agent):
 
         if self.structured_output_model is not None:
             self.engine.structured_output_model = self.structured_output_model
-            logger.debug(
-                f"Synced structured_output_model: {self.structured_output_model.__name__}"
-            )
+            logger.debug(f"Synced structured_output_model: {self.structured_output_model.__name__}")
 
         if self.system_message is not None:
             self.engine.system_message = self.system_message
@@ -535,19 +518,13 @@ class EnhancedSimpleAgent(Agent):
             },
             "schemas": {
                 "state_schema": (
-                    getattr(self.state_schema, "__name__", None)
-                    if self.state_schema
-                    else None
+                    getattr(self.state_schema, "__name__", None) if self.state_schema else None
                 ),
                 "input_schema": (
-                    getattr(self.input_schema, "__name__", None)
-                    if self.input_schema
-                    else None
+                    getattr(self.input_schema, "__name__", None) if self.input_schema else None
                 ),
                 "output_schema": (
-                    getattr(self.output_schema, "__name__", None)
-                    if self.output_schema
-                    else None
+                    getattr(self.output_schema, "__name__", None) if self.output_schema else None
                 ),
             },
         }
@@ -571,16 +548,10 @@ class EnhancedSimpleAgent(Agent):
         features = summary["features"]
         table.add_section()
         table.add_row("Has Tools", "✅" if features["has_tools"] else "❌")
-        table.add_row(
-            "Structured Output", "✅" if features["has_structured_output"] else "❌"
-        )
+        table.add_row("Structured Output", "✅" if features["has_structured_output"] else "❌")
         table.add_row("Multi-Engine", "✅" if features["multi_engine_mode"] else "❌")
-        table.add_row(
-            "Advanced Routing", "✅" if features["advanced_routing"] else "❌"
-        )
-        table.add_row(
-            "Performance Mode", "✅" if features["performance_mode"] else "❌"
-        )
+        table.add_row("Advanced Routing", "✅" if features["advanced_routing"] else "❌")
+        table.add_row("Performance Mode", "✅" if features["performance_mode"] else "❌")
         table.add_row("Debug Mode", "✅" if features["debug_mode"] else "❌")
 
         # Configuration

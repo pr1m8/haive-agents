@@ -38,9 +38,7 @@ class Plan(BaseModel):
 
 try:
     add_aug = AugLLMConfig(tools=[add])
-    plan_aug = AugLLMConfig(
-        structured_output_model=Plan, structured_output_version="v2"
-    )
+    plan_aug = AugLLMConfig(structured_output_model=Plan, structured_output_version="v2")
     react_agent = ReactAgent(engine=add_aug)
     simple_agent = SimpleAgent(engine=plan_aug)
 

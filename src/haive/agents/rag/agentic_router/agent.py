@@ -141,7 +141,7 @@ class AgenticRouterResult(BaseModel):
 REACT_PLANNING_PROMPT = ChatPromptTemplate.from_messages(
     [
         (
-            """system.""",
+            """system""",
             """You are an expert agentic RAG router using ReAct (Reason + Act) patterns.
 
 **REACT METHODOLOGY:**
@@ -175,8 +175,8 @@ REACT_PLANNING_PROMPT = ChatPromptTemplate.from_messages(
 Use systematic reasoning to select optimal RAG strategies.""",
         ),
         (
-            """human.""",
-            """Plan RAG strategy using ReAct reasoning:.
+            """human""",
+            """Plan RAG strategy using ReAct reasoning:
 
 **Query:** {query}
 
@@ -204,7 +204,7 @@ Use ReAct methodology - provide clear reasoning for each decision point.""",
 STRATEGY_EXECUTION_PROMPT = ChatPromptTemplate.from_messages(
     [
         (
-            """system.""",
+            """system""",
             """You are an expert at executing RAG strategies based on agentic routing decisions.
 
 **EXECUTION PRINCIPLES:**
@@ -231,8 +231,8 @@ STRATEGY_EXECUTION_PROMPT = ChatPromptTemplate.from_messages(
 Execute the planned strategy with precision and continuous quality monitoring.""",
         ),
         (
-            """human.""",
-            """Execute RAG strategy based on agentic routing plan:.
+            """human""",
+            """Execute RAG strategy based on agentic routing plan:
 
 **Original Query:** {query}
 
@@ -262,7 +262,7 @@ Focus on high-quality execution with continuous monitoring and validation.""",
 AGENTIC_SYNTHESIS_PROMPT = ChatPromptTemplate.from_messages(
     [
         (
-            """system.""",
+            """system""",
             """You are an expert at synthesizing results from agentic RAG routing processes.
 
 **SYNTHESIS PRINCIPLES:**
@@ -289,8 +289,8 @@ AGENTIC_SYNTHESIS_PROMPT = ChatPromptTemplate.from_messages(
 Create comprehensive, high-quality final results with full process transparency.""",
         ),
         (
-            """human.""",
-            """Synthesize agentic RAG routing results:.
+            """human""",
+            """Synthesize agentic RAG routing results:
 
 **Original Query:** {query}
 

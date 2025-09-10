@@ -357,7 +357,7 @@ class MemoryStoreManager:
         max_age_hours: Optional[int] = None,
         dry_run: bool = False,
     ) -> MemoryConsolidationResult:
-        """Consolidate memories by removing duplicates, summarizing old memories, and.
+        """Consolidate memories by removing duplicates, summarizing old memories, and
         cleaning up.
 
         Args:

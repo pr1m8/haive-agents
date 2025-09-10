@@ -1,6 +1,6 @@
 # src/haive/agents/tot/state.py
 
-from typing import Annotated, Any
+from typing import Annotated, Any, Union, Optional
 
 from langchain_core.messages import BaseMessage
 from langgraph.graph import add_messages
@@ -41,19 +41,17 @@ class TOTState(TOTInput, TOTOutput):
 
     max_depth: int = Field(default=5, description="Maximum search depth")
 
-    best_candidate: dict[str, Any] | None = Field(
+    best_candidate: Optional[dict[str, Any]] = Field(
         default=None, description="Best candidate found so far"
     )
 
     # For expansion
-    current_seed: dict[str, Any] | None = Field(
+    current_seed: Optional[dict[str, Any]] = Field(
         default=None, description="Current seed candidate for expansion"
     )
 
     # Use Pydantic v2 configuration
-    model_config = ConfigDict(
-        validate_assignment=True, extra="allow", arbitrary_types_allowed=True
-    )
+    model_config = ConfigDict(validate_assignment=True, extra="allow", arbitrary_types_allowed=True)
 
     @field_validator("candidates", "scored_candidates", mode="before")
     @classmethod

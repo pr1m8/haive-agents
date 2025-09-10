@@ -4,7 +4,7 @@ This module defines the core data structures used in the taxonomy generation pro
 particularly the document model that represents individual pieces of content being
 processed.
 
-Examples:
+Example:
     Basic usage of document model::
 
         doc = Doc(
@@ -42,7 +42,7 @@ class Doc(BaseModel):
         category (Optional[str]): Taxonomy category assigned to the document in
             later stages of processing. Defaults to empty string.
 
-    Examples:
+    Example:
         >>> doc = Doc(
         ...     id="chat_123",
         ...     content="User asked about Python installation",
@@ -57,20 +57,8 @@ class Doc(BaseModel):
     summary: str | None = Field("", description="The summary of the document.")
     explanation: str | None = Field("", description="The explanation of the document.")
     category: str | None = Field("", description="The category of the document.")
-    metadata: dict | None = Field(
-        {}, description="Any additional metadata for the document."
-    )
+    metadata: dict | None = Field({}, description="Any additional metadata for the document.")
 
     @classmethod
     def from_document(cls, document: Document) -> "Doc":
-        """From Document.
-
-        Args:
-            document: [TODO: Add description]
-
-        Returns:
-            [TODO: Add return description]
-        """
-        return cls(
-            id=document.id, content=document.page_content, metadata=document.metadata
-        )
+        return cls(id=document.id, content=document.page_content, metadata=document.metadata)

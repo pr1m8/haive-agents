@@ -26,12 +26,6 @@ class AgentDebugger:
     """Rich UI debugger for agent execution."""
 
     def __init__(self, agent_name: str = "Agent", enabled: bool = False):
-        """  Init  .
-
-Args:
-    agent_name: [TODO: Add description]
-    enabled: [TODO: Add description]
-"""
         self.agent_name = agent_name
         self.enabled = enabled
         self.console = Console()

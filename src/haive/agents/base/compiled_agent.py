@@ -6,18 +6,15 @@ the future direction for agent architecture in the Haive framework.
 """
 
 from __future__ import annotations
-
 import logging
 from abc import abstractmethod
 from typing import Any, Literal
-
 from haive.core.engine.base import Engine, EngineType
 from haive.core.graph.state_graph.compiled_state_graph import CompiledStateGraph
 from haive.core.schema.prebuilt.messages_state import MessagesState
 from haive.core.schema.schema_composer import SchemaComposer
 from langchain_core.tools import BaseTool
 from pydantic import Field, model_validator
-
 from haive.agents.base.mixins.execution_mixin import ExecutionMixin
 from haive.agents.base.mixins.persistence_mixin import PersistenceMixin
 from haive.agents.base.mixins.state_mixin import StateMixin
@@ -53,16 +50,13 @@ class CompiledAgent(
     """
 
     agent_type: Literal[EngineType.AGENT] = Field(
-        default=EngineType.AGENT,
-        description="Agent type, always AGENT for reasoning agents",
+        default=EngineType.AGENT, description="Agent type, always AGENT for reasoning agents"
     )
     engine: Engine | None = Field(
-        default=None,
-        description="Primary LLM engine for reasoning (required for agents)",
+        default=None, description="Primary LLM engine for reasoning (required for agents)"
     )
     engines: dict[str, Engine] = Field(
-        default_factory=dict,
-        description="Dictionary of additional engines used by this agent",
+        default_factory=dict, description="Dictionary of additional engines used by this agent"
     )
     tools: list[BaseTool] = Field(
         default_factory=list, description="List of tools available to this agent"
@@ -79,7 +73,7 @@ class CompiledAgent(
 
     @model_validator(mode="after")
     @classmethod
-    def validate_agent_requirements(cls) -> CompiledAgent:
+    def validate_agent_requirements(cls) -> "CompiledAgent":
         """Validate that agent has required LLM capabilities.
 
         Agents must have an LLM engine for reasoning. This validator ensures
@@ -252,9 +246,7 @@ class CompiledAgent(
         compiled_graph = self.compile()
         return compiled_graph.invoke(input_data, config=config)
 
-    async def ainvoke(
-        self, input_data: Any, config: dict[str, Any] | None = None
-    ) -> Any:
+    async def ainvoke(self, input_data: Any, config: dict[str, Any] | None = None) -> Any:
         """Asynchronous invoke method.
 
         Args:

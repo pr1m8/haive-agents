@@ -4,7 +4,7 @@ This module defines the structured output models used by the planner agent
 for creating comprehensive, actionable task plans.
 """
 
-from typing import Literal
+from typing import Literal, Optional, Any
 
 from pydantic import BaseModel, Field
 
@@ -49,16 +49,14 @@ class TaskStep(BaseModel):
 
     step_id: str = Field(..., description="Unique identifier for this step")
     description: str = Field(..., description="Clear description of what to do")
-    expected_outcome: str = Field(
-        ..., description="What result this step should produce"
-    )
+    expected_outcome: str = Field(..., description="What result this step should produce")
     tools_needed: list[str] = Field(
         default_factory=list, description="Tools required for this step"
     )
     priority: Literal["high", "medium", "low"] = Field(
         default="medium", description="Priority level for execution"
     )
-    estimated_time: str | None = Field(
+    estimated_time: Optional[str] = Field(
         default=None, description="Estimated time to complete (e.g., '5 minutes')"
     )
     dependencies: list[str] = Field(
@@ -104,15 +102,11 @@ class TaskPlan(BaseModel):
             )
     """
 
-    objective: str = Field(
-        ..., description="The main objective we're trying to achieve"
-    )
+    objective: str = Field(..., description="The main objective we're trying to achieve")
     steps: list[TaskStep] = Field(..., description="List of steps to execute in order")
     reasoning: str = Field(..., description="Explanation of the planning approach")
-    success_criteria: str = Field(
-        ..., description="How we'll know the objective has been achieved"
-    )
-    estimated_total_time: str | None = Field(
+    success_criteria: str = Field(..., description="How we'll know the objective has been achieved")
+    estimated_total_time: Optional[str] = Field(
         default=None, description="Estimated total time for all steps"
     )
     plan_type: Literal[
@@ -163,13 +157,13 @@ class PlanningContext(BaseModel):
     available_tools: list[str] = Field(
         default_factory=list, description="Tools that can be used during execution"
     )
-    time_constraints: str | None = Field(
+    time_constraints: Optional[str] = Field(
         default=None, description="Any time limitations to consider"
     )
-    complexity_level: Literal["simple", "moderate", "detailed", "comprehensive"] = (
-        Field(default="moderate", description="Desired complexity level for the plan")
+    complexity_level: Literal["simple", "moderate", "detailed", "comprehensive"] = Field(
+        default="moderate", description="Desired complexity level for the plan"
     )
-    domain_focus: str | None = Field(
+    domain_focus: Optional[str] = Field(
         default=None, description="Specific domain or area of focus"
     )
     previous_attempts: list[str] = Field(

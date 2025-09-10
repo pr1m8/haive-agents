@@ -46,9 +46,7 @@ class PersistenceMixin:
         """
         # Check if persistence is explicitly disabled (False)
         if self.persistence is False:
-            logger.debug(
-                f"Persistence explicitly disabled for {getattr(self, 'name', 'Agent')}"
-            )
+            logger.debug(f"Persistence explicitly disabled for {getattr(self, 'name', 'Agent')}")
             self.checkpointer = None
             self.store = None
             # Still set up runnable config for recursion limit
@@ -69,9 +67,7 @@ class PersistenceMixin:
             try:
                 self.persistence = MemoryCheckpointerConfig()
             except ImportError:
-                logger.warning(
-                    "Could not import MemoryCheckpointerConfig, persistence disabled"
-                )
+                logger.warning("Could not import MemoryCheckpointerConfig, persistence disabled")
                 self.checkpointer = None
                 self.store = None
                 return
@@ -96,15 +92,11 @@ class PersistenceMixin:
         # Sync checkpoint mode
         if hasattr(self.config, "checkpoint_mode"):
             self.checkpoint_mode = self.config.checkpoint_mode
-        elif hasattr(self.config, "persistence") and hasattr(
-            self.config.persistence, "mode"
-        ):
+        elif hasattr(self.config, "persistence") and hasattr(self.config.persistence, "mode"):
             # Convert from CheckpointerMode enum to string
             mode = self.config.persistence.mode
             if hasattr(mode, "value"):
-                self.checkpoint_mode = (
-                    "async" if mode == CheckpointerMode.ASYNC else "sync"
-                )
+                self.checkpoint_mode = "async" if mode == CheckpointerMode.ASYNC else "sync"
             else:
                 self.checkpoint_mode = "async" if mode == "async" else "sync"
 
@@ -212,24 +204,13 @@ class PersistenceMixin:
     def _setup_checkpointer_from_fields(self) -> None:
         """Set up checkpointer using the persistence field."""
         if not self.persistence:
-            logger.warning(
-                f"No persistence config found for {getattr(self, 'name', 'Agent')}"
-            )
+            logger.warning(f"No persistence config found for {getattr(self, 'name', 'Agent')}")
             return
 
         try:
             # Create a minimal config-like object for the handler
             class PersistenceConfig:
                 def __init__(self, persistence, checkpoint_mode="sync") -> None:
-                    """Init  .
-
-                    Args:
-                        persistence: [TODO: Add description]
-                        checkpoint_mode: [TODO: Add description]
-
-                    Returns:
-                        [TODO: Add return description]
-                    """
                     self.persistence = persistence
                     self.checkpoint_mode = checkpoint_mode
 
@@ -263,15 +244,6 @@ class PersistenceMixin:
             # Create a minimal config-like object for the handler
             class PersistenceConfig:
                 def __init__(self, persistence, checkpoint_mode="async") -> None:
-                    """Init  .
-
-                    Args:
-                        persistence: [TODO: Add description]
-                        checkpoint_mode: [TODO: Add description]
-
-                    Returns:
-                        [TODO: Add return description]
-                    """
                     self.persistence = persistence
                     self.checkpoint_mode = checkpoint_mode
 
@@ -281,9 +253,7 @@ class PersistenceMixin:
             # For now, we'll set a flag to set it up later
             self._async_setup_pending = True
 
-            logger.debug(
-                f"Async checkpointer setup pending for {getattr(self, 'name', 'Agent')}"
-            )
+            logger.debug(f"Async checkpointer setup pending for {getattr(self, 'name', 'Agent')}")
 
         except Exception as e:
             logger.exception(f"Failed to prepare async checkpointer setup: {e}")
@@ -322,16 +292,12 @@ class PersistenceMixin:
                         self.store = create_store(
                             store_type=store_type, connection_string=connection_string
                         )
-                        logger.info(
-                            f"PostgreSQL store added successfully ({store_type.value})"
-                        )
+                        logger.info(f"PostgreSQL store added successfully ({store_type.value})")
                     else:
                         # Fall back to memory store if no connection info
 
                         self.store = InMemoryStore()
-                        logger.debug(
-                            "InMemoryStore added (no PostgreSQL connection info)"
-                        )
+                        logger.debug("InMemoryStore added (no PostgreSQL connection info)")
 
                 except ImportError:
                     # PostgreSQL store not available, use memory store
@@ -354,9 +320,7 @@ class PersistenceMixin:
                 self.store = BaseStore()
                 logger.debug("BaseStore added")
             except ImportError:
-                logger.warning(
-                    "Could not import any Store class, store functionality disabled"
-                )
+                logger.warning("Could not import any Store class, store functionality disabled")
         except Exception as e:
             logger.warning(f"Failed to set up store: {e}")
 
@@ -374,14 +338,6 @@ class PersistenceMixin:
             # Create a minimal config-like object for the handler
             class PersistenceConfig:
                 def __init__(self, persistence) -> None:
-                    """Init  .
-
-                    Args:
-                        persistence: [TODO: Add description]
-
-                    Returns:
-                        [TODO: Add return description]
-                    """
                     self.persistence = persistence
                     self.checkpoint_mode = "async"
 
@@ -462,6 +418,7 @@ class PersistenceMixin:
         For cases where you need consistent thread IDs (e.g., resuming conversations),
         explicitly pass a thread_id to the run() method.
         """
+
         # Generate a unique UUID for this agent instance
         unique_id = str(uuid.uuid4())
 

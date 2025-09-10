@@ -7,10 +7,7 @@ from haive.agents.structured.models import (
     GenericStructuredOutput,
     TaskOutput,
 )
-from haive.agents.structured.prompts import (
-    create_contextual_prompt,
-    get_prompt_for_model,
-)
+from haive.agents.structured.prompts import create_contextual_prompt, get_prompt_for_model
 
 __all__ = [
     "AnalysisOutput",

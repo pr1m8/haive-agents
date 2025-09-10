@@ -1,5 +1,5 @@
 # UltraLazyAgent - Sub-3 Second Import Target
-"""Ultra-aggressive lazy loading implementation that defers ALL dependencies.
+"""Ultra-aggressive lazy loading implementation that defers ALL dependencies
 until the moment of first actual use. Target: <3 second import time.
 
 This uses the most minimal possible imports and defers everything else.
@@ -15,11 +15,6 @@ class UltraLazyAgent:
     """Ultra-minimal agent proxy with maximum lazy loading."""
 
     def __init__(self, name: str = "UltraLazyAgent", **kwargs):
-        """Init  .
-
-        Args:
-            name: [TODO: Add description]
-        """
         # Store ONLY basic data - no complex objects
         self._name = name
         self._kwargs = kwargs
@@ -28,11 +23,6 @@ class UltraLazyAgent:
 
     @property
     def name(self) -> str:
-        """Name.
-
-        Returns:
-            [TODO: Add return description]
-        """
         return self._name
 
     def _load_real_agent(self):
@@ -40,10 +30,11 @@ class UltraLazyAgent:
         if self._real_agent is None:
             # Import and create real agent only now
 
-            importlib.import_module("haive.agents.simple.agent_v3")
+            module = importlib.import_module("haive.agents.simple.agent_v3")
+            SimpleAgentV3 = module.SimpleAgentV3
 
             # Create real instance
-            self._real_agent = SimpleAgent(name=self._name, **self._kwargs)
+            self._real_agent = SimpleAgentV3(name=self._name, **self._kwargs)
             self._initialized = True
 
         return self._real_agent
@@ -51,9 +42,7 @@ class UltraLazyAgent:
     def __getattr__(self, name: str):
         """Proxy everything to real agent."""
         if name.startswith("_"):
-            raise AttributeError(
-                f"'{self.__class__.__name__}' object has no attribute '{name}'"
-            )
+            raise AttributeError(f"'{self.__class__.__name__}' object has no attribute '{name}'")
         return getattr(self._load_real_agent(), name)
 
     def __setattr__(self, name: str, value: Any):

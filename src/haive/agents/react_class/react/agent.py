@@ -80,9 +80,7 @@ class ReactAgent(Agent[ReactAgentConfig]):
 
             # Check if we already have a system message
             has_system = any(
-                isinstance(m, SystemMessage)
-                for m in messages
-                if isinstance(m, BaseMessage)
+                isinstance(m, SystemMessage) for m in messages if isinstance(m, BaseMessage)
             )
 
             if not has_system:
@@ -201,9 +199,7 @@ class ReactAgent(Agent[ReactAgentConfig]):
             Result from agent execution
         """
         # Extract query from input
-        query = (
-            input_data if isinstance(input_data, str) else input_data.get("query", "")
-        )
+        query = input_data if isinstance(input_data, str) else input_data.get("query", "")
 
         if filter_tools and query:
             # Filter tools based on query

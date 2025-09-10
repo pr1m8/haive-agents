@@ -8,7 +8,6 @@ from haive.agents.document_modifiers.kg.kg_map_merge.utils import (
 if __name__ == "__main__":
 
     async def main():
-        """Main."""
         # Import numpy for visualization
 
         # Example documents

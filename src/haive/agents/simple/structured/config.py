@@ -1,9 +1,7 @@
 from typing import Any
-
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.output_parsers import PydanticOutputParser
 from pydantic import BaseModel, Field, model_validator
-
 from haive.agents import tools
 from haive.agents.simple.config import SimpleAgentConfig
 
@@ -17,13 +15,9 @@ class StructuredOutputAgentConfig(SimpleAgentConfig):
 
     structured_output_model: type[BaseModel]
     engine: AugLLMConfig = Field(
-        default_factory=lambda: AugLLMConfig(
-            force_tool_use=True, force_tool_choice=True
-        )
+        default_factory=lambda: AugLLMConfig(force_tool_use=True, force_tool_choice=True)
     )
-    output_parser: PydanticOutputParser = Field(
-        default_factory=lambda: PydanticOutputParser()
-    )
+    output_parser: PydanticOutputParser = Field(default_factory=lambda: PydanticOutputParser())
     output_schema = structured_output_model
 
     @model_validator(mode="after")
@@ -38,11 +32,7 @@ class StructuredOutputAgentConfig(SimpleAgentConfig):
             self.engine.force_tool_choice = output_tool.id
         else:
             raise ValueError("StructuredOutputTool must have a name or id attribute")
-        self.output_parser = PydanticOutputParser(
-            pydantic_object=self.structured_output_model
-        )
+        self.output_parser = PydanticOutputParser(pydantic_object=self.structured_output_model)
         if len(self.engine.tools) != 1:
-            raise ValueError(
-                f"Expected exactly one tool, but got {len(self.engine.tools)}"
-            )
+            raise ValueError(f"Expected exactly one tool, but got {len(self.engine.tools)}")
         return self

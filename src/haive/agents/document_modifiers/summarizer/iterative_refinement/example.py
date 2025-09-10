@@ -22,7 +22,6 @@ agent = IterativeSummarizer(config)
 
 
 async def main():
-    """Main."""
     await agent.arun({"contents": test_docs}, debug=True)
 
 

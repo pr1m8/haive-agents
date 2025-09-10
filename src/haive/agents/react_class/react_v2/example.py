@@ -35,15 +35,11 @@ def calculate(expression: str) -> str:
 
 # Create structured tools
 weather_tool = StructuredTool.from_function(
-    func=get_weather,
-    name="get_weather",
-    description="Get the current weather for a location",
+    func=get_weather, name="get_weather", description="Get the current weather for a location"
 )
 
 search_tool = StructuredTool.from_function(
-    func=search_database,
-    name="search_database",
-    description="Search the database for information",
+    func=search_database, name="search_database", description="Search the database for information"
 )
 
 calculator_tool = StructuredTool.from_function(
@@ -92,11 +88,6 @@ user_input = "I want to plan a trip but I'm not sure where to go. Can you help?"
 
 # This simulates an interaction with human intervention
 def simulate_react_agent_with_human() -> Any:
-    """Simulate React Agent With Human.
-
-    Returns:
-        [TODO: Add return description]
-    """
     # Start a thread for persistence
     thread_id = uuid.uuid4()
 
@@ -111,8 +102,7 @@ def simulate_react_agent_with_human() -> Any:
 
             # Provide human input to continue the conversation
             state = travel_agent.run(
-                {"messages": [HumanMessage(content=human_response)]},
-                thread_id=thread_id,
+                {"messages": [HumanMessage(content=human_response)]}, thread_id=thread_id
             )
             break
 

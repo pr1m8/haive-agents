@@ -35,8 +35,7 @@ class JsonPatch(BaseModel):
     """
 
     op: Literal["add", "remove", "replace"] = Field(
-        ...,
-        description="The operation to be performed. Must be one of 'add', 'remove', 'replace'.",
+        ..., description="The operation to be performed. Must be one of 'add', 'remove', 'replace'."
     )
     path: str = Field(
         ...,

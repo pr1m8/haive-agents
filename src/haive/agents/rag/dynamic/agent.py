@@ -19,11 +19,6 @@ class DynamicRAGAgent(BaseRAGAgent):
     """Implements a dynamic RAG pipeline that routes queries to appropriate data sources."""
 
     def __init__(self, config: DynamicRAGConfig):
-        """Init  .
-
-        Args:
-            config: [TODO: Add description]
-        """
         super().__init__(config)
         self._init_data_sources()
         self._init_router()
@@ -59,10 +54,7 @@ class DynamicRAGAgent(BaseRAGAgent):
 
         if not self.router:
             # Use default source or all sources if no router
-            if (
-                self.config.default_source
-                and self.config.default_source in self.retrievers
-            ):
+            if self.config.default_source and self.config.default_source in self.retrievers:
                 selected_sources = [self.config.default_source]
             else:
                 selected_sources = list(self.retrievers.keys())
@@ -73,8 +65,7 @@ class DynamicRAGAgent(BaseRAGAgent):
         try:
             # Prepare input for router with available sources
             source_descriptions = {
-                name: config.description
-                for name, config in self.config.data_sources.items()
+                name: config.description for name, config in self.config.data_sources.items()
             }
 
             router_result = self.router.invoke(
@@ -103,9 +94,7 @@ class DynamicRAGAgent(BaseRAGAgent):
 
             # Limit number of sources if needed
             if len(validated_sources) > self.config.max_sources_per_query:
-                validated_sources = validated_sources[
-                    : self.config.max_sources_per_query
-                ]
+                validated_sources = validated_sources[: self.config.max_sources_per_query]
 
             if not validated_sources and self.config.default_source:
                 validated_sources = [self.config.default_source]
@@ -119,10 +108,7 @@ class DynamicRAGAgent(BaseRAGAgent):
             logger.exception(f"Error in query routing: {e}")
 
             # Fall back to default source
-            if (
-                self.config.default_source
-                and self.config.default_source in self.retrievers
-            ):
+            if self.config.default_source and self.config.default_source in self.retrievers:
                 return {"selected_sources": [self.config.default_source]}
 
             # Or use all sources as last resort
@@ -140,14 +126,6 @@ class DynamicRAGAgent(BaseRAGAgent):
             # Implement parallel retrieval with concurrent.futures or asyncio
 
             def retrieve_from_source(source_name) -> Any:
-                """Retrieve From Source.
-
-                Args:
-                    source_name: [TODO: Add description]
-
-                Returns:
-                    [TODO: Add return description]
-                """
                 try:
                     retriever = self.retrievers.get(source_name)
                     if retriever:
@@ -169,8 +147,7 @@ class DynamicRAGAgent(BaseRAGAgent):
 
             with concurrent.futures.ThreadPoolExecutor() as executor:
                 futures = [
-                    executor.submit(retrieve_from_source, source)
-                    for source in selected_sources
+                    executor.submit(retrieve_from_source, source) for source in selected_sources
                 ]
 
                 for future in concurrent.futures.as_completed(futures):
@@ -233,9 +210,7 @@ class DynamicRAGAgent(BaseRAGAgent):
 
             # Sort by "relevance" if available in metadata
             sorted_docs = sorted(
-                unique_docs.values(),
-                key=lambda d: d.metadata.get("relevance", 0),
-                reverse=True,
+                unique_docs.values(), key=lambda d: d.metadata.get("relevance", 0), reverse=True
             )
 
             # Limit to a reasonable number
@@ -244,9 +219,7 @@ class DynamicRAGAgent(BaseRAGAgent):
         # Use merger for more sophisticated merging
         try:
             # Group documents by source for the merger
-            docs_by_source = {
-                source: docs for source, docs in source_documents.items() if docs
-            }
+            docs_by_source = {source: docs for source, docs in source_documents.items() if docs}
 
             merged_docs = self.merger.invoke(
                 {"query": state.query, "docs_by_source": docs_by_source}

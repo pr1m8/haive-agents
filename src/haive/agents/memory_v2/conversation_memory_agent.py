@@ -72,9 +72,7 @@ class ConversationMemoryConfig(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
     # Vector store configuration
-    vector_store_provider: VectorStoreProvider = Field(
-        default=VectorStoreProvider.FAISS
-    )
+    vector_store_provider: VectorStoreProvider = Field(default=VectorStoreProvider.FAISS)
     embedding_model: HuggingFaceEmbeddingConfig = Field(
         default_factory=lambda: HuggingFaceEmbeddingConfig(
             model="sentence-transformers/all-mpnet-base-v2"
@@ -131,9 +129,7 @@ class ConversationMemoryAgent:
         self._documents: list[Document] = []
         self._initialized = False
 
-        logger.info(
-            f"Initialized ConversationMemoryAgent: {name} for user {self.user_id}"
-        )
+        logger.info(f"Initialized ConversationMemoryAgent: {name} for user {self.user_id}")
 
     async def initialize(self) -> None:
         """Initialize the underlying RAG agent."""
@@ -179,9 +175,7 @@ class ConversationMemoryAgent:
 
         logger.info(f"Added {len(messages)} messages to conversation memory")
 
-    async def retrieve_context(
-        self, query: str, k: int | None = None
-    ) -> list[Document]:
+    async def retrieve_context(self, query: str, k: int | None = None) -> list[Document]:
         """Retrieve relevant conversation context using BaseRAGAgent.
 
         Args:
@@ -212,9 +206,7 @@ class ConversationMemoryAgent:
                     Document(page_content=doc, metadata={"source": "retrieved_content"})
                 )
 
-        logger.info(
-            f"Retrieved {len(documents)} conversation documents for query: {query}"
-        )
+        logger.info(f"Retrieved {len(documents)} conversation documents for query: {query}")
         return documents
 
     async def get_conversation_summary(self) -> dict[str, Any]:
@@ -223,11 +215,7 @@ class ConversationMemoryAgent:
             "user_id": self.user_id,
             "total_documents": len(self._documents),
             "total_messages": len(
-                [
-                    d
-                    for d in self._documents
-                    if d.metadata.get("source") == "conversation"
-                ]
+                [d for d in self._documents if d.metadata.get("source") == "conversation"]
             ),
             "conversations": len(
                 {
@@ -252,9 +240,7 @@ class ConversationMemoryAgent:
                 vector_store_provider=self.config.vector_store_provider,
                 name=self.name,
             )
-            logger.info(
-                f"Updated vector store with {len(self._documents)} total documents"
-            )
+            logger.info(f"Updated vector store with {len(self._documents)} total documents")
         except Exception as e:
             logger.exception(f"Failed to update vector store: {e}")
             raise
@@ -281,9 +267,7 @@ class ConversationMemoryAgent:
 async def demo_conversation_memory():
     """Demo conversation memory agent functionality."""
     # Create agent
-    agent = ConversationMemoryAgent.create(
-        user_id="demo_user", name="demo_conversation"
-    )
+    agent = ConversationMemoryAgent.create(user_id="demo_user", name="demo_conversation")
 
     # Initialize
     await agent.initialize()

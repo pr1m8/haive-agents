@@ -30,9 +30,7 @@ def example_brainstorming_session() -> None:
     )
 
     # Run session
-    result = session.run(
-        {}, config={"configurable": {"recursion_limit": 100}}, debug=True
-    )
+    result = session.run({}, config={"configurable": {"recursion_limit": 100}}, debug=True)
 
     # Display final document
     if "shared_document" in result:
@@ -58,9 +56,7 @@ def example_code_review() -> None:
     )
 
     # Run review
-    result = review.run(
-        {}, config={"configurable": {"recursion_limit": 100}}, debug=True
-    )
+    result = review.run({}, config={"configurable": {"recursion_limit": 100}}, debug=True)
 
     # Display code review document
     if "shared_document" in result:
@@ -135,9 +131,7 @@ def example_project_planning() -> None:
         max_rounds=3,
     )
 
-    result = planning.run(
-        {}, config={"configurable": {"recursion_limit": 100}}, debug=True
-    )
+    result = planning.run({}, config={"configurable": {"recursion_limit": 100}}, debug=True)
 
     # Display project plan
     if "shared_document" in result:

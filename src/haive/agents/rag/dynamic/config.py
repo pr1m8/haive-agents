@@ -21,8 +21,7 @@ class DynamicRAGConfig(BaseRAGConfig):
         default=None, description="Default data source if routing fails"
     )
     enable_parallel_retrieval: bool = Field(
-        default=False,
-        description="Whether to retrieve from multiple sources in parallel",
+        default=False, description="Whether to retrieve from multiple sources in parallel"
     )
     max_sources_per_query: int = Field(
         default=3, description="Maximum number of sources to query simultaneously"

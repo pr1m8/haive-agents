@@ -12,9 +12,7 @@ if __name__ == "__main__":
     class PersonInfo(BaseModel):
         name: str = Field(description="The person's full name")
         age: int = Field(description="The person's age in years")
-        occupation: str | None = Field(
-            default=None, description="The person's job or profession"
-        )
+        occupation: str | None = Field(default=None, description="The person's job or profession")
 
     # Create the agent
     agent = create_complex_extraction_agent(

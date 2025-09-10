@@ -9,9 +9,7 @@ class MultiStrategyRAGState(SelfCorrectiveRAGState):
     """State for multi-strategy RAG agents."""
 
     query_type: str | None = Field(default=None, description="Classified query type")
-    strategy_name: str | None = Field(
-        default=None, description="Selected retrieval strategy"
-    )
+    strategy_name: str | None = Field(default=None, description="Selected retrieval strategy")
     query_variations: list[str] = Field(
         default_factory=list, description="Generated query variations"
     )

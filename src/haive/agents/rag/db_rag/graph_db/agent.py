@@ -13,7 +13,7 @@ The agent workflow consists of the following steps:
     5. **Query Execution**: Runs the validated query against Neo4j
     6. **Answer Generation**: Converts database results to natural language
 
-Examples:
+Example:
     Basic usage of the Graph DB RAG Agent::
 
         >>> from haive.agents.rag.db_rag.graph_db import GraphDBRAGAgent, GraphDBRAGConfig
@@ -58,8 +58,8 @@ import os
 
 from haive.core.engine.agent.agent import Agent, register_agent
 from haive.core.graph.branches import Branch
-from langchain_community.embeddings import OpenAIEmbeddings
 from langchain_community.vectorstores import Chroma
+from langchain_community.embeddings import OpenAIEmbeddings
 from langchain_core.documents import Document
 from langchain_core.example_selectors import SemanticSimilarityExampleSelector
 from langchain_neo4j.chains.graph_qa.cypher_utils import CypherQueryCorrector, Schema
@@ -95,7 +95,7 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
         example_selector: Semantic similarity selector for few-shot examples.
         no_results (str): Default message when no results are found.
 
-    Examples:
+    Example:
         Creating and using the agent::
 
             >>> # Create agent with minimal config
@@ -135,7 +135,7 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
             ValueError: If Neo4j connection cannot be established.
             Exception: For other initialization errors.
 
-        Examples:
+        Example:
             >>> # Using default config (from environment)
             >>> agent = GraphDBRAGAgent()
 
@@ -217,10 +217,7 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
             domain_examples = []
 
             # Try to get examples for the configured domain
-            if (
-                hasattr(config, "domain_examples")
-                and config.domain_name in config.domain_examples
-            ):
+            if hasattr(config, "domain_examples") and config.domain_name in config.domain_examples:
                 domain_examples = config.domain_examples[config.domain_name]
 
             # Try to load examples from a file if specified
@@ -239,9 +236,7 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
 
             # Create documents for embedding
             documents = [
-                Document(
-                    page_content=ex["query"], metadata={"question": ex["question"]}
-                )
+                Document(page_content=ex["query"], metadata={"question": ex["question"]})
                 for ex in domain_examples
             ]
 
@@ -265,9 +260,7 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
                 logger.warning(f"Failed to initialize semantic example selector: {e}")
                 # Simple fallback - just use all examples
                 self.example_selector = type(
-                    "SimpleSelector",
-                    (),
-                    {"select_examples": lambda self, query: domain_examples},
+                    "SimpleSelector", (), {"select_examples": lambda self, query: domain_examples}
                 )()
 
         except Exception as e:
@@ -292,7 +285,7 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
                 - question: Natural language question
                 - query: Corresponding Cypher query
 
-        Examples:
+        Example:
             >>> agent = GraphDBRAGAgent()
             >>> examples = agent._get_default_examples("movies")
             >>> print(examples[0])
@@ -366,7 +359,7 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
                 - database_records: Error message if out-of-domain
                 - steps: Updated with "check_domain_relevance"
 
-        Examples:
+        Example:
             >>> state = OverallState(question="What's the weather like?")
             >>> command = agent.check_domain_relevance(state)
             >>> # For a movie domain agent, this would return:
@@ -453,7 +446,7 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
                 - cypher_statement: The generated Cypher query
                 - steps: Updated with "generate_query"
 
-        Examples:
+        Example:
             >>> state = OverallState(question="Who directed Inception?")
             >>> command = agent.generate_query(state)
             >>> print(command.update["cypher_statement"])
@@ -468,9 +461,7 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
                 raise ValueError("Missing 'text2cypher' engine in configuration")
 
             # Get examples for few-shot learning
-            examples = self.example_selector.select_examples(
-                {"question": state.question}
-            )
+            examples = self.example_selector.select_examples({"question": state.question})
 
             fewshot_examples = "\n".join(
                 [
@@ -515,7 +506,7 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
                 - cypher_errors: List of validation errors (if any)
                 - steps: Updated with "validate_query"
 
-        Examples:
+        Example:
             >>> state = OverallState(
             ...     cypher_statement="MATCH (p:Actor)-[:DIRECTED]->(m:Film) RETURN p.name"
             ... )
@@ -576,7 +567,7 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
                 - cypher_statement: The corrected Cypher query
                 - steps: Updated with "correct_query"
 
-        Examples:
+        Example:
             >>> state = OverallState(
             ...     cypher_statement="MATCH (p:Actor)-[:DIRECTED]->(m:Film) RETURN p.name",
             ...     cypher_errors=["Label 'Film' does not exist, use 'Movie'"]
@@ -633,7 +624,7 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
                 - next_action: "generate_answer"
                 - steps: Updated with "execute_query"
 
-        Examples:
+        Example:
             >>> state = OverallState(
             ...     cypher_statement="MATCH (m:Movie) RETURN m.title LIMIT 3"
             ... )
@@ -679,7 +670,7 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
                 - next_action: "end"
                 - steps: Updated with "generate_answer"
 
-        Examples:
+        Example:
             >>> state = OverallState(
             ...     question="Who directed The Matrix?",
             ...     database_records=[{"p.name": "Lana Wachowski"}, {"p.name": "Lilly Wachowski"}]
@@ -694,9 +685,7 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
         """
         try:
             if "generate_final_answer" not in self.engines:
-                raise ValueError(
-                    "Missing 'generate_final_answer' engine in configuration"
-                )
+                raise ValueError("Missing 'generate_final_answer' engine in configuration")
 
             if state.database_records == self.no_results:
                 answer = f"I couldn't find any information about your question: {state.question}"
@@ -867,9 +856,7 @@ def correct_query(query: str, errors: list = None) -> str:
 
 def domain_router(query: str, domain_categories: list = None) -> str:
     """Route queries based on domain relevance."""
-    return (
-        "generate_query" if check_domain_relevance(query, domain_categories) else "end"
-    )
+    return "generate_query" if check_domain_relevance(query, domain_categories) else "end"
 
 
 def execute_query(query: str, db_connection=None) -> dict:
@@ -889,7 +876,7 @@ def generate_query(natural_language_query: str) -> str:
 
 def setup_workflow():
     """Set up the graph DB RAG workflow."""
-    # Placeholder implementation
+    pass  # Placeholder implementation
 
 
 def validate_query(query: str, schema: dict = None) -> dict:

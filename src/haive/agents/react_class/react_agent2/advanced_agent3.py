@@ -2,6 +2,7 @@ import logging
 from collections.abc import Callable
 from typing import Any
 
+from haive.agents.react_class.react_agent2.config2 import ReactAgentConfig
 from haive.core.engine.agent.agent import Agent, register_agent
 from haive.core.graph.branches import Branch
 from haive.core.graph.dynamic_graph_builder import DynamicGraph
@@ -10,8 +11,6 @@ from langchain_core.tools import BaseTool
 from langgraph.graph import END
 from langgraph.prebuilt import ToolNode
 from pydantic import BaseModel, Field
-
-from haive.agents.react_class.react_agent2.config2 import ReactAgentConfig
 
 # Set up logging
 
@@ -24,14 +23,11 @@ class AdvancedReactAgentConfig(ReactAgentConfig):
 
     # Tool-specific routing configuration
     tool_routing: dict[str, str] = Field(
-        default_factory=dict,
-        description="Mapping from tool names to node names for custom routing",
+        default_factory=dict, description="Mapping from tool names to node names for custom routing"
     )
 
     # Node names
-    agent_node_name: str = Field(
-        default="agent_node", description="Name for the agent node"
-    )
+    agent_node_name: str = Field(default="agent_node", description="Name for the agent node")
 
     # Default tool node name (for tools without specific routing)
     default_tool_node_name: str = Field(
@@ -40,8 +36,7 @@ class AdvancedReactAgentConfig(ReactAgentConfig):
 
     # Custom processing functions for different tool types
     tool_processors: dict[str, Callable] = Field(
-        default_factory=dict,
-        description="Custom processing functions for different tool nodes",
+        default_factory=dict, description="Custom processing functions for different tool nodes"
     )
 
     # Whether to capture and analyze tool calls for improvement
@@ -89,9 +84,7 @@ class AdvancedReactAgent(Agent[AdvancedReactAgentConfig]):
 
         # Assign tools to their groups
         for tool in self.tools:
-            node_name = self.config.tool_routing.get(
-                tool.name, self.config.default_tool_node_name
-            )
+            node_name = self.config.tool_routing.get(tool.name, self.config.default_tool_node_name)
             self.tool_groups[node_name].append(tool)
 
         # Create tool nodes for each group
@@ -106,9 +99,7 @@ class AdvancedReactAgent(Agent[AdvancedReactAgentConfig]):
         logger.info(f"Setting up workflow for AdvancedReactAgent: {self.config.name}")
 
         # Create a dynamic graph with the engine component
-        gb = DynamicGraph(
-            components=[self.config.engine], state_schema=self.config.state_schema
-        )
+        gb = DynamicGraph(components=[self.config.engine], state_schema=self.config.state_schema)
 
         # Add the agent node
         gb.add_node(
@@ -137,17 +128,13 @@ class AdvancedReactAgent(Agent[AdvancedReactAgentConfig]):
                 def execute_tool(_state: dict[str, Any]):
                     """Execute the tool and update state."""
                     # Convert to dictionary if needed
-                    state_dict = (
-                        state.model_dump() if hasattr(state, "model_dump") else state
-                    )
+                    state_dict = state.model_dump() if hasattr(state, "model_dump") else state
 
                     try:
                         # Execute the tool node
                         result = tool_node.invoke(state)
                         result_dict = (
-                            result.model_dump()
-                            if hasattr(result, "model_dump")
-                            else result
+                            result.model_dump() if hasattr(result, "model_dump") else result
                         )
 
                         # Apply custom processing if available
@@ -159,20 +146,14 @@ class AdvancedReactAgent(Agent[AdvancedReactAgentConfig]):
                             result_dict["current_step"] = state_dict["current_step"] + 1
 
                         # Track tool usage if enabled
-                        if (
-                            self.config.analyze_tool_usage
-                            and "tool_usage_stats" in state_dict
-                        ):
+                        if self.config.analyze_tool_usage and "tool_usage_stats" in state_dict:
                             # Extract the tool that was called
                             last_message = (
                                 state_dict.get("messages", [])[-1]
                                 if state_dict.get("messages")
                                 else None
                             )
-                            if (
-                                isinstance(last_message, AIMessage)
-                                and last_message.tool_calls
-                            ):
+                            if isinstance(last_message, AIMessage) and last_message.tool_calls:
                                 for tool_call in last_message.tool_calls:
                                     tool_name = tool_call.get("name", "unknown")
                                     stats = state_dict["tool_usage_stats"]
@@ -184,9 +165,7 @@ class AdvancedReactAgent(Agent[AdvancedReactAgentConfig]):
 
                         return result_dict
                     except Exception as e:
-                        logger.exception(
-                            f"Error executing tool node '{node_name}': {e!s}"
-                        )
+                        logger.exception(f"Error executing tool node '{node_name}': {e!s}")
                         state_dict["error"] = f"Tool execution error: {e!s}"
                         state_dict["status"] = "error"
                         return state_dict
@@ -218,9 +197,7 @@ class AdvancedReactAgent(Agent[AdvancedReactAgentConfig]):
                 """Route to the appropriate tool node based on the tool name."""
                 # Extract messages
                 messages = (
-                    state.messages
-                    if hasattr(state, "messages")
-                    else state.get("messages", [])
+                    state.messages if hasattr(state, "messages") else state.get("messages", [])
                 )
                 if not messages:
                     return END
@@ -246,9 +223,7 @@ class AdvancedReactAgent(Agent[AdvancedReactAgentConfig]):
 
                 # If we don't have a node for this tool, use default
                 if node_name not in self.tool_nodes:
-                    logger.warning(
-                        f"No node found for tool '{tool_name}', using default"
-                    )
+                    logger.warning(f"No node found for tool '{tool_name}', using default")
                     return self.config.default_tool_node_name
 
                 logger.info(f"Routing tool '{tool_name}' to node '{node_name}'")
@@ -271,9 +246,7 @@ class AdvancedReactAgent(Agent[AdvancedReactAgentConfig]):
                 return route_by_tool_name(state)
 
             # Add the conditional edge from agent to tool nodes
-            gb.add_conditional_edges(
-                self.config.agent_node_name, agent_router, tool_destinations
-            )
+            gb.add_conditional_edges(self.config.agent_node_name, agent_router, tool_destinations)
         else:
             # Without tools, simply route to END
             gb.add_edge(self.config.agent_node_name, END)
@@ -292,13 +265,9 @@ class AdvancedReactAgent(Agent[AdvancedReactAgentConfig]):
         if self.config.visualize and self.app:
             self.visualize_graph()
 
-        logger.info(
-            f"Workflow setup complete for AdvancedReactAgent: {self.config.name}"
-        )
+        logger.info(f"Workflow setup complete for AdvancedReactAgent: {self.config.name}")
 
-    def add_tool(
-        self, tool: BaseTool, routing: str | None = None
-    ) -> "AdvancedReactAgent":
+    def add_tool(self, tool: BaseTool, routing: str | None = None) -> "AdvancedReactAgent":
         """Add a tool to the agent with optional custom routing.
 
         Args:
@@ -321,9 +290,7 @@ class AdvancedReactAgent(Agent[AdvancedReactAgentConfig]):
 
         return self
 
-    def create_custom_tool_node(
-        self, node_name: str, processor: Callable
-    ) -> "AdvancedReactAgent":
+    def create_custom_tool_node(self, node_name: str, processor: Callable) -> "AdvancedReactAgent":
         """Create a custom tool node with a specialized processor.
 
         Args:

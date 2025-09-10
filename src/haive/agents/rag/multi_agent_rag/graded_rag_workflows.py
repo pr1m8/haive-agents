@@ -152,10 +152,7 @@ class FullyGradedRAGAgent(MultiAgent):
         ]
 
         super().__init__(
-            agents=agents,
-            execution_mode="sequential",
-            state_schema=GradedRAGState,
-            **kwargs,
+            agents=agents, execution_mode="sequential", state_schema=GradedRAGState, **kwargs
         )
 
     def build_custom_graph(self) -> Any:
@@ -164,7 +161,7 @@ class FullyGradedRAGAgent(MultiAgent):
 
 
 class AdaptiveGradedRAGAgent(MultiAgent):
-    """Adaptive Graded RAG - adjusts grading thresholds based on query complexity.
+    """Adaptive Graded RAG - adjusts grading thresholds based on query complexity
     and document availability.
     """
 
@@ -249,10 +246,7 @@ class AdaptiveGradedRAGAgent(MultiAgent):
         ]
 
         super().__init__(
-            agents=agents,
-            execution_mode="sequential",
-            state_schema=GradedRAGState,
-            **kwargs,
+            agents=agents, execution_mode="sequential", state_schema=GradedRAGState, **kwargs
         )
 
     def build_custom_graph(self) -> Any:
@@ -261,7 +255,7 @@ class AdaptiveGradedRAGAgent(MultiAgent):
 
 
 class MultiCriteriaGradedRAGAgent(MultiAgent):
-    """Multi-Criteria Graded RAG - uses multiple grading criteria and perspectives.
+    """Multi-Criteria Graded RAG - uses multiple grading criteria and perspectives
     to evaluate documents and answers.
     """
 
@@ -343,10 +337,7 @@ class MultiCriteriaGradedRAGAgent(MultiAgent):
         self._grading_criteria = grading_criteria
 
         super().__init__(
-            agents=agents,
-            execution_mode="sequential",
-            state_schema=GradedRAGState,
-            **kwargs,
+            agents=agents, execution_mode="sequential", state_schema=GradedRAGState, **kwargs
         )
 
     def build_custom_graph(self) -> Any:
@@ -355,7 +346,7 @@ class MultiCriteriaGradedRAGAgent(MultiAgent):
 
 
 class ReflexiveGradedRAGAgent(MultiAgent):
-    """Reflexive Graded RAG - uses grading feedback to improve its own performance.
+    """Reflexive Graded RAG - uses grading feedback to improve its own performance
     through self-reflection and strategy adjustment.
     """
 
@@ -419,10 +410,7 @@ class ReflexiveGradedRAGAgent(MultiAgent):
         agents = [self_assessor, strategy_adapter, reflexive_executor]
 
         super().__init__(
-            agents=agents,
-            execution_mode="sequential",
-            state_schema=GradedRAGState,
-            **kwargs,
+            agents=agents, execution_mode="sequential", state_schema=GradedRAGState, **kwargs
         )
 
     def build_custom_graph(self) -> Any:

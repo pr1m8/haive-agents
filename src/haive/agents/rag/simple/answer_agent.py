@@ -3,6 +3,8 @@
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import Field
 
+from haive.agents.simple.agent_v3 import SimpleAgentV3
+
 
 class AnswerAgent(SimpleAgentV3):
     """SimpleAgent configured for answering questions based on retrieved documents."""

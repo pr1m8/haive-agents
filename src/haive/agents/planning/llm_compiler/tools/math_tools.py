@@ -2,13 +2,12 @@ import math
 import re
 
 import numexpr
+from haive.agents.planning.llm_compiler.models import ExecuteCode
 from langchain_core.messages import SystemMessage
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.runnables import RunnableConfig
 from langchain_core.tools import StructuredTool
 from langchain_openai import ChatOpenAI
-
-from haive.agents.planning.llm_compiler.models import ExecuteCode
 
 _MATH_DESCRIPTION = (
     "math(problem: str, context: Optional[list[str]]) -> float:\n"
@@ -69,7 +68,7 @@ ExecuteCode({{code: "37593**(1/5)"}})
 Answer: 8.222831614237718
 """
 
-_ADDITIONAL_CONTEXT_PROMPT = """The following additional context is provided from other functions.\.
+_ADDITIONAL_CONTEXT_PROMPT = """The following additional context is provided from other functions.\
     Use it to substitute into any ${{#}} variables or other words in the problem.\
     \n\n${context}\n\nNote that context variables are not defined in code yet.\
 You must extract the relevant numbers and directly put them in code."""
@@ -96,11 +95,6 @@ def _evaluate_expression(expression: str) -> str:
 
 
 def get_math_tool(llm: ChatOpenAI):
-    """Get Math Tool.
-
-    Args:
-        llm: [TODO: Add description]
-    """
     prompt = ChatPromptTemplate.from_messages(
         [
             ("system", _SYSTEM_PROMPT),
@@ -111,17 +105,13 @@ def get_math_tool(llm: ChatOpenAI):
     extractor = prompt | llm.with_structured_output(ExecuteCode)
 
     def calculate_expression(
-        problem: str,
-        context: list[str] | None = None,
-        config: RunnableConfig | None = None,
+        problem: str, context: list[str] | None = None, config: RunnableConfig | None = None
     ):
         chain_input = {"problem": problem}
         if context:
             context_str = "\n".join(context)
             if context_str.strip():
-                context_str = _ADDITIONAL_CONTEXT_PROMPT.format(
-                    context=context_str.strip()
-                )
+                context_str = _ADDITIONAL_CONTEXT_PROMPT.format(context=context_str.strip())
                 chain_input["context"] = [SystemMessage(content=context_str)]
         code_model = extractor.invoke(chain_input, config)
         try:

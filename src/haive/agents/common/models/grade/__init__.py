@@ -21,11 +21,7 @@ from haive.agents.common.models.grade.qualitative import (
     SentimentType,
 )
 from haive.agents.common.models.grade.rubric import RubricCriterion, RubricGrade
-from haive.agents.common.models.grade.scale import (
-    LikertScale,
-    SatisfactionScale,
-    ScaleGrade,
-)
+from haive.agents.common.models.grade.scale import LikertScale, SatisfactionScale, ScaleGrade
 
 __all__ = [
     # Base classes and enums

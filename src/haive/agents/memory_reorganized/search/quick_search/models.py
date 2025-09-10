@@ -11,15 +11,11 @@ class QuickSearchResponse(SearchResponse):
     Extends the base SearchResponse with quick search specific fields.
     """
 
-    search_type: str = Field(
-        default="QuickSearch", description="Type of search performed"
-    )
+    search_type: str = Field(default="QuickSearch", description="Type of search performed")
     answer_type: str = Field(
         default="factual", description="Type of answer (factual, definition, etc.)"
     )
-    keywords: list[str] = Field(
-        default_factory=list, description="Key terms identified in query"
-    )
+    keywords: list[str] = Field(default_factory=list, description="Key terms identified in query")
 
     class Config:
         """Pydantic configuration."""
@@ -43,9 +39,7 @@ class QuickSearchRequest(BaseModel):
     """Request model for quick search operations."""
 
     query: str = Field(..., min_length=1, max_length=500, description="Search query")
-    include_sources: bool = Field(
-        default=True, description="Whether to include source links"
-    )
+    include_sources: bool = Field(default=True, description="Whether to include source links")
     max_response_length: int = Field(
         default=200, description="Maximum response length in characters"
     )

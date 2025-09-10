@@ -1,14 +1,14 @@
 """Backward compatibility for compatibility.py imports."""
 
 # Re-export from new location
-from haive.agents.multi.utils.compatibility import *  # noqa: F403
+from haive.agents.multi.utils.compatibility import *  # noqa: F401, F403
 
 __all__ = [
-    "BaseMultiAgent",
-    "BranchAgent",
-    "ConditionalAgent",
-    "ExecutionMode",
     "MultiAgent",
-    "ParallelAgent",
+    "BaseMultiAgent",
+    "ExecutionMode",
     "SequentialAgent",
+    "ParallelAgent",
+    "ConditionalAgent",
+    "BranchAgent",
 ]

@@ -42,10 +42,7 @@ class AgentProtocol(Protocol):
     def _prepare_input(self, input_data: Any) -> Any: ...
 
     def _prepare_runnable_config(
-        self,
-        thread_id: str | None = None,
-        config: RunnableConfig | None = None,
-        **kwargs,
+        self, thread_id: str | None = None, config: RunnableConfig | None = None, **kwargs
     ) -> RunnableConfig: ...
 
     def _process_output(self, output_data: Any) -> Any: ...

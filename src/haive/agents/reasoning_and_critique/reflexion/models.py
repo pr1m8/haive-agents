@@ -26,6 +26,4 @@ class ReviseAnswer(AnswerQuestion):
     add search queries to improve the answer.
     """
 
-    references: list[str] = Field(
-        description="Citations motivating your updated answer."
-    )
+    references: list[str] = Field(description="Citations motivating your updated answer.")

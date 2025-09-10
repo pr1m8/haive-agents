@@ -213,9 +213,7 @@ def mysql_example() -> dict[str, Any]:
     agent = SQLRAGAgent(config)
 
     # Run trend analysis
-    result = agent.run(
-        {"question": "What's the product sales trend for the last 6 months?"}
-    )
+    result = agent.run({"question": "What's the product sales trend for the last 6 months?"})
 
     return result
 
@@ -269,9 +267,7 @@ def custom_llm_example() -> dict[str, Any]:
         model="gpt-4",
         temperature=0.1,  # Very low temperature for consistent SQL
         prompt_template=default_sql_engines["generate_sql"].prompt_template,
-        structured_output_model=default_sql_engines[
-            "generate_sql"
-        ].structured_output_model,
+        structured_output_model=default_sql_engines["generate_sql"].structured_output_model,
     )
 
     # Custom engines configuration

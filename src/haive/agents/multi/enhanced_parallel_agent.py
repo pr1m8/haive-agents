@@ -18,7 +18,7 @@ from pydantic import Field, field_validator
 from haive.agents.simple.enhanced_simple_real import EnhancedAgentBase as Agent
 
 # Import base enhanced agent when available
-# from haive.agents.base.agent import Agent
+# from haive.agents.base.enhanced_agent import Agent
 
 logger = logging.getLogger(__name__)
 
@@ -344,25 +344,11 @@ if __name__ == "__main__":
     # Mock agents for demo
     class MockExpert:
         def __init__(self, name: str, specialty: str):
-            """  Init  .
-
-Args:
-    name: [TODO: Add description]
-    specialty: [TODO: Add description]
-"""
             self.name = name
             self.specialty = specialty
             self.engine = AugLLMConfig()
 
         async def arun(self, input_data: str) -> str:
-            """Arun.
-
-Args:
-    input_data: [TODO: Add description]
-
-Returns:
-    [TODO: Add return description]
-"""
             # Simulate different processing times
 
             await asyncio.sleep(random.uniform(0.1, 0.5))

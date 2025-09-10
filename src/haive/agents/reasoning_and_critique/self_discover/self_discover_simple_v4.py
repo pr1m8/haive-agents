@@ -13,8 +13,8 @@ from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field
 
-from haive.agents.multi.agent import MultiAgent
-from haive.agents.simple.agent import SimpleAgent
+from haive.agents.multi.enhanced_multi_agent_v4 import EnhancedMultiAgentV4
+from haive.agents.simple.agent_v3 import SimpleAgentV3
 
 
 # Simple output models
@@ -44,7 +44,7 @@ class Solution(BaseModel):
 
 
 # Default modules (simplified)
-MODULES = """1. Pattern Analysis - Identify patterns and structures.
+MODULES = """1. Pattern Analysis - Identify patterns and structures
 2. Logical Reasoning - Apply logic to solve problems
 3. Visual/Spatial - Understand spatial relationships
 4. Mathematical - Apply mathematical concepts
@@ -59,7 +59,7 @@ MODULES = """1. Pattern Analysis - Identify patterns and structures.
 def create_agents():
     """Create the four agents for Self-Discover."""
     # 1. Selector - picks relevant modules
-    selector = SimpleAgent(
+    selector = SimpleAgentV3(
         name="selector",
         engine=AugLLMConfig(temperature=0.3, structured_output_model=ModuleList),
         prompt_template=ChatPromptTemplate.from_messages(
@@ -67,7 +67,7 @@ def create_agents():
                 ("system", "Select 3-5 most relevant reasoning modules for the task."),
                 (
                     "human",
-                    """Available modules:.
+                    """Available modules:
 {modules}
 
 Task: {task}
@@ -79,7 +79,7 @@ Select the most relevant modules and format them clearly.""",
     )
 
     # 2. Adapter - makes modules task-specific
-    adapter = SimpleAgent(
+    adapter = SimpleAgentV3(
         name="adapter",
         engine=AugLLMConfig(temperature=0.5, structured_output_model=AdaptedModules),
         prompt_template=ChatPromptTemplate.from_messages(
@@ -87,7 +87,7 @@ Select the most relevant modules and format them clearly.""",
                 ("system", "Adapt the selected modules to be specific for this task."),
                 (
                     "human",
-                    """Task: {task}.
+                    """Task: {task}
 
 Selected modules:
 {modules}
@@ -99,18 +99,15 @@ Adapt each module with specific strategies for this task.""",
     )
 
     # 3. Structurer - creates step-by-step plan
-    structurer = SimpleAgent(
+    structurer = SimpleAgentV3(
         name="structurer",
         engine=AugLLMConfig(temperature=0.3, structured_output_model=Plan),
         prompt_template=ChatPromptTemplate.from_messages(
             [
-                (
-                    "system",
-                    "Create a clear step-by-step plan using the adapted modules.",
-                ),
+                ("system", "Create a clear step-by-step plan using the adapted modules."),
                 (
                     "human",
-                    """Task: {task}.
+                    """Task: {task}
 
 Adapted modules:
 {adapted}
@@ -122,7 +119,7 @@ Create a numbered step-by-step plan to solve this task.""",
     )
 
     # 4. Executor - follows plan to solve
-    executor = SimpleAgent(
+    executor = SimpleAgentV3(
         name="executor",
         engine=AugLLMConfig(temperature=0.7, structured_output_model=Solution),
         prompt_template=ChatPromptTemplate.from_messages(
@@ -130,7 +127,7 @@ Create a numbered step-by-step plan to solve this task.""",
                 ("system", "Follow the plan to solve the task."),
                 (
                     "human",
-                    """Task: {task}.
+                    """Task: {task}
 
 Plan:
 {plan}
@@ -149,7 +146,7 @@ def create_self_discover_simple():
     agents = create_agents()
 
     # Use sequential execution
-    multi_agent = MultiAgent(
+    multi_agent = EnhancedMultiAgentV4(
         agents=agents, execution_mode="sequential", name="self_discover_simple"
     )
 
@@ -192,7 +189,6 @@ async def run_self_discover(task: str, modules: str | None = None):
 if __name__ == "__main__":
 
     async def main():
-        """Main."""
         task = """What shape does this SVG path draw?
 <path d="M 10,10 L 40,10 L 40,40 L 10,40 Z"/>
 Options: circle, square, triangle, pentagon"""

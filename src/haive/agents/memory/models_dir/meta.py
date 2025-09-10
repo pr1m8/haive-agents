@@ -1,11 +1,10 @@
 import threading
 from collections import defaultdict
-
 from pydantic._internal._model_construction import ModelMetaclass
 
 
 class MemoryValidationMeta(ModelMetaclass):
-    """Advanced metaclass for memory models with automatic validation registration.
+    """Advanced metaclass for memory models with automatic validation registration
     and cross-model consistency checking.
     """
 
@@ -14,14 +13,6 @@ class MemoryValidationMeta(ModelMetaclass):
     _lock = threading.Lock()
 
     def __new__(mcs, name: str, bases: tuple, namespace: dict, **kwargs):
-        """New  .
-
-        Args:
-            mcs: [TODO: Add description]
-            name: [TODO: Add description]
-            bases: [TODO: Add description]
-            namespace: [TODO: Add description]
-        """
         # Extract validation metadata
         memory_type = namespace.get("__memory_type__")
         validation_level = namespace.get("__validation_level__", "standard")

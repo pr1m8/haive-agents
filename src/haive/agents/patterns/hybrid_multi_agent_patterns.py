@@ -22,18 +22,16 @@ from langgraph.graph import END, START
 from pydantic import BaseModel, Field
 
 from haive.agents.base.agent import Agent
-from haive.agents.multi.agent import MultiAgent
+from haive.agents.multi.enhanced_multi_agent_v4 import EnhancedMultiAgentV4
 from haive.agents.react.agent import ReactAgent
-from haive.agents.simple.agent import SimpleAgent
+from haive.agents.simple.agent_v3 import SimpleAgentV3
 
 
 # Structured models for different patterns
 class TaskClassification(BaseModel):
     """Task classification result."""
 
-    task_type: str = Field(
-        description="Type of task: simple, complex, research, creative"
-    )
+    task_type: str = Field(description="Type of task: simple, complex, research, creative")
     complexity_score: float = Field(ge=0.0, le=1.0, description="Task complexity")
     required_capabilities: list[str] = Field(description="Required agent capabilities")
     recommended_approach: str = Field(description="Recommended processing approach")
@@ -45,9 +43,7 @@ class ParallelResults(BaseModel):
     agent_outputs: dict[str, Any] = Field(description="Outputs from each agent")
     consensus_points: list[str] = Field(description="Points of agreement")
     divergent_points: list[str] = Field(description="Points of disagreement")
-    confidence_scores: dict[str, float] = Field(
-        description="Confidence from each agent"
-    )
+    confidence_scores: dict[str, float] = Field(description="Confidence from each agent")
 
 
 class HybridMultiAgent(Agent):
@@ -56,7 +52,7 @@ class HybridMultiAgent(Agent):
     This agent can combine parallel and sequential execution,
     conditional routing, and dynamic agent selection.
 
-    Examples:
+    Example:
         >>> agent = HybridMultiAgent(
         ...     name="hybrid_processor",
         ...     initial_agents=[classifier],
@@ -83,9 +79,7 @@ class HybridMultiAgent(Agent):
         description="Execution pattern: parallel_then_sequential, classify_then_process, hierarchical",
     )
 
-    routing_function: Callable | None = Field(
-        None, description="Custom routing function"
-    )
+    routing_function: Callable | None = Field(None, description="Custom routing function")
 
     def setup_agent(self) -> None:
         """Setup hybrid agent structure."""
@@ -108,14 +102,12 @@ class HybridMultiAgent(Agent):
 
         # Register all agents
         self.engines = {}
-        for agent in (
-            self.initial_agents + self.processing_agents + self.synthesis_agents
-        ):
+        for agent in self.initial_agents + self.processing_agents + self.synthesis_agents:
             self.engines[agent.name] = agent
 
-    def _create_classifier_agent(self) -> SimpleAgent:
+    def _create_classifier_agent(self) -> SimpleAgentV3:
         """Create task classifier agent."""
-        return SimpleAgent(
+        return SimpleAgentV3(
             name="classifier",
             engine=AugLLMConfig(
                 temperature=0.3,
@@ -125,9 +117,9 @@ class HybridMultiAgent(Agent):
             debug=True,
         )
 
-    def _create_simple_processor(self) -> SimpleAgent:
+    def _create_simple_processor(self) -> SimpleAgentV3:
         """Create simple task processor."""
-        return SimpleAgent(
+        return SimpleAgentV3(
             name="simple_processor",
             engine=AugLLMConfig(
                 temperature=0.5, system_message="Process simple tasks efficiently."
@@ -174,9 +166,9 @@ class HybridMultiAgent(Agent):
             ),
         )
 
-    def _create_synthesis_agent(self) -> SimpleAgent:
+    def _create_synthesis_agent(self) -> SimpleAgentV3:
         """Create synthesis agent."""
-        return SimpleAgent(
+        return SimpleAgentV3(
             name="synthesizer",
             engine=AugLLMConfig(
                 temperature=0.4,
@@ -186,9 +178,9 @@ class HybridMultiAgent(Agent):
             debug=True,
         )
 
-    def _create_formatter_agent(self) -> SimpleAgent:
+    def _create_formatter_agent(self) -> SimpleAgentV3:
         """Create final formatter agent."""
-        return SimpleAgent(
+        return SimpleAgentV3(
             name="formatter",
             engine=AugLLMConfig(
                 temperature=0.3, system_message="Format final output professionally."
@@ -242,9 +234,7 @@ class HybridMultiAgent(Agent):
         """Build classification followed by conditional processing."""
         # Add classifier
         classifier = self.initial_agents[0]
-        graph.add_node(
-            classifier.name, create_agent_node_v3(classifier.name, classifier)
-        )
+        graph.add_node(classifier.name, create_agent_node_v3(classifier.name, classifier))
         graph.add_edge(START, classifier.name)
 
         # Add all processing agents
@@ -278,8 +268,7 @@ class HybridMultiAgent(Agent):
         if self.synthesis_agents:
             first_synthesis = self.synthesis_agents[0].name
             graph.add_node(
-                first_synthesis,
-                create_agent_node_v3(first_synthesis, self.synthesis_agents[0]),
+                first_synthesis, create_agent_node_v3(first_synthesis, self.synthesis_agents[0])
             )
 
             for proc in self.processing_agents:
@@ -296,7 +285,7 @@ class HybridMultiAgent(Agent):
         raise NotImplementedError("Hierarchical pattern not yet implemented")
 
 
-class AdaptiveMultiAgent(MultiAgent):
+class AdaptiveMultiAgent(EnhancedMultiAgentV4):
     """Adaptive multi-agent that changes behavior based on context.
 
     This agent dynamically adjusts its execution pattern based on
@@ -308,18 +297,16 @@ class AdaptiveMultiAgent(MultiAgent):
     )
 
     def __init__(self, **kwargs):
-        """Init  ."""
         # Create adaptive agents
         agents = [
-            SimpleAgent(
+            SimpleAgentV3(
                 name="analyzer",
                 engine=AugLLMConfig(
-                    temperature=0.3,
-                    system_message="Analyze input and determine processing needs.",
+                    temperature=0.3, system_message="Analyze input and determine processing needs."
                 ),
                 debug=True,
             ),
-            SimpleAgent(
+            SimpleAgentV3(
                 name="quick_processor",
                 engine=AugLLMConfig(
                     temperature=0.5, system_message="Process simple requests quickly."
@@ -329,15 +316,12 @@ class AdaptiveMultiAgent(MultiAgent):
             ReactAgent(
                 name="deep_processor",
                 engine=AugLLMConfig(
-                    temperature=0.6,
-                    system_message="Process complex requests with reasoning.",
+                    temperature=0.6, system_message="Process complex requests with reasoning."
                 ),
             ),
-            SimpleAgent(
+            SimpleAgentV3(
                 name="validator",
-                engine=AugLLMConfig(
-                    temperature=0.3, system_message="Validate and ensure quality."
-                ),
+                engine=AugLLMConfig(temperature=0.3, system_message="Validate and ensure quality."),
                 debug=True,
             ),
         ]
@@ -364,25 +348,23 @@ class AdaptiveMultiAgent(MultiAgent):
         self.add_edge("deep_processor", "validator")
 
 
-class CollaborativeMultiAgent(MultiAgent):
+class CollaborativeMultiAgent(EnhancedMultiAgentV4):
     """Collaborative multi-agent where agents work together.
 
     Agents share information and build on each other's work.
     """
 
     collaboration_mode: str = Field(
-        default="peer_review",
-        description="How agents collaborate: peer_review, consensus, debate",
+        default="peer_review", description="How agents collaborate: peer_review, consensus, debate"
     )
 
     def __init__(self, **kwargs):
-        """Init  ."""
         # Create collaborative agents
         agents = []
 
         # Expert agents with different perspectives
         for _i, perspective in enumerate(["technical", "business", "user"]):
-            agent = SimpleAgent(
+            agent = SimpleAgentV3(
                 name=f"{perspective}_expert",
                 engine=AugLLMConfig(
                     temperature=0.6,
@@ -393,7 +375,7 @@ class CollaborativeMultiAgent(MultiAgent):
             agents.append(agent)
 
         # Consensus builder
-        consensus = SimpleAgent(
+        consensus = SimpleAgentV3(
             name="consensus_builder",
             engine=AugLLMConfig(
                 temperature=0.4,
@@ -427,38 +409,28 @@ class CollaborativeMultiAgent(MultiAgent):
 
 # Factory functions
 def create_hybrid_agent(
-    name: str = "hybrid",
-    execution_pattern: str = "classify_then_process",
-    debug: bool = True,
+    name: str = "hybrid", execution_pattern: str = "classify_then_process", debug: bool = True
 ) -> HybridMultiAgent:
     """Create a hybrid multi-agent."""
     return HybridMultiAgent(name=name, execution_pattern=execution_pattern, debug=debug)
 
 
-def create_adaptive_agent(
-    name: str = "adaptive", debug: bool = True
-) -> AdaptiveMultiAgent:
+def create_adaptive_agent(name: str = "adaptive", debug: bool = True) -> AdaptiveMultiAgent:
     """Create an adaptive multi-agent."""
     return AdaptiveMultiAgent(name=name, debug=debug)
 
 
 def create_collaborative_agent(
-    name: str = "collaborative",
-    collaboration_mode: str = "consensus",
-    debug: bool = True,
+    name: str = "collaborative", collaboration_mode: str = "consensus", debug: bool = True
 ) -> CollaborativeMultiAgent:
     """Create a collaborative multi-agent."""
-    return CollaborativeMultiAgent(
-        name=name, collaboration_mode=collaboration_mode, debug=debug
-    )
+    return CollaborativeMultiAgent(name=name, collaboration_mode=collaboration_mode, debug=debug)
 
 
 # Example usage
 async def example_hybrid_classify_process():
     """Example of classification-based processing."""
-    agent = create_hybrid_agent(
-        name="smart_processor", execution_pattern="classify_then_process"
-    )
+    agent = create_hybrid_agent(name="smart_processor", execution_pattern="classify_then_process")
 
     result = await agent.arun(
         {"task": "Analyze the impact of AI on employment", "depth": "comprehensive"}
@@ -487,9 +459,7 @@ async def example_adaptive_processing():
 
 async def example_collaborative():
     """Example of collaborative multi-agent."""
-    agent = create_collaborative_agent(
-        name="collaborative_team", collaboration_mode="consensus"
-    )
+    agent = create_collaborative_agent(name="collaborative_team", collaboration_mode="consensus")
 
     result = await agent.arun(
         {

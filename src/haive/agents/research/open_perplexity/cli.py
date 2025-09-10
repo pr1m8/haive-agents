@@ -43,9 +43,7 @@ def run_research(text_path: str, **kwargs) -> None:
         text = f.read()
 
     # Create embedding configuration
-    embedding_config = HuggingFaceEmbeddingConfig(
-        model="sentence-transformers/all-mpnet-base-v2"
-    )
+    embedding_config = HuggingFaceEmbeddingConfig(model="sentence-transformers/all-mpnet-base-v2")
 
     # Create vector store configuration
     vectorstore_config = VectorStoreConfig(
@@ -84,9 +82,7 @@ def run_research(text_path: str, **kwargs) -> None:
         pass
 
 
-def visualize_state(
-    state_path: str, step: int | None = None, output_md: str | None = None
-) -> None:
+def visualize_state(state_path: str, step: int | None = None, output_md: str | None = None) -> None:
     """Visualize a specific state from a saved state history file.
 
     Loads a state from a saved state history file, displays a visualization
@@ -152,15 +148,9 @@ def main() -> None:
     subparsers = parser.add_subparsers(dest="command", help="Commands")
 
     # Research command
-    research_parser = subparsers.add_parser(
-        "research", help="Run research from a text file"
-    )
-    research_parser.add_argument(
-        "file", help="Path to text file with research question"
-    )
-    research_parser.add_argument(
-        "-o", "--output", help="Path to save the generated report"
-    )
+    research_parser = subparsers.add_parser("research", help="Run research from a text file")
+    research_parser.add_argument("file", help="Path to text file with research question")
+    research_parser.add_argument("-o", "--output", help="Path to save the generated report")
     research_parser.add_argument(
         "-s",
         "--save-state",
@@ -175,11 +165,7 @@ def main() -> None:
         help="Research depth (1-5, higher means more thorough)",
     )
     research_parser.add_argument(
-        "-c",
-        "--concurrent-searches",
-        type=int,
-        default=3,
-        help="Number of concurrent searches",
+        "-c", "--concurrent-searches", type=int, default=3, help="Number of concurrent searches"
     )
     research_parser.add_argument(
         "-m", "--max-sources", type=int, default=5, help="Maximum sources per query"
@@ -195,14 +181,9 @@ def main() -> None:
     visualize_parser = subparsers.add_parser(
         "visualize", help="Visualize a state from a state history file"
     )
+    visualize_parser.add_argument("state_file", help="Path to saved state history JSON file")
     visualize_parser.add_argument(
-        "state_file", help="Path to saved state history JSON file"
-    )
-    visualize_parser.add_argument(
-        "-s",
-        "--step",
-        type=int,
-        help="Index of state to visualize (default: last state)",
+        "-s", "--step", type=int, help="Index of state to visualize (default: last state)"
     )
     visualize_parser.add_argument(
         "-m",

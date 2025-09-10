@@ -10,7 +10,7 @@ The supervisor supports multiple discovery modes:
 - MCP Discovery: External tool discovery via MCP framework
 - Hybrid: Combines all discovery methods
 
-Examples:
+Example:
     Basic usage with tool discovery::
 
         from haive.agents.supervisor.dynamic_tool_discovery_supervisor import (
@@ -75,19 +75,17 @@ See Also:
 """
 
 from enum import Enum
-from typing import Any
-
+from typing import Any, Optional, List, Dict
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.embeddings import OpenAIEmbeddingConfig, create_embeddings
+from langchain_core.vectorstores import InMemoryVectorStore
 from langchain.tools.retriever import create_retriever_tool
 
 # str type replaced with str for simplicity
 from langchain_community.document_loaders import DirectoryLoader
 from langchain_core.messages import HumanMessage
 from langchain_core.tools import Tool, tool
-from langchain_core.vectorstores import InMemoryVectorStore
 from pydantic import ConfigDict, Field, field_validator, model_validator
-
 from haive.agents.base.agent import Agent as BaseAgent
 from haive.agents.react.agent import ReactAgent
 from haive.agents.react.dynamic_activation_supervisor import ComponentDiscoveryAgent
@@ -105,7 +103,7 @@ class ToolDiscoveryMode(str, Enum):
         MCP_DISCOVERY: Use MCP framework for external tool discovery
         HYBRID: Combine all discovery methods
 
-    Examples:
+    Example:
         Setting discovery mode::
 
             supervisor = DynamicToolDiscoverySupervisor(
@@ -143,7 +141,7 @@ class DynamicToolDiscoverySupervisor(BaseSupervisor):
         max_discovery_attempts (int): Maximum discovery attempts per task (default: 3)
         tools_to_register (Optional[List[Dict[str, Any]]]): Initial tools for registration
 
-    Examples:
+    Example:
         Creating a supervisor with tool discovery::
 
             from haive.agents.supervisor.dynamic_tool_discovery_supervisor import (
@@ -207,9 +205,7 @@ class DynamicToolDiscoverySupervisor(BaseSupervisor):
         - :meth:`create_with_agents_and_tools`: Factory method for preset configuration
     """
 
-    model_config = ConfigDict(
-        str_strip_whitespace=True, validate_assignment=True, extra="forbid"
-    )
+    model_config = ConfigDict(str_strip_whitespace=True, validate_assignment=True, extra="forbid")
     discovery_mode: ToolDiscoveryMode = Field(
         default=ToolDiscoveryMode.HYBRID, description="Mode for tool discovery"
     )
@@ -255,7 +251,7 @@ class DynamicToolDiscoverySupervisor(BaseSupervisor):
                 - func (Callable): Tool function (required if not a full tool config)
                 - Other Tool configuration parameters
 
-        Examples:
+        Example:
             Registering a tool internally::
 
                 tool_data = {
@@ -318,8 +314,7 @@ class DynamicToolDiscoverySupervisor(BaseSupervisor):
                 except Exception as e:
                     discovered.append(f"Component discovery error: {e!s}")
             if (
-                self.discovery_mode
-                in [ToolDiscoveryMode.RAG_DISCOVERY, ToolDiscoveryMode.HYBRID]
+                self.discovery_mode in [ToolDiscoveryMode.RAG_DISCOVERY, ToolDiscoveryMode.HYBRID]
                 and self.rag_tool_agent
             ):
                 try:
@@ -331,8 +326,7 @@ class DynamicToolDiscoverySupervisor(BaseSupervisor):
                 except Exception as e:
                     discovered.append(f"RAG discovery error: {e!s}")
             if (
-                self.discovery_mode
-                in [ToolDiscoveryMode.MCP_DISCOVERY, ToolDiscoveryMode.HYBRID]
+                self.discovery_mode in [ToolDiscoveryMode.MCP_DISCOVERY, ToolDiscoveryMode.HYBRID]
                 and self.mcp_framework
             ):
                 try:
@@ -380,7 +374,7 @@ class DynamicToolDiscoverySupervisor(BaseSupervisor):
                 - confidence: Confidence score (0.0-1.0)
                 - suggested_prompt: Optional prompt modification
 
-        Examples:
+        Example:
             The method automatically detects tool needs::
 
                 # Task: "Calculate the compound interest"
@@ -406,11 +400,13 @@ class DynamicToolDiscoverySupervisor(BaseSupervisor):
                     "convert",
                     "translate",
                 ]
-                if any(keyword in task_content for keyword in tool_keywords):
+                if any((keyword in task_content for keyword in tool_keywords)):
                     recent_discovery = any(
-                        "discover_and_load_tools" in str(msg.content)
-                        for msg in messages[-5:]
-                        if hasattr(msg, "content")
+                        (
+                            "discover_and_load_tools" in str(msg.content)
+                            for msg in messages[-5:]
+                            if hasattr(msg, "content")
+                        )
                     )
                     if not recent_discovery and len(self.discovered_tools) < 10:
                         return SupervisorDecision(
@@ -440,9 +436,7 @@ class DynamicToolDiscoverySupervisor(BaseSupervisor):
         prompt = f"As a supervisor, analyze the conversation and decide which agent should handle the next step.\n\nConversation history:\n{context}\n\nAvailable agents:\n{chr(10).join(agent_info)}\n\n{tool_info}\n\nConsider:\n1. Which agent is best suited for the current task?\n2. Are there enough tools available or should we discover more?\n3. What is the user trying to accomplish?\n\nRespond with:\n- AGENT: [agent_name] - The agent to route to\n- REASONING: [explanation] - Why this agent was chosen\n- CONFIDENCE: [0.0-1.0] - How confident you are\n- PROMPT: [optional] - Suggested prompt for the agent"
         return prompt
 
-    def _parse_decision_response(
-        self, response: str, state: SupervisorState
-    ) -> SupervisorDecision:
+    def _parse_decision_response(self, response: str, state: SupervisorState) -> SupervisorDecision:
         """Parse LLM response into routing decision."""
         lines = response.strip().split("\n")
         agent = None
@@ -513,7 +507,7 @@ class DynamicToolDiscoverySupervisor(BaseSupervisor):
             RuntimeError: If discovery agent initialization fails
             FileNotFoundError: If rag_documents_path doesn't exist
 
-        Examples:
+        Example:
             Create supervisor with all discovery sources::
 
                 supervisor = DynamicToolDiscoverySupervisor.create_with_discovery(
@@ -552,15 +546,13 @@ class DynamicToolDiscoverySupervisor(BaseSupervisor):
         """
         discovery_agent = None
         if (
-            discovery_mode
-            in [ToolDiscoveryMode.COMPONENT_DISCOVERY, ToolDiscoveryMode.HYBRID]
+            discovery_mode in [ToolDiscoveryMode.COMPONENT_DISCOVERY, ToolDiscoveryMode.HYBRID]
             and component_discovery_config
         ):
             discovery_agent = ComponentDiscoveryAgent(**component_discovery_config)
         rag_tool_agent = None
         if (
-            discovery_mode
-            in [ToolDiscoveryMode.RAG_DISCOVERY, ToolDiscoveryMode.HYBRID]
+            discovery_mode in [ToolDiscoveryMode.RAG_DISCOVERY, ToolDiscoveryMode.HYBRID]
             and rag_documents_path
         ):
             loader = DirectoryLoader(rag_documents_path)

@@ -65,20 +65,11 @@ class LLMRAGAgent(BaseRAGAgent):
 
         # Define function to invoke the base RAG subgraph
         def retrieve_documents(state: dict[str, Any]):
-            """Retrieve Documents.
-
-            Args:
-                state: [TODO: Add description]
-            """
-            logger.info(
-                f"Invoking base RAG for document retrieval with query: '{state.query}'"
-            )
+            logger.info(f"Invoking base RAG for document retrieval with query: '{state.query}'")
             try:
                 # Invoke the base RAG agent as a subgraph
                 result = base_rag_subgraph.invoke(state)
-                logger.info(
-                    f"Retrieved {len(result.get('retrieved_documents', []))} documents"
-                )
+                logger.info(f"Retrieved {len(result.get('retrieved_documents', []))} documents")
 
                 # Pass the result to the relevance checker
                 return Command(
@@ -95,14 +86,7 @@ class LLMRAGAgent(BaseRAGAgent):
 
         # Define a function to check document relevance
         def check_relevance(state: dict[str, Any]):
-            """Check Relevance.
-
-            Args:
-                state: [TODO: Add description]
-            """
-            logger.info(
-                f"Checking relevance of {len(state.retrieved_documents)} documents"
-            )
+            logger.info(f"Checking relevance of {len(state.retrieved_documents)} documents")
 
             # If no documents retrieved, mark as not relevant
             if not state.retrieved_documents:
@@ -123,23 +107,15 @@ class LLMRAGAgent(BaseRAGAgent):
                 is_relevant = parse_relevance_result(result)
                 logger.info(f"Relevance check result: {is_relevant}")
 
-                return Command(
-                    update={"is_relevant": is_relevant}, goto="generate_answer"
-                )
+                return Command(update={"is_relevant": is_relevant}, goto="generate_answer")
             except Exception as e:
                 logger.exception(f"Error in relevance checker: {e}")
                 return Command(
-                    update={"is_relevant": False, "error": str(e)},
-                    goto="generate_answer",
+                    update={"is_relevant": False, "error": str(e)}, goto="generate_answer"
                 )
 
         # Define a function to generate an answer
         def generate_answer(state: dict[str, Any]):
-            """Generate Answer.
-
-            Args:
-                state: [TODO: Add description]
-            """
             logger.info(f"Generating answer with relevance: {state.is_relevant}")
 
             try:
@@ -184,14 +160,8 @@ class LLMRAGAgent(BaseRAGAgent):
         else:
             # If no relevance checker, add a passthrough node
             def default_relevance(state: dict[str, Any]):
-                """Default Relevance.
-
-                Args:
-                    state: [TODO: Add description]
-                """
                 return Command(
-                    update={"is_relevant": bool(state.retrieved_documents)},
-                    goto="generate_answer",
+                    update={"is_relevant": bool(state.retrieved_documents)}, goto="generate_answer"
                 )
 
             graph_builder.add_node("check_relevance", default_relevance)

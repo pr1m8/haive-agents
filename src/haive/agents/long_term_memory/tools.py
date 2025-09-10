@@ -1,5 +1,6 @@
 import uuid
 
+from haive.agents.long_term_memory.models import KnowledgeTriple
 from haive.core.models.vectorstore.base import VectorStoreConfig
 from haive.core.utils.runnable_config_utils import get_user_id
 from langchain_core.documents import Document
@@ -7,27 +8,19 @@ from langchain_core.runnables import RunnableConfig
 from langchain_core.tools import tool
 from pydantic import BaseModel
 
-from haive.agents.long_term_memory.models import KnowledgeTriple
-
 
 @tool
-def save_recall_memory(
-    memory: str, config: RunnableConfig, vs_config: VectorStoreConfig
-) -> str:
+def save_recall_memory(memory: str, config: RunnableConfig, vs_config: VectorStoreConfig) -> str:
     """Save memory to vectorstore for later semantic retrieval."""
     user_id = get_user_id(config)
-    document = Document(
-        page_content=memory, id=str(uuid.uuid4()), metadata={"user_id": user_id}
-    )
+    document = Document(page_content=memory, id=str(uuid.uuid4()), metadata={"user_id": user_id})
     vs_config.add_documents([document])
     return memory
 
 
 @tool
 def save_structured_recall_memory(
-    config: RunnableConfig,
-    vs_config: VectorStoreConfig,
-    memories: list[BaseModel] | None = None,
+    config: RunnableConfig, vs_config: VectorStoreConfig, memories: list[BaseModel] | None = None
 ) -> str:
     """Save memory to vectorstore for later semantic retrieval."""
     if memories is None:

@@ -35,9 +35,7 @@ class SelfCorrectiveRAGState(BaseRAGState):
         default_factory=dict, description="Assessment of hallucinations in the answer"
     )
 
-    final_answer: bool = Field(
-        default=False, description="Whether this is the final answer"
-    )
+    final_answer: bool = Field(default=False, description="Whether this is the final answer")
 
     # Final output fields
     final_confidence: float | None = Field(

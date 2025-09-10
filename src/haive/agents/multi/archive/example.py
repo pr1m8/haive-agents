@@ -89,9 +89,7 @@ class WritingAgent(SimpleAgent):
 
         if human_message:
             # Check if we have research results
-            research_results = shared_state.get(
-                "research_results", "No research available"
-            )
+            research_results = shared_state.get("research_results", "No research available")
 
             # Generate response based on research
             response = (

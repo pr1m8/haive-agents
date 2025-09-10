@@ -79,14 +79,14 @@ class TestCompleteMemorySystem:
     async def test_all_memory_agents_individually(self, test_config, temp_dir):
         """Test each memory agent individually."""
         # Test data
-        test_memory = "Alice Johnson is a senior AI researcher at TechCorp working on neural networks."
+        test_memory = (
+            "Alice Johnson is a senior AI researcher at TechCorp working on neural networks."
+        )
         test_query = "Who is Alice Johnson?"
 
         # 1. SimpleMemoryAgent
         simple_agent = SimpleMemoryAgent(
-            name="test_simple",
-            engine=test_config["engine"],
-            user_id=test_config["user_id"],
+            name="test_simple", engine=test_config["engine"], user_id=test_config["user_id"]
         )
         await simple_agent.arun(f"Remember: {test_memory}")
         await simple_agent.arun(test_query)
@@ -135,14 +135,8 @@ class TestCompleteMemorySystem:
 
         # Test intelligent storage
         memories = [
-            (
-                "Bob Smith works as CTO at DataCorp and specializes in distributed systems.",
-                "high",
-            ),
-            (
-                "I had lunch with Bob yesterday where we discussed scalability challenges.",
-                "normal",
-            ),
+            ("Bob Smith works as CTO at DataCorp and specializes in distributed systems.", "high"),
+            ("I had lunch with Bob yesterday where we discussed scalability challenges.", "normal"),
             ("Important: Bob's email is bob.smith@datacorp.com", "critical"),
             ("DataCorp is planning to expand to Europe next year.", "normal"),
         ]
@@ -170,9 +164,7 @@ class TestCompleteMemorySystem:
         """Test integration between different memory systems."""
         # Create comprehensive coordinator
         coordinator = MultiMemoryCoordinator.create_comprehensive_system(
-            user_id=test_config["user_id"],
-            enable_graph=False,
-            storage_path=str(temp_dir),
+            user_id=test_config["user_id"], enable_graph=False, storage_path=str(temp_dir)
         )
 
         # Simulate a day of interactions
@@ -187,9 +179,7 @@ class TestCompleteMemorySystem:
 
         for memory in morning_memories:
             await coordinator.store_memory(
-                memory,
-                importance="high",
-                metadata={"time": "morning", "category": "project"},
+                memory, importance="high", metadata={"time": "morning", "category": "project"}
             )
 
         # Afternoon: Technical discussions
@@ -262,23 +252,14 @@ class TestCompleteMemorySystem:
                 "BERT revolutionized NLP by introducing bidirectional pre-training of transformers.",
                 "critical",
             ),
-            (
-                "GPT models use autoregressive training with causal attention masks.",
-                "high",
-            ),
+            ("GPT models use autoregressive training with causal attention masks.", "high"),
             ("T5 treats all NLP tasks as text-to-text problems.", "high"),
-            (
-                "RoBERTa improved BERT by removing NSP and training on more data.",
-                "normal",
-            ),
+            ("RoBERTa improved BERT by removing NSP and training on more data.", "normal"),
             (
                 "ELECTRA uses discriminative pre-training instead of masked language modeling.",
                 "normal",
             ),
-            (
-                "DeBERTa adds disentangled attention and enhanced mask decoder.",
-                "normal",
-            ),
+            ("DeBERTa adds disentangled attention and enhanced mask decoder.", "normal"),
         ]
 
         for content, importance in technical_memories:
@@ -323,9 +304,7 @@ class TestCompleteMemorySystem:
 
         # Session 1: Store memories
         coordinator1 = MultiMemoryCoordinator.create_comprehensive_system(
-            user_id=test_config["user_id"],
-            enable_graph=False,
-            storage_path=storage_path,
+            user_id=test_config["user_id"], enable_graph=False, storage_path=storage_path
         )
 
         memories = [
@@ -339,18 +318,14 @@ class TestCompleteMemorySystem:
             await coordinator1.store_memory(memory, importance="high")
 
         # Save any persistent stores
-        if hasattr(
-            coordinator1.memory_systems.get(MemorySystemType.REACT), "save_vector_store"
-        ):
+        if hasattr(coordinator1.memory_systems.get(MemorySystemType.REACT), "save_vector_store"):
             coordinator1.memory_systems[MemorySystemType.REACT].save_vector_store(
                 str(Path(storage_path) / "react_memory")
             )
 
         # Session 2: New coordinator, same storage
         coordinator2 = MultiMemoryCoordinator.create_comprehensive_system(
-            user_id=test_config["user_id"],
-            enable_graph=False,
-            storage_path=storage_path,
+            user_id=test_config["user_id"], enable_graph=False, storage_path=storage_path
         )
 
         # Query previous session's memories
@@ -462,17 +437,11 @@ class TestCompleteMemorySystem:
             # Verify comprehensive answers
             answer_lower = answer.lower()
             if "architecture" in query.lower():
-                assert any(
-                    term in answer_lower for term in ["transformer", "rag", "hybrid"]
-                )
+                assert any(term in answer_lower for term in ["transformer", "rag", "hybrid"])
             if "performance" in query.lower():
-                assert any(
-                    term in answer_lower for term in ["1000", "concurrent", "latency"]
-                )
+                assert any(term in answer_lower for term in ["1000", "concurrent", "latency"])
             if "deadline" in query.lower():
-                assert any(
-                    term in answer_lower for term in ["november", "grant", "proposal"]
-                )
+                assert any(term in answer_lower for term in ["november", "grant", "proposal"])
 
         # Final analytics
         analytics = await coordinator.get_system_analytics()
@@ -508,14 +477,11 @@ async def test_graph_memory_with_neo4j():
         )
 
         # Query the graph
-        await agent.query_graph(
-            "Who are the executives at TechCorp?", query_type="natural"
-        )
+        await agent.query_graph("Who are the executives at TechCorp?", query_type="natural")
 
         # Cleanup
         agent.graph.query(
-            "MATCH (n {user_id: $user_id}) DETACH DELETE n",
-            {"user_id": "graph_test_user"},
+            "MATCH (n {user_id: $user_id}) DETACH DELETE n", {"user_id": "graph_test_user"}
         )
 
     except Exception:

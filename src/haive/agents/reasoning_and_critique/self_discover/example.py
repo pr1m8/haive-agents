@@ -21,9 +21,7 @@ def example_math_problem():
     """Example using SelfDiscover on a math problem."""
     problem = "Lisa has 10 apples. She gives 3 apples to her friend and then buys 5 more apples from the store. How many apples does Lisa have now?"
 
-    agent = create_self_discover_agent(
-        name="math_problem_solver", model="gpt-4o", temperature=0.0
-    )
+    agent = create_self_discover_agent(name="math_problem_solver", model="gpt-4o", temperature=0.0)
 
     agent.run(problem)
     # Print full reasoning process
@@ -31,7 +29,7 @@ def example_math_problem():
 
 def example_svg_interpretation():
     """Example using SelfDiscover to interpret an SVG path."""
-    problem = """This SVG path element <path d="M 55.57,80.69 L 57.38,65.80 M 57.38,65.80 L 48.90,57.46 M 48.90,57.46 L.
+    problem = """This SVG path element <path d="M 55.57,80.69 L 57.38,65.80 M 57.38,65.80 L 48.90,57.46 M 48.90,57.46 L
 45.58,47.78 M 45.58,47.78 L 53.25,36.07 L 66.29,48.90 L 78.69,61.09 L 55.57,80.69"/> draws a:
 (A) circle (B) heptagon (C) hexagon (D) kite (E) line (F) octagon (G) pentagon (H) rectangle (I) sector (J) triangle"""
 
@@ -63,7 +61,7 @@ def example_svg_interpretation():
 
 def example_logical_reasoning():
     """Example using SelfDiscover for a logical reasoning problem."""
-    problem = """Four people (Alex, Blake, Casey, and Dana) each have a different favorite color.
+    problem = """Four people (Alex, Blake, Casey, and Dana) each have a different favorite color
 (red, blue, green, and yellow) and a different favorite fruit (apple, banana, cherry, and date).
 Given the following clues, determine each person\'s favorite color and fruit:
 
@@ -163,10 +161,7 @@ def create_custom_domain_agent(
 
     # Create and return the agent
     return create_self_discover_agent(
-        name=f"{domain}_specialist",
-        model=model,
-        temperature=0.0,
-        reasoning_modules=modules,
+        name=f"{domain}_specialist", model=model, temperature=0.0, reasoning_modules=modules
     )
 
 
@@ -244,7 +239,7 @@ def example_advanced_configuration():
             ("system", "You are an expert problem solver."),
             (
                 "human",
-                """Customize these selected reasoning techniques specifically for the problem at hand:.
+                """Customize these selected reasoning techniques specifically for the problem at hand:
 
         Selected techniques:
         {selected_modules}
@@ -335,9 +330,7 @@ def example_advanced_configuration():
     # Print results
 
 
-def analyze_reasoning_process(
-    agent_results: list[dict], output_file: str | None = None
-):
+def analyze_reasoning_process(agent_results: list[dict], output_file: str | None = None):
     """Analyze the reasoning process across multiple problems to identify patterns.
 
     Args:
@@ -363,9 +356,7 @@ def analyze_reasoning_process(
         if result.get("error"):
             analysis["failed_problems"] += 1
             error = result.get("error")
-            analysis["common_errors"][error] = (
-                analysis["common_errors"].get(error, 0) + 1
-            )
+            analysis["common_errors"][error] = analysis["common_errors"].get(error, 0) + 1
         else:
             analysis["successful_problems"] += 1
 
@@ -414,7 +405,7 @@ def analyze_reasoning_process(
 
 def example_compare_models():
     """Example comparing different models on the same problem."""
-    problem = """If a sequence follows the pattern: 2, 6, 12, 20, 30, ..., what is the next number in the sequence?."""
+    problem = """If a sequence follows the pattern: 2, 6, 12, 20, 30, ..., what is the next number in the sequence?"""
 
     models = ["gpt-4o", "gpt-3.5-turbo"]
     results = {}

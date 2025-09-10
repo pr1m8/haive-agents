@@ -17,7 +17,7 @@ Your role is to:
         ),
         (
             "human",
-            """Integrate these analyses:.
+            """Integrate these analyses:
 
 **Task**: {task_description}
 
@@ -75,7 +75,7 @@ FEASIBILITY_ASSESSMENT_PROMPT = ChatPromptTemplate.from_messages(
         ),
         (
             "human",
-            """Assess feasibility for:.
+            """Assess feasibility for:
 
 **Task**: {task_description}
 **Complexity Score**: {complexity_score}
@@ -103,7 +103,7 @@ OPTIMIZATION_RECOMMENDATIONS_PROMPT = ChatPromptTemplate.from_messages(
         ),
         (
             "human",
-            """Generate optimizations for:.
+            """Generate optimizations for:
 
 **Current Plan**: {current_plan}
 **Bottlenecks**: {bottlenecks}

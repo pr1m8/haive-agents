@@ -126,29 +126,17 @@ class HookContext(BaseModel):
     error: Exception | None = Field(default=None, description="Error if any")
     node_name: str | None = Field(default=None, description="Current node name")
     state: dict[str, Any] | None = Field(default=None, description="Current state")
-    metadata: dict[str, Any] = Field(
-        default_factory=dict, description="Additional metadata"
-    )
+    metadata: dict[str, Any] = Field(default_factory=dict, description="Additional metadata")
 
     # Additional fields for enhanced hook patterns
-    messages: list[Any] | None = Field(
-        default=None, description="Messages being processed"
-    )
-    transformed_messages: list[Any] | None = Field(
-        default=None, description="Transformed messages"
-    )
+    messages: list[Any] | None = Field(default=None, description="Messages being processed")
+    transformed_messages: list[Any] | None = Field(default=None, description="Transformed messages")
     original_messages: list[Any] | None = Field(
         default=None, description="Original messages before transformation"
     )
-    structured_data: Any | None = Field(
-        default=None, description="Structured data from processing"
-    )
-    grade_data: dict[str, Any] | None = Field(
-        default=None, description="Grading results"
-    )
-    reflection_data: dict[str, Any] | None = Field(
-        default=None, description="Reflection results"
-    )
+    structured_data: Any | None = Field(default=None, description="Structured data from processing")
+    grade_data: dict[str, Any] | None = Field(default=None, description="Grading results")
+    reflection_data: dict[str, Any] | None = Field(default=None, description="Reflection results")
     transformation_type: str | None = Field(
         default=None, description="Type of message transformation applied"
     )
@@ -168,7 +156,6 @@ class HooksMixin:
     """Mixin that adds hook functionality to agents."""
 
     def __init__(self, *args, **kwargs):
-        """Init  ."""
         super().__init__(*args, **kwargs)
         self._hooks: dict[HookEvent, list[HookFunction]] = {}
 
@@ -179,7 +166,7 @@ class HooksMixin:
             event: The event to hook into
             hook: The function to call on the event
 
-        Examples:
+        Example:
             agent.add_hook(HookEvent.BEFORE_RUN, lambda ctx: print(f"Running {ctx.agent_name}"))
         """
         if event not in self._hooks:
@@ -196,9 +183,7 @@ class HooksMixin:
         """
         if event in self._hooks and hook in self._hooks[event]:
             self._hooks[event].remove(hook)
-            logger.debug(
-                f"Removed hook for {event} on {getattr(self, 'name', 'agent')}"
-            )
+            logger.debug(f"Removed hook for {event} on {getattr(self, 'name', 'agent')}")
 
     def clear_hooks(self, event: HookEvent | None = None) -> None:
         """Clear hooks for an event or all events.
@@ -208,9 +193,7 @@ class HooksMixin:
         """
         if event:
             self._hooks[event] = []
-            logger.debug(
-                f"Cleared hooks for {event} on {getattr(self, 'name', 'agent')}"
-            )
+            logger.debug(f"Cleared hooks for {event} on {getattr(self, 'name', 'agent')}")
         else:
             self._hooks.clear()
             logger.debug(f"Cleared all hooks on {getattr(self, 'name', 'agent')}")
@@ -365,7 +348,7 @@ def timing_hook(context: HookContext) -> None:
     Note:
         Must be added to both BEFORE and AFTER events to work properly.
 
-    Examples:
+    Example:
         agent.add_hook(HookEvent.BEFORE_RUN, timing_hook)
         agent.add_hook(HookEvent.AFTER_RUN, timing_hook)
     """
@@ -401,20 +384,12 @@ def retry_limit_hook(max_retries: int = 3) -> HookFunction:
     Raises:
         Exception: When retry limit is exceeded.
 
-    Examples:
+    Example:
         agent.add_hook(HookEvent.ON_RETRY, retry_limit_hook(max_retries=5))
     """
     retry_count = {}
 
     def hook(context: HookContext) -> None:
-        """Hook.
-
-        Args:
-            context: [TODO: Add description]
-
-        Returns:
-            [TODO: Add return description]
-        """
         if context.event == HookEvent.ON_RETRY:
             key = f"{context.agent_name}:{context.node_name}"
             retry_count[key] = retry_count.get(key, 0) + 1
@@ -443,9 +418,7 @@ def message_transformation_hook(context: HookContext) -> None:
     elif context.event == HookEvent.AFTER_MESSAGE_TRANSFORM:
         logger.info(f"Message transformation completed for {context.agent_name}")
         if context.transformed_messages:
-            logger.debug(
-                f"Output messages: {len(context.transformed_messages)} messages"
-            )
+            logger.debug(f"Output messages: {len(context.transformed_messages)} messages")
         if context.original_messages and context.transformed_messages:
             logger.debug(
                 f"Messages transformed: {len(context.original_messages)} -> "
@@ -593,7 +566,7 @@ def create_multi_stage_hook(stages: list[str]) -> HookFunction:
     Returns:
         A hook function that tracks multi-stage workflows.
 
-    Examples:
+    Example:
         hook = create_multi_stage_hook(["grading", "reflection", "improvement"])
         agent.add_hook(HookEvent.PRE_PROCESS, hook)
         agent.add_hook(HookEvent.POST_PROCESS, hook)
@@ -601,14 +574,6 @@ def create_multi_stage_hook(stages: list[str]) -> HookFunction:
     stage_data = {}
 
     def hook(context: HookContext) -> None:
-        """Hook.
-
-        Args:
-            context: [TODO: Add description]
-
-        Returns:
-            [TODO: Add return description]
-        """
         agent_key = context.agent_name
 
         if context.event == HookEvent.PRE_PROCESS:
@@ -618,17 +583,13 @@ def create_multi_stage_hook(stages: list[str]) -> HookFunction:
                 "start_time": __import__("time").time(),
                 "stage_results": {},
             }
-            logger.info(
-                f"🔄 Multi-stage workflow started for {agent_key}: {' → '.join(stages)}"
-            )
+            logger.info(f"🔄 Multi-stage workflow started for {agent_key}: {' → '.join(stages)}")
 
         elif context.event == HookEvent.POST_PROCESS:
             if agent_key in stage_data:
                 workflow_data = stage_data[agent_key]
                 elapsed = __import__("time").time() - workflow_data["start_time"]
-                logger.info(
-                    f"✅ Multi-stage workflow completed for {agent_key} in {elapsed:.2f}s"
-                )
+                logger.info(f"✅ Multi-stage workflow completed for {agent_key} in {elapsed:.2f}s")
 
                 # Log stage results
                 for stage, result in workflow_data["stage_results"].items():

@@ -34,9 +34,7 @@ def example_simple_debate() -> None:
     )
 
     # Run debate
-    result = debate.run(
-        {}, config={"configurable": {"recursion_limit": 50}}, debug=True
-    )
+    result = debate.run({}, config={"configurable": {"recursion_limit": 50}}, debug=True)
 
     # Display debate highlights
 
@@ -118,9 +116,7 @@ def example_panel_debate() -> None:
     )
 
     # Run debate with MUCH lower recursion limit
-    result = debate.run(
-        {}, config={"configurable": {"recursion_limit": 50}}, debug=False
-    )
+    result = debate.run({}, config={"configurable": {"recursion_limit": 50}}, debug=False)
 
     # Show debate summary
 
@@ -212,9 +208,7 @@ def example_oxford_debate() -> None:
     )
 
     # Run debate
-    result = debate.run(
-        {}, config={"configurable": {"recursion_limit": 100}}, debug=True
-    )
+    result = debate.run({}, config={"configurable": {"recursion_limit": 100}}, debug=True)
 
     # Display formal structure
 
@@ -275,22 +269,18 @@ def example_socratic_debate() -> None:
 
     # Start with Socratic question
     initial_message = AIMessage(
-        content="Tell me, young friend, what do you believe knowledge to be?",
-        name="Socrates",
+        content="Tell me, young friend, what do you believe knowledge to be?", name="Socrates"
     )
 
     # Run dialogue
     result = debate.run(
-        {"messages": [initial_message]},
-        config={"configurable": {"recursion_limit": 50}},
+        {"messages": [initial_message]}, config={"configurable": {"recursion_limit": 50}}
     )
 
     # Display dialogue
     messages = result.get("messages", [])
     for msg in messages:
-        if (isinstance(msg, AIMessage) and hasattr(msg, "name")) or isinstance(
-            msg, SystemMessage
-        ):
+        if (isinstance(msg, AIMessage) and hasattr(msg, "name")) or isinstance(msg, SystemMessage):
             pass
 
 

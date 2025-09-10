@@ -26,11 +26,6 @@ class FullyGradedRAGAgentV2(MultiAgent, StateConfigMixin):
     """Fully Graded RAG V2 - Uses enhanced state schema with configuration support."""
 
     def __init__(self, relevance_threshold: float = 0.5, **kwargs):
-        """Init  .
-
-        Args:
-            relevance_threshold: [TODO: Add description]
-        """
         # Create agents
         query_analyzer = create_query_analyzer("query_analyzer")
 
@@ -107,10 +102,7 @@ class FullyGradedRAGAgentV2(MultiAgent, StateConfigMixin):
 
         # Initialize with enhanced state schema
         super().__init__(
-            agents=agents,
-            execution_mode="sequential",
-            state_schema=GradedRAGState,
-            **kwargs,
+            agents=agents, execution_mode="sequential", state_schema=GradedRAGState, **kwargs
         )
 
         # Store initial configuration as private attribute
@@ -140,11 +132,6 @@ class MultiCriteriaGradedRAGAgentV2(MultiAgent, StateConfigMixin):
     """Multi-Criteria Graded RAG V2 - Configuration stored in state schema."""
 
     def __init__(self, grading_criteria: list[str] | None = None, **kwargs):
-        """Init  .
-
-        Args:
-            grading_criteria: [TODO: Add description]
-        """
         if grading_criteria is None:
             grading_criteria = [
                 "relevance",
@@ -190,10 +177,7 @@ class MultiCriteriaGradedRAGAgentV2(MultiAgent, StateConfigMixin):
         agents = [multi_criteria_grader, perspective_aggregator, balanced_generator]
 
         super().__init__(
-            agents=agents,
-            execution_mode="sequential",
-            state_schema=GradedRAGState,
-            **kwargs,
+            agents=agents, execution_mode="sequential", state_schema=GradedRAGState, **kwargs
         )
 
         self._initial_config = {
@@ -215,18 +199,7 @@ class MultiCriteriaGradedRAGAgentV2(MultiAgent, StateConfigMixin):
 class FLAREAgentV2Example(MultiAgent, StateConfigMixin):
     """FLARE Agent V2 example using enhanced state schema."""
 
-    def __init__(
-        self,
-        uncertainty_threshold: float = 0.3,
-        max_retrieval_rounds: int = 3,
-        **kwargs,
-    ):
-        """Init  .
-
-        Args:
-            uncertainty_threshold: [TODO: Add description]
-            max_retrieval_rounds: [TODO: Add description]
-        """
+    def __init__(self, uncertainty_threshold: float = 0.3, max_retrieval_rounds: int = 3, **kwargs):
         # Create a simple agent for example
         monitor = SimpleAgent(
             name="monitor",
@@ -235,10 +208,7 @@ class FLAREAgentV2Example(MultiAgent, StateConfigMixin):
         )
 
         super().__init__(
-            agents=[monitor],
-            execution_mode="conditional",
-            state_schema=FLAREState,
-            **kwargs,
+            agents=[monitor], execution_mode="conditional", state_schema=FLAREState, **kwargs
         )
 
         self._initial_config = {
@@ -263,9 +233,7 @@ def create_graded_rag_agent(
     if workflow_type == "fully_graded":
         return FullyGradedRAGAgentV2(relevance_threshold=relevance_threshold, **kwargs)
     if workflow_type == "multi_criteria":
-        return MultiCriteriaGradedRAGAgentV2(
-            grading_criteria=grading_criteria, **kwargs
-        )
+        return MultiCriteriaGradedRAGAgentV2(grading_criteria=grading_criteria, **kwargs)
     raise TypeError(f"Unknown workflow type: {workflow_type}")
 
 

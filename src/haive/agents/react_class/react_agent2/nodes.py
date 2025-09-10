@@ -2,13 +2,12 @@ import re
 from collections.abc import Callable
 from typing import Any
 
+from haive.agents.react_class.react_agent2.models import Action, ActionType, Thought
 from haive.core.engine.aug_llm import AugLLMConfig, compose_runnable
 from langchain_core.messages import AIMessage
 from langgraph.graph import END
 from langgraph.types import Command
 from pydantic import BaseModel
-
-from haive.agents.react_class.react_agent2.models import Action, ActionType, Thought
 
 
 def get_tool_by_name(tools: list[str], name: str):
@@ -28,11 +27,7 @@ def get_tool_by_name(tools: list[str], name: str):
             ):
                 return tool
             # Class with name class variable
-            if (
-                hasattr(tool, "name")
-                and isinstance(tool.name, str)
-                and tool.name == name
-            ):
+            if hasattr(tool, "name") and isinstance(tool.name, str) and tool.name == name:
                 return tool
 
     return None
@@ -247,16 +242,13 @@ def think_node(state: dict[str, Any], aug_llm: AugLLMConfig | None = None) -> Co
                         break
 
             # Look for "Action Input:" pattern
-            action_input_match = re.search(
-                r"Action Input:(.+?)(?:\n|$)", content, re.DOTALL
-            )
+            action_input_match = re.search(r"Action Input:(.+?)(?:\n|$)", content, re.DOTALL)
             if action_input_match:
                 action_input = action_input_match.group(1).strip()
 
             # Create a Thought object
             thought = Thought(
-                thought=content,
-                action=Action(action_type=action_type, action_input=action_input),
+                thought=content, action=Action(action_type=action_type, action_input=action_input)
             )
 
         # Update state with new thought
@@ -430,14 +422,6 @@ def create_tool_node(tool_name: str) -> Callable:
     """
 
     def tool_node(state: dict[str, Any]) -> Command:
-        """Tool Node.
-
-        Args:
-            state: [TODO: Add description]
-
-        Returns:
-            [TODO: Add return description]
-        """
         # Convert state to dict if it's a model
         state_dict = state.model_dump() if hasattr(state, "model_dump") else state
 

@@ -11,11 +11,11 @@ from haive.agents.multi.utils.compatibility import (
 )
 
 __all__ = [
-    "BaseMultiAgent",
-    "BranchAgent",
-    "ConditionalAgent",
-    "ExecutionMode",
     "MultiAgent",
-    "ParallelAgent",
+    "BaseMultiAgent",
+    "ExecutionMode",
     "SequentialAgent",
+    "ParallelAgent",
+    "ConditionalAgent",
+    "BranchAgent",
 ]

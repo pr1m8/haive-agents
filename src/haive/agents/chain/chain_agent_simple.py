@@ -105,9 +105,7 @@ class ChainAgent(Agent):
 
         return graph
 
-    def _add_edge_to_graph(
-        self, graph: BaseGraph, edge: EdgeLike, node_names: dict[int, str]
-    ):
+    def _add_edge_to_graph(self, graph: BaseGraph, edge: EdgeLike, node_names: dict[int, str]):
         """Add an edge to the graph."""
         if isinstance(edge, str):
             # Parse "0->1" format
@@ -195,7 +193,7 @@ def flow(*nodes: NodeLike, **kwargs) -> ChainAgent:
 def flow_with_edges(nodes: list[NodeLike], *edges: EdgeLike) -> ChainAgent:
     """Create a flow with custom edges.
 
-    Examples:
+    Example:
         chain = flow_with_edges(
             [classifier, simple, complex, output],
             (0, {"simple": 1, "complex": 2}, lambda s: s.type),
@@ -211,11 +209,6 @@ class FlowBuilder:
     """Builder for method chaining."""
 
     def __init__(self, initial: NodeLike | None = None):
-        """Init  .
-
-        Args:
-            initial: [TODO: Add description]
-        """
         self.chain = ChainAgent() if initial is None else ChainAgent(initial)
 
     def add(self, node: NodeLike) -> "FlowBuilder":

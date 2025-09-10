@@ -38,9 +38,7 @@ class DynamicMultiAgent(MultiAgent):
         default=True, description="Enable capability-based agent selection"
     )
 
-    track_performance: bool = Field(
-        default=True, description="Track agent performance metrics"
-    )
+    track_performance: bool = Field(default=True, description="Track agent performance metrics")
 
     # Private attributes for dynamic management
     _capability_registry: dict[str, str] = PrivateAttr(default_factory=dict)
@@ -122,9 +120,7 @@ class DynamicMultiAgent(MultiAgent):
         if hasattr(self, "_agent_order") and name not in self._agent_order:
             self._agent_order.append(name)
 
-        logger.info(
-            f"✅ Dynamically registered {name} (total agents: {len(self.agents)})"
-        )
+        logger.info(f"✅ Dynamically registered {name} (total agents: {len(self.agents)})")
         return True
 
     def unregister_agent_dynamically(self, agent_name: str) -> bool:
@@ -155,16 +151,12 @@ class DynamicMultiAgent(MultiAgent):
         if hasattr(self, "_agent_order") and agent_name in self._agent_order:
             self._agent_order.remove(agent_name)
 
-        logger.info(
-            f"✅ Unregistered {agent_name} (remaining agents: {len(self.agents)})"
-        )
+        logger.info(f"✅ Unregistered {agent_name} (remaining agents: {len(self.agents)})")
         return True
 
     def build_graph(self) -> BaseGraph:
         """Build dynamic multi-agent graph with executor pattern."""
-        logger.info(
-            f"Building dynamic multi-agent graph with {len(self.agents)} agents"
-        )
+        logger.info(f"Building dynamic multi-agent graph with {len(self.agents)} agents")
 
         # Create the graph
         graph = BaseGraph(name=f"{self.name}Graph")
@@ -182,9 +174,7 @@ class DynamicMultiAgent(MultiAgent):
 
         # Supervisor routes to executor or END
         graph.add_conditional_edges(
-            "supervisor",
-            self._route_from_supervisor,
-            {"executor": "executor", "END": "__end__"},
+            "supervisor", self._route_from_supervisor, {"executor": "executor", "END": "__end__"}
         )
 
         # Executor always returns to supervisor
@@ -250,9 +240,7 @@ class DynamicMultiAgent(MultiAgent):
             state_dict = self._extract_state_dict(state)
 
             # Get target agent
-            target_agent = state_dict.get("target_agent") or state_dict.get(
-                "active_agent_id"
-            )
+            target_agent = state_dict.get("target_agent") or state_dict.get("active_agent_id")
 
             if not target_agent:
                 logger.error("No target agent specified")
@@ -282,9 +270,7 @@ class DynamicMultiAgent(MultiAgent):
                     result = await agent(agent_input)
 
                 # Process result
-                update = self._process_agent_result(
-                    target_agent, agent, result, state_dict
-                )
+                update = self._process_agent_result(target_agent, agent, result, state_dict)
 
                 # Track performance
                 if self.track_performance:
@@ -340,9 +326,7 @@ class DynamicMultiAgent(MultiAgent):
 
         return state_dict
 
-    def _should_end_conversation(
-        self, messages: list[BaseMessage], state: dict[str, Any]
-    ) -> bool:
+    def _should_end_conversation(self, messages: list[BaseMessage], state: dict[str, Any]) -> bool:
         """Check if we should end to avoid loops."""
         if not messages:
             return True
@@ -352,9 +336,7 @@ class DynamicMultiAgent(MultiAgent):
         # If last message is AI, check for human input after it
         if isinstance(last_message, AIMessage):
             # Find last human message
-            human_messages = [
-                (i, m) for i, m in enumerate(messages) if isinstance(m, HumanMessage)
-            ]
+            human_messages = [(i, m) for i, m in enumerate(messages) if isinstance(m, HumanMessage)]
 
             if human_messages:
                 last_human_idx = human_messages[-1][0]
@@ -396,9 +378,7 @@ class DynamicMultiAgent(MultiAgent):
         # Default to first available agent
         return next(iter(self.agents.keys())) if self.agents else None
 
-    def _calculate_agent_score(
-        self, agent_name: str, content: str, state: dict[str, Any]
-    ) -> float:
+    def _calculate_agent_score(self, agent_name: str, content: str, state: dict[str, Any]) -> float:
         """Calculate suitability score for an agent."""
         score = 0.0
         content_lower = content.lower()
@@ -497,9 +477,7 @@ class DynamicMultiAgent(MultiAgent):
         if success and execution_time:
             avg_time = metrics["average_execution_time"]
             total = metrics["successful_executions"]
-            metrics["average_execution_time"] = (
-                avg_time * (total - 1) + execution_time
-            ) / total
+            metrics["average_execution_time"] = (avg_time * (total - 1) + execution_time) / total
 
         # Update last execution
         metrics["last_execution"] = datetime.now()
@@ -539,6 +517,4 @@ def create_dynamic_multi_agent(
     Returns:
         DynamicMultiAgent instance
     """
-    return DynamicMultiAgent(
-        name=name, agents=agents, coordination_mode="dynamic", **kwargs
-    )
+    return DynamicMultiAgent(name=name, agents=agents, coordination_mode="dynamic", **kwargs)

@@ -39,10 +39,7 @@ Give a binary score 'yes' or 'no' to indicate whether the document is relevant t
 
 ANSWER_PROMPT = ChatPromptTemplate.from_messages(
     [
-        (
-            "system",
-            "You are an expert assistant. Answer based only on the provided context.",
-        ),
+        ("system", "You are an expert assistant. Answer based only on the provided context."),
         (
             "human",
             """Answer the question based on the context.
@@ -84,9 +81,7 @@ class CorrectiveRAGAgent(ConditionalAgent):
             )
 
         # Create agents
-        retrieval_agent = BaseRAGAgent.from_documents(
-            documents=documents, name="CRAG Retriever"
-        )
+        retrieval_agent = BaseRAGAgent.from_documents(documents=documents, name="CRAG Retriever")
 
         grader_agent = SimpleAgent(
             engine=AugLLMConfig(

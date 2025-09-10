@@ -72,14 +72,12 @@ class ResearchAgentConfig(AgentConfig):
 
     # Engines dictionary
     engines: dict[str, AugLLMConfig] = Field(
-        default_factory=dict,
-        description="Dictionary of AugLLM engines for different tasks",
+        default_factory=dict, description="Dictionary of AugLLM engines for different tasks"
     )
 
     # Tool configurations
     tools: list[BaseTool] = Field(
-        default_factory=lambda: RESEARCH_TOOLS,
-        description="Tools for research and analysis",
+        default_factory=lambda: RESEARCH_TOOLS, description="Tools for research and analysis"
     )
 
     # Vector store configuration
@@ -92,14 +90,11 @@ class ResearchAgentConfig(AgentConfig):
         default=None, description="Name of the configured ReAct agent"
     )
 
-    rag_agent_name: str | None = Field(
-        default=None, description="Name of the configured RAG agent"
-    )
+    rag_agent_name: str | None = Field(default=None, description="Name of the configured RAG agent")
 
     # Report generation settings
     report_format: str = Field(
-        default="markdown",
-        description="Format for the final report (markdown, html, etc.)",
+        default="markdown", description="Format for the final report (markdown, html, etc.)"
     )
 
     # Research parameters
@@ -183,9 +178,7 @@ class ResearchAgentConfig(AgentConfig):
         # Create LLM configuration
         llm_config = AzureLLMConfig(
             model=llm_model,
-            parameters={
-                "temperature": 0.2
-            },  # Lower temperature for more accurate research
+            parameters={"temperature": 0.2},  # Lower temperature for more accurate research
         )
 
         # Create main AugLLM engine

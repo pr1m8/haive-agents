@@ -12,7 +12,6 @@ from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.graph.tool_config import ToolConfig
 from haive.core.models.llm.base import AzureLLMConfig
-from haive.core.schema.prebuilt.messages_state import MessagesState
 from haive.core.utils.visualize_graph_utils import render_and_display_graph
 from langchain_core.messages import AIMessage, SystemMessage
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
@@ -25,6 +24,7 @@ from langgraph.types import Checkpointer, Command
 from pydantic import BaseModel, Field
 
 from haive.agents.simple.agent import SimpleAgent
+from haive.core.schema.prebuilt.messages_state import MessagesState
 
 # Set up logging
 logger = logging.getLogger(__name__)
@@ -59,9 +59,7 @@ class ReactAgentSchema(MessagesState):
 class ReactAgentSchemaWithStructuredResponse(ReactAgentSchema):
     """Schema for React Agent with structured response."""
 
-    structured_response: Any = Field(
-        default=None, description="Structured response from the agent"
-    )
+    structured_response: Any = Field(default=None, description="Structured response from the agent")
 
 
 # =============================================
@@ -84,18 +82,12 @@ class ReactAgentConfig(BaseModel):
     )
 
     # Node names
-    tool_node_name: str = Field(
-        default="tools", description="Name for the tool execution node"
-    )
+    tool_node_name: str = Field(default="tools", description="Name for the tool execution node")
 
-    router_node_name: str = Field(
-        default="router", description="Name for the router node"
-    )
+    router_node_name: str = Field(default="router", description="Name for the router node")
 
     # Execution control
-    max_iterations: int = Field(
-        default=10, description="Maximum number of iterations to run"
-    )
+    max_iterations: int = Field(default=10, description="Maximum number of iterations to run")
 
     # Response format
     response_format: type[BaseModel] | dict[str, Any] | None = Field(
@@ -119,14 +111,12 @@ class ReactAgentConfig(BaseModel):
 
     # Visualization
     visualize: bool = Field(
-        default=True,
-        description="Whether to generate a visualization of the agent graph",
+        default=True, description="Whether to generate a visualization of the agent graph"
     )
 
     # Custom tool routing
     tool_routing: dict[str, str] | None = Field(
-        default=None,
-        description="Custom tool routing: map from tool name to destination node",
+        default=None, description="Custom tool routing: map from tool name to destination node"
     )
 
     # Override state_schema with ReAct-specific schema
@@ -174,9 +164,7 @@ Always give your reasoning before using a tool, explaining why you're choosing i
 """
 
         # Create LLM config
-        llm_config = AzureLLMConfig(
-            model=model, parameters={"temperature": temperature}
-        )
+        llm_config = AzureLLMConfig(model=model, parameters={"temperature": temperature})
 
         # Create prompt template with system prompt
         system_prompt = system_prompt or default_system_prompt
@@ -197,9 +185,7 @@ Always give your reasoning before using a tool, explaining why you're choosing i
 
         # Determine which state schema to use
         state_schema = (
-            ReactAgentSchemaWithStructuredResponse
-            if response_format
-            else ReactAgentSchema
+            ReactAgentSchemaWithStructuredResponse if response_format else ReactAgentSchema
         )
 
         # Create and return the config
@@ -234,9 +220,7 @@ class ReactAgent(SimpleAgent):
         logger.debug(f"Setting up workflow for ReactAgent {self.config.name}")
 
         # Create BaseGraph with proper component registration
-        gb = BaseGraph(
-            name=f"{self.config.name}_react_agent", state_schema=self.state_schema
-        )
+        gb = BaseGraph(name=f"{self.config.name}_react_agent", state_schema=self.state_schema)
 
         # Add the main agent/LLM node
         gb.add_node(self.config.node_name, self.config.engine)
@@ -250,9 +234,7 @@ class ReactAgent(SimpleAgent):
 
         # If structured output is requested, add that node
         if self.config.response_format:
-            gb.add_node(
-                "generate_structured_response", self._create_structured_output_node()
-            )
+            gb.add_node("generate_structured_response", self._create_structured_output_node())
 
         # Add any custom tool-specific nodes
         custom_nodes = {}
@@ -276,9 +258,7 @@ class ReactAgent(SimpleAgent):
                             gb.add_node(destination, specialized_tool_node)
                             custom_nodes[destination] = tool_name
                             # Connect back to the agent
-                            gb.add_edge(
-                                source=destination, target=self.config.node_name
-                            )
+                            gb.add_edge(source=destination, target=self.config.node_name)
                             break
 
         # Add edges between main nodes
@@ -392,9 +372,7 @@ class ReactAgent(SimpleAgent):
                         if tool_name in self.config.tool_routing:
                             # Return the custom destination for this tool
                             destination = self.config.tool_routing[tool_name]
-                            logger.info(
-                                f"Custom routing for tool {tool_name} to {destination}"
-                            )
+                            logger.info(f"Custom routing for tool {tool_name} to {destination}")
                             return destination
 
                 # Default tool routing
@@ -419,24 +397,17 @@ class ReactAgent(SimpleAgent):
             try:
                 # Get the LLM from the engine
                 llm = None
-                if (
-                    isinstance(self.config.engine, AugLLMConfig)
-                    and self.config.engine.llm_config
-                ):
+                if isinstance(self.config.engine, AugLLMConfig) and self.config.engine.llm_config:
                     llm = self.config.engine.llm_config.instantiate()
 
                 if not llm:
                     logger.error("Could not get LLM for structured output generation")
                     return {
-                        "structured_response": {
-                            "error": "Could not generate structured response"
-                        }
+                        "structured_response": {"error": "Could not generate structured response"}
                     }
 
                 # Create structured output LLM
-                llm_with_structured_output = llm.with_structured_output(
-                    self.config.response_format
-                )
+                llm_with_structured_output = llm.with_structured_output(self.config.response_format)
 
                 # Get messages (excluding the last one if it contains tool
                 # calls)
@@ -473,9 +444,7 @@ class ReactAgent(SimpleAgent):
         # Run the app
         thread_id = str(uuid.uuid4())
         result = self.app.invoke(
-            inputs,
-            config={"configurable": {"thread_id": thread_id}},
-            debug=self.config.debug,
+            inputs, config={"configurable": {"thread_id": thread_id}}, debug=self.config.debug
         )
 
         # Log results

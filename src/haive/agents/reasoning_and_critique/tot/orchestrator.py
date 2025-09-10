@@ -1,7 +1,7 @@
-"""Tree of Thoughts Orchestrator using MultiAgent.
+"""Tree of Thoughts Orchestrator using EnhancedMultiAgentV4.
 
 This module implements the Tree of Thoughts algorithm using a multi-agent
-approach with MultiAgent coordinating the Candidate Generator
+approach with EnhancedMultiAgentV4 coordinating the Candidate Generator
 and Solution Scorer agents.
 """
 
@@ -11,13 +11,9 @@ from typing import Any
 from haive.core.engine.aug_llm import AugLLMConfig
 from pydantic import BaseModel, Field
 
-from haive.agents.multi.agent import MultiAgent
-from haive.agents.reasoning_and_critique.tot.agents.candidate_generator import (
-    CandidateGenerator,
-)
-from haive.agents.reasoning_and_critique.tot.agents.solution_scorer import (
-    SolutionScorer,
-)
+from haive.agents.multi.enhanced_multi_agent_v4 import EnhancedMultiAgentV4
+from haive.agents.reasoning_and_critique.tot.agents.candidate_generator import CandidateGenerator
+from haive.agents.reasoning_and_critique.tot.agents.solution_scorer import SolutionScorer
 
 logger = logging.getLogger(__name__)
 
@@ -64,14 +60,12 @@ class TreeOfThoughtsOrchestrator:
             engine = AugLLMConfig()
 
         # Create the agents
-        self.generator = CandidateGenerator(
-            name="tot_generator", temperature=temperature_generate
-        )
+        self.generator = CandidateGenerator(name="tot_generator", temperature=temperature_generate)
 
         self.scorer = SolutionScorer(name="tot_scorer", temperature=temperature_score)
 
         # Create the multi-agent coordinator
-        self.coordinator = MultiAgent(
+        self.coordinator = EnhancedMultiAgentV4(
             name=name,
             engine=engine,
             agents={"generator": self.generator.agent, "scorer": self.scorer.agent},
@@ -187,9 +181,7 @@ Evaluate each one carefully."""
 
                 # Beam search: keep top solutions
                 scored_solutions.sort(key=lambda x: x[1], reverse=True)
-                current_candidates = [
-                    sol for sol, _, _ in scored_solutions[: self.beam_width]
-                ]
+                current_candidates = [sol for sol, _, _ in scored_solutions[: self.beam_width]]
 
                 # Check for early termination
                 if best_score >= 0.95:  # Near-perfect solution
@@ -226,8 +218,7 @@ Evaluate each one carefully."""
             line = line.strip()
             # Check for numbered items (1., 2., etc) or bullets (-, *, •)
             if any(
-                line.startswith(prefix)
-                for prefix in ["1.", "2.", "3.", "4.", "5.", "-", "*", "•"]
+                line.startswith(prefix) for prefix in ["1.", "2.", "3.", "4.", "5.", "-", "*", "•"]
             ):
                 # Extract the content after the marker
                 for prefix in ["1.", "2.", "3.", "4.", "5.", "-", "*", "•"]:
@@ -250,9 +241,7 @@ Evaluate each one carefully."""
             output = scoring_result.output
             if hasattr(output, "scored_solutions"):
                 for scored_sol in output.scored_solutions:
-                    scored.append(
-                        (scored_sol.solution, scored_sol.score, scored_sol.reasoning)
-                    )
+                    scored.append((scored_sol.solution, scored_sol.score, scored_sol.reasoning))
                 return scored
 
         # Fallback: assign default scores

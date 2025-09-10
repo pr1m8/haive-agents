@@ -8,9 +8,7 @@ execution strategy recommendations.
 from datetime import datetime, timedelta
 from enum import Enum
 from typing import Any
-
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
-
 from haive.agents.common.models.task_analysis.base import ComplexityLevel
 
 ComplexityType = ComplexityLevel
@@ -108,9 +106,7 @@ class ExecutionStrategy(BaseModel):
 
     """
 
-    model_config = ConfigDict(
-        extra="forbid", validate_assignment=True, str_strip_whitespace=True
-    )
+    model_config = ConfigDict(extra="forbid", validate_assignment=True, str_strip_whitespace=True)
     strategy_type: str = Field(
         ...,
         description="Primary execution approach",
@@ -209,14 +205,10 @@ class ExecutionStrategy(BaseModel):
         """
         total = sum(v.values())
         if abs(total - 1.0) > 0.1:
-            raise ValueError(
-                f"Resource allocation proportions must sum to 1.0, got {total:.2f}"
-            )
+            raise ValueError(f"Resource allocation proportions must sum to 1.0, got {total:.2f}")
         for resource, proportion in v.items():
             if not 0.0 <= proportion <= 1.0:
-                raise ValueError(
-                    f"Resource allocation for {resource} must be between 0.0 and 1.0"
-                )
+                raise ValueError(f"Resource allocation for {resource} must be between 0.0 and 1.0")
         return v
 
 
@@ -263,10 +255,7 @@ class TaskAnalysis(BaseModel):
     """
 
     model_config = ConfigDict(
-        extra="forbid",
-        validate_assignment=True,
-        use_enum_values=True,
-        str_strip_whitespace=True,
+        extra="forbid", validate_assignment=True, use_enum_values=True, str_strip_whitespace=True
     )
     task_description: str = Field(
         ...,
@@ -310,18 +299,12 @@ class TaskAnalysis(BaseModel):
         default=AnalysisMethod.HYBRID, description="Method used for analysis"
     )
     complexity: TaskComplexity = Field(..., description="Complexity assessment results")
-    solvability: SolvabilityAssessment = Field(
-        ..., description="Solvability assessment results"
-    )
+    solvability: SolvabilityAssessment = Field(..., description="Solvability assessment results")
     decomposition: TaskDecomposition | None = Field(
         default=None, description="Task decomposition (if applicable)"
     )
-    planning: PlanningRequirement = Field(
-        ..., description="Planning requirements and constraints"
-    )
-    execution_strategy: ExecutionStrategy = Field(
-        ..., description="Recommended execution approach"
-    )
+    planning: PlanningRequirement = Field(..., description="Planning requirements and constraints")
+    execution_strategy: ExecutionStrategy = Field(..., description="Recommended execution approach")
     analysis_timestamp: datetime = Field(
         default_factory=datetime.now, description="When analysis was performed"
     )
@@ -351,21 +334,15 @@ class TaskAnalysis(BaseModel):
             self.complexity.overall_complexity == ComplexityType.UNSOLVABLE
             and self.solvability.solvability_status != SolvabilityStatus.IMPOSSIBLE
         ):
-            raise ValueError(
-                "Unsolvable complexity should have impossible solvability status"
-            )
+            raise ValueError("Unsolvable complexity should have impossible solvability status")
         if self.decomposition and (
             self.complexity.overall_complexity == ComplexityType.TRIVIAL
             and len(self.decomposition.branches) > 3
         ):
             raise ValueError("Trivial tasks should not have complex decomposition")
-        avg_confidence = (
-            self.complexity.confidence + self.solvability.confidence_level
-        ) / 2
+        avg_confidence = (self.complexity.confidence + self.solvability.confidence_level) / 2
         if abs(self.analysis_confidence - avg_confidence) > 0.3:
-            raise ValueError(
-                "Overall confidence should be consistent with component confidences"
-            )
+            raise ValueError("Overall confidence should be consistent with component confidences")
         return self
 
     def get_overall_assessment(self) -> dict[str, Any]:
@@ -401,28 +378,20 @@ class TaskAnalysis(BaseModel):
         summary_lines.append(f"Domain: {self.domain.replace('_', ' ').title()}")
         summary_lines.append("")
         summary_lines.append("KEY FINDINGS:")
-        summary_lines.append(
-            f"• Complexity: {self.complexity.overall_complexity.value.title()}"
-        )
-        summary_lines.append(
-            f"• Solvability: {self.solvability.solvability_status.value.title()}"
-        )
+        summary_lines.append(f"• Complexity: {self.complexity.overall_complexity.value.title()}")
+        summary_lines.append(f"• Solvability: {self.solvability.solvability_status.value.title()}")
         summary_lines.append(
             f"• Ready to Execute: {('Yes' if self.solvability.is_currently_solvable else 'No')}"
         )
         summary_lines.append(f"• Estimated Steps: {self.complexity.estimated_steps}")
         if self.decomposition:
-            summary_lines.append(
-                f"• Execution Branches: {len(self.decomposition.branches)}"
-            )
+            summary_lines.append(f"• Execution Branches: {len(self.decomposition.branches)}")
         summary_lines.append("")
         summary_lines.append("RECOMMENDED STRATEGY:")
         summary_lines.append(
             f"• Approach: {self.execution_strategy.strategy_type.replace('_', ' ').title()}"
         )
-        summary_lines.append(
-            f"• Priority: {self.execution_strategy.priority_level.title()}"
-        )
+        summary_lines.append(f"• Priority: {self.execution_strategy.priority_level.title()}")
         summary_lines.append(
             f"• Timeline: {self.execution_strategy.timeline_strategy.replace('_', ' ').title()}"
         )
@@ -461,9 +430,7 @@ class TaskAnalysis(BaseModel):
         if self.complexity.requires_expertise():
             recommendations.append("Engage domain experts early in the process")
         if self.complexity.requires_research():
-            recommendations.append(
-                "Allocate significant time for research and discovery"
-            )
+            recommendations.append("Allocate significant time for research and discovery")
         if self.decomposition:
             if len(self.decomposition.parallelization_opportunities) > 0:
                 recommendations.append("Leverage parallel execution opportunities")
@@ -499,14 +466,9 @@ class TaskAnalysis(BaseModel):
         complexity = cls._analyze_complexity(task_description, domain, context)
         solvability = cls._analyze_solvability(task_description, domain, complexity)
         planning = cls._generate_planning_requirements(complexity, solvability)
-        execution_strategy = cls._generate_execution_strategy(
-            complexity, solvability, planning
-        )
+        execution_strategy = cls._generate_execution_strategy(complexity, solvability, planning)
         decomposition = None
-        if complexity.overall_complexity not in [
-            ComplexityType.TRIVIAL,
-            ComplexityType.SIMPLE,
-        ]:
+        if complexity.overall_complexity not in [ComplexityType.TRIVIAL, ComplexityType.SIMPLE]:
             decomposition = cls._generate_decomposition(task_description, complexity)
         analysis_confidence = (complexity.confidence + solvability.confidence_level) / 2
         return cls(
@@ -527,64 +489,18 @@ class TaskAnalysis(BaseModel):
         """Infer task domain from description."""
         text_lower = task_description.lower()
         domain_keywords = {
-            "medical_research": [
-                "cancer",
-                "cure",
-                "disease",
-                "medicine",
-                "therapy",
-                "clinical",
-            ],
-            "mathematics": [
-                "prove",
-                "theorem",
-                "equation",
-                "calculate",
-                "formula",
-                "hypothesis",
-            ],
-            "sports_research": [
-                "wimbledon",
-                "championship",
-                "tournament",
-                "sports",
-                "athlete",
-            ],
-            "scientific_research": [
-                "research",
-                "study",
-                "experiment",
-                "analysis",
-                "investigation",
-            ],
+            "medical_research": ["cancer", "cure", "disease", "medicine", "therapy", "clinical"],
+            "mathematics": ["prove", "theorem", "equation", "calculate", "formula", "hypothesis"],
+            "sports_research": ["wimbledon", "championship", "tournament", "sports", "athlete"],
+            "scientific_research": ["research", "study", "experiment", "analysis", "investigation"],
             "data_analysis": ["data", "statistics", "analyze", "dataset", "metrics"],
-            "software_engineering": [
-                "code",
-                "program",
-                "software",
-                "application",
-                "system",
-            ],
-            "factual_lookup": [
-                "find",
-                "birthday",
-                "age",
-                "when",
-                "who",
-                "what",
-                "where",
-            ],
-            "mathematical_calculation": [
-                "add",
-                "multiply",
-                "square",
-                "sum",
-                "calculate",
-            ],
+            "software_engineering": ["code", "program", "software", "application", "system"],
+            "factual_lookup": ["find", "birthday", "age", "when", "who", "what", "where"],
+            "mathematical_calculation": ["add", "multiply", "square", "sum", "calculate"],
         }
         domain_scores = {}
         for domain, keywords in domain_keywords.items():
-            score = sum(1 for keyword in keywords if keyword in text_lower)
+            score = sum((1 for keyword in keywords if keyword in text_lower))
             if score > 0:
                 domain_scores[domain] = score
         if domain_scores:
@@ -597,49 +513,15 @@ class TaskAnalysis(BaseModel):
     ) -> TaskComplexity:
         """Analyze task complexity using heuristics."""
         text_lower = task_description.lower()
-        simple_indicators = [
-            "find",
-            "lookup",
-            "what is",
-            "birthday",
-            "age",
-            "calculate",
-            "add",
-        ]
-        complex_indicators = [
-            "develop",
-            "create",
-            "cure",
-            "solve",
-            "prove",
-            "design",
-            "build",
-        ]
-        research_indicators = [
-            "novel",
-            "breakthrough",
-            "new",
-            "innovative",
-            "research",
-            "discover",
-        ]
-        impossible_indicators = [
-            "impossible",
-            "violate",
-            "faster than light",
-            "perpetual motion",
-        ]
-        simple_score = sum(
-            1 for indicator in simple_indicators if indicator in text_lower
-        )
-        complex_score = sum(
-            1 for indicator in complex_indicators if indicator in text_lower
-        )
-        research_score = sum(
-            1 for indicator in research_indicators if indicator in text_lower
-        )
+        simple_indicators = ["find", "lookup", "what is", "birthday", "age", "calculate", "add"]
+        complex_indicators = ["develop", "create", "cure", "solve", "prove", "design", "build"]
+        research_indicators = ["novel", "breakthrough", "new", "innovative", "research", "discover"]
+        impossible_indicators = ["impossible", "violate", "faster than light", "perpetual motion"]
+        simple_score = sum((1 for indicator in simple_indicators if indicator in text_lower))
+        complex_score = sum((1 for indicator in complex_indicators if indicator in text_lower))
+        research_score = sum((1 for indicator in research_indicators if indicator in text_lower))
         impossible_score = sum(
-            1 for indicator in impossible_indicators if indicator in text_lower
+            (1 for indicator in impossible_indicators if indicator in text_lower)
         )
         if impossible_score > 0:
             overall_complexity = ComplexityType.UNSOLVABLE
@@ -717,10 +599,7 @@ class TaskAnalysis(BaseModel):
             solvability_status = SolvabilityStatus.RESEARCHABLE
             is_currently_solvable = False
             primary_barriers = [SolvabilityBarrier.KNOWLEDGE_GAP]
-        elif complexity.overall_complexity in [
-            ComplexityType.SIMPLE,
-            ComplexityType.TRIVIAL,
-        ]:
+        elif complexity.overall_complexity in [ComplexityType.SIMPLE, ComplexityType.TRIVIAL]:
             solvability_status = SolvabilityStatus.READY
             is_currently_solvable = True
             primary_barriers = []
@@ -734,9 +613,7 @@ class TaskAnalysis(BaseModel):
         if "calculate" in text_lower:
             enabling_factors.extend(["computational_tools", "mathematical_knowledge"])
         if "research" in text_lower:
-            enabling_factors.extend(
-                ["academic_literature", "research_methods", "expert_knowledge"]
-            )
+            enabling_factors.extend(["academic_literature", "research_methods", "expert_knowledge"])
         if is_currently_solvable:
             time_to_solvable = timedelta(0)
         elif solvability_status == SolvabilityStatus.RESEARCHABLE:
@@ -773,17 +650,13 @@ class TaskAnalysis(BaseModel):
         return PlanningRequirement(
             planning_depth=planning_depth,
             coordination_needs=["multi_agent"] if complexity.branch_count > 3 else [],
-            resource_requirements=(
-                ["computational", "domain_expert"]
-                if complexity.requires_expertise()
-                else ["computational"]
-            ),
+            resource_requirements=["computational", "domain_expert"]
+            if complexity.requires_expertise()
+            else ["computational"],
             time_constraints={"real_time": False},
-            risk_factors=(
-                ["complexity"]
-                if complexity.overall_complexity.value in ["complex", "highly_complex"]
-                else []
-            ),
+            risk_factors=["complexity"]
+            if complexity.overall_complexity.value in ["complex", "highly_complex"]
+            else [],
         )
 
     @classmethod
@@ -818,10 +691,7 @@ class TaskAnalysis(BaseModel):
         cls, task_description: str, complexity: TaskComplexity
     ) -> TaskDecomposition | None:
         """Generate basic task decomposition."""
-        if complexity.overall_complexity in [
-            ComplexityType.TRIVIAL,
-            ComplexityType.SIMPLE,
-        ]:
+        if complexity.overall_complexity in [ComplexityType.TRIVIAL, ComplexityType.SIMPLE]:
             return None
         branch_descriptions = [
             "Initial analysis and planning",

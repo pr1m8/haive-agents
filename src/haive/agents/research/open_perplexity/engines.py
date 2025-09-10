@@ -54,9 +54,7 @@ query_generation_template = ChatPromptTemplate.from_template(QUERY_GENERATION_PR
 
 engines["query_generation"] = AugLLMConfig(
     name="query_generation",
-    llm_config=AzureLLMConfig(
-        model="gpt-4o", temperature=0.3
-    ),  # Higher temp for creative queries
+    llm_config=AzureLLMConfig(model="gpt-4o", temperature=0.3),  # Higher temp for creative queries
     prompt_template=query_generation_template,
 )
 
@@ -102,9 +100,7 @@ engines["research_finding"] = AugLLMConfig(
 )
 
 # Confidence assessment engine
-confidence_assessment_template = ChatPromptTemplate.from_template(
-    CONFIDENCE_ASSESSMENT_PROMPT
-)
+confidence_assessment_template = ChatPromptTemplate.from_template(CONFIDENCE_ASSESSMENT_PROMPT)
 
 engines["confidence_assessment"] = AugLLMConfig(
     name="confidence_assessment",
@@ -133,9 +129,7 @@ engines["research_summary"] = AugLLMConfig(
 )
 
 # Data source selection engine
-data_source_selection_template = ChatPromptTemplate.from_template(
-    DATA_SOURCE_SELECTION_PROMPT
-)
+data_source_selection_template = ChatPromptTemplate.from_template(DATA_SOURCE_SELECTION_PROMPT)
 
 engines["data_source_selection"] = AugLLMConfig(
     name="data_source_selection",
@@ -144,9 +138,7 @@ engines["data_source_selection"] = AugLLMConfig(
 )
 
 # Final report compilation engine
-final_report_template = ChatPromptTemplate.from_template(
-    FINAL_REPORT_COMPILATION_PROMPT
-)
+final_report_template = ChatPromptTemplate.from_template(FINAL_REPORT_COMPILATION_PROMPT)
 
 engines["final_report_compilation"] = AugLLMConfig(
     name="final_report_compilation",
