@@ -177,3 +177,6 @@ poetry.lock
 # Temporary v2 comparison files (DO NOT COMMIT)
 *.v2.py
 **/*.v2.py
+
+# Documentation archives
+docs/archives/
