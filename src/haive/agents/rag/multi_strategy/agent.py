@@ -2,7 +2,6 @@ from typing import Any
 
 from haive.core.engine.agent.agent import register_agent
 from haive.core.graph import DynamicGraph
-from haive.core.graph.branches import Branch
 from langgraph.graph import END, START
 
 from haive.agents.rag.multi_strategy.config import MultiStrategyRAGConfig
@@ -145,12 +144,12 @@ class MultiStrategyRAGAgent(SelfCorrectiveRAGAgent):
         gb.add_edge("filter_documents", "generate_answer")
         gb.add_edge("generate_answer", "evaluate_answer")
 
-        # Add conditional branch for correction
-        correction_branch = Branch(
-            function=self.decide_correction,
-            destinations={"correct": "correct_answer", "finalize": "finalize_answer"},
+        # Add conditional branch for correction (reuse parent's correction_router)
+        gb.add_conditional_edges(
+            "evaluate_answer",
+            self.correction_router,
+            {"finalize_answer": "finalize_answer", "correct_answer": "correct_answer"},
         )
-        gb.add_conditional_edges("evaluate_answer", correction_branch)
 
         # Connect correction back to evaluation
         gb.add_edge("correct_answer", "evaluate_answer")

@@ -6,20 +6,15 @@ implementations can inherit from or use directly.
 
 from typing import Any
 
-from haive.core.engine.agent import Agent, AgentConfig
+from haive.core.engine.aug_llm import AugLLMConfig
+from haive.core.graph.state_graph.base_graph2 import BaseGraph
+from langgraph.graph import END, START
 from pydantic import Field
+
+from haive.agents.base.agent import Agent
 
 # Re-export the MultiAgent implementation as the base
 from haive.agents.multi.agent import MultiAgent
-
-
-class SequentialAgentConfig(AgentConfig):
-    """Configuration for sequential multi-agent execution."""
-
-    agents: list[Any] = Field(
-        default_factory=list, description="List of agents to run sequentially"
-    )
-    pass_results: bool = Field(default=True, description="Pass results between agents")
 
 
 class SequentialAgent(Agent):
@@ -29,15 +24,58 @@ class SequentialAgent(Agent):
     passing the output of one agent as input to the next.
     """
 
-    def __init__(self, config: SequentialAgentConfig):
-        """Init  .
+    agents: list = Field(default_factory=list, description="Ordered list of agents")
+    pass_results: bool = Field(
+        default=True, description="Pass results between agents"
+    )
+    engine: AugLLMConfig | None = Field(
+        default=None,
+        description="Optional coordinator engine",
+    )
 
-        Args:
-            config: [TODO: Add description]
-        """
-        self.agents = config.agents
-        self.pass_results = config.pass_results
-        super().__init__(config)
+    def build_graph(self) -> BaseGraph:
+        """Build sequential execution graph."""
+        graph = BaseGraph(name=self.name or "SequentialAgent")
+
+        if not self.agents:
+            # Empty agent list — create passthrough graph
+            def passthrough(state: dict[str, Any]) -> dict[str, Any]:
+                return state
+
+            graph.add_node("passthrough", passthrough)
+            graph.add_edge(START, "passthrough")
+            graph.add_edge("passthrough", END)
+            return graph
+
+        # Build sequential chain: agent_0 → agent_1 → ... → agent_n
+        prev_name = None
+        for i, agent in enumerate(self.agents):
+            node_name = f"agent_{i}"
+
+            def make_node(a: Any) -> Any:
+                def node_fn(state: dict[str, Any]) -> dict[str, Any]:
+                    if hasattr(a, "run"):
+                        result = a.run(state)
+                        if isinstance(result, dict):
+                            return result
+                        return {"output": result}
+                    return state
+
+                return node_fn
+
+            graph.add_node(node_name, make_node(agent))
+
+            if prev_name is None:
+                graph.add_edge(START, node_name)
+            else:
+                graph.add_edge(prev_name, node_name)
+
+            prev_name = node_name
+
+        if prev_name:
+            graph.add_edge(prev_name, END)
+
+        return graph
 
     def run(self, input_data: Any, **kwargs) -> Any:
         """Run all agents in sequence."""
@@ -57,4 +95,4 @@ class SequentialAgent(Agent):
         return results if len(results) > 1 else results[0] if results else None
 
 
-__all__ = ["MultiAgent", "SequentialAgent", "SequentialAgentConfig"]
+__all__ = ["MultiAgent", "SequentialAgent"]

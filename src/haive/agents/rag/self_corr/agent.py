@@ -2,7 +2,6 @@ import logging
 from typing import Any
 
 from haive.core.engine.agent.agent import Agent, register_agent
-from haive.core.graph.branches import Branch
 from langgraph.graph import END, START
 from langgraph.types import Command
 
@@ -25,9 +24,19 @@ class SelfCorrectiveRAGAgent(Agent[SelfCorrectiveRAGConfig]):
     6. Iterates until quality threshold is met or max iterations reached
     """
 
-    def __init__(self, config: SelfCorrectiveRAGConfig):
+    def __init__(self, config: SelfCorrectiveRAGConfig | None = None, *, name: str | None = None, **kwargs):
         """Initialize the agent with self-correction capabilities."""
-        self._initialize_components(config)
+        if config is None:
+            config = SelfCorrectiveRAGConfig(**({"name": name} if name else {}))
+        try:
+            self._initialize_components(config)
+        except Exception as e:
+            logger.warning(f"Component initialization deferred: {e}")
+            self._retriever = None
+            self.document_filter = None
+            self.answer_generator = None
+            self.answer_evaluator = None
+            self.answer_corrector = None
         super().__init__(config)
 
     def _initialize_components(self, config):
@@ -430,11 +439,10 @@ class SelfCorrectiveRAGAgent(Agent[SelfCorrectiveRAGConfig]):
         self.graph.add_edge("generate_answer", "evaluate_answer")
 
         # Add conditional branch based on evaluation
-        correction_branch = Branch.from_dict(
-            {"finalize_answer": "finalize_answer", "default": "correct_answer"}
-        )
         self.graph.add_conditional_edges(
-            "evaluate_answer", correction_branch, self.correction_router
+            "evaluate_answer",
+            self.correction_router,
+            {"finalize_answer": "finalize_answer", "correct_answer": "correct_answer"},
         )
 
         # Connect the correction loop back to evaluation

@@ -20,25 +20,39 @@ logger = logging.getLogger(__name__)
 class TypedRAGAgent(BaseRAGAgent):
     """Implements Typed-RAG that classifies queries and routes to specialized handlers."""
 
-    def __init__(self, config: TypedRAGConfig):
+    _typed_config: TypedRAGConfig | None = None
+
+    def __init__(self, config: TypedRAGConfig | None = None, *, name: str | None = None, **kwargs):
         """Initialize with TypedRAGConfig."""
-        super().__init__(config)
-        self.config = config
-        self._init_components()
+        if config is None:
+            config = TypedRAGConfig(**({"name": name} if name else {}))
+        # Pass name as kwarg to Pydantic-based BaseRAGAgent
+        super().__init__(name=config.name if hasattr(config, 'name') and config.name else name, **kwargs)
+        object.__setattr__(self, '_typed_config', config)
+        try:
+            self._init_components()
+        except Exception as e:
+            logger.warning(f"TypedRAG component initialization deferred: {e}")
+            object.__setattr__(self, 'query_classifier', None)
+            object.__setattr__(self, 'type_handlers', {})
+            object.__setattr__(self, 'type_retrievers', {})
+            object.__setattr__(self, 'retriever', None)
 
     def _init_components(self):
         """Initialize all components."""
         # Initialize query classifier
-        self.query_classifier = self.config.query_classifier_config.create_runnable()
+        if not self._typed_config.query_classifier_config:
+            raise ValueError("query_classifier_config is required for full initialization")
+        self.query_classifier = self._typed_config.query_classifier_config.create_runnable()
 
         # Initialize type handlers
         self.type_handlers = {}
-        for handler_type, handler_config in self.config.type_handlers.items():
+        for handler_type, handler_config in self._typed_config.type_handlers.items():
             self.type_handlers[handler_type] = handler_config.create_runnable()
 
         # Initialize retrievers for different query types
         self.type_retrievers = {}
-        for query_type, retriever_config in self.config.retriever_mapping.items():
+        for query_type, retriever_config in self._typed_config.retriever_mapping.items():
             # Check if it's a VectorStoreConfig or RetrieverConfig
             if hasattr(retriever_config, "create_retriever"):
                 self.type_retrievers[query_type] = retriever_config.create_retriever()
@@ -47,10 +61,10 @@ class TypedRAGAgent(BaseRAGAgent):
                 self.type_retrievers[query_type] = retriever_config
 
         # Default retriever
-        if hasattr(self.config.retriever_config, "create_retriever"):
-            self.retriever = self.config.retriever_config.create_retriever()
+        if hasattr(self._typed_config.retriever_config, "create_retriever"):
+            self.retriever = self._typed_config.retriever_config.create_retriever()
         else:
-            self.retriever = self.config.retriever_config
+            self.retriever = self._typed_config.retriever_config
 
     def classify_query(self, state: dict[str, Any]):
         """Classify the query into a category."""
@@ -98,7 +112,7 @@ class TypedRAGAgent(BaseRAGAgent):
         category = state["query_category"]
         metadata = state["query_metadata"]
 
-        if not self.config.enable_subqueries:
+        if not self._typed_config.enable_subqueries:
             return {"subqueries": {category: query}}
 
         # Get handler for this category
@@ -228,7 +242,7 @@ class TypedRAGAgent(BaseRAGAgent):
             }
 
         # Use the answer generation component from src.config
-        answer_generator = self.config.answer_generation_config.create_runnable()
+        answer_generator = self._typed_config.answer_generation_config.create_runnable()
 
         try:
             result = answer_generator.invoke({"query": query, "documents": documents})

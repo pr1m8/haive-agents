@@ -9,18 +9,25 @@ proper Haive base agent infrastructure:
 - Multiple engines (LLM + Retriever + Grader)
 """
 
+import logging
 from typing import Any, Literal
 
 from haive.core.common.mixins.tool_route_mixin import ToolRouteMixin
 from haive.core.engine.aug_llm import AugLLMConfig
+from haive.core.engine.embedding.providers.HuggingFaceEmbeddingConfig import (
+    HuggingFaceEmbeddingConfig,
+)
 from haive.core.engine.retriever import BaseRetrieverConfig
+from haive.core.engine.vectorstore.vectorstore import VectorStoreConfig
 from haive.core.models.llm.base import LLMConfig
 from langchain_core.documents import Document
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.tools import BaseTool, StructuredTool
-from pydantic import BaseModel, Field, computed_field, model_validator
+from pydantic import BaseModel, Field
 
 from haive.agents.react.agent import ReactAgent
+
+logger = logging.getLogger(__name__)
 
 
 class DocumentGrade(BaseModel):
@@ -79,7 +86,14 @@ class AgenticRAGAgent(ReactAgent, ToolRouteMixin):
     """
 
     retriever_engine: BaseRetrieverConfig = Field(
-        ..., description="Retrieval engine for document search"
+        default_factory=lambda: VectorStoreConfig(
+            name="default_vectorstore",
+            provider="InMemory",
+            embedding_config=HuggingFaceEmbeddingConfig(
+                model="sentence-transformers/all-MiniLM-L6-v2"
+            ),
+        ),
+        description="Retrieval engine for document search",
     )
     grader_engine: AugLLMConfig | None = Field(
         default=None, description="Engine for grading document relevance"
@@ -97,33 +111,33 @@ class AgenticRAGAgent(ReactAgent, ToolRouteMixin):
         default=True, description="Whether to rewrite queries for better retrieval"
     )
 
-    @model_validator(mode="after")
-    def setup_agentic_rag(self) -> "AgenticRAGAgent":
-        """Setup agentic RAG with multiple engines and tools.
-
-        This follows proper Pydantic patterns using model_validator
-        instead of __init__ for post-initialization setup.
-        """
-        self.engines["llm"] = self.llm_engine
-        self.engines["retriever"] = self.retriever_engine
-        if not self.grader_engine:
-            self.grader_engine = AugLLMConfig(
-                llm_config=self.llm_engine.llm_config,
-                prompt_template=self._create_grading_prompt(),
-                structured_output_model=DocumentGrade,
-                structured_output_version="v1",
-            )
-        self.engines["grader"] = self.grader_engine
-        if not self.rewriter_engine:
-            self.rewriter_engine = AugLLMConfig(
-                llm_config=self.llm_engine.llm_config,
-                prompt_template=self._create_rewriting_prompt(),
-                structured_output_model=QueryRewrite,
-                structured_output_version="v1",
-            )
-        self.engines["rewriter"] = self.rewriter_engine
-        self._setup_agentic_tools()
-        return self
+    def setup_agent(self) -> None:
+        """Setup agentic RAG with multiple engines and tools."""
+        try:
+            if self.engine:
+                self.engines["llm"] = self.engine
+            self.engines["retriever"] = self.retriever_engine
+            if not self.grader_engine and self.engine and hasattr(self.engine, "llm_config"):
+                self.grader_engine = AugLLMConfig(
+                    llm_config=self.engine.llm_config,
+                    prompt_template=self._create_grading_prompt(),
+                    structured_output_model=DocumentGrade,
+                    structured_output_version="v1",
+                )
+            if self.grader_engine:
+                self.engines["grader"] = self.grader_engine
+            if not self.rewriter_engine and self.engine and hasattr(self.engine, "llm_config"):
+                self.rewriter_engine = AugLLMConfig(
+                    llm_config=self.engine.llm_config,
+                    prompt_template=self._create_rewriting_prompt(),
+                    structured_output_model=QueryRewrite,
+                    structured_output_version="v1",
+                )
+            if self.rewriter_engine:
+                self.engines["rewriter"] = self.rewriter_engine
+            self._setup_agentic_tools()
+        except Exception as e:
+            logger.warning(f"Agentic RAG setup deferred: {e}")
 
     def _setup_agentic_tools(self) -> None:
         """Setup tools for agentic RAG with proper routing."""
@@ -228,7 +242,7 @@ class AgenticRAGAgent(ReactAgent, ToolRouteMixin):
             )
             try:
                 prompt_text = answer_prompt.format(question=question, context=context)
-                result = self.llm_engine.invoke({"query": prompt_text})
+                result = self.engine.invoke({"query": prompt_text})
                 if hasattr(result, "response"):
                     return result.response
                 if isinstance(result, dict) and "response" in result:
@@ -272,7 +286,7 @@ class AgenticRAGAgent(ReactAgent, ToolRouteMixin):
             name="Agentic RAG LLM",
         )
         return cls(
-            llm_engine=llm_engine,
+            engine=llm_engine,
             retriever_engine=retriever_engine,
             name=kwargs.get("name", "Agentic RAG Agent"),
             **kwargs,

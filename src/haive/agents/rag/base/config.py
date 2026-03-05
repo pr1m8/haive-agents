@@ -2,6 +2,9 @@ import uuid
 from typing import Any
 
 from haive.core.engine.agent.agent import AgentConfig
+from haive.core.engine.embedding.providers.HuggingFaceEmbeddingConfig import (
+    HuggingFaceEmbeddingConfig,
+)
 from haive.core.engine.retriever import BaseRetrieverConfig, VectorStoreRetrieverConfig
 from haive.core.engine.vectorstore import VectorStoreConfig
 from pydantic import BaseModel, ConfigDict, Field, model_validator
@@ -13,6 +16,17 @@ from haive.agents.rag.base.state import (
 )
 
 
+def _default_retriever_config():
+    """Create a default InMemory retriever config for RAG agents."""
+    return VectorStoreConfig(
+        name="default_vectorstore",
+        provider="InMemory",
+        embedding_config=HuggingFaceEmbeddingConfig(
+            model="sentence-transformers/all-MiniLM-L6-v2"
+        ),
+    )
+
+
 class BaseRAGConfig(AgentConfig):
     """Configuration for a basic RAG agent."""
 
@@ -20,7 +34,8 @@ class BaseRAGConfig(AgentConfig):
     name: str = Field(default_factory=lambda: f"rag_agent_{uuid.uuid4().hex[:8]}")
     description: str = Field(default="Basic Retrieval-Augmented Generation agent")
     retriever_config: BaseRetrieverConfig | VectorStoreConfig = Field(
-        ..., description="Configuration for the retriever component"
+        default_factory=_default_retriever_config,
+        description="Configuration for the retriever component",
     )
     state_schema: type[BaseModel] = BaseRAGState
     input_schema: type[BaseModel] = BaseRAGInputState

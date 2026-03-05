@@ -117,23 +117,15 @@ class SQLRAGAgent(Agent[SQLRAGConfig]):
         detection, and query result verification to ensure accurate responses.
     """
 
-    def __init__(self, config: SQLRAGConfig):
+    def __init__(self, config: SQLRAGConfig | None = None, *, name: str | None = None, **kwargs):
         """Initialize the SQL RAG Agent with the given configuration.
 
         Args:
-            config (SQLRAGConfig): Configuration object containing database
-                connection details, LLM settings, and workflow parameters.
-
-        Raises:
-            ValueError: If database connection fails or required engines
-                are missing from the configuration.
-
-        Example:
-            >>> config = SQLRAGConfig(
-            ...     db_config=SQLDatabaseConfig(db_uri="sqlite:///sales.db")
-            ... )
-            >>> agent = SQLRAGAgent(config)
+            config: Configuration object. Created with defaults if not provided.
+            name: Agent name (used when config is not provided).
         """
+        if config is None:
+            config = SQLRAGConfig(**({"name": name} if name else {}))
         self._initialize_config(config)
         super().__init__(config)
 

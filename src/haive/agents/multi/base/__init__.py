@@ -3,7 +3,6 @@
 from haive.agents.multi.base.agent import (
     MultiAgent,
     SequentialAgent,
-    SequentialAgentConfig,
 )
 
 # Aliases for legacy compatibility
@@ -15,5 +14,4 @@ __all__ = [
     "MultiAgent",
     "ParallelAgent",
     "SequentialAgent",
-    "SequentialAgentConfig",
 ]

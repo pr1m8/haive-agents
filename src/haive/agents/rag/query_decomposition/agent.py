@@ -10,7 +10,7 @@ from typing import Any, Literal
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
-from haive.core.models.llm.base import AzureLLMConfig, LLMConfig
+from haive.core.models.llm.base import LLMConfig
 from langchain_core.prompts import ChatPromptTemplate
 from langgraph.graph import END, START
 from pydantic import BaseModel, Field
@@ -265,24 +265,8 @@ class QueryDecomposerAgent(Agent):
     """Basic query decomposition agent."""
 
     name: str = "Query Decomposer"
-
-    def __init__(
-        self, llm_config: LLMConfig | None = None, max_sub_queries: int = 5, **kwargs
-    ):
-        """Initialize query decomposer.
-
-        Args:
-            llm_config: LLM configuration
-            max_sub_queries: Maximum number of sub-queries to generate
-            **kwargs: Additional agent arguments
-        """
-        self.llm_config = llm_config or AzureLLMConfig(
-            deployment_name="gpt-4",
-            azure_endpoint="${AZURE_OPENAI_API_BASE}",
-            api_key="${AZURE_OPENAI_API_KEY}",
-        )
-        self.max_sub_queries = max_sub_queries
-        super().__init__(**kwargs)
+    llm_config: LLMConfig | None = Field(default=None, description="LLM configuration")
+    max_sub_queries: int = Field(default=5, description="Maximum number of sub-queries to generate")
 
     def build_graph(self) -> BaseGraph:
         """Build query decomposition graph."""
@@ -352,24 +336,8 @@ class HierarchicalQueryDecomposerAgent(Agent):
     """Hierarchical query decomposition agent."""
 
     name: str = "Hierarchical Query Decomposer"
-
-    def __init__(
-        self, llm_config: LLMConfig | None = None, max_levels: int = 3, **kwargs
-    ):
-        """Initialize hierarchical query decomposer.
-
-        Args:
-            llm_config: LLM configuration
-            max_levels: Maximum hierarchy levels
-            **kwargs: Additional agent arguments
-        """
-        self.llm_config = llm_config or AzureLLMConfig(
-            deployment_name="gpt-4",
-            azure_endpoint="${AZURE_OPENAI_API_BASE}",
-            api_key="${AZURE_OPENAI_API_KEY}",
-        )
-        self.max_levels = max_levels
-        super().__init__(**kwargs)
+    llm_config: LLMConfig | None = Field(default=None, description="LLM configuration")
+    max_levels: int = Field(default=3, description="Maximum hierarchy levels")
 
     def build_graph(self) -> BaseGraph:
         """Build hierarchical decomposition graph."""
@@ -434,27 +402,8 @@ class ContextualQueryDecomposerAgent(Agent):
     """Context-aware query decomposition agent."""
 
     name: str = "Contextual Query Decomposer"
-
-    def __init__(
-        self,
-        llm_config: LLMConfig | None = None,
-        context_threshold: float = 0.7,
-        **kwargs,
-    ):
-        """Initialize contextual query decomposer.
-
-        Args:
-            llm_config: LLM configuration
-            context_threshold: Threshold for context sufficiency
-            **kwargs: Additional agent arguments
-        """
-        self.llm_config = llm_config or AzureLLMConfig(
-            deployment_name="gpt-4",
-            azure_endpoint="${AZURE_OPENAI_API_BASE}",
-            api_key="${AZURE_OPENAI_API_KEY}",
-        )
-        self.context_threshold = context_threshold
-        super().__init__(**kwargs)
+    llm_config: LLMConfig | None = Field(default=None, description="LLM configuration")
+    context_threshold: float = Field(default=0.7, description="Threshold for context sufficiency")
 
     def build_graph(self) -> BaseGraph:
         """Build contextual decomposition graph."""
@@ -528,27 +477,8 @@ class AdaptiveQueryDecomposerAgent(Agent):
     """Adaptive query decomposition that selects best strategy."""
 
     name: str = "Adaptive Query Decomposer"
-
-    def __init__(
-        self,
-        llm_config: LLMConfig | None = None,
-        enable_fallback: bool = True,
-        **kwargs,
-    ):
-        """Initialize adaptive query decomposer.
-
-        Args:
-            llm_config: LLM configuration
-            enable_fallback: Whether to fallback to simpler decomposition if needed
-            **kwargs: Additional agent arguments
-        """
-        self.llm_config = llm_config or AzureLLMConfig(
-            deployment_name="gpt-4",
-            azure_endpoint="${AZURE_OPENAI_API_BASE}",
-            api_key="${AZURE_OPENAI_API_KEY}",
-        )
-        self.enable_fallback = enable_fallback
-        super().__init__(**kwargs)
+    llm_config: LLMConfig | None = Field(default=None, description="LLM configuration")
+    enable_fallback: bool = Field(default=True, description="Whether to fallback to simpler decomposition if needed")
 
     def build_graph(self) -> BaseGraph:
         """Build adaptive decomposition graph."""

@@ -103,7 +103,7 @@ class SubQueryResult(BaseModel):
     # Results
     answer: str = Field(description="Answer to the sub-query")
     confidence: float = Field(ge=0.0, le=1.0, description="Confidence in answer")
-    supporting_documents: list[Document] = Field(description="Supporting documents")
+    supporting_documents: list[Document] = Field(default_factory=list, description="Supporting documents")
 
     # Quality metrics
     relevance_score: float = Field(ge=0.0, le=1.0, description="Relevance of results")
@@ -333,8 +333,8 @@ class QueryPlanningRAGAgent(Agent):
     """
 
     name: str = "Query Planning RAG Agent"
-    documents: list[Document] = Field(description="Documents for retrieval")
-    llm_config: LLMConfig = Field(description="LLM configuration")
+    documents: list[Document] = Field(default_factory=list, description="Documents for retrieval")
+    llm_config: LLMConfig | None = Field(default=None, description="LLM configuration")
     planning_depth: int = Field(
         default=3, description="Maximum depth of query decomposition"
     )

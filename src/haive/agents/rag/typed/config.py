@@ -9,8 +9,8 @@ from haive.agents.rag.base.config import BaseRAGConfig
 class TypedRAGConfig(BaseRAGConfig):
     """Configuration for Typed-RAG with specialized handlers."""
 
-    query_classifier_config: AugLLMConfig = Field(
-        ..., description="Configuration for query classifier"
+    query_classifier_config: AugLLMConfig | None = Field(
+        default=None, description="Configuration for query classifier"
     )
     type_handlers: dict[str, AugLLMConfig] = Field(
         default_factory=dict, description="Specialized handlers for query types"

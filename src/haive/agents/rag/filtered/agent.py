@@ -21,9 +21,17 @@ class FilteredRAGAgent(Agent[FilteredRAGConfig]):
     3. Generates an answer based on the filtered documents
     """
 
-    def __init__(self, config: FilteredRAGConfig):
+    def __init__(self, config: FilteredRAGConfig | None = None, *, name: str | None = None, **kwargs):
         """Initialize the agent with document filtering capabilities."""
-        self._initialize_components(config)
+        if config is None:
+            config = FilteredRAGConfig(**({"name": name} if name else {}))
+        try:
+            self._initialize_components(config)
+        except Exception as e:
+            logger.warning(f"Component initialization deferred: {e}")
+            self._retriever = None
+            self.document_filter = None
+            self.answer_generator = None
         super().__init__(config)
 
     def _initialize_components(self, config):

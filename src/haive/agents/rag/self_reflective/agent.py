@@ -305,8 +305,8 @@ class SelfReflectiveRAGAgent(Agent):
     """
 
     name: str = "Self-Reflective RAG Agent"
-    documents: list[Document] = Field(description="Documents for retrieval")
-    llm_config: LLMConfig = Field(description="LLM configuration")
+    documents: list[Document] = Field(default_factory=list, description="Documents for retrieval")
+    llm_config: LLMConfig | None = Field(default=None, description="LLM configuration")
     max_iterations: int = Field(default=3, description="Maximum reflection iterations")
     quality_threshold: float = Field(
         default=0.85, description="Quality threshold to stop iterating"

@@ -325,8 +325,8 @@ class AgenticRAGRouterAgent(Agent):
     """
 
     name: str = "Agentic RAG Router"
-    documents: list[Document] = Field(description="Documents for RAG strategies")
-    llm_config: LLMConfig = Field(description="LLM configuration")
+    documents: list[Document] = Field(default_factory=list, description="Documents for RAG strategies")
+    llm_config: LLMConfig | None = Field(default=None, description="LLM configuration")
     autonomy_level: str = Field(default="high", description="Autonomy level")
 
     # Engines for different stages (initialized in setup_agent)
@@ -342,44 +342,51 @@ class AgenticRAGRouterAgent(Agent):
 
     def setup_agent(self) -> None:
         """Initialize engines and strategy agents."""
-        # Create planning engine
-        self.planning_engine = AugLLMConfig(
-            llm_config=self.llm_config,
-            prompt_template=REACT_PLANNING_PROMPT,
-            structured_output_model=ReActPlan,
-            output_key="react_plan",
-        )
+        if not self.llm_config:
+            logger.info("No LLM config provided, skipping engine setup")
+            return
 
-        # Create synthesis engine
-        self.synthesis_engine = AugLLMConfig(
-            llm_config=self.llm_config,
-            prompt_template=AGENTIC_SYNTHESIS_PROMPT,
-            structured_output_model=AgenticRouterResult,
-            output_key="agentic_result",
-        )
+        try:
+            # Create planning engine
+            self.planning_engine = AugLLMConfig(
+                llm_config=self.llm_config,
+                prompt_template=REACT_PLANNING_PROMPT,
+                structured_output_model=ReActPlan,
+                output_key="react_plan",
+            )
 
-        # Create strategy agents
-        self.strategy_agents = {
-            RAGStrategy.SIMPLE: SimpleRAGAgent.from_documents(
-                documents=self.documents, llm_config=self.llm_config
-            ),
-            RAGStrategy.MULTI_QUERY: MultiQueryRAGAgent.from_documents(
-                documents=self.documents, llm_config=self.llm_config
-            ),
-            RAGStrategy.HYDE: HyDERAGAgentV2.from_documents(
-                documents=self.documents, llm_config=self.llm_config
-            ),
-            RAGStrategy.FUSION: RAGFusionAgent.from_documents(
-                documents=self.documents, llm_config=self.llm_config
-            ),
-            RAGStrategy.FLARE: FLARERAGAgent.from_documents(
-                documents=self.documents, llm_config=self.llm_config
-            ),
-        }
+            # Create synthesis engine
+            self.synthesis_engine = AugLLMConfig(
+                llm_config=self.llm_config,
+                prompt_template=AGENTIC_SYNTHESIS_PROMPT,
+                structured_output_model=AgenticRouterResult,
+                output_key="agentic_result",
+            )
 
-        # Add engines to registry
-        self.engines["planning"] = self.planning_engine
-        self.engines["synthesis"] = self.synthesis_engine
+            # Create strategy agents
+            self.strategy_agents = {
+                RAGStrategy.SIMPLE: SimpleRAGAgent.from_documents(
+                    documents=self.documents, llm_config=self.llm_config
+                ),
+                RAGStrategy.MULTI_QUERY: MultiQueryRAGAgent.from_documents(
+                    documents=self.documents, llm_config=self.llm_config
+                ),
+                RAGStrategy.HYDE: HyDERAGAgentV2.from_documents(
+                    documents=self.documents, llm_config=self.llm_config
+                ),
+                RAGStrategy.FUSION: RAGFusionAgent.from_documents(
+                    documents=self.documents, llm_config=self.llm_config
+                ),
+                RAGStrategy.FLARE: FLARERAGAgent.from_documents(
+                    documents=self.documents, llm_config=self.llm_config
+                ),
+            }
+
+            # Add engines to registry
+            self.engines["planning"] = self.planning_engine
+            self.engines["synthesis"] = self.synthesis_engine
+        except Exception as e:
+            logger.warning(f"Agentic router setup deferred: {e}")
 
     def plan_react_strategy(self, state: RAGState) -> dict[str, Any]:
         """Plan RAG strategy using ReAct reasoning."""

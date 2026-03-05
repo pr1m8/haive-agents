@@ -120,7 +120,9 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
         All node functions return Command objects for state updates and routing.
     """
 
-    def __init__(self, config: GraphDBRAGConfig = GraphDBRAGConfig()):
+    def __init__(self, config: GraphDBRAGConfig | None = None, *, name: str | None = None, **kwargs):
+        if config is None:
+            config = GraphDBRAGConfig(**({"name": name} if name else {}))
         """Initialize the Graph DB RAG Agent.
 
         Sets up the Neo4j connection, schema information, example selector,

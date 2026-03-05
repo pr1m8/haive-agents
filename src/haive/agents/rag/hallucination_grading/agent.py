@@ -10,7 +10,7 @@ from typing import Any, Literal
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.node.agent_node import AgentNodeConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
-from haive.core.models.llm.base import AzureLLMConfig, LLMConfig
+from haive.core.models.llm.base import LLMConfig
 from langchain_core.prompts import ChatPromptTemplate
 from langgraph.graph import END, START
 from pydantic import BaseModel, Field
@@ -227,24 +227,8 @@ class HallucinationGraderAgent(Agent):
     """Basic hallucination grading agent."""
 
     name: str = "Hallucination Grader"
-
-    def __init__(
-        self, llm_config: LLMConfig | None = None, threshold: float = 0.7, **kwargs
-    ):
-        """Initialize hallucination grader.
-
-        Args:
-            llm_config: LLM configuration
-            threshold: Confidence threshold for flagging hallucinations
-            **kwargs: Additional agent arguments
-        """
-        self.llm_config = llm_config or AzureLLMConfig(
-            deployment_name="gpt-4",
-            azure_endpoint="${AZURE_OPENAI_API_BASE}",
-            api_key="${AZURE_OPENAI_API_KEY}",
-        )
-        self.threshold = threshold
-        super().__init__(**kwargs)
+    llm_config: LLMConfig | None = Field(default=None, description="LLM configuration")
+    threshold: float = Field(default=0.7, description="Confidence threshold for flagging hallucinations")
 
     def build_graph(self) -> BaseGraph:
         """Build hallucination grading graph."""
@@ -319,27 +303,8 @@ class AdvancedHallucinationGraderAgent(Agent):
     """Advanced hallucination grading with detailed analysis."""
 
     name: str = "Advanced Hallucination Grader"
-
-    def __init__(
-        self,
-        llm_config: LLMConfig | None = None,
-        enable_context_expansion: bool = True,
-        **kwargs,
-    ):
-        """Initialize advanced hallucination grader.
-
-        Args:
-            llm_config: LLM configuration
-            enable_context_expansion: Whether to use additional context sources
-            **kwargs: Additional agent arguments
-        """
-        self.llm_config = llm_config or AzureLLMConfig(
-            deployment_name="gpt-4",
-            azure_endpoint="${AZURE_OPENAI_API_BASE}",
-            api_key="${AZURE_OPENAI_API_KEY}",
-        )
-        self.enable_context_expansion = enable_context_expansion
-        super().__init__(**kwargs)
+    llm_config: LLMConfig | None = Field(default=None, description="LLM configuration")
+    enable_context_expansion: bool = Field(default=True, description="Whether to use additional context sources")
 
     def build_graph(self) -> BaseGraph:
         """Build advanced hallucination analysis graph."""
@@ -430,27 +395,8 @@ class RealtimeHallucinationGraderAgent(Agent):
     """Fast hallucination checker for real-time applications."""
 
     name: str = "Realtime Hallucination Grader"
-
-    def __init__(
-        self,
-        llm_config: LLMConfig | None = None,
-        safety_threshold: float = 0.8,
-        **kwargs,
-    ):
-        """Initialize realtime hallucination grader.
-
-        Args:
-            llm_config: LLM configuration
-            safety_threshold: Threshold for considering response safe
-            **kwargs: Additional agent arguments
-        """
-        self.llm_config = llm_config or AzureLLMConfig(
-            deployment_name="gpt-4",
-            azure_endpoint="${AZURE_OPENAI_API_BASE}",
-            api_key="${AZURE_OPENAI_API_KEY}",
-        )
-        self.safety_threshold = safety_threshold
-        super().__init__(**kwargs)
+    llm_config: LLMConfig | None = Field(default=None, description="LLM configuration")
+    safety_threshold: float = Field(default=0.8, description="Threshold for considering response safe")
 
     def build_graph(self) -> BaseGraph:
         """Build realtime hallucination check graph."""
