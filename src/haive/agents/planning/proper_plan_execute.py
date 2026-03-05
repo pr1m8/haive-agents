@@ -92,7 +92,7 @@ planning capabilities with search integration and advanced state management.
 from haive.core.schema.agent_schema_composer import BuildMode
 from haive.tools import duckduckgo_search_tool
 
-from haive.agents.multi.archive.enhanced_base import MultiAgentBase
+from haive.agents.multi.agent import MultiAgent as MultiAgentBase
 from haive.agents.planning.p_and_e.models import Act, ExecutionResult, Plan, StepStatus
 from haive.agents.planning.p_and_e.prompts import (
     EXECUTOR_SYSTEM_MESSAGE,

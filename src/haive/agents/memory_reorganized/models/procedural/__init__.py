@@ -1,6 +1,6 @@
 """Module exports."""
 
-from procedural.models import (
+from .models import (
     InstructionComponent,
     ProceduralMemory,
     ReflectionCycle,

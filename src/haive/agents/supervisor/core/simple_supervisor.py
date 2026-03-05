@@ -89,7 +89,7 @@ from langgraph.graph import END, START
 from pydantic import BaseModel, Field
 
 from haive.agents.base import Agent
-from haive.agents.multi.archive.multi_agent import MultiAgent
+from haive.agents.multi.agent import MultiAgent
 
 logger = logging.getLogger(__name__)
 

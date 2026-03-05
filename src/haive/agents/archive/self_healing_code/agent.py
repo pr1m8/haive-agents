@@ -1,5 +1,8 @@
 import uuid
 
+from haive.core.engine.agent.agent import Agent as AgentArchitecture
+from haive.core.engine.agent.config import AgentConfig as AgentArchitectureConfig
+
 
 class SelfHealingCodeAgentConfig(AgentArchitectureConfig):
     state_schema: SelfHealingCodeState

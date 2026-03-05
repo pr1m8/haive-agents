@@ -142,8 +142,8 @@ class PrePostAgentMixin:
     """
 
     # Agent configuration
-    pre_agent: "Agent | None" = Field(default=None, description="Pre-processing agent")
-    post_agent: "Agent | None" = Field(
+    pre_agent: Any = Field(default=None, description="Pre-processing agent")
+    post_agent: Any = Field(
         default=None, description="Post-processing agent"
     )
 

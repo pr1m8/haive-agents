@@ -1,14 +1,14 @@
 """Module exports."""
 
-from examples.batch_research import conduct_research, main
-from examples.run_from_file import (
+from .batch_research import conduct_research, main
+from .run_from_file import (
     load_research_question,
     parse_arguments,
     run_research,
     setup_logging,
 )
-from examples.run_with_visualization import run_example
-from examples.simple_research import main
+from .run_with_visualization import run_example
+from .simple_research import main
 
 __all__ = [
     "conduct_research",

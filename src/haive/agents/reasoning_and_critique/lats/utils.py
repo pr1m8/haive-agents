@@ -2,13 +2,13 @@ from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import AzureLLMConfig
-from haive.core.tools.search_tools import tavily_search_tool
+from haive.tools.tools.search_tools import tavily_search_tool
 from langchain_core.output_parsers import PydanticOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.tools import BaseTool
 
-from haive.agents.lats.config import LATSAgentConfig
-from haive.agents.lats.models import Reflection
+from haive.agents.reasoning_and_critique.lats.config import LATSAgentConfig
+from haive.agents.reasoning_and_critique.lats.models import Reflection
 
 
 def create_reflection_chain() -> Any:

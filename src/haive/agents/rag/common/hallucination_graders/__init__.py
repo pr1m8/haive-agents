@@ -1,6 +1,6 @@
 """Module exports."""
 
-from hallucination_graders.models import (
+from .models import (
     HallucinationBinaryResponse,
     HallucinationClaim,
     HallucinationDetectionResponse,

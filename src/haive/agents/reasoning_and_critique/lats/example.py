@@ -7,7 +7,7 @@ import sys
 from langchain_community.tools.tavily_search import TavilySearchResults
 from langchain_community.utilities.tavily_search import TavilySearchAPIWrapper
 
-from haive.agents.lats.models import SerializedMessage
+from haive.agents.reasoning_and_critique.lats.models import SerializedMessage
 from haive.agents.reasoning_and_critique.lats.agent import create_lats_agent
 
 # Add project root to path for imports

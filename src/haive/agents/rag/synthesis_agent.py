@@ -1,11 +1,12 @@
-"""Synthesis Agent for RAG - SimpleAgentV3 that synthesizes multiple RAG results."""
+"""Synthesis Agent for RAG - SimpleAgent that synthesizes multiple RAG results."""
 
+from haive.agents.simple.agent import SimpleAgent
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import Field
 
 
-class SynthesisAgent(SimpleAgentV3):
+class SynthesisAgent(SimpleAgent):
     """SimpleAgentV3 configured for synthesizing results from multiple RAG sources."""
 
     engine: AugLLMConfig = Field(

@@ -9,7 +9,7 @@ from haive.core.schema.prebuilt.messages.messages_state import MessagesState
 from langgraph.graph import END
 from pydantic import BaseModel, Field
 
-from haive.agents.multi.archive.enhanced_base import MultiAgentBase
+from haive.agents.multi.agent import MultiAgent as MultiAgentBase
 from haive.agents.react.agent import ReactAgent
 from haive.agents.simple.agent import SimpleAgent
 

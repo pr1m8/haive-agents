@@ -12,7 +12,7 @@ from langchain_core.tools import BaseTool, tool
 from pydantic import BaseModel, Field
 
 from haive.agents.react.agent import ReactAgent
-from haive.agents.simple.agent_v3 import SimpleAgentV3
+from haive.agents.simple.agent import SimpleAgent
 from haive.agents.supervisor.models import (
     AgentDiscoveryMode,
     AgentSpec,
@@ -69,7 +69,7 @@ def create_agent_from_spec(spec: AgentSpec) -> Any:
     agent_type = spec.agent_type.lower()
 
     if agent_type in ["simpleagentv3", "simpleagent", "simple"]:
-        return SimpleAgentV3(name=spec.name, **config)
+        return SimpleAgent(name=spec.name, **config)
     if agent_type in ["reactagent", "react"]:
         return ReactAgent(name=spec.name, **config)
     # Try to instantiate directly if it's a class name
@@ -89,8 +89,8 @@ def create_agent_from_spec(spec: AgentSpec) -> Any:
     except Exception as e:
         logger.error(f"Failed to create agent of type '{spec.agent_type}': {e}")
         # Default to SimpleAgentV3
-        logger.warning(f"Defaulting to SimpleAgentV3 for agent '{spec.name}'")
-        return SimpleAgentV3(name=spec.name, **config)
+        logger.warning(f"Defaulting to SimpleAgent for agent '{spec.name}'")
+        return SimpleAgent(name=spec.name, **config)
 
 
 def find_matching_agent_specs(

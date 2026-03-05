@@ -9,9 +9,9 @@ from langgraph.graph import END, START
 from langgraph.prebuilt import ToolNode
 from langgraph.types import Command
 
-from haive.agents.reflexion.config import ReflexionConfig
-from haive.agents.reflexion.responder_with_retries import ResponderWithRetries
-from haive.agents.reflexion.utils import _get_num_iterations
+from haive.agents.reasoning_and_critique.reflexion.config import ReflexionConfig
+from haive.agents.reasoning_and_critique.reflexion.responder_with_retries import ResponderWithRetries
+from haive.agents.reasoning_and_critique.reflexion.utils import _get_num_iterations
 
 # from haive_agents.reflexion.aug_llms import initial_answer_chain,revision_chain
 

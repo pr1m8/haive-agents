@@ -1,6 +1,6 @@
 """Module exports."""
 
-from semantic.mixins import (
+from .mixins import (
     PersonalityTraits,
     TemporalMixin,
     UserContextMixin,
@@ -13,7 +13,7 @@ from semantic.mixins import (
     validate_temporal_weight,
     validate_topic_consistency,
 )
-from semantic.models import (
+from .models import (
     SemanticMemory,
     get_context_summary,
     update_context,

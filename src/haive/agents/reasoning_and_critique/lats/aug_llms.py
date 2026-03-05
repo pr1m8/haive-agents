@@ -3,7 +3,7 @@ from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_core.output_parsers import JsonOutputToolsParser, PydanticToolsParser
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 
-from haive.agents.lats.models import Reflection
+from haive.agents.reasoning_and_critique.lats.models import Reflection
 
 REFLECTION_PROMPT_TEMPLATE = ChatPromptTemplate.from_messages(
     [

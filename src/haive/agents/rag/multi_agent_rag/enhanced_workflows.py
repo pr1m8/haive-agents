@@ -5,7 +5,10 @@ using the new multi-agent base with compatibility and enhanced state management.
 """
 
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.fixtures.documents import conversation_documents
+try:
+    from haive.core.fixtures.documents import conversation_documents
+except ImportError:
+    conversation_documents = []
 from haive.core.graph.node.callable_node import (
     CallableNodeConfig,
     create_document_grader,
@@ -13,7 +16,7 @@ from haive.core.graph.node.callable_node import (
     simple_document_grader,
 )
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
-from haive.core.schema.prebuilt.rag_state import MultiAgentRAGState
+from haive.agents.rag.multi_agent_rag.state import MultiAgentRAGState
 from langchain_core.documents import Document
 from langchain_core.prompts import ChatPromptTemplate
 from langgraph.graph import END, START

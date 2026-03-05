@@ -14,7 +14,7 @@ import uuid
 from collections.abc import Callable
 from typing import Any
 
-from agents.react.memory.state import KnowledgeTriple, MemoryItem
+from haive.agents.memory.models import KnowledgeTriple, MemoryItem
 from langchain_core.documents import Document
 from langchain_core.embeddings import Embeddings
 from langchain_core.vectorstores import VectorStore

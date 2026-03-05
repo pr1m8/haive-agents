@@ -7,7 +7,7 @@ from langgraph.graph import END
 from langgraph.prebuilt import ToolNode
 from langgraph.types import Send
 
-from haive.agents.multi.archive.enhanced_base import MultiAgentBase
+from haive.agents.multi.agent import MultiAgent as MultiAgentBase
 from haive.agents.reasoning_and_critique.lats.v2.models import (
     CandidateActions,
     Reflection,

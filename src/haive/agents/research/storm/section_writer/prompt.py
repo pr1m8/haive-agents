@@ -1,3 +1,5 @@
+from langchain_core.prompts import ChatPromptTemplate
+
 section_writer_prompt = ChatPromptTemplate.from_messages(
     [
         (

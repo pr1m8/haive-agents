@@ -8,10 +8,10 @@ from langchain_core.messages import AIMessage, HumanMessage
 from langgraph.types import Command
 from pydantic import BaseModel
 
-from haive.agents.tot.modular.branches import ToTBranch
-from haive.agents.tot.modular.config import ToTAgentConfig
-from haive.agents.tot.modular.models import Candidate, CandidateList, CandidateScore
-from haive.agents.tot.modular.state import ToTState
+from haive.agents.reasoning_and_critique.tot.modular.branches import ToTBranch
+from haive.agents.reasoning_and_critique.tot.modular.config import ToTAgentConfig
+from haive.agents.reasoning_and_critique.tot.modular.models import Candidate, CandidateList, CandidateScore
+from haive.agents.reasoning_and_critique.tot.modular.state import ToTState
 
 logger = logging.getLogger(__name__)
 

@@ -1,6 +1,7 @@
 import uuid
 
-from haive.core.engine.agent.agent import AgentArchitecture, AgentArchitectureConfig
+from haive.core.engine.agent.agent import Agent as AgentArchitecture
+from haive.core.engine.agent.config import AgentConfig as AgentArchitectureConfig
 from pydantic import Field
 
 

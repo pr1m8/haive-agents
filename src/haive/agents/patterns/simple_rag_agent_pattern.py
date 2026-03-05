@@ -1,16 +1,17 @@
-"""Simple RAG Agent Pattern - Using SimpleAgentV3 as base for RAG implementation.
+"""Simple RAG Agent Pattern - Using SimpleAgent as base for RAG implementation.
 
 This module demonstrates creating a RAG (Retrieval-Augmented Generation) agent
-using SimpleAgentV3 as the foundation, following the user's request to use
-agent.py and SimpleAgentV3 patterns.
+using SimpleAgent as the foundation, following the user's request to use
+agent.py and SimpleAgent patterns.
 
 The pattern shows:
-1. Extending SimpleAgentV3 for specialized functionality
+1. Extending SimpleAgent for specialized functionality
 2. Proper state schema composition
 3. Tool integration for retrieval
 4. Structured output for answers
 """
 
+from haive.agents.simple.agent import SimpleAgent
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.schema.prebuilt.messages_state import MessagesState
 from langchain_core.prompts import ChatPromptTemplate
@@ -54,10 +55,10 @@ def retrieve_documents(query: str, top_k: int = 5) -> str:
     Document 5: Advanced concepts and future directions of {query}..."""
 
 
-class SimpleRAGAgent(SimpleAgentV3):
-    """Simple RAG Agent built on SimpleAgentV3 foundation.
+class SimpleRAGAgent(SimpleAgent):
+    """Simple RAG Agent built on SimpleAgent foundation.
 
-    This agent extends SimpleAgentV3 to provide RAG capabilities:
+    This agent extends SimpleAgent to provide RAG capabilities:
     - Document retrieval through tools
     - Context-aware answer generation
     - Source attribution

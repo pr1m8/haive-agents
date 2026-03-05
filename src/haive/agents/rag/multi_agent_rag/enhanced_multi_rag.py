@@ -7,7 +7,10 @@ providing automatic compatibility checking and adaptation.
 import contextlib
 from typing import Any
 
-from haive.core.fixtures.documents import conversation_documents
+try:
+    from haive.core.fixtures.documents import conversation_documents
+except ImportError:
+    conversation_documents = []
 from langchain_core.documents import Document
 
 from haive.agents.multi.compatibility_enhanced_base import (

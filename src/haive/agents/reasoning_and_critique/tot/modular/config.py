@@ -7,7 +7,7 @@ from haive.core.models.llm.base import AzureLLMConfig
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field
 
-from haive.agents.tot.modular.state import ToTState
+from haive.agents.reasoning_and_critique.tot.modular.state import ToTState
 
 
 class ToTAgentConfig(AgentConfig):

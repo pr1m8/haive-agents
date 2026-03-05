@@ -10,6 +10,7 @@ state management and structured output parsing.
 import asyncio
 from typing import Any, TypedDict
 
+from haive.agents.simple.agent import SimpleAgent
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field
@@ -86,7 +87,7 @@ DEFAULT_REASONING_MODULES = """1. Pattern Recognition - Identify patterns, shape
 # ==========================
 
 
-class SelfDiscoverSelector(SimpleAgentV3):
+class SelfDiscoverSelector(SimpleAgent):
     """Agent that selects relevant reasoning modules."""
 
     name: str = Field(default="sd_selector")
@@ -113,7 +114,7 @@ class SelfDiscoverSelector(SimpleAgentV3):
     )
 
 
-class SelfDiscoverAdapter(SimpleAgentV3):
+class SelfDiscoverAdapter(SimpleAgent):
     """Agent that adapts modules to be task-specific."""
 
     name: str = Field(default="sd_adapter")
@@ -140,7 +141,7 @@ class SelfDiscoverAdapter(SimpleAgentV3):
     )
 
 
-class SelfDiscoverStructurer(SimpleAgentV3):
+class SelfDiscoverStructurer(SimpleAgent):
     """Agent that creates a structured reasoning plan."""
 
     name: str = Field(default="sd_structurer")
@@ -164,7 +165,7 @@ class SelfDiscoverStructurer(SimpleAgentV3):
     )
 
 
-class SelfDiscoverExecutor(SimpleAgentV3):
+class SelfDiscoverExecutor(SimpleAgent):
     """Agent that executes the reasoning plan."""
 
     name: str = Field(default="sd_executor")

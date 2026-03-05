@@ -5,7 +5,7 @@ from typing import Any
 from pydantic import Field
 
 
-def retrieve(_state: dict[str, Any]):
+def retrieve(state: dict[str, Any]):
     """Retrieve documents.
 
     Args:
@@ -21,7 +21,7 @@ def retrieve(_state: dict[str, Any]):
     return {"documents": documents, "question": question}
 
 
-def generate(_state: dict[str, Any]):
+def generate(state: dict[str, Any]):
     """Generate answer.
 
     Args:
@@ -38,7 +38,7 @@ def generate(_state: dict[str, Any]):
     return {"documents": documents, "question": question, "generation": generation}
 
 
-def grade_documents(_state: dict[str, Any]):
+def grade_documents(state: dict[str, Any]):
     """Determines whether the retrieved documents are relevant to the question.
 
     Args:
@@ -64,7 +64,7 @@ def grade_documents(_state: dict[str, Any]):
     return {"documents": filtered_docs, "question": question}
 
 
-def transform_query(_state: dict[str, Any]):
+def transform_query(state: dict[str, Any]):
     """Transform the query to produce a better question.
 
     Args:
@@ -79,13 +79,3 @@ def transform_query(_state: dict[str, Any]):
     # Re-write question
     better_question = question_rewriter.invoke({"question": question})
     return {"documents": documents, "question": better_question}
-
-
-# Edges
-
-
-def transform_query(
-    question: str = Field(description="The question to be transformed"),
-):
-    """Transform the query to produce a better question."""
-    question_rewi

@@ -3,6 +3,7 @@
 import logging
 from typing import Any
 
+from haive.agents.simple.agent import SimpleAgent
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import Field
@@ -12,7 +13,7 @@ from .self_discover_enhanced_v4 import ModuleSelectionOutput
 logger = logging.getLogger(__name__)
 
 
-class FixedSelfDiscoverSelector(SimpleAgentV3):
+class FixedSelfDiscoverSelector(SimpleAgent):
     """Fixed version of SelfDiscoverSelector that properly passes prompt variables."""
 
     name: str = Field(default="sd_selector")

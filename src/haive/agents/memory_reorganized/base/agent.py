@@ -14,15 +14,15 @@ import logging
 from datetime import datetime
 from typing import Any
 
-from agents.memory_agent.memory_utils import (
+from haive.agents.memory_reorganized.api.memory_utils import (
     create_memory_vectorstore,
     get_user_id_from_state,
     retrieve_memories,
     save_structured_memories,
     save_unstructured_memories,
 )
-from agents.react.memory.config import MemoryAgentConfig
-from agents.react.react.agent import ReactAgent
+from haive.agents.memory.config import MemoryAgentConfig
+from haive.agents.react.agent import ReactAgent
 from haive.core.engine.agent.agent import register_agent
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.dynamic_graph_builder import DynamicGraph

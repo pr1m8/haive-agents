@@ -63,9 +63,8 @@ submodules = [
     "conversation",
     "supervisor",
     "discovery",
-    "reflection",
     "structured_output",
-    "sequential",
+    "reasoning_and_critique",
     "patterns",
     "utils",
 ]
@@ -82,10 +81,9 @@ submod_attrs = {
     "conversation": ["ConversationAgent"],
     "supervisor": ["SupervisorAgent", "DynamicSupervisor"],
     "discovery": ["DynamicToolSelector"],
-    "reflection": ["ReflectionAgent"],
     "structured_output": ["StructuredOutputAgent"],
-    "sequential": ["SequentialAgent"],
-    "patterns": [],  # TODO: Add specific pattern exports
+    "reasoning_and_critique": [],
+    "patterns": [],
     "utils": ["AgentUtils"],
 }
 

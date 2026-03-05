@@ -1,12 +1,12 @@
 """Module exports."""
 
-from episodic.mixins import (
+from .mixins import (
     PerformanceMetrics,
     TaskExecution,
     validate_execution_steps,
     validate_performance_logic,
 )
-from episodic.models import (
+from .models import (
     EpisodicMemory,
     calculate_learning_value,
     validate_content_safety,

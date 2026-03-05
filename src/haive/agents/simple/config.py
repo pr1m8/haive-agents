@@ -12,7 +12,7 @@ from typing import Any
 
 from haive.core.engine.agent.agent import AgentConfig
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.models.llm.base import AzureLLMConfig
+from haive.core.models.llm.base import OpenAILLMConfig
 from haive.core.schema.state_schema import StateSchema
 from langchain_core.messages import SystemMessage
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
@@ -166,7 +166,7 @@ class SimpleAgentConfig(AgentConfig):
             SimpleAgentConfig instance
         """
         # Create base LLM config
-        llm_config = AzureLLMConfig(
+        llm_config = OpenAILLMConfig(
             model=model, parameters={"temperature": temperature}
         )
 
@@ -182,7 +182,7 @@ class SimpleAgentConfig(AgentConfig):
             name=f"llm_{uuid.uuid4().hex[:6]}",
             llm_config=llm_config,
             prompt_template=prompt_template,
-            system_prompt=system_prompt,
+            system_message=system_prompt,
             structured_output_model=structured_output_model,
         )
 
@@ -235,7 +235,7 @@ class SimpleAgentConfig(AgentConfig):
 
         # Create from scratch with structured output model
         return cls.from_scratch(
-            system_prompt=system_prompt,
+            system_message=system_prompt,
             model=model,
             temperature=temperature,
             structured_output_model=output_model,

@@ -5,7 +5,7 @@ to Perplexity's Pro Search feature that goes deeper and considers user context.
 """
 
 import logging
-from typing import Any
+from typing import Any, Optional
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.tools import Tool

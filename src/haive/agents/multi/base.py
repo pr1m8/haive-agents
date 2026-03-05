@@ -11,11 +11,18 @@ The modern implementation uses string-based execution modes instead of enums:
 - "infer" for automatic sequence inference (default)
 """
 
-# Import ExecutionMode from the archived implementation for backward
-# compatibility
+from enum import Enum
 
 from haive.agents.multi.agent import MultiAgent
-from haive.agents.multi.archive.base import ExecutionMode
+
+
+class ExecutionMode(str, Enum):
+    """Execution modes for multi-agent systems (legacy compatibility)."""
+
+    SEQUENCE = "sequence"
+    PARALLEL = "parallel"
+    CONDITIONAL = "conditional"
+    HIERARCHICAL = "hierarchical"
 
 # Import everything from the current implementation (clean.py is the
 # modern approach)

@@ -1,21 +1,25 @@
 """Module exports."""
 
-from haive.agents.reflection.agent import (
-    ExpertAgent,
-    GradedReflectionMultiAgent,
-    GradingAgent,
-    PrePostMultiAgent,
-    ReflectionAgent,
-    ReflectionMultiAgent,
-    StructuredOutputMultiAgent,
-    ToolBasedReflectionAgent,
-    create,
-    create_expert_agent,
-    create_graded_reflection_agent,
-    create_reflection_agent,
-    create_tool_based_reflection_agent,
-    model_post_init,
-)
+try:
+    from haive.agents.reflection.agent import (
+        ExpertAgent,
+        GradedReflectionMultiAgent,
+        GradingAgent,
+        PrePostMultiAgent,
+        ReflectionAgent,
+        ReflectionMultiAgent,
+        StructuredOutputMultiAgent,
+        ToolBasedReflectionAgent,
+        create,
+        create_expert_agent,
+        create_graded_reflection_agent,
+        create_reflection_agent,
+        create_tool_based_reflection_agent,
+        model_post_init,
+    )
+except (TypeError, NameError):
+    # PrePostMultiAgent has a Pydantic generics issue — load what we can
+    pass
 from haive.agents.reflection.message_transformer import (
     ConversationalReflectionAgent,
     MessageTransformerReflectionAgent,

@@ -1,11 +1,12 @@
-"""Answer Agent for RAG - SimpleAgentV3 with document context prompt."""
+"""Answer Agent for RAG - SimpleAgent with document context prompt."""
 
+from haive.agents.simple.agent import SimpleAgent
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import Field
 
 
-class AnswerAgent(SimpleAgentV3):
+class AnswerAgent(SimpleAgent):
     """SimpleAgentV3 configured for answering questions based on retrieved documents."""
 
     engine: AugLLMConfig = Field(

@@ -1,13 +1,12 @@
 """Module exports."""
 
-from context.models import (
+from .models import (
     ContextAnalysis,
     ContextDomain,
     ContextFlow,
     ContextFreshness,
     ContextRequirement,
     ContextSize,
-    merge_with,
 )
 
 __all__ = [
@@ -17,5 +16,4 @@ __all__ = [
     "ContextFreshness",
     "ContextRequirement",
     "ContextSize",
-    "merge_with",
 ]

@@ -10,7 +10,7 @@ import traceback
 from concurrent.futures import ThreadPoolExecutor
 from typing import Any
 
-from haive.core.engine.agent.agent import AgentArchitecture
+from haive.core.engine.agent.agent import Agent as AgentArchitecture
 from haive.core.engine.aug_llm import compose_runnable
 from langchain_core.messages import AIMessage, SystemMessage
 from langchain_core.tools import BaseTool

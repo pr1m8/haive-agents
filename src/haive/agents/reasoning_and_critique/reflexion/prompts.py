@@ -2,7 +2,7 @@ import datetime
 
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 
-from haive.agents.reflexion.models import AnswerQuestion, ReviseAnswer
+from haive.agents.reasoning_and_critique.reflexion.models import AnswerQuestion, ReviseAnswer
 
 actor_prompt_template = ChatPromptTemplate.from_messages(
     [

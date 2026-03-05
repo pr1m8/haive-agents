@@ -1,7 +1,7 @@
 from haive.core.engine.aug_llm import AugLLMConfig
 
-from haive.agents.reflexion.models import AnswerQuestion, ReviseAnswer
-from haive.agents.reflexion.prompts import actor_prompt_template
+from haive.agents.reasoning_and_critique.reflexion.models import AnswerQuestion, ReviseAnswer
+from haive.agents.reasoning_and_critique.reflexion.prompts import actor_prompt_template
 
 # from langchain_core.tools import PydanticToolsParser
 

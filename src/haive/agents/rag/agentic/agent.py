@@ -243,11 +243,10 @@ class AgenticRAGAgent(ReactAgent, ToolRouteMixin):
             description="Generate final answer using retrieved context",
         )
 
-    @computed_field
-    @property
-    def state_schema(self) -> type[AgenticRAGState]:
-        """Computed property for agentic RAG state schema."""
-        return AgenticRAGState
+    def model_post_init(self, __context: Any) -> None:
+        """Set state schema after init."""
+        super().model_post_init(__context)
+        self.state_schema = AgenticRAGState
 
     @classmethod
     def from_documents(

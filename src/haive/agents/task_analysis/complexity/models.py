@@ -2,7 +2,7 @@
 
 from enum import Enum
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field
 
 
 class ComplexityLevel(str, Enum):
@@ -76,12 +76,6 @@ class ComplexityVector(BaseModel):
         if total <= 8.5:
             return ComplexityLevel.HIGHLY_COMPLEX
         return ComplexityLevel.EXTREME
-
-    @field_validator("scores")
-    @classmethod
-    def validate_scores(cls, v) -> float:
-        """Ensure scores are within valid range."""
-        return round(v, 1)
 
 
 class ComplexityFactors(BaseModel):

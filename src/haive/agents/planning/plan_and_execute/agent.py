@@ -9,7 +9,7 @@ from haive.agents.planning.plan_and_execute.config import PlanAndExecuteConfig
 from haive.agents.planning.plan_and_execute.engines import *
 from haive.agents.planning.plan_and_execute.models import *
 from haive.agents.planning.plan_and_execute.state import *
-from haive.agents.react.agent_v4 import ReactAgentV4
+from haive.agents.react.agent import ReactAgent
 
 
 @register_agent(PlanAndExecuteConfig)
@@ -23,7 +23,8 @@ class PlanAndExecuteAgent(Agent[PlanAndExecuteConfig]):
         self.config = config
 
         self.planner_runnable = compose_runnable(self.config.aug_llm_configs["planner"])
-        self.agent_executor_runnable = ReactAgentV4(
+        self.agent_executor_runnable = ReactAgent(
+            name="executor",
             engine=self.config.agent_executor_config
         ).app
         self.replanner_runnable = compose_runnable(

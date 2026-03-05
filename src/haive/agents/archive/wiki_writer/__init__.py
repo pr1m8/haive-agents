@@ -1,7 +1,7 @@
 """Module exports."""
 
-from wiki_writer.agent import WikiWriterAgent, WikiWriterAgentConfig
-from wiki_writer.models import (
+from .agent import WikiWriterAgent, WikiWriterAgentConfig
+from .models import (
     Editor,
     Outline,
     Perspectives,
@@ -12,8 +12,8 @@ from wiki_writer.models import (
     as_str,
     persona,
 )
-from wiki_writer.state import InterviewState
-from wiki_writer.utils import format_doc, update_editor, update_references
+from .state import InterviewState
+from .utils import format_doc, update_editor, update_references
 
 __all__ = [
     "Editor",

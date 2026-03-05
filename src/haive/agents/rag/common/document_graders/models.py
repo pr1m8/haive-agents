@@ -15,6 +15,14 @@ from pydantic import BaseModel, Field
 # ============================================================================
 
 
+class DocumentGrade(BaseModel):
+    """Simple document grade for use in corrective RAG."""
+
+    binary_score: Literal["yes", "no"] = Field(
+        description="Whether the document is relevant to the question, 'yes' or 'no'"
+    )
+
+
 class DocumentRelevanceScore(BaseModel):
     """Individual document relevance assessment."""
 

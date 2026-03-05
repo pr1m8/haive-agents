@@ -20,7 +20,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Any, Generic, Self, TypeVar, Union
 
-from pydantic import BaseModel, Field, computed_field
+from pydantic import BaseModel, Field, PrivateAttr, computed_field
 
 # ============================================================================
 # TYPE DEFINITIONS AND ADVANCED GENERICS
@@ -145,10 +145,10 @@ class IntelligentStatusMixin(BaseModel, ABC):
         default=True, description="Enable dynamic adaptation"
     )
 
-    # Event system
-    _event_emitter: EventEmitter = Field(default_factory=EventEmitter, exclude=True)
-    _parent_ref: IntelligentStatusMixin | None = Field(default=None, exclude=True)
-    _children_refs: set[str] = Field(default_factory=set, exclude=True)
+    # Event system (private attributes)
+    _event_emitter: EventEmitter = PrivateAttr(default_factory=EventEmitter)
+    _parent_ref: IntelligentStatusMixin | None = PrivateAttr(default=None)
+    _children_refs: set[str] = PrivateAttr(default_factory=set)
 
     def __init__(self, **data):
         """Init  ."""
@@ -708,7 +708,7 @@ class BasePlan(IntelligentStatusMixin, Generic[T]):
     success_criteria: str = Field(..., description="Success measurement")
 
     # Maximum flexibility content - can contain anything
-    steps: IntelligentSequence[PlanContent] = Field(
+    steps: list[Any] = Field(
         default_factory=lambda: IntelligentSequence([])
     )
 

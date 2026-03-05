@@ -3,6 +3,7 @@
 Agent that selects relevant reasoning modules for a given task.
 """
 
+from haive.agents.simple.agent import SimpleAgent
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field
@@ -16,7 +17,7 @@ class ModuleSelectionOutput(BaseModel):
     )
 
 
-class SelfDiscoverSelector(SimpleAgentV3):
+class SelfDiscoverSelector(SimpleAgent):
     """Agent that selects relevant reasoning modules."""
 
     name: str = Field(default="sd_selector")

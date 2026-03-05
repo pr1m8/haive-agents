@@ -1,13 +1,13 @@
 """Module exports."""
 
-from tests.test_basic import (
+from .test_basic import (
     test_basic_step_creation,
     test_circular_dependency_detection,
     test_execution_plan,
     test_parallel_execution,
     test_step_with_dependencies,
 )
-from tests.test_tool_step import (
+from .test_tool_step import (
     TestToolStep,
     TestToolStepFactories,
     TestToolStepIntegration,

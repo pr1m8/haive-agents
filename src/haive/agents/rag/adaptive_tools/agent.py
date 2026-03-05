@@ -122,7 +122,7 @@ class AdaptiveToolsResult(BaseModel):
 TOOL_SELECTION_PROMPT = ChatPromptTemplate.from_messages(
     [
         (
-            """system.""",
+            "system",
             """You are an expert at selecting the optimal tools for query processing in an adaptive RAG system.
 
 **AVAILABLE TOOLS:**
@@ -151,7 +151,7 @@ TOOL_SELECTION_PROMPT = ChatPromptTemplate.from_messages(
 Select tools strategically based on query characteristics and information needs.""",
         ),
         (
-            """human.""",
+            "human",
             """Analyze this query and select optimal tools:.
 
 **Query:** {query}
@@ -176,7 +176,7 @@ Focus on maximizing information quality while minimizing tool usage overhead."""
 GOOGLE_SEARCH_PROMPT = ChatPromptTemplate.from_messages(
     [
         (
-            """system.""",
+            "system",
             """You are an expert at Google search optimization and result processing for RAG systems.
 
 **SEARCH OPTIMIZATION PRINCIPLES:**
@@ -195,7 +195,7 @@ GOOGLE_SEARCH_PROMPT = ChatPromptTemplate.from_messages(
 Process search results to create structured, relevant information for the RAG system.""",
         ),
         (
-            """human.""",
+            "human",
             """Optimize search and process results for this query:.
 
 **Original Query:** {query}
@@ -218,7 +218,7 @@ Focus on extracting factual, current, and authoritative information.""",
 ADAPTIVE_SYNTHESIS_PROMPT = ChatPromptTemplate.from_messages(
     [
         (
-            """system.""",
+            "system",
             """You are an expert at synthesizing information from multiple tools and sources in an adaptive RAG system.
 
 **SYNTHESIS PRINCIPLES:**
@@ -237,7 +237,7 @@ ADAPTIVE_SYNTHESIS_PROMPT = ChatPromptTemplate.from_messages(
 Create responses that optimally blend all available information sources.""",
         ),
         (
-            """human.""",
+            "human",
             """Synthesize information from multiple sources to answer the query:.
 
 **Original Query:** {query}

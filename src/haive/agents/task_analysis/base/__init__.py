@@ -1,6 +1,6 @@
 """Module exports."""
 
-from base.models import (
+from .models import (
     ActionStep,
     ActionType,
     DependencyType,
@@ -8,11 +8,6 @@ from base.models import (
     TaskNode,
     TaskPlan,
     TaskType,
-    add_dependency,
-    add_subtask,
-    calculate_stats,
-    calculate_total_duration,
-    get_all_steps,
 )
 
 __all__ = [
@@ -23,9 +18,4 @@ __all__ = [
     "TaskNode",
     "TaskPlan",
     "TaskType",
-    "add_dependency",
-    "add_subtask",
-    "calculate_stats",
-    "calculate_total_duration",
-    "get_all_steps",
 ]

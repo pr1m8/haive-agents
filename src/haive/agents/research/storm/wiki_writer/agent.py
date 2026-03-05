@@ -1,8 +1,20 @@
-from haive.core.graph.state_graph.base_graph2 import BaseGraph
+"""Wiki writer for STORM research pipeline.
+
+Combines section drafts into a complete wiki article.
+"""
+
 from langchain_core.output_parsers import StrOutputParser
 
 from haive.agents.research.storm.wiki_writer.prompt import writer_prompt
 
-graph = BaseGraph(name="wiki_writer")
 
-writer = writer_prompt | long_context_llm | StrOutputParser()
+def create_wiki_writer(llm):
+    """Create a wiki writer chain.
+
+    Args:
+        llm: Language model to use for writing.
+
+    Returns:
+        Chain that writes complete wiki articles.
+    """
+    return writer_prompt | llm | StrOutputParser()

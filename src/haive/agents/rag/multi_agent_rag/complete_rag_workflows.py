@@ -12,20 +12,28 @@ Implements all RAG architectures from rag-architectures-flows.md including:
 from enum import Enum
 
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.fixtures.documents import conversation_documents
-from haive.core.graph.node.callable_node import (
-    CallableNodeConfig,
-    create_document_grader,
-    simple_document_grader,
-)
+try:
+    from haive.core.fixtures.documents import conversation_documents
+except ImportError:
+    conversation_documents = []
+from haive.core.graph.node.callable_node import CallableNodeConfig
+
+try:
+    from haive.core.graph.node.callable_node import (
+        create_document_grader,
+        simple_document_grader,
+    )
+except ImportError:
+    create_document_grader = None
+    simple_document_grader = None
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
-from haive.core.schema.prebuilt.rag_state import MultiAgentRAGState
+from haive.agents.rag.multi_agent_rag.state import MultiAgentRAGState
 from langchain_core.documents import Document
 from langgraph.graph import END, START
 
 from haive.agents.base.agent import Agent
 from haive.agents.multi.base import ConditionalAgent, SequentialAgent
-from haive.agents.rag.base.agent import SimpleRAGAgent
+from haive.agents.rag.simple.agent import SimpleRAGAgent
 from haive.agents.simple.agent import SimpleAgent
 
 

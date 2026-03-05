@@ -9,7 +9,7 @@ from typing import Any
 from haive.core.schema.agent_schema_composer import BuildMode
 
 from haive.agents.base.agent import Agent
-from haive.agents.multi.archive.enhanced_base import MultiAgentBase
+from haive.agents.multi.agent import MultiAgent as MultiAgentBase
 from haive.agents.planning.p_and_e.state import PlanExecuteState
 
 

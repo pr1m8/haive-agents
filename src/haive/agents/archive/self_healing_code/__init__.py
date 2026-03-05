@@ -1,12 +1,12 @@
 """Module exports."""
 
-from self_healing_code.branches import (
+from .branches import (
     error_router,
     memory_filter_router,
     memory_generation_router,
     memory_update_router,
 )
-from self_healing_code.state import SelfHealingCodeState
+from .state import SelfHealingCodeState
 
 from .agent import (
     SelfHealingCodeAgent,

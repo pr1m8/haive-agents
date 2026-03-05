@@ -3,7 +3,7 @@
 
 from haive.core.engine.aug_llm import AugLLMConfig
 
-from haive.agents.multi.proper_base import ProperMultiAgent
+from haive.agents.multi.agent import MultiAgent as ProperMultiAgent
 from haive.agents.reasoning_and_critique.self_discover.v2.models import (
     AdaptedModules,
     FinalAnswer,

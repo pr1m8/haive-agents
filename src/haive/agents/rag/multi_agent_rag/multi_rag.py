@@ -8,7 +8,10 @@ with conditional routing, sequential processing, and parallel execution patterns
 from collections.abc import Callable
 from typing import Any
 
-from haive.core.fixtures.documents import conversation_documents
+try:
+    from haive.core.fixtures.documents import conversation_documents
+except ImportError:
+    conversation_documents = []
 from haive.core.schema.compatibility import check_compatibility
 from langchain_core.documents import Document
 

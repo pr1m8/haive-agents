@@ -5,7 +5,7 @@ from typing import Any
 
 from haive.core.engine.agent.config import AgentConfig
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.models.llm.base import AzureLLMConfig
+from haive.core.models.llm.base import OpenAILLMConfig
 from haive.tools.tools.dev_tools import python_repl_tool
 from haive.tools.tools.search_tools import tavily_search_tool
 from langchain_core.prompts import ChatPromptTemplate
@@ -49,28 +49,27 @@ joiner_prompt = ChatPromptTemplate.from_messages(
 )
 default_planner_config = AugLLMConfig(
     name="llm_compiler_planner",
-    llm_config=AzureLLMConfig(
-        model="gpt-4o", parameters={"temperature": 0.7, "max_tokens": 4096}
+    llm_config=OpenAILLMConfig(
+        model="gpt-4o-mini",
     ),
     prompt_template=planner_prompt,
-    tools=None,
+    tools=[],
 )
 default_replanner_config = AugLLMConfig(
     name="llm_compiler_replanner",
-    llm_config=AzureLLMConfig(
-        model="gpt-4o", parameters={"temperature": 0.7, "max_tokens": 4096}
+    llm_config=OpenAILLMConfig(
+        model="gpt-4o-mini",
     ),
     prompt_template=replanner_prompt,
-    tools=None,
+    tools=[],
 )
 default_joiner_config = AugLLMConfig(
     name="llm_compiler_joiner",
-    llm_config=AzureLLMConfig(
-        model="gpt-4o", parameters={"temperature": 0.7, "max_tokens": 2048}
+    llm_config=OpenAILLMConfig(
+        model="gpt-4o-mini",
     ),
     prompt_template=joiner_prompt,
     structured_output_model=JoinerOutput,
-    structured_output_params={"method": "function_calling"},
 )
 
 
@@ -119,15 +118,15 @@ class LLMCompilerAgentConfig(AgentConfig):
     )
 
     @model_validator(mode="after")
-    def validate_configs(self, values) -> Any:
+    def validate_configs(self) -> "LLMCompilerAgentConfig":
         """Ensure that the configurations are valid."""
-        if not values.planner_config.prompt_template:
-            values.planner_config.prompt_template = planner_prompt
-        if not values.replanner_config.prompt_template:
-            values.replanner_config.prompt_template = replanner_prompt
-        if not values.joiner_config.prompt_template:
-            values.joiner_config.prompt_template = joiner_prompt
-        return values
+        if not self.planner_config.prompt_template:
+            self.planner_config.prompt_template = planner_prompt
+        if not self.replanner_config.prompt_template:
+            self.replanner_config.prompt_template = replanner_prompt
+        if not self.joiner_config.prompt_template:
+            self.joiner_config.prompt_template = joiner_prompt
+        return self
 
 
 DEFAULT_CONFIG = LLMCompilerAgentConfig()

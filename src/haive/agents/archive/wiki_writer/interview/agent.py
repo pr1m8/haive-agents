@@ -1,4 +1,5 @@
-from haive.core.engine.agent.agent import AgentArchitecture, AgentArchitectureConfig
+from haive.core.engine.agent.agent import Agent as AgentArchitecture
+from haive.core.engine.agent.config import AgentConfig as AgentArchitectureConfig
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.utils.message_utils import route_messages
 from langgraph.graph import START

@@ -5,7 +5,7 @@ from langchain_core.messages import BaseMessage
 from langgraph.graph import add_messages
 from pydantic import BaseModel, Field
 
-from haive.agents.tot.modular.models import Candidate
+from haive.agents.reasoning_and_critique.tot.modular.models import Candidate
 
 
 def update_candidates(

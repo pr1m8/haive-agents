@@ -12,8 +12,8 @@ class ReactAgentConfig(SimpleAgentConfig):
     tools: list[BaseTool] = Field(
         default_factory=list, description="The tools to use for the agent"
     )
-    continuation_branch: Branch = Field(description="The branch to continue the agent")
+    continuation_branch: Branch | None = Field(default=None, description="The branch to continue the agent")
     max_iterations: int = Field(
         default=10, description="The maximum number of iterations for the agent"
     )
-    retry_policy: RetryPolicy = Field(description="The retry policy for the agent")
+    retry_policy: RetryPolicy | None = Field(default=None, description="The retry policy for the agent")

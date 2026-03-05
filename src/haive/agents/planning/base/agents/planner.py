@@ -4,14 +4,15 @@ This module provides the foundational planner agent with an extensive system pro
 designed for creating detailed, actionable plans with thorough analysis and reasoning.
 """
 
+from haive.agents.simple.agent import SimpleAgent
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.prompts import ChatPromptTemplate
-from pydantic import Field
+from pydantic import BaseModel, Field
 
 from ..models import BasePlan, PlanContent
 
 
-class BasePlannerAgent(SimpleAgentV3):
+class BasePlannerAgent(SimpleAgent):
     """Base planner agent with comprehensive planning capabilities.
 
     This agent specializes in creating detailed, strategic plans by breaking down
@@ -48,7 +49,6 @@ class BasePlannerAgent(SimpleAgentV3):
 
     engine: AugLLMConfig = Field(
         default_factory=lambda: AugLLMConfig(
-            model="gpt-4o-mini",
             temperature=0.3,
             system_message="""You are a world-class strategic planner and task decomposition expert with deep expertise in breaking down complex objectives into clear, actionable, and comprehensive plans.
 
@@ -282,7 +282,7 @@ Focus on creating a plan that is both strategically sound and practically execut
         )
     )
 
-    structured_output_model = Field(default=BasePlan[PlanContent])
+    structured_output_model: type[BaseModel] | None = Field(default=None)
 
 
 def create_base_planner(

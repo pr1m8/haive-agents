@@ -6,6 +6,7 @@ into structured formats using Pydantic models and tool-based extraction.
 
 from typing import Any
 
+from haive.agents.simple.agent import SimpleAgent
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field
@@ -14,7 +15,7 @@ from haive.agents.structured.models import GenericStructuredOutput
 from haive.agents.structured.prompts import get_prompt_for_model
 
 
-class StructuredOutputAgent(SimpleAgentV3):
+class StructuredOutputAgent(SimpleAgent):
     """Agent that converts any input into structured output.
 
     This agent specializes in taking unstructured text (typically from another
@@ -215,7 +216,10 @@ def create_structured_agent(
     )
 
 
-# Import Agent for model_rebuild
-
 # Rebuild model to resolve forward references
-StructuredOutputAgent.model_rebuild()
+try:
+    import sys
+    if 'sphinx' not in sys.modules and 'autoapi' not in sys.modules:
+        StructuredOutputAgent.model_rebuild()
+except Exception:
+    pass

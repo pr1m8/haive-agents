@@ -5,8 +5,8 @@ import logging
 from haive.core.engine.aug_llm import AugLLMConfig
 from pydantic import BaseModel, Field
 
-from haive.agents.reflection.models import ReflectionOutput, ReflectionResult
-from haive.agents.reflection.state import ReflectionAgentState
+from haive.agents.reasoning_and_critique.reflection.models import ReflectionOutput, ReflectionResult
+from haive.agents.reasoning_and_critique.reflection.state import ReflectionAgentState  # noqa: direct import
 from haive.agents.simple.config import SimpleAgentConfig
 
 # Setup logging
@@ -130,20 +130,16 @@ class ReflectionAgentConfig(SimpleAgentConfig):
         cls,
         aug_llm: AugLLMConfig,
         name: str | None = None,
-        system_prompt: str | None = None,
         **kwargs,
     ) -> "ReflectionAgentConfig":
         """Create a ReflectionAgentConfig from an existing AugLLMConfig."""
-        # First create a SimpleAgentConfig
         simple_config = SimpleAgentConfig.from_aug_llm(
-            aug_llm=aug_llm, name=name, system_prompt=system_prompt
+            aug_llm=aug_llm, name=name
         )
 
-        # Then extend it with reflection-specific config
         return cls(
             name=simple_config.name,
             engine=simple_config.engine,
-            system_prompt=simple_config.system_prompt,
             **kwargs,
         )
 
@@ -157,15 +153,12 @@ class ReflectionAgentConfig(SimpleAgentConfig):
         **kwargs,
     ) -> "ReflectionAgentConfig":
         """Create a ReflectionAgentConfig from scratch."""
-        # First create a SimpleAgentConfig
         simple_config = SimpleAgentConfig.from_scratch(
             system_prompt=system_prompt, model=model, temperature=temperature, name=name
         )
 
-        # Then extend it with reflection-specific config
         return cls(
             name=simple_config.name,
             engine=simple_config.engine,
-            system_prompt=simple_config.system_prompt,
             **kwargs,
         )
