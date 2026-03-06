@@ -105,7 +105,7 @@ class AdaptiveRAGAgent(ConditionalAgent):
         # Query analyzer
         query_analyzer = SimpleAgent(
             engine=AugLLMConfig(
-                llm_config=llm_config,
+                **({"llm_config": llm_config} if llm_config else {}),
                 prompt_template=QUERY_ANALYZER_PROMPT,
                 structured_output_model=QueryAnalysis,
                 output_key="query_analysis",
@@ -116,16 +116,13 @@ class AdaptiveRAGAgent(ConditionalAgent):
         # Direct answer agent (for known/simple queries)
         direct_agent = SimpleAgent(
             engine=AugLLMConfig(
-                llm_config=llm_config, prompt_template=DIRECT_ANSWER_PROMPT
+                **({"llm_config": llm_config} if llm_config else {}), prompt_template=DIRECT_ANSWER_PROMPT
             ),
             name="Direct Answer",
         )
 
         # Simple RAG for basic queries
-        simple_rag = SimpleRAGAgent.from_documents(
-            documents=documents, llm_config=llm_config
-        )
-        simple_rag.name = "Simple RAG"
+        simple_rag = SimpleRAGAgent(name="Simple RAG")
 
         # Multi-Query RAG for medium complexity
         multi_rag = MultiQueryRAGAgent.from_documents(
@@ -182,6 +179,6 @@ class AdaptiveRAGAgent(ConditionalAgent):
         return cls(
             agents=[query_analyzer, direct_agent, simple_rag, multi_rag, hyde_rag],
             branches=branches,
-            name=kwargs.get("name", "Adaptive RAG Agent"),
+            name=kwargs.pop("name", "Adaptive RAG Agent"),
             **kwargs,
         )

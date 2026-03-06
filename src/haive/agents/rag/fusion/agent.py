@@ -10,7 +10,7 @@ from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
-from haive.core.models.llm.base import AzureLLMConfig, LLMConfig
+from haive.core.models.llm.base import LLMConfig, OpenAILLMConfig
 from langchain_core.documents import Document
 from langchain_core.prompts import ChatPromptTemplate
 from langgraph.graph import END, START
@@ -303,16 +303,12 @@ class RAGFusionAgent(SequentialAgent):
             RAGFusionAgent instance
         """
         if not llm_config:
-            llm_config = AzureLLMConfig(
-                deployment_name="gpt-4",
-                azure_endpoint="${AZURE_OPENAI_API_BASE}",
-                api_key="${AZURE_OPENAI_API_KEY}",
-            )
+            llm_config = OpenAILLMConfig()
 
         # Step 1: Query expansion
         query_expander = SimpleAgent(
             engine=AugLLMConfig(
-                llm_config=llm_config,
+                **({"llm_config": llm_config} if llm_config else {}),
                 prompt_template=QUERY_EXPANSION_FUSION_PROMPT,
                 structured_output_model=QueryVariationsFusion,
                 output_key="query_variations_fusion",
@@ -331,18 +327,17 @@ class RAGFusionAgent(SequentialAgent):
         # Step 4: Fusion-aware answer generation with structured output
         fusion_answerer = SimpleAgent(
             engine=AugLLMConfig(
-                llm_config=llm_config,
+                **({"llm_config": llm_config} if llm_config else {}),
                 prompt_template=FUSION_ANSWER_PROMPT,
                 structured_output_model=FusionResult,
                 output_key="fusion_answer_result",
             ),
-            structured_output_model=FusionResult,
             name="Fusion Answer Generator",
         )
 
         return cls(
             agents=[query_expander, multi_retriever, rrf_agent, fusion_answerer],
-            name=kwargs.get("name", "RAG Fusion Agent"),
+            name=kwargs.pop("name", "RAG Fusion Agent"),
             **kwargs,
         )
 

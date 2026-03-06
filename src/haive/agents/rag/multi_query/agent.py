@@ -57,7 +57,7 @@ class MultiRetrievalAgent(Agent):
     """Agent that performs parallel retrieval with multiple queries."""
 
     name: str = "Multi-Query Retriever"
-    base_retriever: BaseRAGAgent = Field(..., description="Base retriever to use")
+    base_retriever: BaseRAGAgent | None = Field(default=None, description="Base retriever to use")
 
     def build_graph(self) -> BaseGraph:
         """Build graph that retrieves with multiple queries in parallel."""
@@ -158,7 +158,7 @@ class MultiQueryRAGAgent(SequentialAgent):
         # Step 1: Query expansion agent
         query_expander = SimpleAgent(
             engine=AugLLMConfig(
-                llm_config=llm_config,
+                **({"llm_config": llm_config} if llm_config else {}),
                 prompt_template=QUERY_EXPANSION_PROMPT,
                 structured_output_model=QueryVariations,
                 output_key="query_variations",
@@ -179,13 +179,13 @@ class MultiQueryRAGAgent(SequentialAgent):
         # Step 4: Answer generation
         answer_agent = SimpleAgent(
             engine=AugLLMConfig(
-                llm_config=llm_config, prompt_template=RAG_ANSWER_STANDARD
+                **({"llm_config": llm_config} if llm_config else {}), prompt_template=RAG_ANSWER_STANDARD
             ),
             name="Answer Generator",
         )
 
         return cls(
             agents=[query_expander, multi_retriever, answer_agent],
-            name=kwargs.get("name", "Multi-Query RAG Agent"),
+            name=kwargs.pop("name", "Multi-Query RAG Agent"),
             **kwargs,
         )

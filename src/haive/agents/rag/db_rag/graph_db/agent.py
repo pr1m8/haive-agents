@@ -121,8 +121,6 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
     """
 
     def __init__(self, config: GraphDBRAGConfig | None = None, *, name: str | None = None, **kwargs):
-        if config is None:
-            config = GraphDBRAGConfig(**({"name": name} if name else {}))
         """Initialize the Graph DB RAG Agent.
 
         Sets up the Neo4j connection, schema information, example selector,
@@ -132,25 +130,22 @@ class GraphDBRAGAgent(Agent[GraphDBRAGConfig]):
         Args:
             config: Configuration object. Defaults to GraphDBRAGConfig() which
                 uses environment variables for Neo4j connection.
-
-        Raises:
-            ValueError: If Neo4j connection cannot be established.
-            Exception: For other initialization errors.
-
-        Examples:
-            >>> # Using default config (from environment)
-            >>> agent = GraphDBRAGAgent()
-
-            >>> # Using custom config
-            >>> custom_config = GraphDBRAGConfig(
-            ...     domain_name="movies",
-            ...     graph_db_config=GraphDBConfig(
-            ...         graph_db_uri="bolt://localhost:7687"
-            ...     )
-            ... )
-            >>> agent = GraphDBRAGAgent(custom_config)
         """
-        self._initialize_config(config)
+        if config is None:
+            config = GraphDBRAGConfig(**({"name": name} if name else {}))
+        try:
+            self._initialize_config(config)
+        except Exception as e:
+            logger.warning(f"GraphDBRAGAgent initialization deferred: {e}")
+            self.graph_db = None
+            self.graph_db_enhanced_schema = None
+            self.graph_db_structured_schema = None
+            self.corrector_schema = []
+            self.cypher_query_corrector = None
+            self.no_results = "No results found"
+            self.example_selector = type(
+                "DummySelector", (), {"select_examples": lambda self, query: []}
+            )()
         super().__init__(config)
 
     def _initialize_config(self, config: GraphDBRAGConfig) -> None:

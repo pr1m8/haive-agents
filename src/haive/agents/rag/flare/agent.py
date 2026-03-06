@@ -11,7 +11,7 @@ from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
-from haive.core.models.llm.base import AzureLLMConfig, LLMConfig
+from haive.core.models.llm.base import LLMConfig, OpenAILLMConfig
 from langchain_core.documents import Document
 from langchain_core.prompts import ChatPromptTemplate
 from langgraph.graph import END, START
@@ -221,7 +221,7 @@ Focus on natural, evidence-based progression toward complete answer.""",
 def create_flare_planner_callable(llm_config: LLMConfig):
     """Create callable function for FLARE planning."""
     planning_engine = AugLLMConfig(
-        llm_config=llm_config,
+        **({"llm_config": llm_config} if llm_config else {}),
         prompt_template=FLARE_PLANNING_PROMPT,
         structured_output_model=FLAREPlan,
         output_key="flare_plan",
@@ -342,7 +342,7 @@ class FLAREPlannerAgent(Agent):
     """Agent that creates FLARE plans for iterative generation and active retrieval."""
 
     name: str = "FLARE Planner"
-    llm_config: LLMConfig = Field(description="LLM configuration for planning")
+    llm_config: LLMConfig | None = Field(default=None, description="LLM configuration for planning")
 
     def build_graph(self) -> BaseGraph:
         """Build FLARE planning graph."""
@@ -363,7 +363,7 @@ class ActiveRetrievalAgent(Agent):
     """Agent that performs active retrieval based on FLARE plans."""
 
     name: str = "Active Retrieval"
-    documents: list[Document] = Field(description="Documents for retrieval")
+    documents: list[Document] = Field(default_factory=list, description="Documents for retrieval")
     embedding_model: str | None = Field(default=None, description="Embedding model")
 
     def build_graph(self) -> BaseGraph:
@@ -408,11 +408,7 @@ class FLARERAGAgent(SequentialAgent):
             FLARERAGAgent instance
         """
         if not llm_config:
-            llm_config = AzureLLMConfig(
-                deployment_name="gpt-4",
-                azure_endpoint="${AZURE_OPENAI_API_BASE}",
-                api_key="${AZURE_OPENAI_API_KEY}",
-            )
+            llm_config = OpenAILLMConfig()
 
         # Step 1: FLARE planning with structured output
         flare_planner = FLAREPlannerAgent(llm_config=llm_config, name="FLARE Planner")
@@ -426,14 +422,14 @@ class FLARERAGAgent(SequentialAgent):
 
         # Step 3: Iterative generation
         iterative_generator = SimpleAgent(
-            engine=AugLLMConfig(llm_config=llm_config, prompt_template=FLARE_GENERATION_PROMPT),
+            engine=AugLLMConfig(**({"llm_config": llm_config} if llm_config else {}), prompt_template=FLARE_GENERATION_PROMPT),
             name="FLARE Generator",
         )
 
         # Step 4: Result synthesis
         result_synthesizer = SimpleAgent(
             engine=AugLLMConfig(
-                llm_config=llm_config,
+                **({"llm_config": llm_config} if llm_config else {}),
                 prompt_template=ChatPromptTemplate.from_messages(
                     [
                         (
@@ -449,7 +445,6 @@ class FLARERAGAgent(SequentialAgent):
                 structured_output_model=FLAREResult,
                 output_key="flare_result",
             ),
-            structured_output_model=FLAREResult,
             name="FLARE Synthesizer",
         )
 
@@ -460,7 +455,7 @@ class FLARERAGAgent(SequentialAgent):
                 iterative_generator,
                 result_synthesizer,
             ],
-            name=kwargs.get("name", "FLARE RAG Agent"),
+            name=kwargs.pop("name", "FLARE RAG Agent"),
             **kwargs,
         )
 

@@ -11,7 +11,7 @@ from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
-from haive.core.models.llm.base import AzureLLMConfig, LLMConfig
+from haive.core.models.llm.base import LLMConfig, OpenAILLMConfig
 from haive.core.schema.prebuilt.rag_state import RAGState
 from langchain_core.documents import Document
 from langchain_core.prompts import ChatPromptTemplate
@@ -595,7 +595,7 @@ class AgenticRAGRouterAgent(Agent):
             AgenticRAGRouterAgent instance
         """
         if not llm_config:
-            llm_config = AzureLLMConfig(
+            llm_config = OpenAILLMConfig(
                 deployment_name="gpt-4",
                 azure_endpoint="${AZURE_OPENAI_API_BASE}",
                 api_key="${AZURE_OPENAI_API_KEY}",

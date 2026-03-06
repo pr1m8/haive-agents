@@ -37,7 +37,7 @@ from haive.agents.memory_reorganized.core.token_tracker import (
     TokenThresholds,
     TokenTracker,
 )
-from haive.agents.simple.enhanced_agent_v3 import EnhancedSimpleAgent
+from haive.agents.simple.agent import SimpleAgent as EnhancedSimpleAgent
 
 # Graph transformer imports - optional
 if TYPE_CHECKING:

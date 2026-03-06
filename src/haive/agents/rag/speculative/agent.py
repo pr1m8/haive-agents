@@ -11,7 +11,7 @@ from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
-from haive.core.models.llm.base import AzureLLMConfig, LLMConfig
+from haive.core.models.llm.base import LLMConfig, OpenAILLMConfig
 from langchain_core.documents import Document
 from langchain_core.prompts import ChatPromptTemplate
 from langgraph.graph import END, START
@@ -342,30 +342,9 @@ class HypothesisGeneratorAgent(Agent):
     """Agent that generates multiple hypotheses for speculative reasoning."""
 
     name: str = "Hypothesis Generator"
-
-    def __init__(
-        self,
-        llm_config: LLMConfig | None = None,
-        num_hypotheses: int = 5,
-        hypothesis_diversity: str = "high",
-        **kwargs,
-    ):
-        """Initialize hypothesis generator.
-
-        Args:
-            llm_config: LLM configuration
-            num_hypotheses: Number of hypotheses to generate
-            hypothesis_diversity: Diversity level ("low", "medium", "high")
-            **kwargs: Additional agent arguments
-        """
-        self.llm_config = llm_config or AzureLLMConfig(
-            deployment_name="gpt-4",
-            azure_endpoint="${AZURE_OPENAI_API_BASE}",
-            api_key="${AZURE_OPENAI_API_KEY}",
-        )
-        self.num_hypotheses = num_hypotheses
-        self.hypothesis_diversity = hypothesis_diversity
-        super().__init__(**kwargs)
+    llm_config: LLMConfig | None = Field(default=None, description="LLM configuration")
+    num_hypotheses: int = Field(default=5, description="Number of hypotheses to generate")
+    hypothesis_diversity: str = Field(default="high", description="Diversity level")
 
     def build_graph(self) -> BaseGraph:
         """Build hypothesis generation graph."""
@@ -373,7 +352,7 @@ class HypothesisGeneratorAgent(Agent):
 
         # Create hypothesis generation engine
         generation_engine = AugLLMConfig(
-            llm_config=self.llm_config,
+            **({"llm_config": self.llm_config} if self.llm_config else {}),
             prompt_template=HYPOTHESIS_GENERATION_PROMPT,
             structured_output_model=list[Hypothesis],
             output_key="hypotheses",
@@ -464,35 +443,17 @@ class ParallelVerificationAgent(Agent):
     """Agent that performs parallel hypothesis verification."""
 
     name: str = "Parallel Verifier"
+    documents: list[Document] = Field(default_factory=list, description="Documents for evidence gathering")
+    llm_config: LLMConfig | None = Field(default=None, description="LLM configuration")
+    verification_depth: str = Field(default="thorough", description="Depth of verification")
+    base_retriever: Any = Field(default=None, description="Base retriever for evidence gathering", exclude=True)
 
-    def __init__(
-        self,
-        documents: list[Document],
-        llm_config: LLMConfig | None = None,
-        verification_depth: str = "thorough",
-        **kwargs,
-    ):
-        """Initialize parallel verifier.
-
-        Args:
-            documents: Documents for evidence gathering
-            llm_config: LLM configuration
-            verification_depth: Depth of verification ("basic", "thorough", "comprehensive")
-            **kwargs: Additional agent arguments
-        """
-        self.documents = documents
-        self.llm_config = llm_config or AzureLLMConfig(
-            deployment_name="gpt-4",
-            azure_endpoint="${AZURE_OPENAI_API_BASE}",
-            api_key="${AZURE_OPENAI_API_KEY}",
-        )
-        self.verification_depth = verification_depth
-        super().__init__(**kwargs)
-
-        # Create base retriever for evidence gathering
-        self.base_retriever = BaseRAGAgent.from_documents(
-            documents=documents, name="Evidence Retriever"
-        )
+    def model_post_init(self, __context: Any) -> None:
+        super().model_post_init(__context)
+        if self.documents and self.base_retriever is None:
+            object.__setattr__(self, "base_retriever", BaseRAGAgent.from_documents(
+                documents=self.documents, name="Evidence Retriever"
+            ))
 
     def build_graph(self) -> BaseGraph:
         """Build parallel verification graph."""
@@ -500,7 +461,7 @@ class ParallelVerificationAgent(Agent):
 
         # Create verification engine
         AugLLMConfig(
-            llm_config=self.llm_config,
+            **({"llm_config": self.llm_config} if self.llm_config else {}),
             prompt_template=HYPOTHESIS_VERIFICATION_PROMPT,
             structured_output_model=Hypothesis,  # Returns updated hypothesis
             output_key="verified_hypothesis",
@@ -638,7 +599,7 @@ class ParallelVerificationAgent(Agent):
         try:
             # Use verification engine with structured output
             verification_engine = AugLLMConfig(
-                llm_config=self.llm_config,
+                **({"llm_config": self.llm_config} if self.llm_config else {}),
                 prompt_template=HYPOTHESIS_VERIFICATION_PROMPT,
                 structured_output_model=Hypothesis,
                 output_key="verified_hypothesis",
@@ -696,11 +657,7 @@ class SpeculativeRAGAgent(SequentialAgent):
             SpeculativeRAGAgent instance
         """
         if not llm_config:
-            llm_config = AzureLLMConfig(
-                deployment_name="gpt-4",
-                azure_endpoint="${AZURE_OPENAI_API_BASE}",
-                api_key="${AZURE_OPENAI_API_KEY}",
-            )
+            llm_config = OpenAILLMConfig()
 
         # Step 1: Hypothesis generation
         hypothesis_generator = HypothesisGeneratorAgent(
@@ -720,7 +677,7 @@ class SpeculativeRAGAgent(SequentialAgent):
         # Step 3: Result synthesis
         synthesis_agent = SimpleAgent(
             engine=AugLLMConfig(
-                llm_config=llm_config,
+                **({"llm_config": llm_config} if llm_config else {}),
                 prompt_template=SPECULATIVE_SYNTHESIS_PROMPT,
                 structured_output_model=SpeculativeResult,
                 output_key="speculative_result",
@@ -730,7 +687,7 @@ class SpeculativeRAGAgent(SequentialAgent):
 
         return cls(
             agents=[hypothesis_generator, parallel_verifier, synthesis_agent],
-            name=kwargs.get("name", "Speculative RAG Agent"),
+            name=kwargs.pop("name", "Speculative RAG Agent"),
             **kwargs,
         )
 

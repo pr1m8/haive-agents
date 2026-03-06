@@ -9,7 +9,7 @@ Retrieval → Relevance Check → Knowledge Refinement/Web Search/Combine
 from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.models.llm.base import AzureLLMConfig, LLMConfig
+from haive.core.models.llm.base import LLMConfig, OpenAILLMConfig
 from langchain_core.documents import Document
 from langchain_core.prompts import ChatPromptTemplate
 
@@ -76,13 +76,6 @@ class CorrectiveRAGAgent(ConditionalAgent):
         Returns:
             CorrectiveRAGAgent instance
         """
-        if not llm_config:
-            llm_config = AzureLLMConfig(
-                deployment_name="gpt-4",
-                azure_endpoint="${AZURE_OPENAI_API_BASE}",
-                api_key="${AZURE_OPENAI_API_KEY}",
-            )
-
         # Create agents
         retrieval_agent = BaseRAGAgent.from_documents(
             documents=documents, name="CRAG Retriever"
@@ -90,7 +83,7 @@ class CorrectiveRAGAgent(ConditionalAgent):
 
         grader_agent = SimpleAgent(
             engine=AugLLMConfig(
-                llm_config=llm_config,
+                **({"llm_config": llm_config} if llm_config else {}),
                 prompt_template=DOCUMENT_GRADER_PROMPT,
                 structured_output_model=DocumentGrade,
             ),
@@ -98,7 +91,7 @@ class CorrectiveRAGAgent(ConditionalAgent):
         )
 
         answer_agent = SimpleAgent(
-            engine=AugLLMConfig(llm_config=llm_config, prompt_template=ANSWER_PROMPT),
+            engine=AugLLMConfig(**({"llm_config": llm_config} if llm_config else {}), prompt_template=ANSWER_PROMPT),
             name="Answer Generator",
         )
 
@@ -127,6 +120,6 @@ class CorrectiveRAGAgent(ConditionalAgent):
         return cls(
             agents=[retrieval_agent, grader_agent, answer_agent],
             branches=branches,
-            name=kwargs.get("name", "Corrective RAG Agent"),
+            name=kwargs.pop("name", "Corrective RAG Agent"),
             **kwargs,
         )

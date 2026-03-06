@@ -12,7 +12,7 @@ from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
-from haive.core.models.llm.base import AzureLLMConfig, LLMConfig
+from haive.core.models.llm.base import LLMConfig, OpenAILLMConfig
 from langchain_core.documents import Document
 from langchain_core.prompts import ChatPromptTemplate
 from langgraph.graph import END, START
@@ -63,19 +63,9 @@ class MemoryRetrievalAgent(Agent):
     """Agent that retrieves relevant memories for context enhancement."""
 
     name: str = "Memory Retrieval"
-
-    def __init__(
-        self, llm_config: LLMConfig | None = None, max_memories: int = 10, **kwargs
-    ):
-        """Initialize memory retrieval agent."""
-        self.llm_config = llm_config or AzureLLMConfig(
-            deployment_name="gpt-4",
-            azure_endpoint="${AZURE_OPENAI_API_BASE}",
-            api_key="${AZURE_OPENAI_API_KEY}",
-        )
-        self.max_memories = max_memories
-        self.memory_store: dict[str, MemoryItem] = {}
-        super().__init__(**kwargs)
+    llm_config: LLMConfig | None = Field(default=None, description="LLM configuration")
+    max_memories: int = Field(default=10, description="Maximum memories to retrieve")
+    memory_store: dict = Field(default_factory=dict, description="Memory storage")
 
     def build_graph(self) -> BaseGraph:
         """Build memory retrieval graph."""
@@ -141,11 +131,7 @@ class MemoryAwareRAGAgent(SequentialAgent):
     ):
         """Create Memory-Aware RAG agent from documents."""
         if not llm_config:
-            llm_config = AzureLLMConfig(
-                deployment_name="gpt-4",
-                azure_endpoint="${AZURE_OPENAI_API_BASE}",
-                api_key="${AZURE_OPENAI_API_KEY}",
-            )
+            llm_config = OpenAILLMConfig()
 
         # Step 1: Memory retrieval
         memory_retrieval = MemoryRetrievalAgent(
@@ -160,7 +146,7 @@ class MemoryAwareRAGAgent(SequentialAgent):
         # Step 3: Memory integration and response
         memory_integration = SimpleAgent(
             engine=AugLLMConfig(
-                llm_config=llm_config,
+                **({"llm_config": llm_config} if llm_config else {}),
                 prompt_template=ChatPromptTemplate.from_messages(
                     [
                         (
@@ -179,7 +165,7 @@ class MemoryAwareRAGAgent(SequentialAgent):
 
         return cls(
             agents=[memory_retrieval, doc_retrieval, memory_integration],
-            name=kwargs.get("name", "Memory-Aware RAG Agent"),
+            name=kwargs.pop("name", "Memory-Aware RAG Agent"),
             **kwargs,
         )
 

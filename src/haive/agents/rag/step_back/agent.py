@@ -10,7 +10,7 @@ from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
-from haive.core.models.llm.base import AzureLLMConfig, LLMConfig
+from haive.core.models.llm.base import LLMConfig, OpenAILLMConfig
 from langchain_core.documents import Document
 from langchain_core.prompts import ChatPromptTemplate
 from langgraph.graph import END, START
@@ -153,27 +153,8 @@ class StepBackQueryGeneratorAgent(Agent):
     """Agent that generates step-back queries for abstract reasoning."""
 
     name: str = "Step-Back Query Generator"
-
-    def __init__(
-        self,
-        llm_config: LLMConfig | None = None,
-        abstraction_level: str = "moderate",
-        **kwargs,
-    ):
-        """Initialize step-back query generator.
-
-        Args:
-            llm_config: LLM configuration
-            abstraction_level: Level of abstraction ("low", "moderate", "high")
-            **kwargs: Additional agent arguments
-        """
-        self.llm_config = llm_config or AzureLLMConfig(
-            deployment_name="gpt-4",
-            azure_endpoint="${AZURE_OPENAI_API_BASE}",
-            api_key="${AZURE_OPENAI_API_KEY}",
-        )
-        self.abstraction_level = abstraction_level
-        super().__init__(**kwargs)
+    llm_config: LLMConfig | None = Field(default=None, description="LLM configuration")
+    abstraction_level: str = Field(default="moderate", description="Level of abstraction")
 
     def build_graph(self) -> BaseGraph:
         """Build step-back query generation graph."""
@@ -181,7 +162,7 @@ class StepBackQueryGeneratorAgent(Agent):
 
         # Create step-back generation engine
         generation_engine = AugLLMConfig(
-            llm_config=self.llm_config,
+            **({"llm_config": self.llm_config} if self.llm_config else {}),
             prompt_template=STEP_BACK_GENERATOR_PROMPT,
             structured_output_model=StepBackQuery,
             output_key="step_back_query_result",
@@ -239,31 +220,17 @@ class DualRetrievalAgent(Agent):
     """Agent that performs both original and step-back retrieval."""
 
     name: str = "Dual Retrieval"
+    documents: list[Document] = Field(default_factory=list, description="Documents for retrieval")
+    embedding_model: str | None = Field(default=None, description="Embedding model")
+    max_docs_each: int = Field(default=5, description="Max docs to retrieve for each query")
+    base_retriever: Any = Field(default=None, description="Base retriever", exclude=True)
 
-    def __init__(
-        self,
-        documents: list[Document],
-        embedding_model: str | None = None,
-        max_docs_each: int = 5,
-        **kwargs,
-    ):
-        """Initialize dual retrieval agent.
-
-        Args:
-            documents: Documents for retrieval
-            embedding_model: Embedding model
-            max_docs_each: Max docs to retrieve for each query
-            **kwargs: Additional arguments
-        """
-        self.documents = documents
-        self.embedding_model = embedding_model
-        self.max_docs_each = max_docs_each
-        super().__init__(**kwargs)
-
-        # Create base retriever
-        self.base_retriever = BaseRAGAgent.from_documents(
-            documents=documents, embedding_model=embedding_model, name="Base Retriever"
-        )
+    def model_post_init(self, __context: Any) -> None:
+        super().model_post_init(__context)
+        if self.documents and self.base_retriever is None:
+            object.__setattr__(self, "base_retriever", BaseRAGAgent.from_documents(
+                documents=self.documents, embedding_model=self.embedding_model, name="Base Retriever"
+            ))
 
     def build_graph(self) -> BaseGraph:
         """Build dual retrieval graph."""
@@ -381,11 +348,7 @@ class StepBackRAGAgent(SequentialAgent):
             StepBackRAGAgent instance
         """
         if not llm_config:
-            llm_config = AzureLLMConfig(
-                deployment_name="gpt-4",
-                azure_endpoint="${AZURE_OPENAI_API_BASE}",
-                api_key="${AZURE_OPENAI_API_KEY}",
-            )
+            llm_config = OpenAILLMConfig()
 
         # Step 1: Generate step-back query
         step_back_generator = StepBackQueryGeneratorAgent(
@@ -405,14 +368,14 @@ class StepBackRAGAgent(SequentialAgent):
         # Step 3: Step-back synthesis
         synthesis_agent = SimpleAgent(
             engine=AugLLMConfig(
-                llm_config=llm_config, prompt_template=STEP_BACK_SYNTHESIS_PROMPT
+                **({"llm_config": llm_config} if llm_config else {}), prompt_template=STEP_BACK_SYNTHESIS_PROMPT
             ),
             name="Step-Back Synthesizer",
         )
 
         return cls(
             agents=[step_back_generator, dual_retriever, synthesis_agent],
-            name=kwargs.get("name", "Step-Back RAG Agent"),
+            name=kwargs.pop("name", "Step-Back RAG Agent"),
             **kwargs,
         )
 

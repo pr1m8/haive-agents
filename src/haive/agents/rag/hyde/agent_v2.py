@@ -16,7 +16,7 @@ from langgraph.graph import END, START
 from pydantic import Field
 
 from haive.agents.base.agent import Agent
-from haive.agents.multi.enhanced_sequential_agent import SequentialAgent
+from haive.agents.multi.base import SequentialAgent
 from haive.agents.rag.base.agent import BaseRAGAgent
 from haive.agents.rag.common.answer_generators.prompts import RAG_ANSWER_STANDARD
 from haive.agents.rag.models import HyDEResult
@@ -151,7 +151,7 @@ class HyDERAGAgentV2(SequentialAgent):
 
         hyde_generator = SimpleAgent(
             engine=AugLLMConfig(
-                llm_config=llm_config,
+                **({"llm_config": llm_config} if llm_config else {}),
                 prompt_template=HYDE_GENERATION_PROMPT,
                 structured_output_model=HyDEResult,
                 structured_output_version="v1",  # Use parser-based approach
@@ -173,14 +173,14 @@ class HyDERAGAgentV2(SequentialAgent):
         # Step 4: Generate final answer using standard RAG prompt
         answer_agent = SimpleAgent(
             engine=AugLLMConfig(
-                llm_config=llm_config, prompt_template=RAG_ANSWER_STANDARD
+                **({"llm_config": llm_config} if llm_config else {}), prompt_template=RAG_ANSWER_STANDARD
             ),
             name="Answer Generator",
         )
 
         return cls(
             agents=[hyde_generator, hyde_retriever, answer_agent],
-            name=kwargs.get("name", "HyDE RAG Agent V2"),
+            name=kwargs.pop("name", "HyDE RAG Agent V2"),
             **kwargs,
         )
 

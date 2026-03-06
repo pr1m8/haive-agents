@@ -10,7 +10,7 @@ from langchain_core.output_parsers import PydanticToolsParser
 from pydantic import BaseModel, Field
 
 from haive.agents.base.agent import Agent
-from haive.agents.multi.experiments.implementations.proper_base import ProperMultiAgent
+from haive.agents.multi.base import MultiAgent
 from haive.agents.simple.agent import SimpleAgent
 
 
@@ -67,7 +67,7 @@ class StructuredOutputAgent(SimpleAgent):
         name: str | None = None,
         include_original_input: bool = True,
         **kwargs,
-    ) -> ProperMultiAgent:
+    ) -> MultiAgent:
         """Enhance any agent with structured output capabilities.
 
         Creates a sequential multi-agent that runs:
@@ -82,7 +82,7 @@ class StructuredOutputAgent(SimpleAgent):
             **kwargs: Additional arguments for the structured output agent
 
         Returns:
-            ProperMultiAgent configured for sequential execution
+            MultiAgent configured for sequential execution
         """
         # Create structured output agent
         structured_agent = cls.create_processor(
@@ -110,7 +110,7 @@ class StructuredOutputAgent(SimpleAgent):
             "EnhancedState", (MessagesStateWithTokenUsage), enhanced_state_attrs
         )
 
-        return ProperMultiAgent(
+        return MultiAgent(
             name=enhanced_name,
             agents=[base_agent, structured_agent],
             execution_mode="sequential",

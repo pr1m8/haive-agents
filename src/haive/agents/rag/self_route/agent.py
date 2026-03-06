@@ -11,7 +11,7 @@ from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
-from haive.core.models.llm.base import AzureLLMConfig, LLMConfig
+from haive.core.models.llm.base import LLMConfig, OpenAILLMConfig
 from langchain_core.documents import Document
 from langchain_core.prompts import ChatPromptTemplate
 from langgraph.graph import END, START
@@ -315,27 +315,8 @@ class QueryAnalyzerAgent(Agent):
     """Agent that performs structured query analysis for routing."""
 
     name: str = "Query Analyzer"
-
-    def __init__(
-        self,
-        llm_config: LLMConfig | None = None,
-        analysis_depth: str = "comprehensive",
-        **kwargs,
-    ):
-        """Initialize query analyzer.
-
-        Args:
-            llm_config: LLM configuration
-            analysis_depth: Depth of analysis ("basic", "comprehensive", "expert")
-            **kwargs: Additional agent arguments
-        """
-        self.llm_config = llm_config or AzureLLMConfig(
-            deployment_name="gpt-4",
-            azure_endpoint="${AZURE_OPENAI_API_BASE}",
-            api_key="${AZURE_OPENAI_API_KEY}",
-        )
-        self.analysis_depth = analysis_depth
-        super().__init__(**kwargs)
+    llm_config: LLMConfig | None = Field(default=None, description="LLM configuration")
+    analysis_depth: str = Field(default="comprehensive", description="Depth of analysis")
 
     def build_graph(self) -> BaseGraph:
         """Build query analysis graph."""
@@ -343,7 +324,7 @@ class QueryAnalyzerAgent(Agent):
 
         # Create analysis engine with structured output
         analysis_engine = AugLLMConfig(
-            llm_config=self.llm_config,
+            **({"llm_config": self.llm_config} if self.llm_config else {}),
             prompt_template=QUERY_ANALYSIS_PROMPT,
             structured_output_model=QueryAnalysis,
             output_key="query_analysis",
@@ -438,24 +419,8 @@ class IterativePlannerAgent(Agent):
     """Agent that creates iterative processing plans."""
 
     name: str = "Iterative Planner"
-
-    def __init__(
-        self, llm_config: LLMConfig | None = None, max_iterations: int = 3, **kwargs
-    ):
-        """Initialize iterative planner.
-
-        Args:
-            llm_config: LLM configuration
-            max_iterations: Maximum number of iterations
-            **kwargs: Additional agent arguments
-        """
-        self.llm_config = llm_config or AzureLLMConfig(
-            deployment_name="gpt-4",
-            azure_endpoint="${AZURE_OPENAI_API_BASE}",
-            api_key="${AZURE_OPENAI_API_KEY}",
-        )
-        self.max_iterations = max_iterations
-        super().__init__(**kwargs)
+    llm_config: LLMConfig | None = Field(default=None, description="LLM configuration")
+    max_iterations: int = Field(default=3, description="Maximum number of iterations")
 
     def build_graph(self) -> BaseGraph:
         """Build iterative planning graph."""
@@ -463,7 +428,7 @@ class IterativePlannerAgent(Agent):
 
         # Create planning engine with structured output
         planning_engine = AugLLMConfig(
-            llm_config=self.llm_config,
+            **({"llm_config": self.llm_config} if self.llm_config else {}),
             prompt_template=ITERATIVE_PLANNING_PROMPT,
             structured_output_model=IterativePlan,
             output_key="iterative_plan",
@@ -542,27 +507,8 @@ class RoutingDecisionAgent(Agent):
     """Agent that makes final routing decisions."""
 
     name: str = "Routing Decision Engine"
-
-    def __init__(
-        self,
-        llm_config: LLMConfig | None = None,
-        enable_fallback: bool = True,
-        **kwargs,
-    ):
-        """Initialize routing decision agent.
-
-        Args:
-            llm_config: LLM configuration
-            enable_fallback: Whether to enable fallback strategies
-            **kwargs: Additional agent arguments
-        """
-        self.llm_config = llm_config or AzureLLMConfig(
-            deployment_name="gpt-4",
-            azure_endpoint="${AZURE_OPENAI_API_BASE}",
-            api_key="${AZURE_OPENAI_API_KEY}",
-        )
-        self.enable_fallback = enable_fallback
-        super().__init__(**kwargs)
+    llm_config: LLMConfig | None = Field(default=None, description="LLM configuration")
+    enable_fallback: bool = Field(default=True, description="Whether to enable fallback strategies")
 
     def build_graph(self) -> BaseGraph:
         """Build routing decision graph."""
@@ -570,7 +516,7 @@ class RoutingDecisionAgent(Agent):
 
         # Create decision engine with structured output
         decision_engine = AugLLMConfig(
-            llm_config=self.llm_config,
+            **({"llm_config": self.llm_config} if self.llm_config else {}),
             prompt_template=ROUTING_DECISION_PROMPT,
             structured_output_model=RoutingDecision,
             output_key="routing_decision",
@@ -656,11 +602,7 @@ class SelfRouteRAGAgent(SequentialAgent):
             SelfRouteRAGAgent instance
         """
         if not llm_config:
-            llm_config = AzureLLMConfig(
-                deployment_name="gpt-4",
-                azure_endpoint="${AZURE_OPENAI_API_BASE}",
-                api_key="${AZURE_OPENAI_API_KEY}",
-            )
+            llm_config = OpenAILLMConfig()
 
         # Step 1: Query analysis with structured output
         query_analyzer = QueryAnalyzerAgent(
@@ -684,7 +626,7 @@ class SelfRouteRAGAgent(SequentialAgent):
         # Step 4: Strategy executor (would execute the chosen strategy)
         strategy_executor = SimpleAgent(
             engine=AugLLMConfig(
-                llm_config=llm_config,
+                **({"llm_config": llm_config} if llm_config else {}),
                 prompt_template=ChatPromptTemplate.from_messages(
                     [
                         (
@@ -708,7 +650,7 @@ class SelfRouteRAGAgent(SequentialAgent):
                 routing_decision,
                 strategy_executor,
             ],
-            name=kwargs.get("name", "Self-Route RAG Agent"),
+            name=kwargs.pop("name", "Self-Route RAG Agent"),
             **kwargs,
         )
 

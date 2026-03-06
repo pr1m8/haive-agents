@@ -7,7 +7,7 @@ Query -> Generate Hypothetical Doc -> Embed -> Retrieve Real Docs -> Generate
 """
 
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.models.llm.base import AzureLLMConfig, LLMConfig
+from haive.core.models.llm.base import LLMConfig, OpenAILLMConfig
 from langchain_core.documents import Document
 from langchain_core.prompts import ChatPromptTemplate
 
@@ -71,17 +71,10 @@ class HyDERAGAgent(MultiAgent):
         Returns:
             HyDERAGAgent instance
         """
-        if not llm_config:
-            llm_config = AzureLLMConfig(
-                deployment_name="gpt-4",
-                azure_endpoint="${AZURE_OPENAI_API_BASE}",
-                api_key="${AZURE_OPENAI_API_KEY}",
-            )
-
         # Step 1: Generate hypothetical document
         hyde_generator = SimpleAgent(
             engine=AugLLMConfig(
-                llm_config=llm_config, prompt_template=HYDE_GENERATION_PROMPT
+                **({"llm_config": llm_config} if llm_config else {}), prompt_template=HYDE_GENERATION_PROMPT
             ),
             name="hyde_generator",
         )
@@ -96,15 +89,13 @@ class HyDERAGAgent(MultiAgent):
         # Step 3: Generate final answer
         answer_agent = SimpleAgent(
             engine=AugLLMConfig(
-                llm_config=llm_config, prompt_template=HYDE_ANSWER_PROMPT
+                **({"llm_config": llm_config} if llm_config else {}), prompt_template=HYDE_ANSWER_PROMPT
             ),
             name="hyde_answer_generator",
         )
 
-        # Use the clean MultiAgent.create() method
-        # Remove name from kwargs to avoid conflict
         agent_name = kwargs.pop("name", "hyde_rag_agent")
-        return cls.create(
+        return cls(
             agents=[hyde_generator, retrieval_agent, answer_agent],
             name=agent_name,
             execution_mode="sequential",

@@ -57,6 +57,48 @@ class DocumentGradingAgent(Agent):
     name: str = "Document Grader"
     relevance_threshold: float = 0.7
 
+    def build_graph(self) -> BaseGraph:
+        """Build document grading graph."""
+        from typing import Any
+
+        graph = BaseGraph(name="DocumentGrading")
+
+        grading_engine = AugLLMConfig(
+            prompt_template=SINGLE_DOC_GRADING_PROMPT,
+            structured_output_model=SingleDocumentGrade,
+            output_key="document_grade",
+        )
+
+        threshold = self.relevance_threshold
+
+        def grade_documents(state: dict[str, Any]) -> dict[str, Any]:
+            """Grade each retrieved document for relevance."""
+            query = getattr(state, "query", "")
+            docs = getattr(state, "retrieved_documents", [])
+
+            graded_docs = []
+            for doc in docs:
+                content = doc.page_content if hasattr(doc, "page_content") else str(doc)
+                try:
+                    grade = grading_engine.invoke({"query": query, "document": content[:500]})
+                    if grade.is_relevant and grade.relevance_score >= threshold:
+                        graded_docs.append(doc)
+                except Exception:
+                    graded_docs.append(doc)
+
+            return {
+                "graded_documents": graded_docs,
+                "retrieved_documents": graded_docs,
+                "num_relevant": len(graded_docs),
+                "num_total": len(docs),
+            }
+
+        graph.add_node("grade_documents", grade_documents)
+        graph.add_edge(START, "grade_documents")
+        graph.add_edge("grade_documents", END)
+
+        return graph
+
 
 class DocumentGradingRAGAgent(SequentialAgent):
     """RAG with document grading and filtering."""
@@ -102,6 +144,6 @@ class DocumentGradingRAGAgent(SequentialAgent):
 
         return cls(
             agents=[retrieval_agent, grading_agent, answer_agent],
-            name=kwargs.get("name", "Document Grading RAG Agent"),
+            name=kwargs.pop("name", "Document Grading RAG Agent"),
             **kwargs,
         )

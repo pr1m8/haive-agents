@@ -23,7 +23,7 @@ from haive.agents.document_modifiers.kg.kg_map_merge.models import (
     EntityRelationship,
     KnowledgeGraph,
 )
-from haive.agents.simple.enhanced_agent_v3 import EnhancedSimpleAgent
+from haive.agents.simple.agent import SimpleAgent as EnhancedSimpleAgent
 
 from .memory_state_original import (  # Import original models for compatibility
     EnhancedMemoryItem,
