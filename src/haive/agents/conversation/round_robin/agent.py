@@ -6,6 +6,7 @@ from typing import Any, Literal
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import SystemMessage
+from langgraph.types import Command
 from pydantic import Field
 
 from haive.agents.conversation.base.agent import BaseConversationAgent
@@ -33,7 +34,7 @@ class RoundRobinConversation(BaseConversationAgent):
         default=False, description="Announce who is speaking next"
     )
 
-    def select_speaker(self, state: ConversationState) -> dict[str, Any]:
+    def select_speaker(self, state: ConversationState) -> Command:
         """Select the next speaker in round-robin order."""
         speakers = state.speakers
         current_speaker = state.current_speaker
@@ -41,7 +42,7 @@ class RoundRobinConversation(BaseConversationAgent):
 
         if not speakers:
             logger.warning("No speakers available")
-            return {"current_speaker": None, "conversation_ended": True}
+            return Command(update={"current_speaker": None, "conversation_ended": True})
 
         # Determine next speaker
         if current_speaker is None:
@@ -71,7 +72,7 @@ class RoundRobinConversation(BaseConversationAgent):
             announcement = SystemMessage(content=f"[Now speaking: {next_speaker}]")
             update["messages"] = [announcement]
 
-        return update
+        return Command(update=update)
 
     def _custom_initialization(self, state: ConversationState) -> dict[str, Any]:
         """Add round-robin specific initialization."""

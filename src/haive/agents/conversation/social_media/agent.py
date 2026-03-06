@@ -5,6 +5,7 @@ from typing import Any, Literal
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, SystemMessage
 from langchain_core.tools import StructuredTool
+from langgraph.types import Command
 from pydantic import Field
 
 from haive.agents.conversation.base.agent import BaseConversationAgent
@@ -156,7 +157,7 @@ class SocialMediaConversation(BaseConversationAgent):
             f"Share your thoughts! Go viral at {self.viral_threshold} likes 🔥"
         )
 
-    def select_speaker(self, state: SocialMediaState) -> dict[str, Any]:
+    def select_speaker(self, state: SocialMediaState) -> Command:
         """Select speakers based on engagement dynamics."""
         speakers = state.speakers
 
@@ -194,8 +195,8 @@ class SocialMediaConversation(BaseConversationAgent):
         selected = selected[: self.max_posts_per_round]
 
         if len(selected) > 1:
-            return {"current_speaker": selected[0], "pending_speakers": selected[1:]}
-        return {"current_speaker": selected[0] if selected else None}
+            return Command(update={"current_speaker": selected[0], "pending_speakers": selected[1:]})
+        return Command(update={"current_speaker": selected[0] if selected else None})
 
     def _prepare_agent_input(
         self, state: SocialMediaState, agent_name: str
@@ -238,17 +239,17 @@ Keep it under {self.char_limits.get(state.platform_type, 500)} characters!"""
 
         return base_input
 
-    def process_response(self, state: SocialMediaState) -> dict[str, Any]:
+    def process_response(self, state: SocialMediaState) -> Command:
         """Process social media engagement."""
         update = {}
 
         if not state.current_speaker or not state.messages:
-            return update
+            return Command(update=update)
 
         # Get last message
         last_msg = state.messages[-1]
         if not isinstance(last_msg, AIMessage) or not hasattr(last_msg, "name"):
-            return update
+            return Command(update=update)
 
         speaker = last_msg.name
         content = last_msg.content
@@ -321,7 +322,7 @@ Keep it under {self.char_limits.get(state.platform_type, 500)} characters!"""
             trending = sorted(hashtag_counts.items(), key=lambda x: x[1], reverse=True)
             update["trending_topics"] = [tag for tag, _ in trending[:5]]
 
-        return update
+        return Command(update=update)
 
     def _check_custom_end_conditions(
         self, state: SocialMediaState

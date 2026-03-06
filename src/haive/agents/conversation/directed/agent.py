@@ -11,6 +11,7 @@ from typing import Any, Literal
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from langchain_core.messages import AIMessage, BaseMessage, SystemMessage
+from langgraph.types import Command
 from pydantic import BaseModel, Field
 
 from haive.agents.conversation.base.agent import BaseConversationAgent
@@ -113,7 +114,7 @@ class DirectedConversation(BaseConversationAgent):
         """Use extended state schema."""
         return DirectedState
 
-    def select_speaker(self, state: DirectedState) -> dict[str, Any]:
+    def select_speaker(self, state: DirectedState) -> Command:
         """Select speaker based on mentions and context using structured models."""
         # Get structured selection result
         selection_result = self._get_speaker_selection(state)
@@ -136,7 +137,7 @@ class DirectedConversation(BaseConversationAgent):
         if not selection_result.next_speaker:
             update["conversation_ended"] = True
 
-        return update
+        return Command(update=update)
 
     def _get_speaker_selection(self, state: DirectedState) -> SpeakerSelectionResult:
         """Get structured speaker selection result."""
@@ -342,7 +343,7 @@ class DirectedConversation(BaseConversationAgent):
             selection_reason="Defaulting to first speaker",
         )
 
-    def process_response(self, state: DirectedState) -> dict[str, Any]:
+    def process_response(self, state: DirectedState) -> Command:
         """Track interaction patterns using structured models."""
         update = {}
 
@@ -375,7 +376,7 @@ class DirectedConversation(BaseConversationAgent):
         # Clear mentioned speakers
         update["mentioned_speakers"] = []
 
-        return update
+        return Command(update=update)
 
     def _prepare_agent_input(self, state: DirectedState, agent_name: str) -> dict[str, Any]:
         """Prepare input with mention context."""
