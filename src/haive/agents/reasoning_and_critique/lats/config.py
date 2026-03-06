@@ -32,7 +32,7 @@ class LATSAgentConfig(AgentConfig):
 
     # Component configurations
     reflection_engine: AugLLMConfig = Field(
-        ..., description="Engine for reflection on candidate solutions"
+        default_factory=AugLLMConfig, description="Engine for reflection on candidate solutions"
     )
 
     action_engine: AugLLMConfig = Field(

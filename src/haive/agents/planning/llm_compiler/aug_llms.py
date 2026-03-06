@@ -1,7 +1,7 @@
 """Configuration for the LLMCompiler agent using AugLLMConfig system."""
 
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.models.llm.base import AzureLLMConfig
+from haive.core.models.llm.base import OpenAILLMConfig
 from langchain_core.prompts import ChatPromptTemplate
 
 # Base planner prompt template
@@ -143,7 +143,7 @@ Based on these results, can I provide a complete answer or do I need more inform
 # Default planner LLM configuration
 default_planner_config = AugLLMConfig(
     name="llm_compiler_planner",
-    llm_config=AzureLLMConfig(
+    llm_config=OpenAILLMConfig(
         model="gpt-4o", parameters={"temperature": 0.7, "max_tokens": 4096}
     ),
     prompt_template=planner_prompt,
@@ -153,7 +153,7 @@ default_planner_config = AugLLMConfig(
 # Default replanner LLM configuration
 default_replanner_config = AugLLMConfig(
     name="llm_compiler_replanner",
-    llm_config=AzureLLMConfig(
+    llm_config=OpenAILLMConfig(
         model="gpt-4o", parameters={"temperature": 0.7, "max_tokens": 4096}
     ),
     prompt_template=replanner_prompt,
@@ -163,7 +163,7 @@ default_replanner_config = AugLLMConfig(
 # Default joiner LLM configuration
 default_joiner_config = AugLLMConfig(
     name="llm_compiler_joiner",
-    llm_config=AzureLLMConfig(
+    llm_config=OpenAILLMConfig(
         model="gpt-4o", parameters={"temperature": 0.7, "max_tokens": 2048}
     ),
     prompt_template=joiner_prompt,

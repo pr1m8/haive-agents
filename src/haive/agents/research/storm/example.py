@@ -13,7 +13,7 @@ import sys
 from haive.core.engine.retriever import VectorStoreRetrieverConfig
 from haive.core.engine.vectorstore import VectorStoreConfig
 from haive.core.models.embeddings.base import OpenAIEmbeddingConfig
-from haive.core.models.llm.base import AzureLLMConfig
+from haive.core.models.llm.base import OpenAILLMConfig
 
 from haive.agents.research.storm import STORMAgentConfig
 
@@ -70,14 +70,14 @@ async def run_storm_agent(
     logger.info(f"Setting up STORM agent for topic: {topic}")
 
     # Configure LLMs
-    fast_llm = AzureLLMConfig(
+    fast_llm = OpenAILLMConfig(
         model="gpt-4o-mini",
         api_key=os.environ.get("AZURE_OPENAI_API_KEY"),
         api_version=os.environ.get("AZURE_OPENAI_API_VERSION"),
         api_base=os.environ.get("AZURE_OPENAI_API_BASE"),
     )
 
-    long_context_llm = AzureLLMConfig(
+    long_context_llm = OpenAILLMConfig(
         model="gpt-4o",
         api_key=os.environ.get("AZURE_OPENAI_API_KEY"),
         api_version=os.environ.get("AZURE_OPENAI_API_VERSION"),

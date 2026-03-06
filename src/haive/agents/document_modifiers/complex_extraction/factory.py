@@ -1,5 +1,5 @@
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.models.llm.base import AzureLLMConfig
+from haive.core.models.llm.base import OpenAILLMConfig
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from pydantic import BaseModel
 
@@ -49,7 +49,7 @@ def create_complex_extraction_agent(
     )
 
     # Set up LLM config
-    llm_config = AzureLLMConfig(
+    llm_config = OpenAILLMConfig(
         # Lower temperature for extraction
         model=model,
         parameters={"temperature": 0.1},

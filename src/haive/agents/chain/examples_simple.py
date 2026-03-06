@@ -7,7 +7,7 @@ Shows how easy it is to build chains.
 from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.models.llm.base import AzureLLMConfig
+from haive.core.models.llm.base import OpenAILLMConfig
 from langchain_core.documents import Document
 from langchain_core.prompts import ChatPromptTemplate
 
@@ -30,7 +30,7 @@ def example_basic() -> Any:
 # Example 2: Mix agents and engines
 def example_mixed() -> Any:
     """Mix different node types."""
-    llm_config = AzureLLMConfig(
+    llm_config = OpenAILLMConfig(
         deployment_name="gpt-4",
         azure_endpoint="${AZURE_OPENAI_API_BASE}",
         api_key="${AZURE_OPENAI_API_KEY}",
@@ -126,7 +126,7 @@ def example_incremental() -> Any:
 # Example 6: RAG router in 5 lines
 def example_rag_router() -> Any:
     """Complete RAG router - super simple."""
-    llm_config = AzureLLMConfig(
+    llm_config = OpenAILLMConfig(
         deployment_name="gpt-4",
         azure_endpoint="${AZURE_OPENAI_API_BASE}",
         api_key="${AZURE_OPENAI_API_KEY}",

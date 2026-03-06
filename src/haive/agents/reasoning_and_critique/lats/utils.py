@@ -1,7 +1,7 @@
 from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.models.llm.base import AzureLLMConfig
+from haive.core.models.llm.base import OpenAILLMConfig
 from haive.tools.tools.search_tools import tavily_search_tool
 from langchain_core.output_parsers import PydanticOutputParser
 from langchain_core.prompts import ChatPromptTemplate
@@ -50,7 +50,7 @@ def create_reflection_chain() -> Any:
 
     # Create parser for Reflection
     parser = PydanticOutputParser(pydantic_object=Reflection)
-    model = AzureLLMConfig(model="gpt-4o").instantiate()
+    model = OpenAILLMConfig(model="gpt-4o").instantiate()
     # Build and return the reflection chain
     return reflection_prompt | model | parser
 
@@ -114,7 +114,7 @@ def create_lats_agent(
         tools = [tavily_search_tool]
     if tools is None:
         tools = [tavily_search_tool]
-    llm_config = AzureLLMConfig(model=model)
+    llm_config = OpenAILLMConfig(model=model)
 
     # Create reflection engine
     reflection_prompt = ChatPromptTemplate.from_messages(

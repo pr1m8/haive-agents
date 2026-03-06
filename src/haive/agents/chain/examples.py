@@ -6,7 +6,7 @@ Shows how to recreate our complex agents using declarative specifications.
 from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.models.llm.base import AzureLLMConfig
+from haive.core.models.llm.base import OpenAILLMConfig
 from langchain_core.documents import Document
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field
@@ -103,7 +103,7 @@ def finalize_answer(state: dict[str, Any]) -> dict[str, Any]:
 # Example 1: Recreate Agentic RAG Router using declarative chain
 def create_agentic_router_declarative(documents: list[Document]):
     """Create an agentic RAG router using declarative chain building."""
-    llm_config = AzureLLMConfig(
+    llm_config = OpenAILLMConfig(
         deployment_name="gpt-4",
         azure_endpoint="${AZURE_OPENAI_API_BASE}",
         api_key="${AZURE_OPENAI_API_KEY}",
@@ -179,7 +179,7 @@ def create_agentic_router_declarative(documents: list[Document]):
 # Example 2: Recreate Query Planning RAG using declarative chain
 def create_query_planning_declarative(documents: list[Document]):
     """Create a query planning RAG using declarative chain building."""
-    AzureLLMConfig(
+    OpenAILLMConfig(
         deployment_name="gpt-4",
         azure_endpoint="${AZURE_OPENAI_API_BASE}",
         api_key="${AZURE_OPENAI_API_KEY}",
@@ -212,7 +212,7 @@ def create_query_planning_declarative(documents: list[Document]):
 # Example 3: Recreate Self-Reflective RAG using declarative chain
 def create_self_reflective_declarative(documents: list[Document]):
     """Create a self-reflective RAG using declarative chain building."""
-    llm_config = AzureLLMConfig(
+    llm_config = OpenAILLMConfig(
         deployment_name="gpt-4",
         azure_endpoint="${AZURE_OPENAI_API_BASE}",
         api_key="${AZURE_OPENAI_API_KEY}",

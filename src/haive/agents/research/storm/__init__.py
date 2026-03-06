@@ -1,7 +1,7 @@
 """Module exports."""
 
 from haive.agents.research.storm.config import (
-    AzureLLMConfig,
+    OpenAILLMConfig,
     BaseRetrieverConfig,
     InterviewAgentConfig,
     ResearchAgentConfig,
@@ -16,7 +16,7 @@ from haive.agents.research.storm.state import ArticleState, ResearchState, Topic
 
 __all__ = [
     "ArticleState",
-    "AzureLLMConfig",
+    "OpenAILLMConfig",
     "BaseRetrieverConfig",
     "InterviewAgentConfig",
     "ResearchAgentConfig",

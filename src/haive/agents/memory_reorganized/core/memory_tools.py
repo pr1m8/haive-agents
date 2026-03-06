@@ -13,7 +13,7 @@ from typing import Any
 from langchain_core.tools import tool
 from pydantic import BaseModel, Field, field_validator
 
-from haive.agents.memory_reorganized.core.memory_state_original import (
+from haive.agents.memory_reorganized.base.memory_state_original import (
     EnhancedMemoryItem as MemoryEntry,
 )
 

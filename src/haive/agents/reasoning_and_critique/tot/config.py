@@ -8,7 +8,7 @@ from typing import TypeVar
 
 from haive.core.engine.agent.agent import AgentConfig
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.models.llm.base import AzureLLMConfig
+from haive.core.models.llm.base import OpenAILLMConfig
 from pydantic import BaseModel, ConfigDict, Field, create_model
 
 from haive.agents.reasoning_and_critique.tot.models import Equation, EquationGeneration
@@ -32,13 +32,13 @@ class TOTAgentConfig(AgentConfig):
             "generator": AugLLMConfig(
                 name="candidate_generator",
                 description="Generates candidate solutions for the problem",
-                llm_config=AzureLLMConfig(model="gpt-4o"),
+                llm_config=OpenAILLMConfig(model="gpt-4o"),
             ),
             # Evaluator engine for scoring solutions
             "evaluator": AugLLMConfig(
                 name="solution_evaluator",
                 description="Evaluates candidate solutions",
-                llm_config=AzureLLMConfig(model="gpt-4o"),
+                llm_config=OpenAILLMConfig(model="gpt-4o"),
             ),
         },
         description="Engine configurations for the ToT agent",

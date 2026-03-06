@@ -116,15 +116,8 @@ class PlanExecuteV3Agent:
         # Create Enhanced MultiAgent V3 coordinator
         self.multi_agent = EnhancedMultiAgent(
             name=f"{name}_coordinator",
-            agents={
-                "planner": self.planner,
-                "executor": self.executor,
-                "evaluator": self.evaluator,
-            },
+            agents=[self.planner, self.executor, self.evaluator],
             execution_mode="sequential",  # Sequential: planner -> executor -> evaluator
-            entry_point="planner",
-            performance_mode=True,
-            debug_mode=True,
             state_schema=PlanExecuteV3State,
         )
 

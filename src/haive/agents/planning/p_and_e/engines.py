@@ -6,7 +6,7 @@ and replanning agents.
 """
 
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.models.llm.base import AzureLLMConfig
+from haive.core.models.llm.base import OpenAILLMConfig
 from langchain_core.tools import BaseTool
 
 from haive.agents.planning.p_and_e.models import Act, Plan
@@ -37,7 +37,7 @@ def create_planner_aug_llm_config(
     """
     return AugLLMConfig(
         name="planner_llm",
-        llm_config=AzureLLMConfig(model=model_name),
+        llm_config=OpenAILLMConfig(model=model_name),
         prompt_template=planner_prompt if use_context else planner_prompt_simple,
         structured_output_model=Plan,
         structured_output_version="v2",
@@ -75,7 +75,7 @@ def create_executor_aug_llm_config(
     """
     return AugLLMConfig(
         name="executor_llm",
-        llm_config=AzureLLMConfig(model=model_name),
+        llm_config=OpenAILLMConfig(model=model_name),
         prompt_template=executor_prompt,
         tools=tools or [],
         force_tool_use=force_tool_use,
@@ -109,7 +109,7 @@ def create_replan_aug_llm_config(
     """
     return AugLLMConfig(
         name="replan_llm",
-        llm_config=AzureLLMConfig(model=model_name),
+        llm_config=OpenAILLMConfig(model=model_name),
         prompt_template=replan_prompt,
         structured_output_model=Act,  # Uses Response | Plan union
         structured_output_version="v2",

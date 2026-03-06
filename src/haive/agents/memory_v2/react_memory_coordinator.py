@@ -18,7 +18,7 @@ import logging
 from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.models.llm.base import AzureLLMConfig, LLMConfig
+from haive.core.models.llm.base import OpenAILLMConfig, LLMConfig
 from langchain_core.messages import AIMessage, BaseMessage, HumanMessage
 from langchain_core.tools import tool
 from pydantic import BaseModel, ConfigDict, Field
@@ -89,7 +89,7 @@ class ReactMemoryCoordinator:
         With custom LLM config::
 
             config = MemoryCoordinatorConfig(
-                llm_config=AzureLLMConfig(deployment_name="gpt-4"),
+                llm_config=OpenAILLMConfig(deployment_name="gpt-4"),
                 temperature=0.3  # Lower temp for more focused reasoning
             )
             coordinator = ReactMemoryCoordinator(
@@ -146,7 +146,7 @@ class ReactMemoryCoordinator:
         # Step 3: Initialize ReactAgent with memory tools
         llm_config = self.config.llm_config
         if not llm_config:
-            llm_config = AzureLLMConfig(
+            llm_config = OpenAILLMConfig(
                 deployment_name="gpt-4",
                 azure_endpoint="${AZURE_OPENAI_API_BASE}",
                 api_key="${AZURE_OPENAI_API_KEY}",

@@ -8,7 +8,7 @@ from typing import Any
 from haive.core.engine.agent.agent import register_agent
 from haive.core.engine.aug_llm import AugLLMConfig, compose_runnable
 from haive.core.graph.dynamic_graph_builder import DynamicGraph
-from haive.core.models.llm.base import AzureLLMConfig
+from haive.core.models.llm.base import OpenAILLMConfig
 from langchain_core.messages import AIMessage, HumanMessage
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
@@ -424,7 +424,7 @@ if __name__ == "__main__":
 
     translator_engine = AugLLMConfig(
         name="translator",
-        llm_config=AzureLLMConfig(model="gpt-4o", parameters={"temperature": 0.3}),
+        llm_config=OpenAILLMConfig(model="gpt-4o", parameters={"temperature": 0.3}),
         prompt_template=translator_prompt,
         output_parser=StrOutputParser(),
     )
@@ -435,7 +435,7 @@ if __name__ == "__main__":
 
     summarizer_engine = AugLLMConfig(
         name="summarizer",
-        llm_config=AzureLLMConfig(model="gpt-4o", parameters={"temperature": 0.4}),
+        llm_config=OpenAILLMConfig(model="gpt-4o", parameters={"temperature": 0.4}),
         prompt_template=summarizer_prompt,
         output_parser=StrOutputParser(),
     )

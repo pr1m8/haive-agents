@@ -8,7 +8,7 @@ import asyncio
 import logging
 
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.models.llm.base import AzureLLMConfig
+from haive.core.models.llm.base import OpenAILLMConfig
 
 from haive.agents.reasoning_and_critique.tot.agent import ToTAgent
 from haive.agents.reasoning_and_critique.tot.config import TOTAgentConfig
@@ -58,12 +58,12 @@ async def run_math_example():
             "generator": AugLLMConfig(
                 name="math_generator",
                 description="Generates mathematical solutions",
-                llm_config=AzureLLMConfig(model="gpt-4o"),
+                llm_config=OpenAILLMConfig(model="gpt-4o"),
             ),
             "evaluator": AugLLMConfig(
                 name="math_evaluator",
                 description="Evaluates mathematical solutions",
-                llm_config=AzureLLMConfig(model="gpt-4o"),
+                llm_config=OpenAILLMConfig(model="gpt-4o"),
             ),
         },
     )
@@ -101,12 +101,12 @@ async def run_complex_reasoning_example():
             "generator": AugLLMConfig(
                 name="reasoning_generator",
                 description="Generates solutions for complex reasoning problems",
-                llm_config=AzureLLMConfig(model="gpt-4o"),
+                llm_config=OpenAILLMConfig(model="gpt-4o"),
             ),
             "evaluator": AugLLMConfig(
                 name="reasoning_evaluator",
                 description="Evaluates solutions for complex reasoning problems",
-                llm_config=AzureLLMConfig(model="gpt-4o"),
+                llm_config=OpenAILLMConfig(model="gpt-4o"),
             ),
         },
     )

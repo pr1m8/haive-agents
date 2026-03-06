@@ -3,7 +3,7 @@
 import logging
 from typing import Any
 
-from haive.core.models.llm.base import AzureLLMConfig, LLMConfig
+from haive.core.models.llm.base import OpenAILLMConfig, LLMConfig
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.tools import BaseTool
 
@@ -41,7 +41,7 @@ def create_mcts_agent(
         MCTSAgent instance
     """
     # Set defaults
-    llm_config = llm_config or AzureLLMConfig(
+    llm_config = llm_config or OpenAILLMConfig(
         model="gpt-4o", parameters={"temperature": 0.7}
     )
     tools = tools or []

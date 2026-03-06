@@ -8,10 +8,10 @@ RAG strategy or pattern, optimized for specific use cases.
 Examples:
     >>> from haive.agents.rag.chain_collection import RAGChainCollection
     >>> from langchain_core.documents import Document
-    >>> from haive.core.models.llm.base import AzureLLMConfig
+    >>> from haive.core.models.llm.base import OpenAILLMConfig
     >>>
     >>> docs = [Document(page_content="AI is transforming industries...")]
-    >>> llm_config = AzureLLMConfig(deployment_name="gpt-4")
+    >>> llm_config = OpenAILLMConfig(deployment_name="gpt-4")
     >>> collection = RAGChainCollection()
     >>> agent = collection.create_simple_rag(docs, llm_config)
 
@@ -36,7 +36,7 @@ import logging
 from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.models.llm.base import AzureLLMConfig, LLMConfig
+from haive.core.models.llm.base import OpenAILLMConfig, LLMConfig
 from langchain_core.documents import Document
 from langchain_core.prompts import ChatPromptTemplate
 
@@ -548,7 +548,7 @@ def create_rag_chain(
 ) -> ChainAgent:
     """Create any RAG chain by type."""
     if not llm_config:
-        llm_config = AzureLLMConfig(
+        llm_config = OpenAILLMConfig(
             deployment_name="gpt-4",
             azure_endpoint="${AZURE_OPENAI_API_BASE}",
             api_key="${AZURE_OPENAI_API_KEY}",

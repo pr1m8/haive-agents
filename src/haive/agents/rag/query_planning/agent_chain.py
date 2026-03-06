@@ -6,7 +6,7 @@ Simplified version using the new ChainAgent approach.
 from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.models.llm.base import AzureLLMConfig, LLMConfig
+from haive.core.models.llm.base import OpenAILLMConfig, LLMConfig
 from langchain_core.documents import Document
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field
@@ -37,7 +37,7 @@ def create_query_planning_chain(
 ) -> ChainAgent:
     """Create query planning RAG using ChainAgent."""
     if not llm_config:
-        llm_config = AzureLLMConfig(
+        llm_config = OpenAILLMConfig(
             deployment_name="gpt-4",
             azure_endpoint="${AZURE_OPENAI_API_BASE}",
             api_key="${AZURE_OPENAI_API_KEY}",
@@ -107,7 +107,7 @@ def create_simple_decomposition_chain(
 ) -> ChainAgent:
     """Even simpler version - just decompose and answer."""
     if not llm_config:
-        llm_config = AzureLLMConfig(
+        llm_config = OpenAILLMConfig(
             deployment_name="gpt-4",
             azure_endpoint="${AZURE_OPENAI_API_BASE}",
             api_key="${AZURE_OPENAI_API_KEY}",
@@ -157,7 +157,7 @@ def create_adaptive_planning_chain(
 ) -> ChainAgent:
     """Adaptive planning based on query complexity."""
     if not llm_config:
-        llm_config = AzureLLMConfig(
+        llm_config = OpenAILLMConfig(
             deployment_name="gpt-4",
             azure_endpoint="${AZURE_OPENAI_API_BASE}",
             api_key="${AZURE_OPENAI_API_KEY}",

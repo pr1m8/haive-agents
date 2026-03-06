@@ -6,7 +6,7 @@ from collections.abc import Callable
 from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.models.llm.base import AzureLLMConfig
+from haive.core.models.llm.base import OpenAILLMConfig
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field, field_validator
 
@@ -351,7 +351,7 @@ def create_game24_tot_agent(
     # Ensure expand LLM has structured output
     expand_llm_config = AugLLMConfig(
         name="game24_expand",
-        llm_config=AzureLLMConfig(model=model, parameters={"temperature": temperature}),
+        llm_config=OpenAILLMConfig(model=model, parameters={"temperature": temperature}),
         prompt_template=expand_prompt,
         structured_output_model=EquationList,
     )
@@ -368,7 +368,7 @@ def create_game24_tot_agent(
 
     score_llm_config = AugLLMConfig(
         name="game24_score",
-        llm_config=AzureLLMConfig(model=model, parameters={"temperature": 0.2}),
+        llm_config=OpenAILLMConfig(model=model, parameters={"temperature": 0.2}),
         prompt_template=score_prompt,
         structured_output_model=ScoreResult,
     )

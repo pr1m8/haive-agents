@@ -12,7 +12,7 @@ from haive.core.graph.node.list_iteration_node import (
     create_list_iteration_node,
 )
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
-from haive.core.models.llm.base import AzureLLMConfig
+from haive.core.models.llm.base import OpenAILLMConfig
 from langchain_core.documents import Document
 from langchain_core.prompts import ChatPromptTemplate
 from langgraph.graph import END, START
@@ -27,7 +27,7 @@ def create_multi_query_processor(documents: list[Document]):
     # Create a RAG agent
     rag_agent = SimpleRAGAgent.from_documents(
         documents=documents,
-        llm_config=AzureLLMConfig(
+        llm_config=OpenAILLMConfig(
             deployment_name="gpt-4",
             azure_endpoint="${AZURE_OPENAI_API_BASE}",
             api_key="${AZURE_OPENAI_API_KEY}",
@@ -65,7 +65,7 @@ def create_document_summarizer() -> Any:
     )
 
     summarize_engine = AugLLMConfig(
-        llm_config=AzureLLMConfig(
+        llm_config=OpenAILLMConfig(
             deployment_name="gpt-4",
             azure_endpoint="${AZURE_OPENAI_API_BASE}",
             api_key="${AZURE_OPENAI_API_KEY}",
@@ -113,7 +113,7 @@ def create_entity_extractor() -> Any:
     )
 
     extract_engine = AugLLMConfig(
-        llm_config=AzureLLMConfig(
+        llm_config=OpenAILLMConfig(
             deployment_name="gpt-4",
             azure_endpoint="${AZURE_OPENAI_API_BASE}",
             api_key="${AZURE_OPENAI_API_KEY}",

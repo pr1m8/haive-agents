@@ -6,7 +6,7 @@ from datetime import datetime
 from typing import Any
 
 from haive.core.engine.agent.agent import Agent, AgentConfig, register_agent
-from haive.core.models.llm.base import AzureLLMConfig
+from haive.core.models.llm.base import OpenAILLMConfig
 from langchain_core.messages import AIMessage, HumanMessage
 from langchain_core.output_parsers.openai_tools import (
     JsonOutputToolsParser,
@@ -153,7 +153,7 @@ class LATSAgent(Agent[LATSAgentConfig]):
         )
 
         # Initialize LLM
-        llm_config = AzureLLMConfig(model=self.config.model)
+        llm_config = OpenAILLMConfig(model=self.config.model)
         self.llm = llm_config.instantiate()
 
         # Create tool node if tools are provided

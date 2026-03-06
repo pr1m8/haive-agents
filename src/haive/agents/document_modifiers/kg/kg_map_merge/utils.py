@@ -3,7 +3,7 @@ from typing import Any
 import matplotlib.pyplot as plt
 import networkx as nx
 import numpy as np
-from haive.core.models.llm.base import AzureLLMConfig, LLMConfig
+from haive.core.models.llm.base import OpenAILLMConfig, LLMConfig
 from langchain_community.graphs.graph_document import GraphDocument
 from langchain_core.documents import Document
 from langchain_neo4j.graphs.graph_document import GraphDocument
@@ -133,7 +133,7 @@ async def create_knowledge_graph(
         The merged knowledge graph
     """
     # Set defaults
-    llm_config = llm_config or AzureLLMConfig()
+    llm_config = llm_config or OpenAILLMConfig()
     allowed_nodes = allowed_nodes or []
     allowed_relationships = allowed_relationships or []
     additional_transformer_args = additional_transformer_args or {}

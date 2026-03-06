@@ -1,7 +1,7 @@
 # Import the models
 
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.models.llm.base import AzureLLMConfig
+from haive.core.models.llm.base import OpenAILLMConfig
 from langchain_core.prompts import ChatPromptTemplate
 
 from haive.agents.document_modifiers.kg.kg_map_merge.models import (
@@ -24,7 +24,7 @@ def create_node_extraction_config(
         Configured AugLLMConfig for node extraction
     """
     # LLM Configuration
-    llm_config = AzureLLMConfig(model=model, parameters={"temperature": temperature})
+    llm_config = OpenAILLMConfig(model=model, parameters={"temperature": temperature})
 
     # Prompt Template for Node Extraction
     node_extraction_prompt = ChatPromptTemplate.from_messages(
@@ -71,7 +71,7 @@ def create_relationship_extraction_config(
         Configured AugLLMConfig for relationship extraction
     """
     # LLM Configuration
-    llm_config = AzureLLMConfig(model=model, parameters={"temperature": temperature})
+    llm_config = OpenAILLMConfig(model=model, parameters={"temperature": temperature})
 
     # Prompt Template for Relationship Extraction
     relationship_extraction_prompt = ChatPromptTemplate.from_messages(
@@ -126,7 +126,7 @@ def create_graph_extraction_config(
         Configured AugLLMConfig for graph extraction
     """
     # LLM Configuration
-    llm_config = AzureLLMConfig(model=model, parameters={"temperature": temperature})
+    llm_config = OpenAILLMConfig(model=model, parameters={"temperature": temperature})
 
     # Prompt Template for Graph Extraction
     graph_extraction_prompt = ChatPromptTemplate.from_messages(
@@ -177,7 +177,7 @@ def create_graph_merger_config(
         Configured AugLLMConfig for graph merging
     """
     # LLM Configuration
-    llm_config = AzureLLMConfig(model=model, parameters={"temperature": temperature})
+    llm_config = OpenAILLMConfig(model=model, parameters={"temperature": temperature})
 
     # Prompt Template for Graph Merging
     graph_merge_prompt = ChatPromptTemplate.from_messages(

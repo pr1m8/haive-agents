@@ -3,7 +3,7 @@ from datetime import datetime
 
 from haive.core.engine.agent.agent import AgentConfig
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.models.llm.base import AzureLLMConfig
+from haive.core.models.llm.base import OpenAILLMConfig
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field
 
@@ -127,7 +127,7 @@ class ToTAgentConfig(AgentConfig):
             )
 
         # Set up LLM configs
-        llm_config = AzureLLMConfig(
+        llm_config = OpenAILLMConfig(
             model=model, parameters={"temperature": temperature}
         )
 

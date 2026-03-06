@@ -11,7 +11,7 @@ from typing import Any
 
 from haive.core.engine.agent.agent import AgentConfig
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.models.llm.base import AzureLLMConfig
+from haive.core.models.llm.base import OpenAILLMConfig
 from haive.core.models.vectorstore.base import VectorStoreConfig
 from langchain_core.messages import SystemMessage
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
@@ -181,7 +181,7 @@ class ResearchAgentConfig(AgentConfig):
             name = f"open_perplexity_agent_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
 
         # Create LLM configuration
-        llm_config = AzureLLMConfig(
+        llm_config = OpenAILLMConfig(
             model=llm_model,
             parameters={
                 "temperature": 0.2

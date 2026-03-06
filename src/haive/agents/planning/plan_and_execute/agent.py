@@ -23,10 +23,11 @@ class PlanAndExecuteAgent(Agent[PlanAndExecuteConfig]):
         self.config = config
 
         self.planner_runnable = compose_runnable(self.config.aug_llm_configs["planner"])
-        self.agent_executor_runnable = ReactAgent(
+        self._executor_agent = ReactAgent(
             name="executor",
             engine=self.config.agent_executor_config
-        ).app
+        )
+        self.agent_executor_runnable = self._executor_agent
         self.replanner_runnable = compose_runnable(
             self.config.aug_llm_configs["replanner"]
         )

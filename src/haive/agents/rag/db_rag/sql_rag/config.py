@@ -39,7 +39,7 @@ from typing import Any
 from dotenv import load_dotenv
 from haive.core.engine.agent.agent import AgentConfig
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.models.llm.base import AzureLLMConfig, LLMConfig
+from haive.core.models.llm.base import OpenAILLMConfig, LLMConfig
 from langchain_community.utilities import SQLDatabase
 from pydantic import BaseModel, Field, field_validator
 
@@ -324,7 +324,7 @@ class SQLRAGConfig(AgentConfig):
         default=default_sql_engines,
     )
     llm_config: LLMConfig = Field(
-        default_factory=AzureLLMConfig,
+        default_factory=OpenAILLMConfig,
         description="The LLM config for the SQL database agent",
     )
     domain_name: str = Field(

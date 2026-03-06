@@ -2,7 +2,7 @@ from datetime import datetime
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.engine.retriever import VectorStoreRetrieverConfig
-from haive.core.models.llm.base import AzureLLMConfig
+from haive.core.models.llm.base import OpenAILLMConfig
 from haive.core.models.vectorstore.base import VectorStoreConfig
 from langchain_core.messages import SystemMessage
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
@@ -33,7 +33,7 @@ def create_research_react_agent_config(
         name = f"open_perplexity_research_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
 
     # Create LLM configuration
-    llm_config = AzureLLMConfig(
+    llm_config = OpenAILLMConfig(
         model=llm_model, parameters={"temperature": temperature, "max_tokens": 4000}
     )
 
@@ -71,7 +71,7 @@ def create_research_rag_engine(
         name = f"open_perplexity_retrieval_engine_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
 
     # Create LLM configuration
-    llm_config = AzureLLMConfig(
+    llm_config = OpenAILLMConfig(
         model=llm_model, parameters={"temperature": temperature, "max_tokens": 4000}
     )
 

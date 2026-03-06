@@ -4,7 +4,7 @@ This module provides the fundamental GraphTransformer class for converting
 documents into knowledge graphs using LLM-based extraction techniques.
 """
 
-from haive.core.models.llm.base import AzureLLMConfig, LLMConfig
+from haive.core.models.llm.base import OpenAILLMConfig, LLMConfig
 from langchain_core.documents import BaseDocumentTransformer, Document
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_experimental.graph_transformers import LLMGraphTransformer
@@ -62,7 +62,7 @@ class GraphTransformer(BaseDocumentTransformer):
     def transform_documents(
         self,
         documents: list[Document],
-        llm_config: LLMConfig = AzureLLMConfig(),
+        llm_config: LLMConfig = OpenAILLMConfig(),
         allowed_nodes: list[str] | None = None,
         allowed_relationships: list[str] | list[tuple[str, str, str]] | None = None,
         prompt: ChatPromptTemplate | None = None,
@@ -82,7 +82,7 @@ class GraphTransformer(BaseDocumentTransformer):
             documents: List of documents to transform into graphs. Each document
                 should contain meaningful text content for entity extraction.
             llm_config: Configuration for the LLM to use for extraction.
-                Defaults to AzureLLMConfig() for Azure OpenAI integration.
+                Defaults to OpenAILLMConfig() for Azure OpenAI integration.
             allowed_nodes: List of allowed entity types (e.g., ["Person", "Organization"]).
                 If None or empty, the LLM will discover entity types automatically.
             allowed_relationships: List of allowed relationship types or tuples.

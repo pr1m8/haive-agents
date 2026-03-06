@@ -27,17 +27,38 @@ class ReflectionAgent(SimpleAgent):
     This agent extends SimpleAgent by adding reflection and improvement steps
     to iteratively refine responses based on self-critique.
     """
-    def __init__(self, config: ReflectionAgentConfig):
+    _reflection_config: ReflectionAgentConfig | None = None
+    _reflection_engine_instance: object | None = None
+
+    def __init__(self, config: ReflectionAgentConfig | None = None, **kwargs):
         """Initialize the reflection agent with the provided configuration."""
-        super().__init__(config)
-        self.config = config
+        if config is None:
+            config = ReflectionAgentConfig(**kwargs)
+        # Pass config fields as kwargs to Pydantic SimpleAgent
+        init_kwargs = {}
+        if hasattr(config, 'name') and config.name:
+            init_kwargs['name'] = config.name
+        if hasattr(config, 'engine') and config.engine:
+            init_kwargs['engine'] = config.engine
+        init_kwargs.update(kwargs)
+        super().__init__(**init_kwargs)
+        # Store config in private attr
+        object.__setattr__(self, '_reflection_config', config)
 
         # Initialize reflection engine
-        if self.config.reflection.reflection_llm:
-            self.reflection_engine = self.config.reflection.reflection_llm.create_runnable()
+        if config.reflection.reflection_llm:
+            object.__setattr__(self, '_reflection_engine_instance',
+                             config.reflection.reflection_llm.create_runnable())
         else:
-            # Use the same engine as the main agent
-            self.reflection_engine = self.engine
+            object.__setattr__(self, '_reflection_engine_instance', self.engine)
+
+    @property
+    def config(self) -> ReflectionAgentConfig:
+        return self._reflection_config
+
+    @property
+    def reflection_engine(self):
+        return self._reflection_engine_instance
 
     def setup_workflow(self) -> None:
         """Set up a workflow graph with reflection capabilities."""

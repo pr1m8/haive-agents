@@ -56,8 +56,8 @@ class WritingAgentConfig(BaseModel):
 
 
 # Placeholder LLM config until we can import the real one
-class AzureLLMConfig(BaseModel):
-    """Placeholder for AzureLLMConfig."""
+class OpenAILLMConfig(BaseModel):
+    """Placeholder for OpenAILLMConfig."""
 
     model: str = "gpt-4o"
 
@@ -101,13 +101,13 @@ class STORMAgentConfig(SequenceAgentConfig):
     )
 
     # LLM configurations for different components
-    fast_llm_config: AzureLLMConfig = Field(
-        default=AzureLLMConfig(model="gpt-4o-mini"),
+    fast_llm_config: OpenAILLMConfig = Field(
+        default=OpenAILLMConfig(model="gpt-4o-mini"),
         description="Configuration for the faster LLM used for research and interviews",
     )
 
-    long_context_llm_config: AzureLLMConfig = Field(
-        default=AzureLLMConfig(model="gpt-4o"),
+    long_context_llm_config: OpenAILLMConfig = Field(
+        default=OpenAILLMConfig(model="gpt-4o"),
         description="Configuration for the long-context LLM used for writing",
     )
 

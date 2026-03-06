@@ -115,7 +115,7 @@ class ResearchAgent(Agent[ResearchAgentConfig]):
 
     def setup_workflow(self) -> None:
         """Set up the research workflow graph."""
-        graph_builder = DynamicGraph(ResearchState)
+        graph_builder = DynamicGraph(name="research_agent", state_schema=ResearchState)
 
         # Define nodes
         graph_builder.add_node("process_input", self.process_input)

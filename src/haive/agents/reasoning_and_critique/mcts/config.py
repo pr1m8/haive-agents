@@ -1,7 +1,7 @@
 # src/haive/agents/mcts/config.py
 
 from haive.core.engine.agent.agent import AgentConfig
-from haive.core.models.llm.base import AzureLLMConfig, LLMConfig
+from haive.core.models.llm.base import OpenAILLMConfig, LLMConfig
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.tools import BaseTool
 from pydantic import BaseModel, Field
@@ -17,7 +17,7 @@ class MCTSAgentConfig(AgentConfig):
 
     # LLM configuration
     llm_config: LLMConfig | None = Field(
-        default=AzureLLMConfig(model="gpt-4o"), description="Configuration for the LLM"
+        default=OpenAILLMConfig(model="gpt-4o"), description="Configuration for the LLM"
     )
 
     # Tools
@@ -60,7 +60,7 @@ class MCTSAgentConfig(AgentConfig):
     ) -> "MCTSAgentConfig":
         """Create an MCTS Agent config from LLM config and tools."""
         # Use defaults if not provided
-        llm_config = llm_config or AzureLLMConfig(model="gpt-4o")
+        llm_config = llm_config or OpenAILLMConfig(model="gpt-4o")
         tools = tools or []
         system_prompt = system_prompt or "You are an AI assistant."
 

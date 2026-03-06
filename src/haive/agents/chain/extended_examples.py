@@ -1,7 +1,7 @@
 """Examples using ExtendedChainAgent for super easy chain building."""
 
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.models.llm.base import AzureLLMConfig
+from haive.core.models.llm.base import OpenAILLMConfig
 from langchain_core.documents import Document
 from langchain_core.prompts import ChatPromptTemplate
 
@@ -31,7 +31,7 @@ def example_simple_sequential() -> Any:
 
 def example_with_agents_and_engines() -> Any:
     """Mix different node types effortlessly."""
-    llm_config = AzureLLMConfig(
+    llm_config = OpenAILLMConfig(
         deployment_name="gpt-4",
         azure_endpoint="${AZURE_OPENAI_API_BASE}",
         api_key="${AZURE_OPENAI_API_KEY}",
@@ -187,7 +187,7 @@ def example_with_loop() -> Any:
 
 def example_rag_router_super_simple() -> Any:
     """RAG router in the simplest possible way."""
-    llm_config = AzureLLMConfig(
+    llm_config = OpenAILLMConfig(
         deployment_name="gpt-4",
         azure_endpoint="${AZURE_OPENAI_API_BASE}",
         api_key="${AZURE_OPENAI_API_KEY}",
@@ -293,7 +293,7 @@ def example_operator_chaining() -> Any:
 
 def example_mixed_indices_and_names() -> Any:
     """Mix numeric indices and node names."""
-    llm_config = AzureLLMConfig(
+    llm_config = OpenAILLMConfig(
         deployment_name="gpt-4",
         azure_endpoint="${AZURE_OPENAI_API_BASE}",
         api_key="${AZURE_OPENAI_API_KEY}",

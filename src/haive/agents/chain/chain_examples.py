@@ -7,7 +7,7 @@ Shows different ways to create chains from various node types.
 from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.models.llm.base import AzureLLMConfig
+from haive.core.models.llm.base import OpenAILLMConfig
 from langchain_core.documents import Document
 from langchain_core.prompts import ChatPromptTemplate
 
@@ -26,7 +26,7 @@ from haive.agents.rag.simple.agent import SimpleRAGAgent
 # Example 1: Simple sequential chain from mixed node types
 def example_sequential_mixed() -> Any:
     """Create a chain from different node types."""
-    llm_config = AzureLLMConfig(
+    llm_config = OpenAILLMConfig(
         deployment_name="gpt-4",
         azure_endpoint="${AZURE_OPENAI_API_BASE}",
         api_key="${AZURE_OPENAI_API_KEY}",
@@ -157,7 +157,7 @@ def example_nested_chains() -> Any:
 # Example 5: RAG Router using ChainAgent
 def example_rag_router_simplified() -> Any:
     """Create a RAG router using the simplified ChainAgent approach."""
-    llm_config = AzureLLMConfig(
+    llm_config = OpenAILLMConfig(
         deployment_name="gpt-4",
         azure_endpoint="${AZURE_OPENAI_API_BASE}",
         api_key="${AZURE_OPENAI_API_KEY}",
@@ -203,7 +203,7 @@ def example_rag_router_simplified() -> Any:
 # Example 6: Using engines directly
 def example_engines_as_nodes() -> Any:
     """Show how engines can be used directly as nodes."""
-    llm_config = AzureLLMConfig(
+    llm_config = OpenAILLMConfig(
         deployment_name="gpt-4",
         azure_endpoint="${AZURE_OPENAI_API_BASE}",
         api_key="${AZURE_OPENAI_API_KEY}",

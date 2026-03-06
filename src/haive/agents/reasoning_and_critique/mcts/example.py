@@ -3,7 +3,7 @@
 import logging
 from typing import Any
 
-from haive.core.models.llm.base import AzureLLMConfig
+from haive.core.models.llm.base import OpenAILLMConfig
 from langchain_community.tools.tavily_search import TavilySearchResults
 from langchain_community.utilities.tavily_search import TavilySearchAPIWrapper
 from langchain_core.tools import BaseTool
@@ -51,7 +51,7 @@ def run_mcts_agent_example(
             tools = []
 
     # Set up LLM config
-    llm_config = AzureLLMConfig(model="gpt-4o")
+    llm_config = OpenAILLMConfig(model="gpt-4o")
 
     # Create the MCTS agent
     agent = create_mcts_agent(

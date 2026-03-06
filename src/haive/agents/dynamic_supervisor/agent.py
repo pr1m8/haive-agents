@@ -37,7 +37,7 @@ from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
-from haive.core.models.llm.base import AzureLLMConfig
+from haive.core.models.llm.base import OpenAILLMConfig
 from langchain_core.messages import BaseMessage, HumanMessage
 from pydantic import Field
 
@@ -306,7 +306,7 @@ def create_dynamic_supervisor(
     # Create engine configuration
     engine = AugLLMConfig(
         name=f"{name}_engine",
-        llm_config=AzureLLMConfig(model=model, temperature=temperature),
+        llm_config=OpenAILLMConfig(model=model, temperature=temperature),
         force_tool_use=force_tool_use,
         tools=[],  # Tools come from state
         system_message="",  # Set by supervisor

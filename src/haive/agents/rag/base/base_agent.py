@@ -7,7 +7,7 @@ from langgraph.types import Command
 
 from haive.agents.rag.base.config import BaseRAGConfig
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.WARNING)
 
 
 @register_agent(BaseRAGConfig)

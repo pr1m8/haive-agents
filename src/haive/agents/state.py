@@ -10,7 +10,7 @@ from haive.agents.web_nav.models import BBox, Prediction
 # -----------------------------------------------------------------------------
 # Debugging Utility
 # -----------------------------------------------------------------------------
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.WARNING)
 
 
 def debug_print(message: str):

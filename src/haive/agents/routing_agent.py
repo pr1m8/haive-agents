@@ -7,7 +7,7 @@ from typing import Any
 from haive.core.engine.agent.agent import register_agent
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.dynamic_graph_builder import DynamicGraph
-from haive.core.models.llm.base import AzureLLMConfig
+from haive.core.models.llm.base import OpenAILLMConfig
 from langchain_core.prompts import ChatPromptTemplate
 from langgraph.graph import END
 from pydantic import BaseModel, Field
@@ -173,14 +173,14 @@ def create_routing_agent(
 if __name__ == "__main__":
     # Main engine
     main_engine = AugLLMConfig(
-        name="main_processor", llm_config=AzureLLMConfig(model="gpt-4o")
+        name="main_processor", llm_config=OpenAILLMConfig(model="gpt-4o")
     )
 
     # Handler nodes
     handlers = {
         "question_handler": AugLLMConfig(
             name="question_handler",
-            llm_config=AzureLLMConfig(model="gpt-4o", parameters={"temperature": 0.3}),
+            llm_config=OpenAILLMConfig(model="gpt-4o", parameters={"temperature": 0.3}),
             prompt_template=ChatPromptTemplate.from_messages(
                 [
                     ("system", "You answer questions concisely with facts only."),
@@ -190,7 +190,7 @@ if __name__ == "__main__":
         ),
         "task_handler": AugLLMConfig(
             name="task_handler",
-            llm_config=AzureLLMConfig(model="gpt-4o", parameters={"temperature": 0.7}),
+            llm_config=OpenAILLMConfig(model="gpt-4o", parameters={"temperature": 0.7}),
             prompt_template=ChatPromptTemplate.from_messages(
                 [
                     ("system", "You help complete tasks step by step."),

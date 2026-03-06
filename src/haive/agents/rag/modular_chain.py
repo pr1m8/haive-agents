@@ -7,7 +7,7 @@ from enum import Enum
 from typing import Any, Literal
 
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.models.llm.base import AzureLLMConfig, LLMConfig
+from haive.core.models.llm.base import OpenAILLMConfig, LLMConfig
 from langchain_core.documents import Document
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field
@@ -44,7 +44,7 @@ def create_modular_rag(
 ) -> ChainAgent:
     """Create a modular RAG system with configurable components."""
     if not llm_config:
-        llm_config = AzureLLMConfig(
+        llm_config = OpenAILLMConfig(
             deployment_name="gpt-4",
             azure_endpoint="${AZURE_OPENAI_API_BASE}",
             api_key="${AZURE_OPENAI_API_KEY}",

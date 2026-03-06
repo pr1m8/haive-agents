@@ -1,7 +1,7 @@
 # src/haive/agents/selfdiscover/engines.py
 
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.models.llm.base import AzureLLMConfig
+from haive.core.models.llm.base import OpenAILLMConfig
 from langchain_core.prompts import ChatPromptTemplate, PromptTemplate
 
 from haive.agents.reasoning_and_critique.self_discover.models import (
@@ -64,7 +64,7 @@ def create_select_engine(
     prompt = custom_prompt if custom_prompt else default_prompt
 
     # Create LLM config
-    llm_config = AzureLLMConfig(model=model, parameters={"temperature": temperature})
+    llm_config = OpenAILLMConfig(model=model, parameters={"temperature": temperature})
 
     # Create and return the AugLLMConfig with structured output
     return AugLLMConfig(
@@ -130,7 +130,7 @@ def create_adapt_engine(
     prompt = custom_prompt if custom_prompt else default_prompt
 
     # Create LLM config
-    llm_config = AzureLLMConfig(model=model, parameters={"temperature": temperature})
+    llm_config = OpenAILLMConfig(model=model, parameters={"temperature": temperature})
 
     # Create and return the AugLLMConfig with structured output
     return AugLLMConfig(
@@ -199,7 +199,7 @@ def create_structure_engine(
     prompt = custom_prompt if custom_prompt else default_prompt
 
     # Create LLM config
-    llm_config = AzureLLMConfig(model=model, parameters={"temperature": temperature})
+    llm_config = OpenAILLMConfig(model=model, parameters={"temperature": temperature})
 
     # Create and return the AugLLMConfig with structured output
     return AugLLMConfig(
@@ -269,7 +269,7 @@ def create_reasoning_engine(
     prompt = custom_prompt if custom_prompt else default_prompt
 
     # Create LLM config
-    llm_config = AzureLLMConfig(model=model, parameters={"temperature": temperature})
+    llm_config = OpenAILLMConfig(model=model, parameters={"temperature": temperature})
 
     # Create and return the AugLLMConfig with structured output
     return AugLLMConfig(

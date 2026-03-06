@@ -76,11 +76,7 @@ class ReWOOV3Agent:
         # Enhanced MultiAgent V3 coordination (sequential mode proven reliable)
         self.multi_agent = EnhancedMultiAgent(
             name=f"{name}_rewoo_coordinator",
-            agents={
-                "planner": self.planner,
-                "worker": self.worker,
-                "solver": self.solver,
-            },
+            agents=[self.planner, self.worker, self.solver],
             execution_mode="sequential",  # planner → worker → solver
             state_schema=ReWOOV3State,
             **kwargs,

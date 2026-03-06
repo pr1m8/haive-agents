@@ -105,13 +105,8 @@ class LLMCompilerV3Agent:
             system_message=LLM_COMPILER_V3_PROMPTS["joiner"],
         )
 
-        # Agent registry for Enhanced MultiAgent V3
-        self.agents = {
-            "planner": self.planner,
-            "task_fetcher": self.task_fetcher,
-            "parallel_executor": self.executor,
-            "joiner": self.joiner,
-        }
+        # Agent list for Enhanced MultiAgent V3
+        self.agents = [self.planner, self.task_fetcher, self.executor, self.joiner]
 
     async def arun(
         self, query: str, context: dict[str, Any] | None = None, **kwargs

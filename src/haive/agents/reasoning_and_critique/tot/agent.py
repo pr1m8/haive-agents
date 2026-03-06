@@ -68,22 +68,18 @@ class ToTAgent(Agent[TOTAgentConfig], Generic[T]):
         Args:
             config: Configuration for the ToT agent
         """
-        super().__init__(config)
-
-        # Configure search parameters from config
+        # Set instance attrs BEFORE super().__init__ because it calls setup_workflow()
         self.max_depth = config.max_depth
         self.beam_width = config.beam_width
         self.expansion_count = config.expansion_count
         self.threshold = config.threshold
-
-        # Set up optional structured output models
         self.generator_output_model = config.generator_output_model
         self.evaluator_output_model = config.evaluator_output_model
         self.use_structured_output = config.use_structured_output
-
-        # Parallelization settings
         self.parallel_evaluation = config.parallel_evaluation
         self.parallel_expansion = config.parallel_expansion
+
+        super().__init__(config)
 
         # Set up runnables for the engines
         self._setup_runnables()

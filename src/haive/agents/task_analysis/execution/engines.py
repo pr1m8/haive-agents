@@ -1,7 +1,7 @@
 # src/haive/agents/task_analysis/execution/engine.py
 
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.models.llm.base import AzureLLMConfig
+from haive.core.models.llm.base import OpenAILLMConfig
 
 from haive.agents.task_analysis.execution.models import (
     ExecutionPlan,
@@ -18,7 +18,7 @@ from haive.agents.task_analysis.execution.prompts import (
 # Main execution planning engine
 ExecutionPlannerEngine = AugLLMConfig(
     name="execution_planner",
-    llm_config=AzureLLMConfig(model="gpt-4o"),
+    llm_config=OpenAILLMConfig(model="gpt-4o"),
     prompt_template=EXECUTION_PLANNING_PROMPT,
     structured_output_model=ExecutionPlan,
     system_message="You are an execution planning expert specializing in task scheduling.",
@@ -27,7 +27,7 @@ ExecutionPlannerEngine = AugLLMConfig(
 # Phase optimization engine
 PhaseOptimizerEngine = AugLLMConfig(
     name="phase_optimizer",
-    llm_config=AzureLLMConfig(model="gpt-4o"),
+    llm_config=OpenAILLMConfig(model="gpt-4o"),
     prompt_template=PHASE_OPTIMIZATION_PROMPT,
     structured_output_model=None,  # Returns optimized phase text
     system_message="You optimize execution phases for maximum efficiency.",
@@ -36,7 +36,7 @@ PhaseOptimizerEngine = AugLLMConfig(
 # Join point strategy engine
 JoinPointStrategyEngine = AugLLMConfig(
     name="join_point_strategist",
-    llm_config=AzureLLMConfig(model="gpt-4o"),
+    llm_config=OpenAILLMConfig(model="gpt-4o"),
     prompt_template=JOIN_POINT_STRATEGY_PROMPT,
     structured_output_model=JoinPoint,
     system_message="You design strategies for combining parallel execution results.",
@@ -45,7 +45,7 @@ JoinPointStrategyEngine = AugLLMConfig(
 # Resource allocation engine
 ResourceAllocatorEngine = AugLLMConfig(
     name="resource_allocator",
-    llm_config=AzureLLMConfig(model="gpt-4o"),
+    llm_config=OpenAILLMConfig(model="gpt-4o"),
     prompt_template=RESOURCE_ALLOCATION_PROMPT,
     structured_output_model=ResourceAllocation,
     system_message="You optimize resource allocation across task execution phases.",

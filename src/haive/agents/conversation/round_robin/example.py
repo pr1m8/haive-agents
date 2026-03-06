@@ -4,7 +4,7 @@
 import logging
 
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.models.llm.base import AzureLLMConfig
+from haive.core.models.llm.base import OpenAILLMConfig
 from langchain_core.messages import AIMessage, SystemMessage
 
 from haive.agents.conversation.round_robin.agent import RoundRobinConversation
@@ -39,19 +39,19 @@ def example_custom_round_robin() -> None:
     agents = {
         "Optimist": AugLLMConfig(
             name="optimist_engine",
-            llm_config=AzureLLMConfig(),
+            llm_config=OpenAILLMConfig(),
             system_message="You are an eternal optimist. Always find the positive side. Keep responses to 2-3 sentences.",
             temperature=0.8,
         ),
         "Realist": AugLLMConfig(
             name="realist_engine",
-            llm_config=AzureLLMConfig(),
+            llm_config=OpenAILLMConfig(),
             system_message="You are a practical realist. Focus on facts and practicality. Keep responses to 2-3 sentences.",
             temperature=0.6,
         ),
         "Pessimist": AugLLMConfig(
             name="pessimist_engine",
-            llm_config=AzureLLMConfig(),
+            llm_config=OpenAILLMConfig(),
             system_message="You are a pessimist. Point out potential problems and risks. Keep responses to 2-3 sentences.",
             temperature=0.7,
         ),

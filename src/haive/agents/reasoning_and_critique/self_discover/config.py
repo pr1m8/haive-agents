@@ -4,7 +4,7 @@ from datetime import datetime
 
 from haive.core.engine.agent.agent import AgentConfig
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.models.llm.base import AzureLLMConfig
+from haive.core.models.llm.base import OpenAILLMConfig
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field
 
@@ -32,7 +32,7 @@ class SelfDiscoverAgentConfig(AgentConfig):
     select_engine: AugLLMConfig = Field(
         default_factory=lambda: AugLLMConfig(
             name="default_select_engine",
-            llm_config=AzureLLMConfig(model="gpt-4o", parameters={"temperature": 0.0}),
+            llm_config=OpenAILLMConfig(model="gpt-4o", parameters={"temperature": 0.0}),
         ),
         description="Engine for the module selection stage",
     )
@@ -40,7 +40,7 @@ class SelfDiscoverAgentConfig(AgentConfig):
     adapt_engine: AugLLMConfig = Field(
         default_factory=lambda: AugLLMConfig(
             name="default_adapt_engine",
-            llm_config=AzureLLMConfig(model="gpt-4o", parameters={"temperature": 0.0}),
+            llm_config=OpenAILLMConfig(model="gpt-4o", parameters={"temperature": 0.0}),
         ),
         description="Engine for the module adaptation stage",
     )
@@ -48,7 +48,7 @@ class SelfDiscoverAgentConfig(AgentConfig):
     structure_engine: AugLLMConfig = Field(
         default_factory=lambda: AugLLMConfig(
             name="default_structure_engine",
-            llm_config=AzureLLMConfig(model="gpt-4o", parameters={"temperature": 0.0}),
+            llm_config=OpenAILLMConfig(model="gpt-4o", parameters={"temperature": 0.0}),
         ),
         description="Engine for the reasoning structure stage",
     )
@@ -56,7 +56,7 @@ class SelfDiscoverAgentConfig(AgentConfig):
     reasoning_engine: AugLLMConfig = Field(
         default_factory=lambda: AugLLMConfig(
             name="default_reasoning_engine",
-            llm_config=AzureLLMConfig(model="gpt-4o", parameters={"temperature": 0.0}),
+            llm_config=OpenAILLMConfig(model="gpt-4o", parameters={"temperature": 0.0}),
         ),
         description="Engine for the reasoning execution stage",
     )

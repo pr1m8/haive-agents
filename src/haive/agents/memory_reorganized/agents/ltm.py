@@ -221,7 +221,7 @@ class LongTermMemoryAgent:
 
         With specific LLM config::
 
-            llm_config = AzureLLMConfig(deployment_name="gpt-4", ...)
+            llm_config = OpenAILLMConfig(deployment_name="gpt-4", ...)
             agent = LongTermMemoryAgent(
                 user_id="user123",
                 llm_config=llm_config

@@ -1,7 +1,7 @@
 from typing import Annotated, Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.models.llm.base import AzureLLMConfig
+from haive.core.models.llm.base import OpenAILLMConfig
 from langchain_community.document_loaders import WebBaseLoader
 from langchain_core.documents import Document
 from langchain_core.messages import BaseMessage
@@ -96,7 +96,7 @@ class QAs(BaseModel):
 
 
 qa_aug_llm_config = AugLLMConfig(
-    llm=AzureLLMConfig(model="gpt-4o"),
+    llm=OpenAILLMConfig(model="gpt-4o"),
     structured_output_model=QAs,
     prompt_template=qa_prompt_template,
 )

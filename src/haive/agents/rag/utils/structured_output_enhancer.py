@@ -9,7 +9,7 @@ the pattern of keeping prompts focused on generation while parsers handle struct
 from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.models.llm.base import AzureLLMConfig, LLMConfig
+from haive.core.models.llm.base import OpenAILLMConfig, LLMConfig
 from haive.core.utils.pydantic_utils.base_model_to_prompt import (
     PromptGenerator,
     PromptStyle,
@@ -215,7 +215,7 @@ def create_memory_enhancer() -> StructuredOutputEnhancer:
 def demonstrate_enhancement_patterns() -> dict[str, Any]:
     """Demonstrate various enhancement patterns."""
     # Example LLM config
-    llm_config = AzureLLMConfig(
+    llm_config = OpenAILLMConfig(
         deployment_name="gpt-4",
         azure_endpoint="${AZURE_OPENAI_API_BASE}",
         api_key="${AZURE_OPENAI_API_KEY}",

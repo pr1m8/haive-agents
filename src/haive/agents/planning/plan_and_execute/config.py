@@ -3,7 +3,6 @@ from haive.core.engine.aug_llm import AugLLMConfig
 from pydantic import BaseModel, Field
 
 from haive.agents.planning.plan_and_execute.state import PlanAndExecuteState
-from haive.agents.react.config import ReactAgentConfig
 
 
 class PlanAndExecuteConfig(AgentConfig):
@@ -13,6 +12,6 @@ class PlanAndExecuteConfig(AgentConfig):
             "replanner": AugLLMConfig(),
         }
     )
-    agent_executor_config: ReactAgentConfig = Field(default_factory=ReactAgentConfig)
+    agent_executor_config: AugLLMConfig = Field(default_factory=AugLLMConfig)
     state_schema: type[BaseModel] | list[BaseModel] = PlanAndExecuteState
     default_input_schema: dict[str, list] = {"input": [("user", "{}")]}

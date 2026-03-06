@@ -2,7 +2,7 @@ import uuid
 
 from haive.core.engine.agent.agent import AgentConfig, RunnableConfig
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.models.llm.base import AzureLLMConfig
+from haive.core.models.llm.base import OpenAILLMConfig
 from pydantic import BaseModel, Field
 
 from haive.agents.document_modifiers.complex_extraction.state import (
@@ -20,7 +20,7 @@ class ComplexExtractionAgentConfig(AgentConfig):
     """
 
     llm_config: AugLLMConfig | None = Field(
-        default=AzureLLMConfig(model="gpt-4o"),
+        default=OpenAILLMConfig(model="gpt-4o"),
         description="The LLM configuration to use for the agent",
     )
     extraction_model: type[BaseModel] | None = Field(

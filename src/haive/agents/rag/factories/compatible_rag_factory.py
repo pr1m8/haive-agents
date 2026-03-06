@@ -20,7 +20,7 @@ from typing import Any
 
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
-from haive.core.models.llm.base import AzureLLMConfig, LLMConfig
+from haive.core.models.llm.base import OpenAILLMConfig, LLMConfig
 from langchain_core.documents import Document
 from langchain_core.prompts import ChatPromptTemplate
 
@@ -158,7 +158,7 @@ class CompatibleRAGFactory:
             default_embedding_model: Default embedding model for vector stores
         """
         self.documents = documents
-        self.llm_config = llm_config or AzureLLMConfig(
+        self.llm_config = llm_config or OpenAILLMConfig(
             deployment_name="gpt-4",
             azure_endpoint="${AZURE_OPENAI_API_BASE}",
             api_key="${AZURE_OPENAI_API_KEY}",
