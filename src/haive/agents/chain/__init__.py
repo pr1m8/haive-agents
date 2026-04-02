@@ -44,19 +44,6 @@ from haive.agents.chain.examples import (
 #     example_rag_router,
 #     example_routing,
 #     formatter)
-from haive.agents.chain.multi_integration import (
-    ChainMultiAgent,
-    ChainNodeWrapper,
-    ExtendedExecutionMode,
-    build_graph,
-    chain_multi,
-    chain_to_multi,
-    conditional_multi,
-    from_chain,
-    from_nodes,
-    multi_to_chain,
-    sequential_multi,
-)
 
 # TEMPORARILY DISABLED - ignoring chain agent imports to focus on other issues
 # from haive.agents.chain.chain_agent_simple import (
