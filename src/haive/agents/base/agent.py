@@ -727,7 +727,11 @@ Extract and format the information according to the required structured output s
             if not self.graph:
                 raise RuntimeError("No graph to compile")
             try:
-                lg_graph = self.graph.to_langgraph(state_schema=self.state_schema)
+                # Support both BaseGraph (needs to_langgraph) and raw StateGraph
+                if hasattr(self.graph, "to_langgraph"):
+                    lg_graph = self.graph.to_langgraph(state_schema=self.state_schema)
+                else:
+                    lg_graph = self.graph  # Already a LangGraph StateGraph
                 self._app = lg_graph.compile(
                     checkpointer=self.checkpointer, store=self.store, **kwargs
                 )

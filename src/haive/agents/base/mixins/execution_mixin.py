@@ -572,13 +572,15 @@ class ExecutionMixin:
 
             # Keep processed_input as Pydantic model - don't convert to dict
             # LangGraph can handle Pydantic models directly
-            logger.debug("Keeping processed_input as Pydantic model for LangGraph")
+            # Ensure input is a dict for LangGraph invoke
+            if hasattr(processed_input, "model_dump"):
+                invoke_input = processed_input.model_dump()
+            elif not isinstance(processed_input, dict):
+                invoke_input = {"messages": processed_input} if not isinstance(processed_input, dict) else processed_input
+            else:
+                invoke_input = processed_input
 
-            # No longer need PydanticUndefined checking since we keep Pydantic
-            # models intact
-            logger.debug("=== PRE-INVOKE STATE CHECK ===")
-            # breakpoint()
-            result = self._app.invoke(processed_input, config=runtime_config, debug=debug)
+            result = self._app.invoke(invoke_input, config=runtime_config, debug=debug)
             logger.debug("Agent execution completed successfully")
 
             # Process the result
