@@ -201,7 +201,7 @@ class ResearchAgentConfig(AgentConfig):
         )
 
         # Get all specialized engines
-        engines = create_research_engines(llm_model)
+        engines = create_research_engines()
 
         # Add main engine to engines dictionary
         engines["main"] = main_engine
