@@ -7,7 +7,7 @@ from pydantic import Field
 
 
 class SynthesisAgent(SimpleAgent):
-    """SimpleAgentV3 configured for synthesizing results from multiple RAG sources."""
+    """SimpleAgent configured for synthesizing results from multiple RAG sources."""
 
     engine: AugLLMConfig = Field(
         default_factory=lambda: AugLLMConfig(

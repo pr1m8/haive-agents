@@ -36,7 +36,7 @@ class AgentCapability(BaseModel):
 
     Attributes:
         name: Unique identifier for the agent
-        agent_type: Type of agent (e.g., SimpleAgentV3, ReactAgent)
+        agent_type: Type of agent (e.g., SimpleAgent, ReactAgent)
         description: Human-readable description of agent's purpose
         specialties: List of task domains the agent excels at
         tools: Names of tools available to this agent
@@ -126,7 +126,7 @@ class AgentSpec(BaseModel):
 
     Attributes:
         name: Unique identifier for the agent
-        agent_type: Type of agent to create (e.g., "SimpleAgentV3", "ReactAgent")
+        agent_type: Type of agent to create (e.g., "SimpleAgent", "ReactAgent")
         description: Human-readable description
         specialties: Task domains this agent should handle
         tools: Tool names or instances to provide to the agent
@@ -150,7 +150,7 @@ class AgentSpec(BaseModel):
 
     name: str = Field(..., description="Unique agent identifier")
     agent_type: str = Field(
-        default="SimpleAgentV3", description="Type of agent to create"
+        default="SimpleAgent", description="Type of agent to create"
     )
     description: str = Field(..., description="What this agent does")
     specialties: list[str] = Field(

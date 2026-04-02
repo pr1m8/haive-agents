@@ -78,7 +78,7 @@ supervisor = DynamicSupervisor(
         ),
         AgentSpec(
             name="writer", 
-            agent_type="SimpleAgentV3",
+            agent_type="SimpleAgent",
             description="Content creation and editing expert",
             specialties=["writing", "editing", "content"]
         )

@@ -47,11 +47,15 @@ def create_memory_vectorstore(embedding_model: Embeddings | None = None) -> Vect
     Returns:
         Vector store instance
     """
-    # Use provided embedding model or create a new one
     embeddings = embedding_model or OpenAIEmbeddings()
 
-    # Create an empty FAISS index
-    return FAISS.from_documents([], embeddings)
+    # FAISS needs at least one document to determine embedding dimension.
+    # Seed with a placeholder that will be ignored during retrieval.
+    seed_doc = Document(
+        page_content="Memory store initialized.",
+        metadata={"type": "system", "user_id": "system"},
+    )
+    return FAISS.from_documents([seed_doc], embeddings)
 
 
 def save_unstructured_memories(

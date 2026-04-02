@@ -29,7 +29,7 @@ Architecture:
 Example:
     Basic sequential workflow::
 
-        >>> from haive.agents.multi.enhanced_multi_agent_v4 import MultiAgent
+        >>> from haive.agents.multi.agent import MultiAgent
         >>> from haive.agents.simple import SimpleAgent
         >>> from haive.agents.react import ReactAgent
         >>>

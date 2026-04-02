@@ -1,7 +1,7 @@
 """Self-Discover Sequential Agent V2 - Proper implementation following CLAUDE.md patterns.
 
 This implementation:
-1. Uses SimpleAgentV3 for enhanced features
+1. Uses SimpleAgent for enhanced features
 2. No custom __init__ overrides
 3. Uses MultiAgent for sequential composition
 4. Consolidates Pydantic models to avoid conflicts

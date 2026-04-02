@@ -460,7 +460,7 @@ class Agent(
         base_agent._needs_structured_output_wrapper = False
         base_agent._is_structured_output_handler = True
 
-        # Create the structured output agent using SimpleAgentV3
+        # Create the structured output agent using SimpleAgent
         from langchain_core.prompts import ChatPromptTemplate
 
         from haive.agents.simple.agent import SimpleAgent

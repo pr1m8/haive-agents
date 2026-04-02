@@ -7,7 +7,7 @@ from pydantic import Field
 
 
 class AnswerAgent(SimpleAgent):
-    """SimpleAgentV3 configured for answering questions based on retrieved documents."""
+    """SimpleAgent configured for answering questions based on retrieved documents."""
 
     engine: AugLLMConfig = Field(
         default_factory=lambda: AugLLMConfig(

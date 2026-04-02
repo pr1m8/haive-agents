@@ -88,7 +88,7 @@ def create_agent_from_spec(spec: AgentSpec) -> Any:
         return agent_class(name=spec.name, **config)
     except Exception as e:
         logger.error(f"Failed to create agent of type '{spec.agent_type}': {e}")
-        # Default to SimpleAgentV3
+        # Default to SimpleAgent
         logger.warning(f"Defaulting to SimpleAgent for agent '{spec.name}'")
         return SimpleAgent(name=spec.name, **config)
 

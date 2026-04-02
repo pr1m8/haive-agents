@@ -23,7 +23,7 @@ Key enhancements over the original ReactAgent:
 Examples:
     Basic ReAct agent with tools::
 
-        from haive.agents.react.agent_v3 import ReactAgent
+        from haive.agents.react.agent import ReactAgent
         from haive.core.engine.aug_llm import AugLLMConfig
         from langchain_core.tools import tool
 
@@ -149,7 +149,7 @@ class ReactAgent(SimpleAgent):
     Examples:
         Basic ReAct agent for research tasks::
 
-            from haive.agents.react.agent_v3 import ReactAgent
+            from haive.agents.react.agent import ReactAgent
             from langchain_core.tools import tool
 
             @tool

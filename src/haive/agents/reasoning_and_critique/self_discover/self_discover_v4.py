@@ -1,7 +1,7 @@
-"""Self-Discover V4 - Using SimpleAgentV3 and MultiAgent.
+"""Self-Discover V4 - Using SimpleAgent and MultiAgent.
 
 Clean implementation following CLAUDE.md patterns:
-- SimpleAgentV3 for individual agents
+- SimpleAgent for individual agents
 - MultiAgent for orchestration
 - No custom __init__ overrides
 - Proper state handling
@@ -243,7 +243,7 @@ class SelfDiscoverV4(MultiAgent):
     """Self-Discover agent using V4 architecture.
 
     This is a clean implementation that:
-    1. Uses SimpleAgentV3 for all agents
+    1. Uses SimpleAgent for all agents
     2. Uses MultiAgent for orchestration
     3. Properly handles state between agents
     4. No custom __init__ overrides
