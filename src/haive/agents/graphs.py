@@ -64,8 +64,8 @@ def multi_agent_sequential():
 
 def supervisor():
     """Dynamic supervisor that routes tasks to sub-agents."""
-    from haive.agents.dynamic_supervisor.agent import DynamicSupervisorAgent
-    return DynamicSupervisorAgent(
+    from haive.agents.dynamic_supervisor.agent import DynamicSupervisor
+    return DynamicSupervisor(
         name="supervisor",
         engine=_aug(0.3, "You are a supervisor that routes tasks to appropriate agents."),
     ).compile()
