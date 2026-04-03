@@ -66,7 +66,6 @@ submodules = [
     "structured_output",
     "reasoning_and_critique",
     "patterns",
-    "utils",
 ]
 
 # Define specific attributes from submodules to expose
@@ -84,7 +83,6 @@ submod_attrs = {
     "structured_output": ["StructuredOutputAgent"],
     "reasoning_and_critique": [],
     "patterns": [],
-    "utils": ["AgentUtils"],
 }
 
 # Attach lazy loading - this creates __getattr__, __dir__, and __all__

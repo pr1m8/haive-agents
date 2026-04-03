@@ -5,8 +5,8 @@ Architecture (Kim et al.):
   2. Task Executor: Runs tasks in parallel as dependencies resolve (async)
   3. Joiner: Inspects results, decides to answer or replan
 
-The executor streams tasks through the DAG - as soon as a task's dependencies
-are satisfied it launches, maximizing parallelism without waiting for full waves.
+Uses the haive-agents Agent base class with a raw StateGraph (no DynamicGraph).
+Overrides compile() like DynamicSupervisor to bypass SimpleAgent.create_runnable.
 """
 
 import asyncio
@@ -14,13 +14,15 @@ import logging
 import traceback
 from typing import Any
 
-from haive.core.engine.agent.agent import Agent as AgentArchitecture
-from haive.core.engine.aug_llm import compose_runnable
 from langchain_core.messages import AIMessage, SystemMessage
 from langchain_core.tools import BaseTool
 from langgraph.graph import END, START, StateGraph
+from pydantic import Field, PrivateAttr
 
-from .config import LLMCompilerAgentConfig
+from haive.agents.base.agent import Agent
+from haive.core.engine.aug_llm import AugLLMConfig
+
+from .config import LLMCompilerConfig
 from .models import CompilerPlan, CompilerStep, FinalResponse, JoinerOutput, Replan
 from .output_parser import LLMCompilerPlanParser
 from .state import CompilerState
@@ -28,25 +30,108 @@ from .state import CompilerState
 logger = logging.getLogger(__name__)
 
 
-class LLMCompilerAgent(AgentArchitecture):
+class LLMCompilerAgent(Agent):
     """LLM Compiler: DAG planner + async parallel executor + joiner/replanner.
+
+    Extends the haive-agents Agent base class. Builds a raw langgraph StateGraph
+    in build_graph() and overrides compile() to go directly through StateGraph
+    (bypassing SimpleAgent.create_runnable).
 
     Graph:
         START -> planner -> executor -> joiner --(replan)--> planner
                                                 --(done)---> END
     """
 
-    def __init__(self, config: LLMCompilerAgentConfig):
-        super().__init__(config)
-        self.config = config
-        self.tools = config.tool_instances
-        self.tool_map = {tool.name: tool for tool in self.tools}
-        self.parser = LLMCompilerPlanParser(tools=self.tools)
+    # Use a dummy AugLLMConfig as the main engine (required by Agent).
+    # The real LLMs are managed via compiler_config.
+    engine: AugLLMConfig | None = Field(
+        default_factory=lambda: AugLLMConfig(name="llm_compiler_main"),
+        description="Main engine placeholder (real LLMs come from compiler_config)",
+    )
 
-        self.planner_llm = compose_runnable(config.planner_config)
-        self.replanner_llm = compose_runnable(config.replanner_config)
-        self.joiner_llm = compose_runnable(config.joiner_config)
-        self.graph = None
+    compiler_config: LLMCompilerConfig = Field(
+        default_factory=LLMCompilerConfig,
+        description="LLM Compiler specific configuration",
+    )
+
+    # Private attributes for runtime state
+    _tools: list[BaseTool] = PrivateAttr(default_factory=list)
+    _tool_map: dict[str, BaseTool] = PrivateAttr(default_factory=dict)
+    _parser: LLMCompilerPlanParser | None = PrivateAttr(default=None)
+    _planner_llm: Any = PrivateAttr(default=None)
+    _replanner_llm: Any = PrivateAttr(default=None)
+    _joiner_llm: Any = PrivateAttr(default=None)
+
+    def model_post_init(self, __context: Any) -> None:
+        """Initialize LLM runnables and tools after Pydantic validation."""
+        super().model_post_init(__context)
+
+        cfg = self.compiler_config
+        self._tools = list(cfg.tool_instances)
+        self._tool_map = {tool.name: tool for tool in self._tools}
+        self._parser = LLMCompilerPlanParser(tools=self._tools)
+
+        # Create LLM runnables via AugLLMConfig.create_runnable()
+        self._planner_llm = cfg.planner_config.create_runnable()
+        self._replanner_llm = cfg.replanner_config.create_runnable()
+        self._joiner_llm = cfg.joiner_config.create_runnable()
+
+    # ------------------------------------------------------------------
+    # Override compile() to use raw StateGraph (like DynamicSupervisor)
+    # ------------------------------------------------------------------
+
+    def compile(self, **kwargs) -> Any:
+        """Compile the StateGraph directly, bypassing SimpleAgent.create_runnable.
+
+        This follows the same pattern as DynamicSupervisor: build a raw
+        langgraph StateGraph and compile it without going through BaseGraph.
+        """
+        if not self._is_compiled or kwargs:
+            if not hasattr(self, "graph") or self.graph is None:
+                self._graph_built = False
+                self._build_initial_graph()
+            if not self.graph:
+                raise RuntimeError("No graph to compile")
+            # self.graph is a raw StateGraph here, compile directly
+            self._app = self.graph.compile(
+                checkpointer=self.checkpointer, store=self.store, **kwargs
+            )
+            self._compiled_graph = self._app
+            self._is_compiled = True
+        return self._compiled_graph or self._app
+
+    # ------------------------------------------------------------------
+    # Build the graph (called by _build_initial_graph -> build_graph)
+    # ------------------------------------------------------------------
+
+    def build_graph(self) -> StateGraph:
+        """Build the LangGraph: planner -> executor -> joiner (-> replan loop).
+
+        Returns a raw langgraph StateGraph (not a BaseGraph). The compile()
+        override handles compiling this directly.
+        """
+        graph = StateGraph(CompilerState)
+
+        graph.add_node("planner", self.plan)
+        graph.add_node("execute_tasks", self.execute_tasks)
+        graph.add_node("join", self.join)
+
+        graph.add_edge(START, "planner")
+        graph.add_edge("planner", "execute_tasks")
+
+        graph.add_conditional_edges(
+            "execute_tasks",
+            self.should_execute_more,
+            {"planner": "planner", "execute_tasks": "execute_tasks", "join": "join"},
+        )
+
+        graph.add_conditional_edges(
+            "join",
+            self.should_replan,
+            {True: "planner", False: END},
+        )
+
+        return graph
 
     # ------------------------------------------------------------------
     # Node 1: Planner / Replanner
@@ -57,7 +142,7 @@ class LLMCompilerAgent(AgentArchitecture):
         is_replan = state.replan_count > 0
 
         if is_replan:
-            llm = self.replanner_llm
+            llm = self._replanner_llm
             past = self._format_past_results(state)
             next_idx = state.get_highest_step_id() + 1
             inputs = {
@@ -69,7 +154,7 @@ class LLMCompilerAgent(AgentArchitecture):
             }
             logger.info(f"Replanning (attempt {state.replan_count}), continuing from step {next_idx}")
         else:
-            llm = self.planner_llm
+            llm = self._planner_llm
             inputs = {"query": state.query}
             logger.info("Planning new DAG for query")
 
@@ -77,12 +162,12 @@ class LLMCompilerAgent(AgentArchitecture):
         if hasattr(llm, "partial"):
             llm = llm.partial(
                 tool_descriptions=self._format_tool_descriptions(),
-                num_tools=len(self.tools) + 1,
+                num_tools=len(self._tools) + 1,
             )
 
         try:
             raw = llm.invoke(inputs)
-            plan = self.parser.parse(str(raw) if not isinstance(raw, str) else raw)
+            plan = self._parser.parse(str(raw) if not isinstance(raw, str) else raw)
             logger.info(f"Plan generated: {len(plan) if isinstance(plan, list) else 'parsed'} tasks")
             return {"plan": plan}
         except Exception as e:
@@ -169,7 +254,7 @@ class LLMCompilerAgent(AgentArchitecture):
             # Execute
             try:
                 result = await asyncio.to_thread(
-                    self._execute_step, step, {**all_results, **new_results}, self.tool_map
+                    self._execute_step, step, {**all_results, **new_results}, self._tool_map
                 )
             except asyncio.TimeoutError:
                 result = f"ERROR: Step {step.id} timed out"
@@ -186,7 +271,7 @@ class LLMCompilerAgent(AgentArchitecture):
         for step in plan.steps:
             if step.id not in state.results and not step.is_complete():
                 tasks.append(asyncio.create_task(
-                    asyncio.wait_for(run_step(step), timeout=self.config.max_execution_time)
+                    asyncio.wait_for(run_step(step), timeout=self.compiler_config.max_execution_time)
                 ))
 
         if tasks:
@@ -212,12 +297,12 @@ class LLMCompilerAgent(AgentArchitecture):
 
             with ThreadPoolExecutor(max_workers=min(len(executable), 8)) as pool:
                 futures = {
-                    s.id: pool.submit(self._execute_step, s, all_results, self.tool_map)
+                    s.id: pool.submit(self._execute_step, s, all_results, self._tool_map)
                     for s in executable
                 }
                 for step_id, future in futures.items():
                     try:
-                        result = future.result(timeout=self.config.max_execution_time)
+                        result = future.result(timeout=self.compiler_config.max_execution_time)
                     except Exception as e:
                         result = f"ERROR: {e}"
                     new_results[step_id] = result
@@ -258,15 +343,15 @@ class LLMCompilerAgent(AgentArchitecture):
         }
 
         try:
-            output: JoinerOutput = self.joiner_llm.invoke(joiner_inputs)
+            output: JoinerOutput = self._joiner_llm.invoke(joiner_inputs)
 
             if isinstance(output.action, FinalResponse):
                 logger.info("Joiner decided: final answer")
                 return {"messages": [AIMessage(content=output.action.response)], "done": True}
 
             if isinstance(output.action, Replan):
-                if state.replan_count >= self.config.max_replanning_attempts:
-                    logger.warning(f"Max replans ({self.config.max_replanning_attempts}) reached, forcing answer")
+                if state.replan_count >= self.compiler_config.max_replanning_attempts:
+                    logger.warning(f"Max replans ({self.compiler_config.max_replanning_attempts}) reached, forcing answer")
                     return {
                         "messages": [AIMessage(content=f"Based on available results: {output.action.feedback}")],
                         "done": True,
@@ -310,58 +395,35 @@ class LLMCompilerAgent(AgentArchitecture):
         return isinstance(state.messages[-1], SystemMessage)
 
     # ------------------------------------------------------------------
-    # Graph
-    # ------------------------------------------------------------------
-
-    def setup_workflow(self) -> Any:
-        """Build the LangGraph: planner -> executor -> joiner (-> replan loop)."""
-        self.graph = StateGraph(CompilerState)
-
-        self.graph.add_node("planner", self.plan)
-        self.graph.add_node("execute_tasks", self.execute_tasks)
-        self.graph.add_node("join", self.join)
-
-        self.graph.add_edge(START, "planner")
-        self.graph.add_edge("planner", "execute_tasks")
-
-        self.graph.add_conditional_edges(
-            "execute_tasks",
-            self.should_execute_more,
-            {"planner": "planner", "execute_tasks": "execute_tasks", "join": "join"},
-        )
-
-        self.graph.add_conditional_edges(
-            "join",
-            self.should_replan,
-            {True: "planner", False: END},
-        )
-
-    # ------------------------------------------------------------------
     # Convenience methods
     # ------------------------------------------------------------------
 
-    def run(self, query: str):
-        """Run the compiler synchronously."""
-        if not self.graph:
-            self.setup_workflow()
+    def run_query(self, query: str) -> str:
+        """Run the compiler with a plain query string.
+
+        This is a convenience wrapper around the base Agent run() method
+        that handles CompilerState creation and answer extraction.
+        """
+        if not self._is_compiled:
+            self.compile()
         state = CompilerState(query=query)
-        final = self.app.invoke(state, config=self.config.runnable_config, debug=True)
+        final = self._app.invoke(state, debug=True)
         return self._extract_answer(final)
 
-    async def arun(self, query: str):
-        """Run the compiler asynchronously."""
-        if not self.graph:
-            self.setup_workflow()
+    async def arun_query(self, query: str) -> str:
+        """Run the compiler asynchronously with a plain query string."""
+        if not self._is_compiled:
+            self.compile()
         state = CompilerState(query=query)
-        final = await self.app.ainvoke(state, config=self.config.runnable_config, debug=True)
+        final = await self._app.ainvoke(state, debug=True)
         return self._extract_answer(final)
 
-    def stream(self, query: str):
-        """Stream execution steps."""
-        if not self.graph:
-            self.setup_workflow()
+    def stream_query(self, query: str):
+        """Stream execution steps for a query."""
+        if not self._is_compiled:
+            self.compile()
         state = CompilerState(query=query)
-        yield from self.app.stream(state, config=self.config.runnable_config, debug=True)
+        yield from self._app.stream(state, debug=True)
 
     # ------------------------------------------------------------------
     # Helpers
@@ -369,7 +431,7 @@ class LLMCompilerAgent(AgentArchitecture):
 
     def _format_tool_descriptions(self) -> str:
         descs = []
-        for i, tool in enumerate(self.tools):
+        for i, tool in enumerate(self._tools):
             d = f"{i + 1}. {tool.name}: {tool.description}"
             if hasattr(tool, "args_schema") and tool.args_schema:
                 props = getattr(tool.args_schema, "schema", {}).get("properties", {})
@@ -393,7 +455,7 @@ class LLMCompilerAgent(AgentArchitecture):
 
     def _fallback_plan(self, query: str) -> CompilerPlan:
         plan = CompilerPlan(description=f"Fallback for: {query}", status="not_started")
-        search = next((t.name for t in self.tools if "search" in t.name.lower()), None)
+        search = next((t.name for t in self._tools if "search" in t.name.lower()), None)
         if search:
             plan.add_compiler_step(1, "Search", search, {"query": query})
             plan.add_compiler_step(2, "Join", "join", {}, [1])
@@ -414,3 +476,16 @@ class LLMCompilerAgent(AgentArchitecture):
                 if isinstance(msg, AIMessage):
                     return msg.content
         return "No answer produced."
+
+
+# Quick test (run via: poetry run python -c "from haive.agents.planning.llm_compiler.agent import _quick_test; _quick_test()")
+def _quick_test():
+    config = LLMCompilerConfig()
+    agent = LLMCompilerAgent(compiler_config=config, name="LLM Compiler")
+    compiled = agent.compile()
+    print(f"Compiled: {type(compiled).__name__}")
+    print(f"Nodes: {list(compiled.get_graph().nodes)}")
+
+
+if __name__ == "__main__":
+    _quick_test()

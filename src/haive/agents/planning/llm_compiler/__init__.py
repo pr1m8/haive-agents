@@ -1,7 +1,7 @@
 """LLM Compiler agent module."""
 
 from .agent import LLMCompilerAgent
-from .config import LLMCompilerAgentConfig
+from .config import LLMCompilerConfig
 from .models import (
     CompilerPlan,
     CompilerStep,
@@ -21,7 +21,7 @@ __all__ = [
     "FinalResponse",
     "JoinerOutput",
     "LLMCompilerAgent",
-    "LLMCompilerAgentConfig",
+    "LLMCompilerConfig",
     "Replan",
     "TaskDependency",
 ]

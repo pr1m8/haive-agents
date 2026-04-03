@@ -1,20 +1,14 @@
-"""Configuration for the LLMCompiler agent using AugLLMConfig system."""
+"""Configuration for the LLMCompiler agent using haive-agents patterns."""
 
-import uuid
-from typing import Any
-
-from haive.core.engine.agent.config import AgentConfig
 from haive.core.engine.aug_llm import AugLLMConfig
 from haive.core.models.llm.base import OpenAILLMConfig
 from haive.tools.tools.dev_tools import python_repl_tool
 from haive.tools.tools.search_tools import tavily_search_tool
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_core.runnables import RunnableConfig
 from langchain_core.tools import BaseTool, StructuredTool
 from pydantic import BaseModel, Field, model_validator
 
 from .models import JoinerOutput
-from .state import CompilerState
 
 planner_prompt = ChatPromptTemplate.from_messages(
     [
@@ -73,29 +67,31 @@ default_joiner_config = AugLLMConfig(
 )
 
 
-class LLMCompilerAgentConfig(AgentConfig):
-    """Configuration for the LLM Compiler Agent using AugLLMConfig system.
+class LLMCompilerConfig(BaseModel):
+    """Configuration for the LLM Compiler Agent.
+
+    This is a plain Pydantic config model (not AgentConfig from core).
+    The agent itself extends haive.agents.base.agent.Agent.
 
     The LLM Compiler agent creates a directed acyclic graph (DAG) of tasks
     and executes them in parallel when dependencies are satisfied.
     """
 
     planner_config: AugLLMConfig = Field(
-        default=default_planner_config, description="Configuration for the planner LLM"
+        default_factory=lambda: default_planner_config.model_copy(deep=True),
+        description="Configuration for the planner LLM",
     )
     replanner_config: AugLLMConfig = Field(
-        default=default_replanner_config,
+        default_factory=lambda: default_replanner_config.model_copy(deep=True),
         description="Configuration for the replanner LLM",
     )
     joiner_config: AugLLMConfig = Field(
-        default=default_joiner_config, description="Configuration for the joiner LLM"
+        default_factory=lambda: default_joiner_config.model_copy(deep=True),
+        description="Configuration for the joiner LLM",
     )
     tool_instances: list[BaseTool | StructuredTool] = Field(
-        default=[tavily_search_tool, python_repl_tool],
+        default_factory=lambda: [tavily_search_tool, python_repl_tool],
         description="Tool instances available to the agent",
-    )
-    tool_configs: dict[str, dict[str, Any]] = Field(
-        default_factory=dict, description="Configuration for tool instantiation"
     )
     max_execution_time: float = Field(
         default=60.0, description="Maximum time to wait for task execution in seconds"
@@ -103,22 +99,9 @@ class LLMCompilerAgentConfig(AgentConfig):
     max_replanning_attempts: int = Field(
         default=3, description="Maximum number of replanning attempts"
     )
-    should_visualize_graph: bool = Field(
-        default=True, description="Whether to visualize the agent graph"
-    )
-    visualize_graph_output_name: str = Field(
-        default="llm_compiler_graph.png", description="Path to save graph visualization"
-    )
-    state_schema: type[BaseModel] = Field(
-        default=CompilerState, description="The state schema for the agent"
-    )
-    runnable_config: RunnableConfig = Field(
-        default={"configurable": {"thread_id": str(uuid.uuid4())}},
-        description="The runnable config for the agent",
-    )
 
     @model_validator(mode="after")
-    def validate_configs(self) -> "LLMCompilerAgentConfig":
+    def validate_configs(self) -> "LLMCompilerConfig":
         """Ensure that the configurations are valid."""
         if not self.planner_config.prompt_template:
             self.planner_config.prompt_template = planner_prompt
@@ -127,6 +110,3 @@ class LLMCompilerAgentConfig(AgentConfig):
         if not self.joiner_config.prompt_template:
             self.joiner_config.prompt_template = joiner_prompt
         return self
-
-
-DEFAULT_CONFIG = LLMCompilerAgentConfig()
