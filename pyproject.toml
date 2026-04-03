@@ -19,7 +19,6 @@ langchain-huggingface = "^0.3.0"
 langgraph-checkpoint-postgres = "^2.0.23"
 langsmith = "^0.3"
 langgraph-sdk = "^0.1.51"
-langgraph-sdk = "^0.1.51"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.5"

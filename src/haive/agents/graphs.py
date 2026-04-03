@@ -116,10 +116,9 @@ def plan_and_execute():
 
 
 def llm_compiler():
-    """LLM Compiler: DAG-based parallel task execution with joins and replanning."""
+    """LLM Compiler: structured DAG planner + parallel executor + joiner."""
     from haive.agents.planning.llm_compiler.agent import LLMCompilerAgent
-    from haive.agents.planning.llm_compiler.config import LLMCompilerConfig
-    return LLMCompilerAgent(compiler_config=LLMCompilerConfig()).compile()
+    return LLMCompilerAgent(name="llm_compiler").compile()
 
 
 # ---------------------------------------------------------------------------
