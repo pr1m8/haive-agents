@@ -417,6 +417,70 @@ class MultiAgent(Agent):
         return agent_dict
 
     # ========================================================================
+    # DYNAMIC AGENT MANAGEMENT
+    # ========================================================================
+
+    def add_agent(self, agent: Agent, name: str | None = None) -> None:
+        """Add an agent dynamically and rebuild the graph.
+
+        Args:
+            agent: Agent instance to add
+            name: Override name (defaults to agent.name)
+        """
+        agent_name = name or getattr(agent, "name", f"agent_{len(self.agent_dict)}")
+        self.agent_dict[agent_name] = agent
+        self._rebuild()
+        logger.info(f"Added agent '{agent_name}' to {self.name}")
+
+    def remove_agent(self, name: str) -> None:
+        """Remove an agent and rebuild the graph."""
+        if name in self.agent_dict:
+            del self.agent_dict[name]
+            self._rebuild()
+            logger.info(f"Removed agent '{name}' from {self.name}")
+
+    def create_agent(
+        self,
+        name: str,
+        system_message: str,
+        description: str | None = None,
+        tools: list | None = None,
+        temperature: float = 0.7,
+    ) -> Agent:
+        """Create a new agent on the fly and add it.
+
+        Args:
+            name: Agent name
+            system_message: System prompt
+            description: Optional description
+            tools: Optional tools (creates ReactAgent if provided)
+            temperature: LLM temperature
+
+        Returns:
+            The created agent
+        """
+        from haive.core.engine.aug_llm import AugLLMConfig
+
+        engine = AugLLMConfig(temperature=temperature, system_message=system_message)
+
+        if tools:
+            from haive.agents.react.agent import ReactAgent as RA
+            agent = RA(name=name, engine=engine, tools=tools)
+        else:
+            from haive.agents.simple.agent import SimpleAgent
+            agent = SimpleAgent(name=name, engine=engine)
+
+        self.add_agent(agent)
+        return agent
+
+    def _rebuild(self) -> None:
+        """Rebuild the graph after agent changes."""
+        self._is_compiled = False
+        self._graph_built = False
+        self.graph = None
+        self.compile()
+
+    # ========================================================================
     # ABSTRACT METHOD IMPLEMENTATION - build_graph()
     # ========================================================================
 
@@ -815,40 +879,7 @@ class MultiAgent(Agent):
         """
         return self.agent_dict.get(name)
 
-    def add_agent(self, agent: Agent) -> None:
-        """Add an agent dynamically to the workflow.
-
-        This method allows adding agents after initialization. If build_mode
-        is 'auto', the graph will be automatically rebuilt.
-
-        Args:
-            agent: The Agent instance to add.
-
-        Raises:
-            ValueError: If agent lacks a name or name already exists.
-
-        Example:
-            >>> new_agent = SimpleAgent(name="validator")
-            >>> workflow.add_agent(new_agent)
-
-        Note:
-            In 'auto' build mode, this triggers graph recompilation.
-            In other modes, you must rebuild the graph manually.
-        """
-        if not agent.name:
-            raise ValueError("Agent must have a name")
-
-        if agent.name in self.agent_dict:
-            raise ValueError(f"Agent '{agent.name}' already exists")
-
-        self.agent_dict[agent.name] = agent
-        self.agents.append(agent)
-
-        # Rebuild graph if auto mode and already built
-        if self.build_mode == "auto" and hasattr(self, "graph") and self.graph:
-            self.rebuild_graph()
-
-        logger.info(f"Added agent: {agent.name}")
+    # add_agent is defined above in DYNAMIC AGENT MANAGEMENT section
 
     def display_info(self) -> None:
         """Display detailed information about the workflow configuration.
