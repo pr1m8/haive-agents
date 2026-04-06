@@ -2,7 +2,6 @@
 
 from haive.core.engine.agent.agent import AgentConfig
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.tools.tools.search_tools import tavily_search_tool
 from langchain_core.tools import BaseTool, StructuredTool
 from pydantic import Field
 
@@ -36,7 +35,7 @@ class LATSAgentConfig(AgentConfig):
     )
 
     action_engine: AugLLMConfig = Field(
-        default_factory=lambda: AugLLMConfig(tools=[tavily_search_tool]),
+        default_factory=AugLLMConfig,
         description="Engine for generating candidate actions",
     )
 
