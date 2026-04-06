@@ -573,6 +573,34 @@ class BaseConversationAgent(Agent):
             "conversation_ended": (bool, False),
         }
 
+    def run(self, input_data: str | dict | Any = None, **kwargs) -> Any:
+        """Run the conversation by invoking the graph directly with proper state.
+
+        Bypasses execution_mixin to ensure the correct state schema is used.
+        """
+        if not self._is_compiled:
+            self.compile()
+
+        # Build initial state from topic
+        topic = input_data if isinstance(input_data, str) else (
+            input_data.get("topic", "") if isinstance(input_data, dict) else str(input_data or self.topic)
+        )
+        self.topic = topic or self.topic
+
+        # Create state using the conversation state schema
+        schema = self.get_conversation_state_schema()
+        try:
+            initial_state = schema(topic=self.topic).model_dump()
+        except Exception:
+            initial_state = {"topic": self.topic, "messages": []}
+
+        import uuid
+        config = {
+            "configurable": {"thread_id": str(uuid.uuid4())},
+            "recursion_limit": self.max_rounds * len(self.participant_agents) + 10,
+        }
+        return self._app.invoke(initial_state, config=config)
+
     # Factory method for easy creation
     @classmethod
     def create(
