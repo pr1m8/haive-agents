@@ -116,10 +116,7 @@ class ToTAgent(Agent[TOTAgentConfig], Generic[T]):
         )
 
     def setup_workflow(self) -> None:
-        """Set up the Tree of Thoughts workflow using raw StateGraph.
-
-        Uses raw langgraph.StateGraph instead of DynamicGraph to avoid
-        the Command(goto=None) and Send routing bugs in DynamicGraph.to_langgraph().
+        """Set up the Tree of Thoughts workflow.
 
         Graph structure:
         - Sequential mode:
@@ -127,9 +124,13 @@ class ToTAgent(Agent[TOTAgentConfig], Generic[T]):
         - Parallel mode:
           START -> generate -> [evaluate_candidate * N] -> collect -> select -> (loop or END)
         """
-        from langgraph.graph import StateGraph as LGStateGraph
+        from haive.core.graph.dynamic_graph_builder import DynamicGraph
 
-        graph = LGStateGraph(self.config.state_schema)
+        self.dynamic_graph = DynamicGraph(
+            state_schema=self.config.state_schema,
+            components=[],
+        )
+        graph = self.dynamic_graph
 
         # Add nodes
         graph.add_node(self.config.generator_node, self._generate_candidates)
@@ -175,7 +176,7 @@ class ToTAgent(Agent[TOTAgentConfig], Generic[T]):
                 {"continue": self.config.generator_node, "end": END},
             )
 
-        self.graph = graph
+        self.graph = graph.build()
 
     def _generate_candidates(self, state: TOTState) -> Command:
         """Generate candidate solutions for the problem.

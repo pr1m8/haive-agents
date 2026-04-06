@@ -48,7 +48,11 @@ class BaseRAGAgent(Agent):
                 self._build_initial_graph()
             if not self.graph:
                 raise RuntimeError("No graph")
-            self._app = self.graph.compile(
+            if hasattr(self.graph, "to_langgraph"):
+                lg = self.graph.to_langgraph(state_schema=self.state_schema)
+            else:
+                lg = self.graph
+            self._app = lg.compile(
                 checkpointer=self.checkpointer, store=self.store, **kwargs
             )
             self._compiled_graph = self._app

@@ -526,35 +526,29 @@ class MultiAgent(Agent):
             f"Building {self.execution_mode} graph with {len(self.agent_dict)} agents"
         )
 
-        # Use raw LangGraph StateGraph to avoid DynamicGraph.to_langgraph()
-        # wrapping returns in Command(goto=None) which breaks on LangGraph 0.3.34+
-        from langgraph.graph import StateGraph as LGStateGraph
+        # Create BaseGraph with MultiAgentState
+        graph = BaseGraph(
+            name=f"{self.name}_graph", state_schema=self.state_schema or MultiAgentState
+        )
 
-        graph = LGStateGraph(self.state_schema or MultiAgentState)
-
-        # Add all agents as nodes
-        for agent_name, agent in self.agent_dict.items():
-            wrapper = _create_agent_wrapper(agent_name=agent_name, agent=agent)
-            graph.add_node(agent_name, wrapper)
+        # Add all agents as nodes using wrappers for state conversion
+        self._add_agent_nodes(graph)
 
         # Add edges based on execution mode
-        agent_names = list(self.agent_dict.keys())
         if self.execution_mode == "sequential":
-            graph.add_edge(START, agent_names[0])
-            for i in range(len(agent_names) - 1):
-                graph.add_edge(agent_names[i], agent_names[i + 1])
-            graph.add_edge(agent_names[-1], END)
+            self._add_sequential_edges(graph)
         elif self.execution_mode == "parallel":
-            for name in agent_names:
-                graph.add_edge(START, name)
-                graph.add_edge(name, END)
-        else:
-            # Manual/conditional - just add start edges
+            self._add_parallel_edges(graph)
+        elif self.execution_mode == "conditional":
+            self._add_conditional_edges(graph)
+        elif self.execution_mode == "manual":
+            # Manual mode - user adds edges manually after creation
+            agent_names = list(self.agent_dict.keys())
             if agent_names:
                 graph.add_edge(START, agent_names[0])
                 graph.add_edge(agent_names[-1], END)
 
-        logger.info(f"Built {self.execution_mode} graph with {len(agent_names)} agents")
+        logger.info(f"Built {self.execution_mode} graph with {len(self.agent_dict)} agents")
         return graph
 
     def _add_agent_nodes(self, graph: BaseGraph) -> None:
