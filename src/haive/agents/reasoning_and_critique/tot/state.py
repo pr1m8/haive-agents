@@ -69,20 +69,14 @@ class TOTState(TOTInput, TOTOutput):
         result = []
         for item in v:
             if isinstance(item, Candidate):
-                # Convert Candidate objects to dictionaries
-                result.append(
-                    {
-                        "content": item.content,
-                        "score": item.score,
-                        "feedback": item.feedback,
-                        "metadata": item.metadata,
-                    }
-                )
+                result.append({
+                    "content": item.content,
+                    "metadata": getattr(item, "metadata", {}),
+                })
+            elif hasattr(item, "model_dump"):
+                result.append(item.model_dump())
             elif isinstance(item, dict):
                 result.append(item)
-            else:
-                # Skip invalid items
-                continue
         return result
 
     @field_validator("best_candidate", "current_seed", mode="before")

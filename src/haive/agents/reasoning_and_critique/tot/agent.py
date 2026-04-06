@@ -205,7 +205,7 @@ class ToTAgent(Agent[TOTAgentConfig], Generic[T]):
         # Build the graph
         self.graph = self.dynamic_graph.build()
 
-    async def _generate_candidates(self, state: TOTState) -> Command:
+    def _generate_candidates(self, state: TOTState) -> Command:
         """Generate candidate solutions for the problem.
 
         Args:
@@ -247,8 +247,9 @@ class ToTAgent(Agent[TOTAgentConfig], Generic[T]):
 
         try:
             # Invoke the generator
-            response = await generator.ainvoke(
-                [HumanMessage(content=prompt)], {"configurable": {"temperature": 0.7}}
+            response = generator.invoke(
+                {"messages": [HumanMessage(content=prompt)]},
+                {"configurable": {"temperature": 0.7}},
             )
 
             # Extract candidates from the response
@@ -320,7 +321,7 @@ class ToTAgent(Agent[TOTAgentConfig], Generic[T]):
 
         return sends
 
-    async def _evaluate_candidate(self, state: TOTState) -> Command:
+    def _evaluate_candidate(self, state: TOTState) -> Command:
         """Evaluate a single candidate solution.
 
         Args:
@@ -342,7 +343,7 @@ class ToTAgent(Agent[TOTAgentConfig], Generic[T]):
             prompt_inputs = {"problem": problem, "candidate": content}
 
             # Invoke the evaluator
-            score = await self.evaluator_runnable.ainvoke(prompt_inputs)
+            score = self.evaluator_runnable.invoke(prompt_inputs)
 
             # Create scored candidate
             scored_candidate = ScoredCandidate(
@@ -387,7 +388,7 @@ class ToTAgent(Agent[TOTAgentConfig], Generic[T]):
 
         return Command(update={"scored_candidates": updated_scored})
 
-    async def _score_candidates(self, state: TOTState) -> Command:
+    def _score_candidates(self, state: TOTState) -> Command:
         """Score all candidates sequentially.
 
         Args:
@@ -416,8 +417,8 @@ class ToTAgent(Agent[TOTAgentConfig], Generic[T]):
                 prompt = f"Problem: {problem}\n\nCandidate Solution:\n{content}\n\nEvaluate this solution and provide a score between 0 and 1, where 1 is perfect."
 
                 # Invoke the evaluator
-                response = await evaluator.ainvoke(
-                    [HumanMessage(content=prompt)],
+                response = evaluator.invoke(
+                    {"messages": [HumanMessage(content=prompt)]},
                     {"configurable": {"temperature": 0.1}},
                 )
 
