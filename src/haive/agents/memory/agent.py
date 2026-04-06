@@ -444,6 +444,46 @@ class MemoryAgent(ReactAgent):
             logger.warning(f"KG query failed: {e}")
             return []
 
+    def create_graph_query_tool(self) -> Any:
+        """Create a LangChain tool that queries the Neo4j KG with natural language.
+
+        Uses GraphDBRAGAgent internally to generate Cypher from questions.
+        Requires Neo4j connection (connect_neo4j() must be called first).
+        """
+        from langchain_core.tools import StructuredTool
+
+        kg_store = self._kg_store
+
+        def query_knowledge_graph(question: str) -> str:
+            '''Query the knowledge graph with a natural language question.
+            Use this to find relationships, paths, and connections between entities.
+
+            Args:
+                question: Natural language question about entities and relationships
+            '''
+            if not kg_store:
+                return "Neo4j not connected. Cannot query knowledge graph."
+            try:
+                # Use direct Cypher for simple entity lookups
+                results = kg_store.query_cypher(
+                    "MATCH (s:Entity)-[r:RELATES_TO]->(o:Entity) "
+                    "WHERE toLower(s.name) CONTAINS toLower($q) OR toLower(o.name) CONTAINS toLower($q) "
+                    "RETURN s.name AS subject, r.predicate AS predicate, o.name AS object LIMIT 10",
+                    params={"q": question}
+                )
+                if results:
+                    lines = [f"- {r['subject']} {r['predicate']} {r['object']}" for r in results]
+                    return "Knowledge graph results:\n" + "\n".join(lines)
+                return "No matching entities found in knowledge graph."
+            except Exception as e:
+                return f"KG query error: {e}"
+
+        return StructuredTool.from_function(
+            query_knowledge_graph,
+            name="query_knowledge_graph",
+            description=query_knowledge_graph.__doc__,
+        )
+
     def query_kg_cypher(self, cypher: str, params: dict | None = None) -> list[dict]:
         """Execute a raw Cypher query against the Neo4j KG.
 
@@ -522,6 +562,7 @@ def create_memory_agent(
     user_id: str = "default",
     auto_extract_kg: bool = True,
     summarize_threshold: int = 4000,
+    neo4j_config: Any = None,
     **kwargs,
 ) -> MemoryAgent:
     """Factory for creating a memory agent with store + memory tools pre-wired.
@@ -538,6 +579,7 @@ def create_memory_agent(
         user_id: User ID for memory scoping
         auto_extract_kg: Enable automatic KG triple extraction from conversations
         summarize_threshold: Token count threshold for auto-summarization
+        neo4j_config: Neo4jKGConfig instance, True for env var defaults, or None to skip
         **kwargs: Additional MemoryAgent/ReactAgent kwargs
     """
     # Resolve store
@@ -573,4 +615,11 @@ def create_memory_agent(
         **kwargs,
     )
     agent._store = resolved_store
+
+    if neo4j_config is not None:
+        agent.connect_neo4j(neo4j_config if not isinstance(neo4j_config, bool) else None)
+        # Add graph query tool to engine
+        graph_tool = agent.create_graph_query_tool()
+        agent.engine.add_tool(graph_tool)
+
     return agent
