@@ -14,9 +14,10 @@ from typing import Any, Literal
 
 from haive.core.common.mixins.tool_route_mixin import ToolRouteMixin
 from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.engine.embedding.providers.HuggingFaceEmbeddingConfig import (
-    HuggingFaceEmbeddingConfig,
-)
+# HuggingFace import lazy to avoid sentence-transformers hang
+def _get_hf_config():
+    from haive.core.engine.embedding.providers.HuggingFaceEmbeddingConfig import HuggingFaceEmbeddingConfig
+    return HuggingFaceEmbeddingConfig
 from haive.core.engine.retriever import BaseRetrieverConfig
 from haive.core.engine.vectorstore.vectorstore import VectorStoreConfig
 from haive.core.models.llm.base import LLMConfig
@@ -89,7 +90,7 @@ class AgenticRAGAgent(ReactAgent, ToolRouteMixin):
         default_factory=lambda: VectorStoreConfig(
             name="default_vectorstore",
             provider="InMemory",
-            embedding_config=HuggingFaceEmbeddingConfig(
+            embedding_config=_get_hf_config()(
                 model="sentence-transformers/all-MiniLM-L6-v2"
             ),
         ),
