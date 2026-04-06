@@ -120,8 +120,12 @@ def _create_agent_wrapper(agent_name: str, agent: Agent) -> Callable:
             except (TypeError, ValueError):
                 messages = []
 
-        # Build the input for the sub-agent: just messages
+        # Build the input for the sub-agent: messages + engines
         agent_input = {"messages": messages}
+
+        # Inject engines so sub-agent's tool_node can find tools at runtime
+        if hasattr(agent, "engines") and agent.engines:
+            agent_input["engines"] = agent.engines
 
         # Invoke the sub-agent
         try:

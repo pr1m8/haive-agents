@@ -64,6 +64,10 @@ class ExecutionMixin:
                 elif hasattr(input_schema, "__fields__"):
                     schema_fields = input_schema.__fields__
 
+                # If schema has no fields, fall back to simple messages dict
+                if not schema_fields:
+                    return {"messages": [HumanMessage(content=input_data)]}
+
                 prepared_input = {}
                 text_fields = [
                     f
@@ -88,11 +92,9 @@ class ExecutionMixin:
                 if "messages" in schema_fields:
                     prepared_input["messages"] = [HumanMessage(content=input_data)]
 
-                # If no fields were populated (e.g. only messages field)
-                if not prepared_input and "messages" not in schema_fields:
-                    prepared_input = {"input": input_data}
-                elif not prepared_input and "messages" in schema_fields:
-                    pass  # messages field was already handled
+                # If no fields were populated, use messages dict
+                if not prepared_input:
+                    return {"messages": [HumanMessage(content=input_data)]}
 
                 # Create instance or return dict
                 try:
@@ -579,6 +581,13 @@ class ExecutionMixin:
                 invoke_input = {"messages": processed_input} if not isinstance(processed_input, dict) else processed_input
             else:
                 invoke_input = processed_input
+
+            # Inject engines dict so tool_node can find tools at runtime.
+            # The state schema (LLMState) has an engines field but it defaults
+            # to empty. Tool nodes look up engines[engine_name].tools to find
+            # executable tools.
+            if isinstance(invoke_input, dict) and hasattr(self, "engines") and self.engines:
+                invoke_input.setdefault("engines", self.engines)
 
             result = self._app.invoke(invoke_input, config=runtime_config, debug=debug)
             logger.debug("Agent execution completed successfully")

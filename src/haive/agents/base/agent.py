@@ -19,6 +19,7 @@ from typing import Any, Generic, Literal, TypeVar
 
 from haive.core.engine.base import Engine, EngineType, InvokableEngine
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
+from haive.core.schema.prebuilt.llm_state import LLMState
 from haive.core.schema.prebuilt.messages_state import MessagesState
 from haive.core.schema.schema_composer import SchemaComposer
 from langchain_core.messages import BaseMessage
@@ -370,15 +371,27 @@ class Agent(
                     f"Extended schema built: {getattr(self.state_schema, '__name__', 'Unknown')}"
                 )
             elif engine_list:
-                logger.debug(f"Creating schema from {len(engine_list)} engines")
-                composer = SchemaComposer(name=f"{self.__class__.__name__}State")
-                for engine in engine_list:
-                    composer.add_engine(engine)
-                    composer.add_fields_from_engine(engine)
-                self.state_schema = composer.build()
-                logger.debug(
-                    f"Built schema: {getattr(self.state_schema, '__name__', 'Unknown')}"
+                # Use LLMState as base when engines have tools — it includes
+                # engines dict, tool_routes, and tool management fields that
+                # tool_node needs at runtime to find and execute tools.
+                has_tools = any(
+                    getattr(e, "tools", None) for e in engine_list
                 )
+                if has_tools:
+                    logger.debug(
+                        f"Using LLMState base for {self.name} (engines have tools)"
+                    )
+                    self.state_schema = LLMState
+                else:
+                    logger.debug(f"Creating schema from {len(engine_list)} engines")
+                    composer = SchemaComposer(name=f"{self.__class__.__name__}State")
+                    for engine in engine_list:
+                        composer.add_engine(engine)
+                        composer.add_fields_from_engine(engine)
+                    self.state_schema = composer.build()
+                    logger.debug(
+                        f"Built schema: {getattr(self.state_schema, '__name__', 'Unknown')}"
+                    )
             else:
                 logger.debug("No engines found, using default MessagesState")
                 self.state_schema = MessagesState
