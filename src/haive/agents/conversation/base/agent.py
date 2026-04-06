@@ -187,9 +187,10 @@ class BaseConversationAgent(Agent):
         Returns:
             None
         """
-        # Set the state schema
+        # Set the state schema and prevent SchemaComposer from overriding it
         self.state_schema = self.get_conversation_state_schema()
         self.set_schema = True
+        self.use_prebuilt_base = False
 
         # Ensure we have a default engine for orchestration
         if not self.engine and not self.engines:

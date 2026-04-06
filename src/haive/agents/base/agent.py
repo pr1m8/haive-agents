@@ -319,9 +319,9 @@ class Agent(
         3. Supports token usage tracking
         4. Automatically derives I/O schemas
         """
-        if self.state_schema and (not self.use_prebuilt_base) and (not self.engines):
+        if self.state_schema and not self.use_prebuilt_base and self.set_schema:
             logger.debug(
-                f"State schema already provided for {self.name}, no engines to integrate"
+                f"State schema explicitly set for {self.name} (set_schema=True) - keeping it"
             )
             self._auto_derive_io_schemas()
             return
