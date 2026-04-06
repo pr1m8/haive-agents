@@ -1,75 +1,181 @@
-# Memory System Design
+# Memory System Design v2
+
+## Overview
+
+A multi-agent memory system using subgraphs for complex flows. Built on:
+- **haive.agents** composition (ReactAgent, SimpleAgent, MultiAgent)
+- **haive.core persistence** (PostgresStoreWrapper, async checkpointing)
+- **haive.core graph** (BaseGraph with subgraphs)
+- **document_modifiers** (KG construction, summarization)
+- **Existing core/types.py** models (MemoryEntry, MemoryType, etc.)
+
+NOT using langmem - building haive-native with our own infrastructure.
 
 ## Architecture
 
-The memory system is a **graph of haive agents**, NOT a custom LLM pipeline.
-Each memory operation is a composable agent using our proven patterns.
-
-### Agents
-
-1. **TriageAgent** (ReactAgent) - Classifies incoming data, decides what to remember
-2. **ExtractionAgent** (SimpleAgent + structured output) - Extracts memories, KG triples, preferences
-3. **KGBuilder** (SimpleAgent + structured output) - Consolidates knowledge graph
-4. **SummarizerAgent** (SimpleAgent) - Summarizes conversations for archival
-5. **RetrievalAgent** (ReactAgent + search tools) - Finds relevant memories
-
-### Graph Flow
-
 ```
-User Query
-    ↓
-load_memories (search store for context)
-    ↓
-respond (ReactAgent answers with memory context)
-    ↓
-extract_memories (SimpleAgent extracts what to remember)
-    ↓
-build_kg (SimpleAgent extracts knowledge triples)
-    ↓
-store_memories (persist to PostgresStore async)
-    ↓
-Response
+MemoryAgent (Agent with BaseGraph)
+│
+├── MAIN GRAPH (per-request flow):
+│   START → load_context → respond → extract → END
+│
+├── SUBGRAPH 1: load_context
+│   ├── analyze_query (SimpleAgent → MemoryQueryIntent)
+│   ├── search_vector (tool: vector similarity search via store)
+│   ├── search_kg (tool: knowledge graph traversal)
+│   └── merge_results (combine + rank by relevance)
+│
+├── SUBGRAPH 2: respond
+│   └── ReactAgent with memory context injected as system message
+│       (has user's tools + memory search tool for follow-ups)
+│
+├── SUBGRAPH 3: extract (BACKGROUND - after response)
+│   ├── classify (SimpleAgent → MemoryClassificationResult)
+│   ├── extract_facts (SimpleAgent → MemoryExtraction)
+│   ├── build_kg (uses document_modifiers/kg/ GraphTransformer)
+│   ├── summarize (uses document_modifiers/summarizer/)
+│   └── persist (store to PostgresStoreWrapper async)
+│       ├── short_term: ("thread", thread_id)
+│       ├── long_term: ("user", user_id)
+│       └── knowledge: ("kg", workspace_id)
+│
+└── PERIODIC: consolidation (triggered by store size / time)
+    ├── deduplicate
+    ├── decay old memories
+    ├── merge similar
+    └── archive summaries
 ```
 
-### Memory Tiers
+## Key Design Decisions
 
-1. **SHORT_TERM** - Thread-scoped, current conversation (namespace: `("thread", thread_id)`)
-2. **LONG_TERM** - User-scoped, cross-conversation (namespace: `("user", user_id)`)
-3. **KNOWLEDGE** - Workspace-shared facts, KG (namespace: `("knowledge", workspace_id)`)
+### 1. Subgraphs for Complex Flows
+Instead of one flat graph, use LangGraph subgraphs:
+- Main graph is simple: load → respond → extract
+- Each step can be a subgraph with its own nodes
+- Subgraphs are reusable across different memory-aware agents
 
-### Storage
+### 2. document_modifiers Integration
+Reuse existing proven components:
+- `kg/kg_base/models.py` → GraphTransformer for KG construction
+- `kg/kg_map_merge/` → Entity/Relationship models, merge logic
+- `summarizer/map_branch/` → Map-reduce summarization
+- `summarizer/iterative_refinement/` → Iterative summary improvement
 
-- **haive.core.persistence.store.PostgresStoreWrapper** - Primary store (async)
-- Vector search via store embeddings
-- KG stored as triples in store items with graph metadata
-- Full checkpointing via PostgresCheckpointerConfig (async)
+### 3. Existing core/types.py Models
+Keep and use these rich models already in memory/core/:
+- `MemoryEntry` - Full memory with metadata, decay, relationships
+- `MemoryType` - 11 types (semantic, episodic, procedural, contextual, etc.)
+- `MemoryImportance` - 5 levels (critical → transient)
+- `MemoryClassificationResult` - Classification output
+- `MemoryQueryIntent` - Query analysis for smart retrieval
+- `MemoryConsolidationResult` - Consolidation metrics
 
-### Key Models
+### 4. Store Strategy (async Postgres)
+```python
+# Namespaces for multi-tier storage
+THREAD_NS = ("thread", "{thread_id}")      # Short-term (current conversation)
+USER_NS = ("user", "{user_id}")            # Long-term (cross-conversation)
+KG_NS = ("kg", "{workspace_id}")           # Knowledge graph triples
+SUMMARY_NS = ("summary", "{user_id}")      # Conversation summaries
+```
 
-- `MemoryExtraction` - What the extraction agent outputs (summary, facts, triples, type, importance)
-- `KnowledgeTriple` - Subject-predicate-object with confidence
-- `MemoryItem` - Stored memory with namespace scoping
-- `ConversationSummary` - Archived conversation summary
-- `MemorySearchResult` - Search result with score
+Using haive.core.persistence.store.PostgresStoreWrapper:
+- Async connection pooling
+- Vector embeddings for semantic search
+- Namespace-based scoping
+- TTL support for short-term memories
 
-### Improvements Over Langmem
+### 5. Serializable State
+All state is JSON-serializable (no raw Python objects):
+```python
+class MemoryState(TypedDict):
+    messages: list[BaseMessage]       # Conversation
+    query: str                        # Current query
+    memory_context: list[dict]        # Retrieved memories (serialized)
+    extraction: dict                  # Extracted memories (serialized)
+    kg_triples: list[dict]           # Knowledge graph triples
+    response: str                     # Agent response
+    user_id: str                      # User scope
+    thread_id: str                    # Thread scope
+```
 
-1. **Async Postgres** - Not generic BaseStore, proper connection pooling
-2. **KG Construction** - Native knowledge graph support via triples
-3. **Agent Composition** - Uses ReactAgent/SimpleAgent, not custom TrustCall
-4. **Serializable State** - Everything in state is JSON-serializable
-5. **Multi-tier** - Thread/user/workspace scoping
-6. **Checkpointing** - Full state recovery via haive-core persistence
-
-### File Structure
+## Files
 
 ```
 memory/
-├── agent.py          # MemoryAgent (main agent with graph)
-├── models.py         # Pydantic models (extraction, triples, items)
-├── state.py          # MemoryState (serializable TypedDict)
-├── store.py          # Store interface (wraps haive.core PostgresStore)
-├── tools.py          # Memory tools (save, search, summarize)
-├── prompts.py        # Extraction/summarization prompts
+├── agent.py              # MemoryAgent - main agent with graph
+├── state.py              # MemoryState TypedDict
+├── models.py             # MemoryExtraction, KnowledgeTriple, etc.
+├── store.py              # MemoryStore - wraps haive.core PostgresStore
+├── tools.py              # search_memory, save_memory tools
+├── prompts.py            # Extraction, classification, summarization prompts
+├── core/                 # KEEP - existing types, classifier, stores
+│   ├── types.py          # MemoryEntry, MemoryType, etc.
+│   ├── classifier.py     # MemoryClassifier
+│   └── stores.py         # MemoryStoreManager
+├── kg_generator_agent.py # KEEP - KG generation (uses document_modifiers)
+├── graph_rag_retriever.py # KEEP - Graph RAG retrieval
 └── __init__.py
 ```
+
+## Agent Composition
+
+### MemoryAgent (main)
+```python
+class MemoryAgent(Agent):
+    """Memory-enhanced agent using subgraphs for complex flows."""
+
+    # Sub-agents (lazy init)
+    _responder: ReactAgent      # Answers queries with memory context
+    _extractor: SimpleAgent     # Extracts memories (structured output)
+    _classifier: SimpleAgent    # Classifies memory type/importance
+    _summarizer: SimpleAgent    # Summarizes conversations
+
+    # Store
+    _store: PostgresStoreWrapper  # Async Postgres store
+
+    def build_graph(self) -> BaseGraph:
+        # Main flow: load → respond → extract
+        graph.add_node("load_context", self._load_context)
+        graph.add_node("respond", self._respond)
+        graph.add_node("extract_and_store", self._extract_and_store)
+        graph.add_edge(START, "load_context")
+        graph.add_edge("load_context", "respond")
+        graph.add_edge("respond", "extract_and_store")
+        graph.add_edge("extract_and_store", END)
+```
+
+### Making Any Agent Memory-Aware
+```python
+# Wrap any existing agent with memory context
+def make_memory_aware(agent: Agent, store: PostgresStoreWrapper) -> MemoryAgent:
+    """Add memory capabilities to any agent."""
+    return MemoryAgent(
+        name=f"memory_{agent.name}",
+        responder=agent,  # Use the existing agent for responding
+        store=store,
+    )
+```
+
+## Implementation Phases
+
+### Phase 1: Core (state + store + simple agent)
+- MemoryState TypedDict
+- MemoryStore wrapper for haive.core PostgresStore
+- Basic MemoryAgent: load → respond → save
+
+### Phase 2: Extraction (structured output agents)
+- Extraction agent (SimpleAgent → MemoryExtraction)
+- Classification agent (SimpleAgent → MemoryClassificationResult)
+- KG construction using document_modifiers
+
+### Phase 3: Smart Retrieval (subgraph)
+- Query intent analysis
+- Multi-strategy search (vector + KG + temporal)
+- Result ranking and merging
+
+### Phase 4: Consolidation (background)
+- Deduplication
+- Decay and expiration
+- Summary archival
+- KG graph maintenance
