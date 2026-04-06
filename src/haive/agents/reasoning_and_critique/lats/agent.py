@@ -1,24 +1,18 @@
 """Language Agent Tree Search (LATS) agent.
 
-Composes ReactAgent (generation) + SimpleAgent (reflection) in a
-Monte Carlo Tree Search loop:
+Composes ReactAgent (candidate generation with tools) and SimpleAgent
+(reflection/scoring with structured output) in a Monte Carlo Tree Search loop.
 
-  1. Generate initial candidate via ReactAgent (with tools)
-  2. Reflect/score via SimpleAgent with structured output (Reflection)
-  3. Select best leaf via UCB1
-  4. Expand N candidates from best leaf
-  5. Repeat until solved or max height
+Graph: START -> generate -> [expand <-> should_continue] -> finish -> END
 
-Graph: START -> generate_initial -> [expand <-> should_continue] -> finish -> END
+The generator and reflector are real haive agents (ReactAgent, SimpleAgent)
+that use our tested infrastructure for LLM calls, tool use, and structured output.
 """
 
 import logging
-from collections import defaultdict
 from typing import Any
 
 from langchain_core.messages import AIMessage, HumanMessage
-from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
-from langchain_core.runnables import RunnableConfig
 from langgraph.graph import END, START
 from pydantic import ConfigDict, Field, PrivateAttr
 
@@ -33,16 +27,15 @@ logger = logging.getLogger(__name__)
 
 
 class LATSAgent(Agent):
-    """Look-Ahead Tree Search agent.
+    """Look-Ahead Tree Search using ReactAgent + SimpleAgent composition.
 
-    Uses ReactAgent for candidate generation and SimpleAgent for reflection,
-    composed in a tree search loop with UCB1 selection.
-
-    Compile without checkpointer (Node objects are not serializable).
+    - Generator: ReactAgent with tools for candidate creation
+    - Reflector: SimpleAgent with structured output (Reflection model)
+    - Tree logic: UCB1 selection, backpropagation, depth limiting
     """
 
-    # ---- Config fields ----
-    tools: list[Any] = Field(default_factory=list, description="Tools for generation")
+    # ---- Config ----
+    tools: list[Any] = Field(default_factory=list, description="Tools for the generator agent")
     model: str = Field(default="gpt-4o-mini", description="OpenAI model")
     temperature: float = Field(default=0.7)
     n_candidates: int = Field(default=3, description="Candidates per expansion")
@@ -52,49 +45,82 @@ class LATSAgent(Agent):
         default="You are a helpful AI assistant. Provide thorough, accurate answers.",
     )
     reflection_prompt: str = Field(
-        default="Reflect and grade the assistant response to the user question below.",
+        default=(
+            "You are a grading assistant. Reflect on and score the candidate response "
+            "to the user question. Evaluate accuracy, completeness, and helpfulness."
+        ),
     )
 
-    # ---- Runtime (lazy) ----
+    # ---- Sub-agents (built lazily) ----
     _generator: Any = PrivateAttr(default=None)
     _reflector: Any = PrivateAttr(default=None)
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
     # ------------------------------------------------------------------
-    # Lazy init
+    # Build sub-agents lazily
     # ------------------------------------------------------------------
 
-    def _ensure_chains(self) -> None:
-        """Build generator + reflector chains lazily."""
+    def _ensure_agents(self) -> None:
+        """Create the generator (ReactAgent) and reflector (SimpleAgent)."""
         if self._generator is not None:
             return
 
-        from langchain_openai import ChatOpenAI
+        from haive.agents.react.agent import ReactAgent
+        from haive.agents.simple.agent import SimpleAgent
 
-        llm = ChatOpenAI(model=self.model, temperature=self.temperature)
+        # Generator: ReactAgent with tools
+        self._generator = ReactAgent(
+            name=f"{self.name}_generator",
+            engine=AugLLMConfig(
+                temperature=self.temperature,
+                system_message=self.system_prompt,
+            ),
+            tools=self.tools,
+        )
 
-        # Generator: system prompt + tools
-        gen_prompt = ChatPromptTemplate.from_messages([
-            ("system", self.system_prompt),
-            ("user", "{input}"),
-            MessagesPlaceholder(variable_name="messages", optional=True),
-        ])
-        self._generator = gen_prompt | llm.bind_tools(tools=self.tools)
-
-        # Reflector: structured output -> Reflection
-        ref_prompt = ChatPromptTemplate.from_messages([
-            ("system", self.reflection_prompt),
-            ("user", "{input}"),
-            MessagesPlaceholder(variable_name="candidate"),
-        ])
-        self._reflector = (
-            ref_prompt
-            | llm.bind_tools(tools=[Reflection], tool_choice="Reflection")
+        # Reflector: SimpleAgent with structured output -> Reflection
+        self._reflector = SimpleAgent(
+            name=f"{self.name}_reflector",
+            engine=AugLLMConfig(
+                temperature=0.2,
+                system_message=self.reflection_prompt,
+                structured_output_model=Reflection,
+            ),
         )
 
     # ------------------------------------------------------------------
-    # Tree search helpers
+    # Agent helpers
+    # ------------------------------------------------------------------
+
+    def _generate(self, query: str) -> list[AIMessage]:
+        """Generate a candidate response using the ReactAgent."""
+        result = self._generator.run(query, debug=False)
+        if hasattr(result, "messages") and result.messages:
+            return [msg for msg in result.messages if isinstance(msg, AIMessage)]
+        return [AIMessage(content=str(result))]
+
+    def _reflect(self, query: str, candidate_text: str) -> Reflection:
+        """Score a candidate using the SimpleAgent reflector."""
+        prompt = f"Question: {query}\n\nCandidate Answer:\n{candidate_text}\n\nScore this response 0-10."
+        try:
+            result = self._reflector.run(prompt, debug=False)
+            # Extract Reflection from structured output
+            if hasattr(result, "messages") and result.messages:
+                last = result.messages[-1]
+                if hasattr(last, "tool_calls") and last.tool_calls:
+                    args = last.tool_calls[0].get("args", {})
+                    return Reflection(**args)
+                # Try parsing content
+                content = last.content if hasattr(last, "content") else str(last)
+                return Reflection(reflections=content, score=5, found_solution=False)
+            return Reflection(reflections=str(result), score=5, found_solution=False)
+        except Exception as e:
+            logger.warning(f"Reflection failed: {e}")
+            return Reflection(reflections=f"Error: {e}", score=1, found_solution=False)
+
+    # ------------------------------------------------------------------
+    # Tree search
     # ------------------------------------------------------------------
 
     def _select(self, root: Node) -> Node:
@@ -105,15 +131,14 @@ class LATSAgent(Agent):
         return node
 
     @staticmethod
-    def _is_solved(root: Node) -> bool:
-        if root.is_solved:
+    def _is_solved(node: Node) -> bool:
+        if node.is_solved:
             return True
-        return any(LATSAgent._is_solved(c) for c in root.children)
+        return any(LATSAgent._is_solved(c) for c in node.children)
 
     @staticmethod
     def _get_best_node(root: Node) -> Node:
-        best = root
-        best_score = root.reflection.normalized_score if root.reflection else 0
+        best, best_score = root, root.reflection.normalized_score if root.reflection else 0
         for c in root.children:
             candidate = LATSAgent._get_best_node(c)
             score = candidate.reflection.normalized_score if candidate.reflection else 0
@@ -121,63 +146,31 @@ class LATSAgent(Agent):
                 best, best_score = candidate, score
         return best
 
-    def _reflect(self, user_input: str, candidate_messages: list) -> Reflection:
-        """Score a candidate via the reflector chain."""
-        from langchain_core.output_parsers.openai_tools import PydanticToolsParser
-        parser = PydanticToolsParser(tools=[Reflection])
-        result = self._reflector.invoke({"input": user_input, "candidate": candidate_messages})
-        parsed = parser.invoke(result)
-        return parsed[0] if parsed else Reflection(reflections="No reflection", score=1, found_solution=False)
-
     # ------------------------------------------------------------------
     # Graph nodes
     # ------------------------------------------------------------------
 
     def _generate_initial(self, state: TreeState) -> dict[str, Any]:
-        """Generate first candidate + reflection -> root Node."""
-        user_input = state["input"]
-
-        res = self._generator.invoke({"input": user_input})
-        output = [res]
-
-        reflection = self._reflect(user_input, output)
-        root = Node(messages=output, reflection=reflection)
-
+        """Generate first candidate + reflect -> root Node."""
+        query = state["input"]
+        messages = self._generate(query)
+        candidate_text = messages[-1].content if messages else ""
+        reflection = self._reflect(query, candidate_text)
+        root = Node(messages=messages, reflection=reflection)
         return {**state, "root": root}
 
-    def _expand(self, state: TreeState, config: RunnableConfig) -> dict[str, Any]:
-        """Expand tree from best leaf."""
+    def _expand(self, state: TreeState) -> dict[str, Any]:
+        """Expand tree from best leaf: generate N candidates, reflect on each."""
         root = state["root"]
-        user_input = state["input"]
-
+        query = state["input"]
         best = self._select(root)
-        messages = best.get_trajectory()
 
-        # Generate N candidates
-        from langchain_openai import ChatOpenAI
-        llm = ChatOpenAI(model=self.model, temperature=self.temperature)
-        gen_prompt = ChatPromptTemplate.from_messages([
-            ("system", self.system_prompt),
-            ("user", "{input}"),
-            MessagesPlaceholder(variable_name="messages", optional=True),
-        ])
-
-        bound = llm.bind_tools(tools=self.tools)
-        result = llm.generate(
-            [gen_prompt.invoke({"input": user_input, "messages": messages}).to_messages()],
-            n=self.n_candidates,
-            **bound.kwargs,
-        )
-        new_candidates = [gen.message for gen in result.generations[0]]
-
-        # Reflect on each candidate
-        for candidate_msg in new_candidates:
-            candidate_output = [candidate_msg]
-            try:
-                reflection = self._reflect(user_input, candidate_output)
-            except Exception:
-                reflection = Reflection(reflections="Error", score=1, found_solution=False)
-            child = Node(messages=candidate_output, parent=best, reflection=reflection)
+        for _ in range(self.n_candidates):
+            # Each candidate is a fresh generation
+            messages = self._generate(query)
+            candidate_text = messages[-1].content if messages else ""
+            reflection = self._reflect(query, candidate_text)
+            child = Node(messages=messages, parent=best, reflection=reflection)
             best.children.append(child)
 
         return state
@@ -190,36 +183,39 @@ class LATSAgent(Agent):
             return "finish"
         return "expand"
 
-    def _get_best_response(self, state: TreeState) -> dict[str, Any]:
+    def _finish(self, state: TreeState) -> dict[str, Any]:
+        """Extract best response from tree."""
         root = state["root"]
         best = self._get_best_node(root)
         trajectory = best.get_trajectory(include_reflections=False)
-        return {
-            **state,
-            "root": root,
-            "messages": trajectory,
-            "output": trajectory[-1].content if trajectory else "",
-        }
+        output = trajectory[-1].content if trajectory else ""
+        return {**state, "root": root, "messages": trajectory, "output": output}
 
     # ------------------------------------------------------------------
-    # Graph
+    # Graph (BaseGraph from haive.core)
     # ------------------------------------------------------------------
 
     def build_graph(self) -> BaseGraph:
         """Build LATS graph using haive.core BaseGraph."""
         graph = BaseGraph(name=f"{self.name}_lats", state_schema=TreeState)
-        graph.add_node("generate_initial", self._generate_initial)
+        graph.add_node("generate", self._generate_initial)
         graph.add_node("expand", self._expand)
-        graph.add_node("finish", self._get_best_response)
-        graph.add_edge(START, "generate_initial")
-        graph.add_conditional_edges("generate_initial", self._should_continue, {"expand": "expand", "finish": "finish"})
-        graph.add_conditional_edges("expand", self._should_continue, {"expand": "expand", "finish": "finish"})
+        graph.add_node("finish", self._finish)
+        graph.add_edge(START, "generate")
+        graph.add_conditional_edges(
+            "generate", self._should_continue,
+            {"expand": "expand", "finish": "finish"},
+        )
+        graph.add_conditional_edges(
+            "expand", self._should_continue,
+            {"expand": "expand", "finish": "finish"},
+        )
         graph.add_edge("finish", END)
         return graph
 
     def compile(self, **kwargs) -> Any:
-        """Compile using BaseGraph.to_langgraph(), without checkpointer (Node not serializable)."""
-        self._ensure_chains()
+        """Compile: build agents lazily, use BaseGraph.to_langgraph(), no checkpointer."""
+        self._ensure_agents()
         if not self._is_compiled or kwargs:
             if not hasattr(self, "graph") or self.graph is None:
                 self._graph_built = False
@@ -230,8 +226,7 @@ class LATSAgent(Agent):
                 lg = self.graph.to_langgraph(state_schema=TreeState)
             else:
                 lg = self.graph
-            # No checkpointer - Node objects can't be serialized
-            self._app = lg.compile()
+            self._app = lg.compile()  # No checkpointer (Node not serializable)
             self._compiled_graph = self._app
             self._is_compiled = True
         return self._compiled_graph or self._app
@@ -241,6 +236,7 @@ class LATSAgent(Agent):
     # ------------------------------------------------------------------
 
     def run(self, input_data: str | dict, **kwargs) -> Any:
+        """Run LATS. Accepts string or dict with 'input' key."""
         if isinstance(input_data, str):
             input_data = {"input": input_data}
         if not self._is_compiled:
@@ -248,6 +244,7 @@ class LATSAgent(Agent):
         return self._app.invoke(input_data, config={"recursion_limit": self.max_tree_height * 3 + 5})
 
     def get_best_answer(self, result: dict) -> str:
+        """Extract best answer string from result."""
         root = result.get("root")
         if not root:
             return ""
@@ -256,12 +253,9 @@ class LATSAgent(Agent):
         return traj[-1].content if traj else ""
 
 
-def create_lats_agent(tools=None, model="gpt-4o-mini", max_tree_height=3, n_candidates=3, **kwargs):
-    """Factory for creating a LATS agent."""
-    return LATSAgent(
-        tools=tools or [], model=model, max_tree_height=max_tree_height,
-        n_candidates=n_candidates, **kwargs
-    )
+def create_lats_agent(tools=None, model="gpt-4o-mini", **kwargs):
+    """Factory for LATS agent."""
+    return LATSAgent(tools=tools or [], model=model, **kwargs)
 
 
 if __name__ == "__main__":
