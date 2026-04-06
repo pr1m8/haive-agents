@@ -262,3 +262,15 @@ def self_route_rag():
     """Self-Route RAG: analyzes query to choose optimal retrieval strategy."""
     from haive.agents.rag.self_route.agent import SelfRouteRAGAgent
     return SelfRouteRAGAgent(name="self_route_rag").compile()
+
+
+def rewoo():
+    """ReWOO: plan all steps upfront, execute in parallel, synthesize answer."""
+    from haive.agents.planning.rewoo.agent import ReWOOAgent
+    return ReWOOAgent(name="rewoo").compile()
+
+
+def reflexion():
+    """Reflexion: draft -> reflect -> revise loop with ReactAgent + SimpleAgent."""
+    from haive.agents.reasoning_and_critique.reflexion.agent import ReflexionAgent
+    return ReflexionAgent(name="reflexion").compile()
