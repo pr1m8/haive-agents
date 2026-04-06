@@ -126,6 +126,7 @@ class MemoryAgent(ReactAgent):
 
     # ---- Store (runtime, not serialized) ----
     _store: Any = PrivateAttr(default=None)
+    _kg_store: Any = PrivateAttr(default=None)  # Neo4jKGStore (optional)
     _summarizer: Any = PrivateAttr(default=None)
     _extractor: Any = PrivateAttr(default=None)
 
@@ -308,6 +309,13 @@ class MemoryAgent(ReactAgent):
                         )
                         logger.info(f"KG extracted: {subj} {pred} {obj}")
 
+                        # Sync to Neo4j if connected
+                        if self._kg_store:
+                            self._kg_store.save_triple(
+                                subj, pred, obj, user_id=self.user_id,
+                                source="conversation_extraction",
+                            )
+
         except json.JSONDecodeError:
             logger.debug("KG extraction: no valid JSON in response")
         except Exception as e:
@@ -375,6 +383,81 @@ class MemoryAgent(ReactAgent):
     def get_store(self) -> Any:
         """Get the underlying store for direct access."""
         return self._store
+
+    # ---- Neo4j KG integration ----
+
+    def connect_neo4j(self, config: Any = None) -> Any:
+        """Connect to Neo4j for graph-based KG queries.
+
+        Args:
+            config: Neo4jKGConfig instance, or None for env var defaults
+
+        Returns:
+            Neo4jKGStore instance
+        """
+        from .kg_store import Neo4jKGConfig, Neo4jKGStore
+        if config is None:
+            config = Neo4jKGConfig()
+        self._kg_store = Neo4jKGStore(config)
+        return self._kg_store
+
+    def sync_kg_to_neo4j(self) -> int:
+        """Sync all KG triples from store to Neo4j.
+
+        Creates the KG in Neo4j from existing triples in the LangGraph store.
+        Must call connect_neo4j() first.
+
+        Returns:
+            Number of triples synced
+        """
+        if not self._kg_store:
+            logger.warning("Neo4j not connected. Call connect_neo4j() first.")
+            return 0
+        return self._kg_store.create_kg_from_memories(self._store, self.user_id)
+
+    def query_kg(self, entity: str) -> list[dict]:
+        """Query KG triples for an entity from Neo4j.
+
+        Args:
+            entity: Entity name to look up
+
+        Returns:
+            List of {subject, predicate, object} dicts
+        """
+        if self._kg_store:
+            return self._kg_store.query_entity(entity)
+        # Fallback to store search
+        try:
+            kg_ns = ("kg", self.user_id)
+            results = self._store.search(kg_ns, query=entity, limit=10)
+            triples = []
+            for item in results:
+                val = item.value if hasattr(item, "value") else item
+                if isinstance(val, dict) and val.get("type") == "kg_triple":
+                    triples.append({
+                        "subject": val["subject"],
+                        "predicate": val["predicate"],
+                        "object": val["object"],
+                    })
+            return triples
+        except Exception as e:
+            logger.warning(f"KG query failed: {e}")
+            return []
+
+    def query_kg_cypher(self, cypher: str, params: dict | None = None) -> list[dict]:
+        """Execute a raw Cypher query against the Neo4j KG.
+
+        Args:
+            cypher: Cypher query string
+            params: Query parameters
+
+        Returns:
+            List of result records
+        """
+        if not self._kg_store:
+            logger.warning("Neo4j not connected. Call connect_neo4j() first.")
+            return []
+        return self._kg_store.query_cypher(cypher, params)
 
     # ---- Advanced: Document-level KG extraction ----
 
