@@ -8,7 +8,6 @@ import re
 from typing import Generic, Literal, TypeVar
 
 from haive.core.engine.agent.agent import Agent, register_agent
-from haive.core.graph.dynamic_graph_builder import DynamicGraph
 from langchain_core.messages import HumanMessage
 from langgraph.graph import END, START
 from langgraph.types import Command, Send
@@ -117,93 +116,66 @@ class ToTAgent(Agent[TOTAgentConfig], Generic[T]):
         )
 
     def setup_workflow(self) -> None:
-        """Set up the Tree of Thoughts workflow using the DynamicGraph builder.
+        """Set up the Tree of Thoughts workflow using raw StateGraph.
 
-        This creates a graph with nodes for:
-        1. Generating candidate solutions
-        2. Scoring candidates
-        3. Selecting the best candidates for beam search
-        4. Expanding new generations from those candidates
+        Uses raw langgraph.StateGraph instead of DynamicGraph to avoid
+        the Command(goto=None) and Send routing bugs in DynamicGraph.to_langgraph().
+
+        Graph structure:
+        - Sequential mode:
+          START -> generate -> evaluate_all -> select -> (loop or END)
+        - Parallel mode:
+          START -> generate -> [evaluate_candidate * N] -> collect -> select -> (loop or END)
         """
-        # Get engine configurations from config
-        generator_engine = self.config.get_engine("generator")
-        evaluator_engine = self.config.get_engine("evaluator")
+        from langgraph.graph import StateGraph as LGStateGraph
 
-        # Create the graph with state schema
-        self.dynamic_graph = DynamicGraph(
-            state_schema=self.config.state_schema,
-            components=[generator_engine, evaluator_engine],
-        )
+        graph = LGStateGraph(self.config.state_schema)
 
-        # Add nodes to the graph
-        self.dynamic_graph.add_node(
-            self.config.generator_node, self._generate_candidates
-        )
+        # Add nodes
+        graph.add_node(self.config.generator_node, self._generate_candidates)
 
-        # Add evaluation nodes based on parallelization setting
         if self.parallel_evaluation:
-            self.dynamic_graph.add_node("evaluate_candidate", self._evaluate_candidate)
-            self.dynamic_graph.add_node(
-                "collect_evaluations", self._collect_evaluations
-            )
+            graph.add_node("evaluate_candidate", self._evaluate_candidate)
+            graph.add_node("collect_evaluations", self._collect_evaluations)
         else:
-            self.dynamic_graph.add_node(
-                self.config.evaluator_node, self._score_candidates
-            )
+            graph.add_node(self.config.evaluator_node, self._score_candidates)
 
-        # Add selection node
-        self.dynamic_graph.add_node(self.config.selector_node, self._select_best)
+        graph.add_node(self.config.selector_node, self._select_best)
 
-        # Define the workflow edges
+        # Edges
+        graph.add_edge(START, self.config.generator_node)
 
-        # From START to initial generation
-        self.dynamic_graph.add_edge(START, self.config.generator_node)
-
-        # From generation to evaluation
         if self.parallel_evaluation:
-            # Map out to parallel evaluation
-            self.dynamic_graph.add_conditional_edges(
+            # Fan-out: generator -> parallel evaluate_candidate via Send
+            graph.add_conditional_edges(
                 self.config.generator_node,
                 self._map_candidates_to_evaluation,
-                {"end": END},
+                ["evaluate_candidate", END],
             )
-
-            # From evaluation to collection
-            self.dynamic_graph.add_edge("evaluate_candidate", "collect_evaluations")
-
-            # From collection to selection
-            self.dynamic_graph.add_edge(
-                "collect_evaluations", self.config.selector_node
-            )
+            graph.add_edge("evaluate_candidate", "collect_evaluations")
+            graph.add_edge("collect_evaluations", self.config.selector_node)
         else:
-            # Direct edge to sequential evaluation
-            self.dynamic_graph.add_conditional_edges(
+            graph.add_conditional_edges(
                 self.config.generator_node,
                 self._should_continue_search,
                 {"continue": self.config.evaluator_node, "end": END},
             )
+            graph.add_edge(self.config.evaluator_node, self.config.selector_node)
 
-            # From evaluation to selection
-            self.dynamic_graph.add_edge(
-                self.config.evaluator_node, self.config.selector_node
-            )
-
-        # From selection to either expansion or END
         if self.parallel_expansion:
-            # Conditional edges for beam search expansion
-            self.dynamic_graph.add_conditional_edges(
-                self.config.selector_node, self._map_beam_expansion, {"end": END}
+            graph.add_conditional_edges(
+                self.config.selector_node,
+                self._map_beam_expansion,
+                [self.config.generator_node, END],
             )
         else:
-            # Simple conditional for continue/end
-            self.dynamic_graph.add_conditional_edges(
+            graph.add_conditional_edges(
                 self.config.selector_node,
                 self._should_expand_or_finish,
                 {"continue": self.config.generator_node, "end": END},
             )
 
-        # Build the graph
-        self.graph = self.dynamic_graph.build()
+        self.graph = graph
 
     def _generate_candidates(self, state: TOTState) -> Command:
         """Generate candidate solutions for the problem.
