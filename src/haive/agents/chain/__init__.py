@@ -20,20 +20,70 @@ from haive.agents.chain.declarative_chain import (
     SequenceSpec,
     complex_rag,
 )
-from haive.agents.chain.examples import (
-    StrategyDecision,
-    create_agentic_router_declarative,
-    create_complex_flow_from_spec,
-    create_plan,
-    create_query_planning_declarative,
-    create_rag_with_fallback,
-    create_self_reflective_declarative,
-    execute_sub_query,
-    finalize_answer,
-    improve_answer,
-    reflect_and_critique,
-    synthesize_results,
-)
+# DISABLED - examples.py file was removed/missing
+# from haive.agents.chain.examples import (
+#     StrategyDecision,
+#     create_agentic_router_declarative,
+#     create_complex_flow_from_spec,
+#     create_plan,
+#     create_query_planning_declarative,
+#     create_rag_with_fallback,
+#     create_self_reflective_declarative,
+#     execute_sub_query,
+#     finalize_answer,
+#     improve_answer,
+#     reflect_and_critique,
+#     synthesize_results,
+# )
+
+
+# Placeholder stubs for missing examples module
+class StrategyDecision:
+    """Placeholder for StrategyDecision - examples module missing."""
+
+
+def create_agentic_router_declarative(*args, **kwargs):
+    """Placeholder - examples module missing."""
+
+
+def create_complex_flow_from_spec(*args, **kwargs):
+    """Placeholder - examples module missing."""
+
+
+def create_plan(*args, **kwargs):
+    """Placeholder - examples module missing."""
+
+
+def create_query_planning_declarative(*args, **kwargs):
+    """Placeholder - examples module missing."""
+
+
+def create_rag_with_fallback(*args, **kwargs):
+    """Placeholder - examples module missing."""
+
+
+def create_self_reflective_declarative(*args, **kwargs):
+    """Placeholder - examples module missing."""
+
+
+def execute_sub_query(*args, **kwargs):
+    """Placeholder - examples module missing."""
+
+
+def finalize_answer(*args, **kwargs):
+    """Placeholder - examples module missing."""
+
+
+def improve_answer(*args, **kwargs):
+    """Placeholder - examples module missing."""
+
+
+def reflect_and_critique(*args, **kwargs):
+    """Placeholder - examples module missing."""
+
+
+def synthesize_results(*args, **kwargs):
+    """Placeholder - examples module missing."""
 
 # Commented out due to circular import with ChainAgent
 # from haive.agents.chain.examples_simple import (

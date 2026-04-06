@@ -11,7 +11,14 @@ from haive.agents.research.storm.config import (
     VectorStoreRetrieverConfig,
     WritingAgentConfig,
 )
-from haive.agents.research.storm.example import main
+# DISABLED - example.py file was removed/missing
+# from haive.agents.research.storm.example import main
+
+
+def main(*args, **kwargs):
+    """Placeholder - example module missing."""
+
+
 from haive.agents.research.storm.state import ArticleState, ResearchState, TopicState
 
 __all__ = [
