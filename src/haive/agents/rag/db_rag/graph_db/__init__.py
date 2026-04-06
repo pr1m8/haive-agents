@@ -20,16 +20,21 @@ from .config import (
     get_graph_db_schema,
     validate_engines,
 )
-from .example import (
-    basic_example,
-    batch_processing_example,
-    custom_domain_example,
-    error_handling_example,
-    main,
-    performance_monitoring_example,
-    run_all_examples,
-    streaming_example,
-)
+try:
+    from .example import (
+        basic_example,
+        batch_processing_example,
+        custom_domain_example,
+        error_handling_example,
+        main,
+        performance_monitoring_example,
+        run_all_examples,
+        streaming_example,
+    )
+except ImportError:
+    basic_example = batch_processing_example = custom_domain_example = None
+    error_handling_example = main = performance_monitoring_example = None
+    run_all_examples = streaming_example = None
 from .models import (
     Config,
     CypherQueryOutput,
