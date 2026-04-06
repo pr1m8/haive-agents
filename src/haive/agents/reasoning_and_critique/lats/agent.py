@@ -391,12 +391,12 @@ class LATSAgent(Agent[LATSAgentConfig]):
             # Check if solution found
             if self._is_solved(root):
                 logger.info(f"Solution found after {iterations} iterations")
-                return END
+                return "finish"
 
             # Check max iterations
             if iterations >= self.config.max_tree_height:
                 logger.info(f"Reached max iterations ({self.config.max_tree_height})")
-                return END
+                return "finish"
 
             # Continue searching
             return "expand"
