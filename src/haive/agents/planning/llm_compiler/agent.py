@@ -39,10 +39,13 @@ Available tools:
 
 Given a user query, create a plan as a DAG of tasks:
 - Each task calls one tool with specific arguments
+- IMPORTANT: The 'args' dict MUST include the tool's required parameters with actual values
+  For example, a calculator tool needs args like expression="99*77"
+  A search tool needs args like query="what is Python"
 - Tasks with no dependencies run in parallel (maximize this!)
-- Use '$N' in arguments to reference task N's output (e.g. '$1')
+- Use '$N' in argument values to reference task N's output
 - The last task should be tool='join' to aggregate results
-- Keep plans minimal - don't add unnecessary steps"""
+- Keep plans minimal"""
 
 REPLANNER_SYSTEM = """You are improving a failed execution plan.
 
@@ -96,25 +99,25 @@ class LLMCompilerAgent(Agent):
 
     def _build_llms(self) -> None:
         """Create planner/joiner LLMs with structured output."""
+        from langchain_openai import ChatOpenAI
+        from langchain_core.prompts import ChatPromptTemplate
+
         tool_desc = self._format_tool_descriptions()
+        base_llm = ChatOpenAI(model="gpt-4o-mini")
 
-        # Planner: returns DAGPlan
-        planner_cfg = AugLLMConfig(
-            name="compiler_planner",
-            temperature=self.planner_temperature,
-            system_message=PLANNER_SYSTEM.format(tool_descriptions=tool_desc),
-            structured_output_model=DAGPlan,
-        )
-        self._planner = planner_cfg.create_runnable()
+        # Planner: system prompt with tools -> structured DAGPlan output
+        planner_prompt = ChatPromptTemplate.from_messages([
+            ("system", PLANNER_SYSTEM.format(tool_descriptions=tool_desc)),
+            ("human", "{query}"),
+        ])
+        self._planner = planner_prompt | base_llm.with_structured_output(DAGPlan, method="function_calling")
 
-        # Joiner: returns JoinerDecision
-        joiner_cfg = AugLLMConfig(
-            name="compiler_joiner",
-            temperature=self.joiner_temperature,
-            system_message=JOINER_SYSTEM,
-            structured_output_model=JoinerDecision,
-        )
-        self._joiner = joiner_cfg.create_runnable()
+        # Joiner: system prompt -> structured JoinerDecision output
+        joiner_prompt = ChatPromptTemplate.from_messages([
+            ("system", JOINER_SYSTEM),
+            ("human", "{input}"),
+        ])
+        self._joiner = joiner_prompt | base_llm.with_structured_output(JoinerDecision, method="function_calling")
 
     # ------------------------------------------------------------------
     # Compile override (same pattern as DynamicSupervisor)
@@ -197,16 +200,7 @@ class LLMCompilerAgent(Agent):
             logger.info("Planning new DAG")
 
         try:
-            result = llm.invoke({"messages": [{"role": "user", "content": state.query}]})
-
-            # Extract DAGPlan from result
-            if hasattr(result, "content"):
-                # If the structured output came back in content
-                dag_plan = result
-            elif isinstance(result, DAGPlan):
-                dag_plan = result
-            else:
-                dag_plan = DAGPlan(tasks=[DAGTask(id=1, tool="join", thought="Fallback")], reasoning="Parse error")
+            dag_plan: DAGPlan = llm.invoke({"query": state.query})
 
             logger.info(f"Plan: {len(dag_plan.tasks)} tasks, reasoning: {dag_plan.reasoning[:60]}")
             return {"dag_plan": dag_plan}
@@ -296,6 +290,8 @@ class LLMCompilerAgent(Agent):
     def _join_node(self, state: CompilerState) -> dict[str, Any]:
         """Decide: answer or replan."""
         if not state.results:
+            if state.replan_count >= self.max_replans:
+                return {"messages": [AIMessage(content="Unable to produce results.")], "done": True}
             return {"replan_count": state.replan_count + 1}
 
         # Format results for joiner
@@ -307,7 +303,7 @@ class LLMCompilerAgent(Agent):
         prompt = f"Query: {state.query}\n\nResults:\n" + "\n".join(result_lines)
 
         try:
-            decision: JoinerDecision = self._joiner.invoke({"messages": [{"role": "user", "content": prompt}]})
+            decision: JoinerDecision = self._joiner.invoke({"input": prompt})
 
             if isinstance(decision, JoinerDecision):
                 if decision.action == "answer":
@@ -348,7 +344,21 @@ class LLMCompilerAgent(Agent):
     @staticmethod
     def _route_after_join(state: CompilerState) -> bool:
         """True = replan, False = done."""
-        return not getattr(state, "done", False) and state.replan_count > 0 and not state.messages
+        if getattr(state, "done", False):
+            return False  # Joiner said we're done
+        if state.messages:
+            return False  # We have a final answer
+        # Only replan if joiner explicitly asked for it
+        return state.replan_count > 0
+
+    def _plan_from_text(self, text: str, query: str) -> DAGPlan:
+        """Create a DAGPlan from LLM text output when structured output fails."""
+        # Simple heuristic: use first available tool with the query
+        tasks = []
+        for i, t in enumerate(self.tools):
+            tasks.append(DAGTask(id=i+1, tool=t.name, args={"query": query}, thought=f"Use {t.name}"))
+        tasks.append(DAGTask(id=len(tasks)+1, tool="join", depends_on=[t.id for t in tasks], thought="Aggregate"))
+        return DAGPlan(tasks=tasks, reasoning=f"Plan from text: {text[:50]}")
 
     # ------------------------------------------------------------------
     # Convenience
@@ -379,10 +389,20 @@ class LLMCompilerAgent(Agent):
     # ------------------------------------------------------------------
 
     def _format_tool_descriptions(self) -> str:
-        return "\n".join(
-            f"{i+1}. {t.name}: {t.description}"
-            for i, t in enumerate(self.tools)
-        )
+        lines = []
+        for i, t in enumerate(self.tools):
+            line = f"{i+1}. {t.name}: {t.description}"
+            if hasattr(t, "args_schema") and t.args_schema:
+                try:
+                    schema = t.args_schema.model_json_schema()
+                    props = schema.get("properties", {})
+                    if props:
+                        arg_strs = [f"{k} ({v.get('type', 'str')})" for k, v in props.items()]
+                        line += "\n   Args: " + ", ".join(arg_strs)
+                except Exception:
+                    pass
+            lines.append(line)
+        return "\n".join(lines)
 
     def _format_results(self, state: CompilerState) -> str:
         if not state.results:
