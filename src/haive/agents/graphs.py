@@ -274,3 +274,21 @@ def reflexion():
     """Reflexion: draft -> reflect -> revise loop with ReactAgent + SimpleAgent."""
     from haive.agents.reasoning_and_critique.reflexion.agent import ReflexionAgent
     return ReflexionAgent(name="reflexion").compile()
+
+
+def round_robin_conversation():
+    """Round-robin conversation: each agent speaks in fixed order."""
+    from haive.agents.conversation.round_robin.agent import RoundRobinConversation
+    from haive.agents.simple.agent import SimpleAgent
+
+    participants = {
+        "analyst": SimpleAgent(name="analyst", engine=_aug(0.3, "You analyze from a technical perspective.")),
+        "strategist": SimpleAgent(name="strategist", engine=_aug(0.5, "You think about strategy.")),
+    }
+    return RoundRobinConversation(name="roundrobin", max_rounds=2, participant_agents=participants).compile()
+
+
+def lats():
+    """LATS: Monte Carlo Tree Search over LLM responses with reflection scoring."""
+    from haive.agents.reasoning_and_critique.lats.agent import LATSAgent
+    return LATSAgent(name="lats", max_tree_height=2, n_candidates=2).compile()
