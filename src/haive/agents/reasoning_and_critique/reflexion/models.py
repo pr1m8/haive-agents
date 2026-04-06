@@ -1,31 +1,38 @@
+"""Pydantic models for Reflexion structured output."""
+
 from pydantic import BaseModel, Field
 
 
 class Reflection(BaseModel):
-    """Reflection on the answer."""
+    """Structured critique of a draft answer."""
 
-    missing: str = Field(description="Critique of what is missing.")
-    superfluous: str = Field(description="Critique of what is superfluous")
+    missing: str = Field(description="Critique of what is missing from the answer.")
+    superfluous: str = Field(description="Critique of what is superfluous in the answer.")
+    score: int = Field(
+        default=5,
+        ge=0,
+        le=10,
+        description="Quality score from 0-10.",
+    )
 
 
 class AnswerQuestion(BaseModel):
-    """Answer the question. Provide an answer, reflection, and follow up with search queries to improve the answer."""
+    """Initial answer with self-reflection and follow-up queries."""
 
     answer: str = Field(description="~250 word detailed answer to the question.")
     reflection: Reflection = Field(description="Your reflection on the initial answer.")
     search_queries: list[str] = Field(
-        default_factory=list,  # ✅ Ensures search_queries is always present
-        description="1-3 search queries for researching improvements to address the critique of your current answer.",
+        default_factory=list,
+        description=(
+            "1-3 search queries for researching improvements to address "
+            "the critique of your current answer."
+        ),
     )
 
 
 class ReviseAnswer(AnswerQuestion):
-    """Revise your original answer to your question. Provide an answer, reflection,.
-
-    cite your reflection with references, and finally
-    add search queries to improve the answer.
-    """
+    """Revised answer incorporating reflection and references."""
 
     references: list[str] = Field(
-        description="Citations motivating your updated answer."
+        description="Citations motivating your updated answer.",
     )
