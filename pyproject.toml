@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "haive-agents"
 version = "1.0.0"
-description = "haive-agents for Haive framework"
+description = "Production-ready agent implementations: SimpleAgent, ReactAgent, MultiAgent, MemoryAgent, RAG variants, and more"
 authors = ["pr1m8 <william.astley@algebraicwealth.com>"]
 license = "MIT"
 readme = "README.md"
