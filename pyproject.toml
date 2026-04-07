@@ -8,7 +8,7 @@ readme = "README.md"
 packages = [{ include = "haive", from = "src" }]
 [tool.poetry.dependencies]
 python = ">=3.12,<3.13"
-haive-core = { path = '../haive-core', develop = true }
+haive-core = "^1.0.0"
 pydantic = "^2.10.6"
 langchain = "^0.3.20"
 langchain-core = "^0.3.44"
