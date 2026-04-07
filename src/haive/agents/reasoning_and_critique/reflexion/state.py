@@ -1,8 +1,21 @@
-from haive.agents.simple.state import SimpleAgentState
+"""Reflexion agent state."""
+
+from typing import Any
+
+from typing_extensions import TypedDict
 
 
-class ReflexionState(SimpleAgentState):
-    """State for the Reflexion agent."""
+class ReflexionState(TypedDict):
+    """State for the Reflexion graph.
 
-    reflections_count: int = 0
-    answer: str = ""
+    Fields:
+        input: The original user query.
+        draft: The current best answer text.
+        reflections: List of reflection/critique strings from each iteration.
+        revision_count: How many revise iterations have been completed.
+    """
+
+    input: str
+    draft: str
+    reflections: list[str]
+    revision_count: int

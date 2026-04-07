@@ -1,27 +1,13 @@
-"""LLM Compiler agent module."""
+"""LLM Compiler - DAG-based parallel task execution with structured planning."""
 
 from .agent import LLMCompilerAgent
-from .config import LLMCompilerAgentConfig
-from .models import (
-    CompilerPlan,
-    CompilerStep,
-    CompilerTask,
-    FinalResponse,
-    JoinerOutput,
-    Replan,
-    TaskDependency,
-)
+from .dag_models import DAGPlan, DAGTask, JoinerDecision
 from .state import CompilerState
 
 __all__ = [
-    "CompilerPlan",
     "CompilerState",
-    "CompilerStep",
-    "CompilerTask",
-    "FinalResponse",
-    "JoinerOutput",
+    "DAGPlan",
+    "DAGTask",
+    "JoinerDecision",
     "LLMCompilerAgent",
-    "LLMCompilerAgentConfig",
-    "Replan",
-    "TaskDependency",
 ]

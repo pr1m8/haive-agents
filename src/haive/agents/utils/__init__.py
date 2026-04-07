@@ -1,5 +1,5 @@
-"""Module exports."""
+"""Haive agents utilities — trace, debug, and helpers."""
 
-from haive.agents.utils.utils import parse
+from haive.agents.utils.trace import TracePrinter, run_traced
 
-__all__ = ["parse"]
+__all__ = ["TracePrinter", "run_traced"]

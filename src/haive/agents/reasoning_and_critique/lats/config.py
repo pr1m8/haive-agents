@@ -1,85 +1,46 @@
 """Configuration for Language Agent Tree Search (LATS) agent."""
 
-from haive.core.engine.agent.agent import AgentConfig
-from haive.core.engine.aug_llm import AugLLMConfig
-from haive.tools.tools.search_tools import tavily_search_tool
-from langchain_core.tools import BaseTool, StructuredTool
-from pydantic import Field
+from typing import Any
+
+from pydantic import BaseModel, Field
 
 
-class LATSAgentConfig(AgentConfig):
-    """Configuration for Language Agent Tree Search (LATS) agent.
+class LATSAgentConfig(BaseModel):
+    """Plain configuration model for LATS agent parameters.
 
-    This agent implements a Monte Carlo Tree Search approach to generate
-    high-quality responses through exploration and exploitation of different
-    action trajectories.
+    This is a simple Pydantic BaseModel holding LATS-specific knobs.
+    The LATSAgent itself extends haive.agents.base.agent.Agent and
+    owns the engine / graph lifecycle.
     """
 
     # Core LATS parameters
-    max_iterations: int = Field(
-        default=5, description="Maximum number of search iterations"
+    max_tree_height: int = Field(
+        default=5, description="Maximum height of the search tree"
     )
-
-    max_depth: int = Field(default=5, description="Maximum depth of the search tree")
-
-    exploration_weight: float = Field(
-        default=1.0, description="Exploration weight for UCB calculation"
-    )
-
     n_candidates: int = Field(
-        default=5, description="Number of candidate actions to generate at each node"
+        default=5, description="Number of candidate responses per expansion"
+    )
+    exploration_weight: float = Field(
+        default=1.0, description="Exploration weight for UCB1 calculation"
     )
 
-    # Component configurations
-    reflection_engine: AugLLMConfig = Field(
-        default_factory=AugLLMConfig, description="Engine for reflection on candidate solutions"
+    # LLM settings
+    model: str = Field(default="gpt-4o", description="OpenAI model name")
+    temperature: float = Field(
+        default=0.7, description="Temperature for candidate generation"
     )
 
-    action_engine: AugLLMConfig = Field(
-        default_factory=lambda: AugLLMConfig(tools=[tavily_search_tool]),
-        description="Engine for generating candidate actions",
+    # Prompts
+    system_prompt: str = Field(
+        default="You are an AI assistant that provides accurate, helpful responses.",
+        description="System prompt for generation",
+    )
+    reflection_prompt: str = Field(
+        default="Reflect and grade the assistant response to the user question below.",
+        description="Prompt prefix for reflection",
     )
 
-    # Specific tools for this agent
-    tools: list[BaseTool | StructuredTool] = Field(
-        default_factory=list, description="Tools available to this agent"
+    # Tools (langchain BaseTool / StructuredTool instances)
+    tools: list[Any] = Field(
+        default_factory=list, description="Tools available to the LATS agent"
     )
-
-    # Custom state schema for LATS (TreeState is TypedDict, not BaseModel)
-    # state_schema: type[BaseModel] = Field(
-    #     default=TreeState, description="Schema for the LATS state"
-    # )
-
-    input_schema_name: str | None = Field(
-        default=None, description="Optional name of the input schema"
-    )
-
-    output_schema_name: str | None = Field(
-        default=None, description="Optional name of the output schema"
-    )
-
-    @classmethod
-    def from_llms(
-        cls,
-        reflection_llm: AugLLMConfig,
-        action_llm: AugLLMConfig,
-        tools: list[BaseTool | StructuredTool] | None = None,
-        **kwargs,
-    ) -> "LATSAgentConfig":
-        """Create a LATS agent configuration from LLM configs.
-
-        Args:
-            reflection_llm: LLM configuration for reflection
-            action_llm: LLM configuration for action generation
-            tools: Optional list of tools
-            **kwargs: Additional configuration parameters
-
-        Returns:
-            LATSAgentConfig instance
-        """
-        return cls(
-            reflection_engine=reflection_llm,
-            action_engine=action_llm,
-            tools=tools or [],
-            **kwargs,
-        )

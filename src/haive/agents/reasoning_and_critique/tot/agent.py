@@ -8,7 +8,6 @@ import re
 from typing import Generic, Literal, TypeVar
 
 from haive.core.engine.agent.agent import Agent, register_agent
-from haive.core.graph.dynamic_graph_builder import DynamicGraph
 from langchain_core.messages import HumanMessage
 from langgraph.graph import END, START
 from langgraph.types import Command, Send
@@ -117,95 +116,69 @@ class ToTAgent(Agent[TOTAgentConfig], Generic[T]):
         )
 
     def setup_workflow(self) -> None:
-        """Set up the Tree of Thoughts workflow using the DynamicGraph builder.
+        """Set up the Tree of Thoughts workflow.
 
-        This creates a graph with nodes for:
-        1. Generating candidate solutions
-        2. Scoring candidates
-        3. Selecting the best candidates for beam search
-        4. Expanding new generations from those candidates
+        Graph structure:
+        - Sequential mode:
+          START -> generate -> evaluate_all -> select -> (loop or END)
+        - Parallel mode:
+          START -> generate -> [evaluate_candidate * N] -> collect -> select -> (loop or END)
         """
-        # Get engine configurations from config
-        generator_engine = self.config.get_engine("generator")
-        evaluator_engine = self.config.get_engine("evaluator")
+        from haive.core.graph.dynamic_graph_builder import DynamicGraph
 
-        # Create the graph with state schema
         self.dynamic_graph = DynamicGraph(
             state_schema=self.config.state_schema,
-            components=[generator_engine, evaluator_engine],
+            components=[],
         )
+        graph = self.dynamic_graph
 
-        # Add nodes to the graph
-        self.dynamic_graph.add_node(
-            self.config.generator_node, self._generate_candidates
-        )
+        # Add nodes
+        graph.add_node(self.config.generator_node, self._generate_candidates)
 
-        # Add evaluation nodes based on parallelization setting
         if self.parallel_evaluation:
-            self.dynamic_graph.add_node("evaluate_candidate", self._evaluate_candidate)
-            self.dynamic_graph.add_node(
-                "collect_evaluations", self._collect_evaluations
-            )
+            graph.add_node("evaluate_candidate", self._evaluate_candidate)
+            graph.add_node("collect_evaluations", self._collect_evaluations)
         else:
-            self.dynamic_graph.add_node(
-                self.config.evaluator_node, self._score_candidates
-            )
+            graph.add_node(self.config.evaluator_node, self._score_candidates)
 
-        # Add selection node
-        self.dynamic_graph.add_node(self.config.selector_node, self._select_best)
+        graph.add_node(self.config.selector_node, self._select_best)
 
-        # Define the workflow edges
+        # Edges
+        graph.add_edge(START, self.config.generator_node)
 
-        # From START to initial generation
-        self.dynamic_graph.add_edge(START, self.config.generator_node)
-
-        # From generation to evaluation
         if self.parallel_evaluation:
-            # Map out to parallel evaluation
-            self.dynamic_graph.add_conditional_edges(
+            # Fan-out: generator -> parallel evaluate_candidate via Send
+            graph.add_conditional_edges(
                 self.config.generator_node,
                 self._map_candidates_to_evaluation,
-                {"end": END},
+                ["evaluate_candidate", END],
             )
-
-            # From evaluation to collection
-            self.dynamic_graph.add_edge("evaluate_candidate", "collect_evaluations")
-
-            # From collection to selection
-            self.dynamic_graph.add_edge(
-                "collect_evaluations", self.config.selector_node
-            )
+            graph.add_edge("evaluate_candidate", "collect_evaluations")
+            graph.add_edge("collect_evaluations", self.config.selector_node)
         else:
-            # Direct edge to sequential evaluation
-            self.dynamic_graph.add_conditional_edges(
+            graph.add_conditional_edges(
                 self.config.generator_node,
                 self._should_continue_search,
                 {"continue": self.config.evaluator_node, "end": END},
             )
+            graph.add_edge(self.config.evaluator_node, self.config.selector_node)
 
-            # From evaluation to selection
-            self.dynamic_graph.add_edge(
-                self.config.evaluator_node, self.config.selector_node
-            )
-
-        # From selection to either expansion or END
         if self.parallel_expansion:
-            # Conditional edges for beam search expansion
-            self.dynamic_graph.add_conditional_edges(
-                self.config.selector_node, self._map_beam_expansion, {"end": END}
+            graph.add_conditional_edges(
+                self.config.selector_node,
+                self._map_beam_expansion,
+                [self.config.generator_node, END],
             )
         else:
-            # Simple conditional for continue/end
-            self.dynamic_graph.add_conditional_edges(
+            graph.add_conditional_edges(
                 self.config.selector_node,
                 self._should_expand_or_finish,
                 {"continue": self.config.generator_node, "end": END},
             )
 
-        # Build the graph
-        self.graph = self.dynamic_graph.build()
+        self.graph = graph.build()
 
-    async def _generate_candidates(self, state: TOTState) -> Command:
+    def _generate_candidates(self, state: TOTState) -> Command:
         """Generate candidate solutions for the problem.
 
         Args:
@@ -247,8 +220,9 @@ class ToTAgent(Agent[TOTAgentConfig], Generic[T]):
 
         try:
             # Invoke the generator
-            response = await generator.ainvoke(
-                [HumanMessage(content=prompt)], {"configurable": {"temperature": 0.7}}
+            response = generator.invoke(
+                {"messages": [HumanMessage(content=prompt)]},
+                {"configurable": {"temperature": 0.7}},
             )
 
             # Extract candidates from the response
@@ -320,7 +294,7 @@ class ToTAgent(Agent[TOTAgentConfig], Generic[T]):
 
         return sends
 
-    async def _evaluate_candidate(self, state: TOTState) -> Command:
+    def _evaluate_candidate(self, state: TOTState) -> Command:
         """Evaluate a single candidate solution.
 
         Args:
@@ -342,7 +316,7 @@ class ToTAgent(Agent[TOTAgentConfig], Generic[T]):
             prompt_inputs = {"problem": problem, "candidate": content}
 
             # Invoke the evaluator
-            score = await self.evaluator_runnable.ainvoke(prompt_inputs)
+            score = self.evaluator_runnable.invoke(prompt_inputs)
 
             # Create scored candidate
             scored_candidate = ScoredCandidate(
@@ -387,7 +361,7 @@ class ToTAgent(Agent[TOTAgentConfig], Generic[T]):
 
         return Command(update={"scored_candidates": updated_scored})
 
-    async def _score_candidates(self, state: TOTState) -> Command:
+    def _score_candidates(self, state: TOTState) -> Command:
         """Score all candidates sequentially.
 
         Args:
@@ -416,8 +390,8 @@ class ToTAgent(Agent[TOTAgentConfig], Generic[T]):
                 prompt = f"Problem: {problem}\n\nCandidate Solution:\n{content}\n\nEvaluate this solution and provide a score between 0 and 1, where 1 is perfect."
 
                 # Invoke the evaluator
-                response = await evaluator.ainvoke(
-                    [HumanMessage(content=prompt)],
+                response = evaluator.invoke(
+                    {"messages": [HumanMessage(content=prompt)]},
                     {"configurable": {"temperature": 0.1}},
                 )
 

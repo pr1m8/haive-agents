@@ -1,26 +1,29 @@
-"""Research Agents - Advanced research and information gathering agents.
+"""Research agents — web search, deep research, and structured investigation.
 
-This module provides specialized agents for conducting research, gathering information,
-and generating comprehensive reports on various topics.
-
-Available Agents:
-    - PersonResearchAgent: Comprehensive person research with multi-source data
-    - OpenPerplexityAgent: Web search and research capabilities
-    - STORMAgent: Structured research methodology (in development)
+Available agents:
+    - ResearchAgent (Perplexity-style): 3-stage QueryAnalyzer → Researcher → Synthesizer
+    - DeepResearchAgent: 5-stage pipeline with shared research store
+    - OpenPerplexityAgent: Legacy, full research pipeline
+    - PersonResearchAgent: Legacy, person-focused research
+    - STORMAgentConfig: Structured research config (legacy)
 
 Example:
-    Basic research usage::
-
-        from haive.agents.research.person import PersonResearchAgent
-
-        agent = PersonResearchAgent(
-            name="researcher",
-            research_topic="AI Safety"
-        )
-
-        result = await agent.ainvoke({"query": "Recent developments in AI safety"})
+    from haive.agents.research import create_research_agent
+    agent = create_research_agent()
+    result = agent.run("What is quantum computing?")
 """
 
+# New multi-agent research implementations
+from haive.agents.research.deep_research_agent import (
+    DeepResearchAgent,
+    create_deep_research_agent,
+)
+from haive.agents.research.perplexity_agent import (
+    ResearchAgent,
+    create_research_agent,
+)
+
+# Legacy research agents
 from haive.agents.research.open_perplexity import ResearchAgent as OpenPerplexityAgent
 from haive.agents.research.open_perplexity import (
     ResearchAgentConfig as OpenPerplexityConfig,
@@ -28,13 +31,15 @@ from haive.agents.research.open_perplexity import (
 from haive.agents.research.person import PersonResearchAgent
 from haive.agents.research.storm import STORMAgentConfig
 
-# Import available research agents
-
-# Import STORM config (agent implementation is still in development)
-
 __all__ = [
+    # New multi-agent research
+    "DeepResearchAgent",
+    "ResearchAgent",
+    "create_deep_research_agent",
+    "create_research_agent",
+    # Legacy
     "OpenPerplexityAgent",
     "OpenPerplexityConfig",
     "PersonResearchAgent",
-    "STORMAgentConfig",  # Config only - agent still in development
+    "STORMAgentConfig",
 ]

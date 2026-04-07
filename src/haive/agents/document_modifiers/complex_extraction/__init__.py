@@ -29,8 +29,7 @@ from haive.agents.document_modifiers.complex_extraction.utils import (
     encode,
 )
 
-# from haive.agents.document_modifiers.complex_extraction.example import PersonInfo
-
+# 
 __all__ = [
     "ComplexExtractionAgent",
     "ComplexExtractionAgentConfig",

@@ -1644,12 +1644,16 @@ class SimpleAgent(
     def compile(self, **kwargs) -> Any:
         """Compile the agent's graph.
 
-        This method ensures compatibility with ExecutionMixin.
-
-        Returns:
-            Compiled graph ready for execution
+        Uses create_runnable() for SimpleAgent's own graph, but falls through
+        to the base Agent compile (with to_langgraph) for subclasses that
+        build BaseGraph in build_graph().
         """
         if not self._is_compiled:
+            # If graph is a BaseGraph, use the base Agent compile path
+            # which properly calls to_langgraph() then StateGraph.compile()
+            if hasattr(self, "graph") and self.graph is not None and hasattr(self.graph, "to_langgraph"):
+                return super().compile(**kwargs)
+            # Otherwise use SimpleAgent's create_runnable path
             self._app = self.create_runnable()
             self._compiled_graph = self._app
         return self._app

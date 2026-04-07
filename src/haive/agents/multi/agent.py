@@ -29,7 +29,7 @@ Architecture:
 Example:
     Basic sequential workflow::
 
-        >>> from haive.agents.multi.enhanced_multi_agent_v4 import MultiAgent
+        >>> from haive.agents.multi.agent import MultiAgent
         >>> from haive.agents.simple import SimpleAgent
         >>> from haive.agents.react import ReactAgent
         >>>
@@ -65,11 +65,11 @@ try:
 except ImportError:
     pass
 
-from haive.core.graph.node.agent_node_v3 import create_agent_node_v3
+from langchain_core.messages import AIMessage, BaseMessage
 from haive.core.graph.state_graph.base_graph2 import BaseGraph
 from haive.core.schema.prebuilt.multi_agent_state import MultiAgentState
 from langgraph.graph import END, START
-from pydantic import Field
+from pydantic import BaseModel, Field
 
 from haive.agents.base.agent import Agent
 
@@ -77,6 +77,199 @@ if TYPE_CHECKING:
     pass
 
 logger = logging.getLogger(__name__)
+
+
+def _create_agent_wrapper(agent_name: str, agent: Agent) -> Callable:
+    """Create a wrapper function that properly converts state between MultiAgentState and sub-agent.
+
+    This wrapper handles the critical state conversion needed for sequential multi-agent
+    execution. It extracts messages from the MultiAgentState, invokes the sub-agent's
+    compiled graph, and converts the result back to a dict update compatible with
+    MultiAgentState.
+
+    The key problem this solves: sub-agents return their own state schema (e.g. LLMState)
+    which may contain fields and types incompatible with MultiAgentState. The wrapper
+    normalizes the result to only update shared fields (messages, agent_states, agent_outputs).
+
+    Args:
+        agent_name: Name of the agent (used for tracking in agent_states/agent_outputs).
+        agent: The Agent instance to wrap.
+
+    Returns:
+        A callable that accepts (state, config) and returns a dict update for MultiAgentState.
+    """
+
+    def _invoke_agent(state: Any, config: Any = None) -> dict[str, Any]:
+        """Invoke the sub-agent and return a MultiAgentState-compatible update dict."""
+        # Extract messages from the state (handles both dict and Pydantic model)
+        if isinstance(state, dict):
+            messages = state.get("messages", [])
+            agent_states = state.get("agent_states", {})
+            agent_outputs = state.get("agent_outputs", {})
+        else:
+            messages = getattr(state, "messages", [])
+            agent_states = getattr(state, "agent_states", {})
+            agent_outputs = getattr(state, "agent_outputs", {})
+
+        # Unwrap messages if they have a .root attribute (e.g. RootListModel)
+        if hasattr(messages, "root"):
+            messages = list(messages.root)
+        elif not isinstance(messages, list):
+            try:
+                messages = list(messages)
+            except (TypeError, ValueError):
+                messages = []
+
+        # Build the input for the sub-agent: messages + engines
+        agent_input = {"messages": messages}
+
+        # Inject engines so sub-agent's tool_node can find tools at runtime
+        if hasattr(agent, "engines") and agent.engines:
+            agent_input["engines"] = agent.engines
+
+        # Invoke the sub-agent
+        try:
+            result = None
+            if hasattr(agent, "_app") and agent._app:
+                result = agent._app.invoke(agent_input, config)
+            elif hasattr(agent, "invoke"):
+                result = agent.invoke(agent_input, config)
+            else:
+                logger.error(f"Agent '{agent_name}' has no invoke method or compiled graph")
+                return {"agent_outputs": {**agent_outputs, agent_name: {"error": "No invoke method"}}}
+        except Exception as e:
+            logger.exception(f"Agent '{agent_name}' execution failed: {e}")
+            return {
+                "agent_outputs": {**agent_outputs, agent_name: {"error": str(e)}},
+                "agent_states": {**agent_states, agent_name: {"executed": True, "error": str(e)}},
+            }
+
+        # Extract messages from the result
+        result_messages = _extract_messages_from_result(result)
+
+        # Build the state update
+        state_update: dict[str, Any] = {}
+
+        # Always update messages if we got any from the result
+        if result_messages:
+            state_update["messages"] = result_messages
+
+        # Update agent tracking
+        state_update["agent_states"] = {
+            **agent_states,
+            agent_name: {"executed": True, "message_count": len(result_messages)},
+        }
+
+        # Store the raw result in agent_outputs for debugging/access
+        if isinstance(result, dict):
+            output_value = {k: v for k, v in result.items() if k != "messages"}
+        elif isinstance(result, BaseModel):
+            output_value = {"type": type(result).__name__}
+        else:
+            output_value = {"raw": str(result)[:500]}
+
+        state_update["agent_outputs"] = {
+            **agent_outputs,
+            agent_name: output_value,
+        }
+
+        return state_update
+
+    return _invoke_agent
+
+
+def _extract_messages_from_result(result: Any) -> list[BaseMessage]:
+    """Extract BaseMessage objects from an agent execution result.
+
+    Handles multiple result formats:
+    - dict with 'messages' key (standard LangGraph state output)
+    - Pydantic BaseModel with 'messages' attribute
+    - list of messages directly
+    - string content (wrapped in AIMessage)
+    - Any other type (wrapped in AIMessage with str representation)
+
+    Args:
+        result: The raw result from agent execution.
+
+    Returns:
+        A list of BaseMessage objects extracted from the result.
+    """
+    if result is None:
+        return []
+
+    # Dict result (most common from _app.invoke)
+    if isinstance(result, dict):
+        messages = result.get("messages", [])
+        if messages:
+            return _ensure_message_objects(messages)
+        # If no messages key, check for content or other text fields
+        content = result.get("content") or result.get("output") or result.get("result")
+        if content and isinstance(content, str):
+            return [AIMessage(content=content)]
+        return []
+
+    # Pydantic model result
+    if isinstance(result, BaseModel):
+        messages = getattr(result, "messages", None)
+        if messages:
+            return _ensure_message_objects(messages)
+        # Try to get content from the model
+        content = getattr(result, "content", None) or getattr(result, "output", None)
+        if content and isinstance(content, str):
+            return [AIMessage(content=content)]
+        # Last resort: dump the model to a string
+        try:
+            return [AIMessage(content=result.model_dump_json())]
+        except Exception:
+            return [AIMessage(content=str(result))]
+
+    # List of messages
+    if isinstance(result, (list, tuple)):
+        return _ensure_message_objects(result)
+
+    # String result
+    if isinstance(result, str):
+        return [AIMessage(content=result)]
+
+    # Fallback: convert to string
+    return [AIMessage(content=str(result))]
+
+
+def _ensure_message_objects(messages: Any) -> list[BaseMessage]:
+    """Ensure all items in a messages list are BaseMessage objects.
+
+    Args:
+        messages: A list (or list-like) of messages, which may be BaseMessage objects,
+            dicts, or other types.
+
+    Returns:
+        A list of BaseMessage objects.
+    """
+    if not messages:
+        return []
+
+    # Handle RootListModel or similar wrappers
+    if hasattr(messages, "root"):
+        messages = list(messages.root)
+
+    result = []
+    for msg in messages:
+        if isinstance(msg, BaseMessage):
+            result.append(msg)
+        elif isinstance(msg, dict):
+            # Try to convert dict to message
+            try:
+                from langchain_core.messages import messages_from_dict
+                converted = messages_from_dict([msg])
+                result.extend(converted)
+            except Exception:
+                # Fallback: create AIMessage from dict content
+                content = msg.get("content", str(msg))
+                result.append(AIMessage(content=content))
+        elif isinstance(msg, str):
+            result.append(AIMessage(content=msg))
+        # Skip non-message objects silently
+    return result
 
 # Import Agent for runtime
 
@@ -228,6 +421,70 @@ class MultiAgent(Agent):
         return agent_dict
 
     # ========================================================================
+    # DYNAMIC AGENT MANAGEMENT
+    # ========================================================================
+
+    def add_agent(self, agent: Agent, name: str | None = None) -> None:
+        """Add an agent dynamically and rebuild the graph.
+
+        Args:
+            agent: Agent instance to add
+            name: Override name (defaults to agent.name)
+        """
+        agent_name = name or getattr(agent, "name", f"agent_{len(self.agent_dict)}")
+        self.agent_dict[agent_name] = agent
+        self._rebuild()
+        logger.info(f"Added agent '{agent_name}' to {self.name}")
+
+    def remove_agent(self, name: str) -> None:
+        """Remove an agent and rebuild the graph."""
+        if name in self.agent_dict:
+            del self.agent_dict[name]
+            self._rebuild()
+            logger.info(f"Removed agent '{name}' from {self.name}")
+
+    def create_agent(
+        self,
+        name: str,
+        system_message: str,
+        description: str | None = None,
+        tools: list | None = None,
+        temperature: float = 0.7,
+    ) -> Agent:
+        """Create a new agent on the fly and add it.
+
+        Args:
+            name: Agent name
+            system_message: System prompt
+            description: Optional description
+            tools: Optional tools (creates ReactAgent if provided)
+            temperature: LLM temperature
+
+        Returns:
+            The created agent
+        """
+        from haive.core.engine.aug_llm import AugLLMConfig
+
+        engine = AugLLMConfig(temperature=temperature, system_message=system_message)
+
+        if tools:
+            from haive.agents.react.agent import ReactAgent as RA
+            agent = RA(name=name, engine=engine, tools=tools)
+        else:
+            from haive.agents.simple.agent import SimpleAgent
+            agent = SimpleAgent(name=name, engine=engine)
+
+        self.add_agent(agent)
+        return agent
+
+    def _rebuild(self) -> None:
+        """Rebuild the graph after agent changes."""
+        self._is_compiled = False
+        self._graph_built = False
+        self.graph = None
+        self.compile()
+
+    # ========================================================================
     # ABSTRACT METHOD IMPLEMENTATION - build_graph()
     # ========================================================================
 
@@ -278,7 +535,7 @@ class MultiAgent(Agent):
             name=f"{self.name}_graph", state_schema=self.state_schema or MultiAgentState
         )
 
-        # Add all agents as nodes using AgentNodeV3
+        # Add all agents as nodes using wrappers for state conversion
         self._add_agent_nodes(graph)
 
         # Add edges based on execution mode
@@ -289,32 +546,36 @@ class MultiAgent(Agent):
         elif self.execution_mode == "conditional":
             self._add_conditional_edges(graph)
         elif self.execution_mode == "manual":
-            # Manual mode - user adds edges manually
-            self._add_manual_edges(graph)
+            # Manual mode - user adds edges manually after creation
+            agent_names = list(self.agent_dict.keys())
+            if agent_names:
+                graph.add_edge(START, agent_names[0])
+                graph.add_edge(agent_names[-1], END)
 
-        logger.info("Successfully built multi-agent graph")
+        logger.info(f"Built {self.execution_mode} graph with {len(self.agent_dict)} agents")
         return graph
 
     def _add_agent_nodes(self, graph: BaseGraph) -> None:
-        """Add all agents as nodes to the graph using AgentNodeV3.
+        """Add all agents as nodes to the graph with proper state conversion.
 
-        This method creates an AgentNodeV3 for each agent, which provides:
-        - Proper state projection from MultiAgentState to agent-specific state
-        - Direct field updates for structured output agents
-        - Recompilation tracking for dynamic workflows
+        This method creates wrapper callables for each agent that handle the critical
+        state conversion between MultiAgentState and individual agent state schemas.
+
+        The wrapper ensures that:
+        - Messages are properly extracted from MultiAgentState for each sub-agent
+        - Agent results (which may be dicts, Pydantic models, strings, etc.) are
+          normalized to proper message lists
+        - State updates are always compatible with MultiAgentState fields
+        - Agent execution is tracked in agent_states and agent_outputs
 
         Args:
             graph: The BaseGraph instance to add nodes to.
-
-        Note:
-            AgentNodeV3 is crucial for maintaining state isolation between agents
-            while allowing shared state access through MultiAgentState.
         """
         for agent_name, agent in self.agent_dict.items():
-            # Create AgentNodeV3 for proper state projection
-            node_config = create_agent_node_v3(agent_name=agent_name, agent=agent)
-            graph.add_node(agent_name, node_config)
-            logger.debug(f"Added AgentNodeV3 for: {agent_name}")
+            # Create a wrapper callable that handles state conversion
+            wrapper = _create_agent_wrapper(agent_name=agent_name, agent=agent)
+            graph.add_node(agent_name, wrapper)
+            logger.debug(f"Added agent wrapper node for: {agent_name}")
 
     def _add_sequential_edges(self, graph: BaseGraph) -> None:
         """Add sequential edges: START -> agent1 -> agent2 -> ... -> END.
@@ -616,40 +877,7 @@ class MultiAgent(Agent):
         """
         return self.agent_dict.get(name)
 
-    def add_agent(self, agent: Agent) -> None:
-        """Add an agent dynamically to the workflow.
-
-        This method allows adding agents after initialization. If build_mode
-        is 'auto', the graph will be automatically rebuilt.
-
-        Args:
-            agent: The Agent instance to add.
-
-        Raises:
-            ValueError: If agent lacks a name or name already exists.
-
-        Example:
-            >>> new_agent = SimpleAgent(name="validator")
-            >>> workflow.add_agent(new_agent)
-
-        Note:
-            In 'auto' build mode, this triggers graph recompilation.
-            In other modes, you must rebuild the graph manually.
-        """
-        if not agent.name:
-            raise ValueError("Agent must have a name")
-
-        if agent.name in self.agent_dict:
-            raise ValueError(f"Agent '{agent.name}' already exists")
-
-        self.agent_dict[agent.name] = agent
-        self.agents.append(agent)
-
-        # Rebuild graph if auto mode and already built
-        if self.build_mode == "auto" and hasattr(self, "graph") and self.graph:
-            self.rebuild_graph()
-
-        logger.info(f"Added agent: {agent.name}")
+    # add_agent is defined above in DYNAMIC AGENT MANAGEMENT section
 
     def display_info(self) -> None:
         """Display detailed information about the workflow configuration.

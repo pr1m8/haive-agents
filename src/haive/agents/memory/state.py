@@ -1,35 +1,36 @@
-from haive.core.schema.prebuilt.messages_state import MessagesState
-from pydantic import ConfigDict, Field
+"""Memory agent state - extends ReactAgentState with memory fields."""
 
-from haive.agents.memory.models import KnowledgeTriple, MemoryItem
+from typing import Any
+
+from pydantic import Field
+
+from haive.agents.react.state import ReactAgentState
 
 
-class MemoryAgentState(MessagesState):
-    """State for Memory Agent, extending MessagesState.
+class MemoryAgentState(ReactAgentState):
+    """Extends ReactAgentState with memory-specific fields.
 
-    Adds fields for storing and retrieving memories.
+    Inherits from ReactAgentState:
+        messages, tool_results, iteration, structured_output,
+        intermediate_steps, requires_human_input, human_request
     """
 
-    # Loaded memories for the current conversation
-    recall_memories: list[str] = Field(
-        default_factory=list, description="Memories retrieved for context"
-    )
-
-    # Memories extracted from the current conversation
-    extracted_memories: list[MemoryItem | KnowledgeTriple] = Field(
+    # Memory context loaded before response
+    memory_context: list[dict[str, Any]] = Field(
         default_factory=list,
-        description="Memories extracted from the current conversation",
+        description="Retrieved memories injected as context before LLM call",
     )
 
-    # User information
-    user_id: str | None = Field(default=None, description="ID of the current user")
+    # User/thread scoping
+    user_id: str = Field(default="default", description="User ID for memory scoping")
+    thread_id: str = Field(default="", description="Thread ID for conversation scoping")
 
-    # Memory operation flags
-    should_save_memories: bool = Field(
-        default=True, description="Whether to save memories"
-    )
-    memory_type: str = Field(
-        default="unstructured", description="Type of memory: unstructured or structured"
-    )
+    # Token tracking for auto-summarization
+    token_count: int = Field(default=0, description="Approximate token count of messages")
+    summarized: bool = Field(default=False, description="Whether conversation was summarized this turn")
 
-    model_config = ConfigDict(arbitrary_types_allowed=True)
+    # KG triples extracted this turn
+    kg_triples: list[dict[str, Any]] = Field(
+        default_factory=list,
+        description="Knowledge graph triples extracted this turn",
+    )

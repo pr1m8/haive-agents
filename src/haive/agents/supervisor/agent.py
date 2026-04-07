@@ -73,7 +73,7 @@ class DynamicSupervisor(ReactAgent):
                     ),
                     AgentSpec(
                         name="writer",
-                        agent_type="SimpleAgentV3",
+                        agent_type="SimpleAgent",
                         description="Content creation expert",
                         specialties=["writing", "editing"]
                     )

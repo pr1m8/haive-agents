@@ -1,25 +1,8 @@
-"""Module exports."""
+"""Dynamic Supervisor - routes tasks to sub-agents via tool calls."""
 
-from haive.agents.dynamic_supervisor.agent import DynamicSupervisorAgent
-from haive.agents.dynamic_supervisor.models import (
-    AgentInfo,
-    AgentInfoV2,
-    AgentRequest,
-    RoutingDecision,
-)
-from haive.agents.dynamic_supervisor.state import (
-    SupervisorState,
-    SupervisorStateV2,
-    SupervisorStateWithTools,
-)
+from haive.agents.dynamic_supervisor.agent import DynamicSupervisor
 
-__all__ = [
-    "AgentInfo",
-    "AgentInfoV2",
-    "AgentRequest",
-    "DynamicSupervisorAgent",
-    "RoutingDecision",
-    "SupervisorState",
-    "SupervisorStateV2",
-    "SupervisorStateWithTools",
-]
+# Backwards compatibility
+DynamicSupervisorAgent = DynamicSupervisor
+
+__all__ = ["DynamicSupervisor", "DynamicSupervisorAgent"]

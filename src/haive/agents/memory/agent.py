@@ -1,605 +1,625 @@
-import json
+"""Memory Agent - ReactAgent with persistent memory, KG extraction, and auto-summarization.
+
+Phase 1: Memory tools (save/search/KG) + auto-context + auto-summarize
+Phase 2: KG extraction from conversations + context-length pre-hook
+         Optional integration with document_modifiers (summarizer, KG extraction)
+
+Uses haive.core store for persistence, NOT langmem.
+Supports InMemoryStore (dev) and PostgresStore (production).
+"""
+
 import logging
-import re
-from datetime import datetime
+import uuid
 from typing import Any
 
-from haive.core.engine.agent.agent import register_agent
-from haive.core.engine.aug_llm import AugLLMConfig
-from haive.core.graph.dynamic_graph_builder import DynamicGraph
-from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, SystemMessage
-from langchain_core.tools import StructuredTool
-from langgraph.graph import END
+from langchain_core.messages import AIMessage, HumanMessage
+from pydantic import BaseModel, ConfigDict, Field, PrivateAttr
 
-from haive.agents.memory.config import MemoryAgentConfig
-from haive.agents.memory.memory_utils import (
-    create_memory_vectorstore,
-    get_user_id_from_state,
-    retrieve_memories,
-    save_structured_memories,
-    save_unstructured_memories,
-)
 from haive.agents.react.agent import ReactAgent
+from haive.core.engine.aug_llm import AugLLMConfig
+
+from .tools import create_memory_tools
 
 logger = logging.getLogger(__name__)
 
+MEMORY_SYSTEM_PROMPT = """You are a helpful assistant with long-term memory.
 
-@register_agent(MemoryAgentConfig)
+You have access to memory tools:
+- save_memory: Save important facts about the user for future conversations
+- search_memory: Search for relevant memories from past conversations
+- save_knowledge: Save structured facts (subject-predicate-object triples)
+- search_knowledge: Search knowledge graph triples for structured facts
+
+Guidelines:
+- Proactively save information when you learn something about the user
+- Search memories when the user references past conversations or preferences
+- Use save_knowledge for structured facts (who works where, what relates to what)
+- Use save_memory for broader context and preferences
+
+{memory_context}"""
+
+
+# ---- Structured output models for extraction ----
+
+class ExtractedTriple(BaseModel):
+    """A single knowledge graph triple extracted from conversation."""
+    subject: str = Field(description="The entity or concept")
+    predicate: str = Field(description="The relationship or property")
+    object: str = Field(description="The target entity or value")
+
+
+class ConversationExtraction(BaseModel):
+    """Structured extraction from a conversation turn."""
+    summary: str = Field(description="One-sentence summary of this exchange")
+    key_facts: list[str] = Field(default_factory=list, description="Important facts to remember")
+    triples: list[ExtractedTriple] = Field(default_factory=list, description="Knowledge graph triples")
+    should_save: bool = Field(default=True, description="Whether this contains info worth saving")
+
+
+# ---- Store helpers ----
+
+def _create_postgres_store(connection_string: str) -> Any:
+    """Create a PostgresStore from a connection string."""
+    try:
+        from haive.core.persistence.store.factory import StoreFactory
+        from haive.core.persistence.store.types import StoreConfig, StoreType
+
+        config = StoreConfig(
+            type=StoreType.POSTGRES_SYNC,
+            connection_params={"connection_string": connection_string},
+            setup_on_init=True,
+        )
+        store = StoreFactory.create(config)
+        logger.info("MemoryAgent: using PostgresStore via haive.core")
+        return store
+    except ImportError:
+        logger.warning("haive.core persistence not available, trying langgraph directly")
+
+    try:
+        from langgraph.store.postgres import PostgresStore
+        store = PostgresStore(conn_string=connection_string)
+        store.setup()
+        logger.info("MemoryAgent: using langgraph PostgresStore directly")
+        return store
+    except ImportError:
+        raise ImportError(
+            "PostgreSQL store requires 'langgraph-checkpoint-postgres'. "
+            "Install with: pip install langgraph-checkpoint-postgres"
+        )
+
+
+def _resolve_store(store: Any = None, connection_string: str | None = None) -> Any:
+    """Resolve store from explicit store, connection string, or default InMemory."""
+    if store is not None:
+        return store
+    if connection_string:
+        return _create_postgres_store(connection_string)
+    from langgraph.store.memory import InMemoryStore
+    logger.info("MemoryAgent: using InMemoryStore (set store= or connection_string= for production)")
+    return InMemoryStore()
+
+
+# ---- MemoryAgent ----
+
 class MemoryAgent(ReactAgent):
-    """Memory Agent implementation that extends ReactAgent.
+    """ReactAgent with persistent memory, KG extraction, and auto-summarization.
 
-    Adds long-term memory capabilities for persisting information
-    about users across conversations.
+    Features:
+    1. Memory tools bound to a store (save/search memories + KG triples)
+    2. Auto-context: searches store for relevant memories before each response
+    3. Auto-summarize: when context length exceeds threshold, summarize and store
+    4. KG extraction: extracts knowledge triples from conversations (post-response)
+    5. Integration points for document_modifiers (summarizer, KG pipelines)
+
+    Store options:
+    - Pass store= directly (any LangGraph BaseStore)
+    - Pass connection_string= for PostgreSQL (preferred for production)
+    - Default: InMemoryStore (dev only)
     """
 
-    def __init__(self, config: MemoryAgentConfig):
-        """Initialize the Memory Agent with its configuration."""
-        # Initialize vector store if not provided
-        if not config.vector_store:
-            config.vector_store = create_memory_vectorstore()
+    # ---- Config ----
+    user_id: str = Field(default="default", description="User ID for memory scoping")
+    summarize_threshold: int = Field(default=4000, description="Token count before auto-summarize")
+    auto_context: bool = Field(default=True, description="Auto-search store for context before responding")
+    auto_save: bool = Field(default=True, description="Auto-save conversation summaries")
+    auto_extract_kg: bool = Field(default=True, description="Auto-extract KG triples from conversations")
 
-        super().__init__(config)
-        self.config = config
+    # ---- Store (runtime, not serialized) ----
+    _store: Any = PrivateAttr(default=None)
+    _kg_store: Any = PrivateAttr(default=None)  # Neo4jKGStore (optional)
+    _summarizer: Any = PrivateAttr(default=None)
+    _extractor: Any = PrivateAttr(default=None)
 
-        # Initialize memory tools
-        self._init_memory_tools()
+    model_config = ConfigDict(arbitrary_types_allowed=True)
 
-    def _init_memory_tools(self):
-        """Initialize memory-related tools."""
-        # Add memory tools to the existing tools
+    # ---- Memory context loading (pre-hook) ----
 
-        def save_memory(memory: str) -> str:
-            """Tool to save a memory."""
-            # Extract user_id from runtime config
-            try:
-                user_id = self._get_current_user_id()
-                save_unstructured_memories([memory], self.config.vector_store, user_id)
-                return f"Memory saved: {memory}"
-            except Exception as e:
-                logger.exception(f"Error saving memory: {e}")
-                return f"Error saving memory: {e!s}"
+    def _load_memory_context(self, query: str) -> str:
+        """Search store for relevant memories and KG triples, format as context."""
+        if not self.auto_context or not self._store:
+            return ""
 
-        def save_structured_memory(subject: str, predicate: str, object_: str) -> str:
-            """Tool to save a structured memory."""
-            try:
-                user_id = self._get_current_user_id()
-                triple = {
-                    "subject": subject,
-                    "predicate": predicate,
-                    "object_": object_,
-                }
-                save_structured_memories([triple], self.config.vector_store, user_id)
-                return f"Structured memory saved: {subject} {predicate} {object_}"
-            except Exception as e:
-                logger.exception(f"Error saving structured memory: {e}")
-                return f"Error saving structured memory: {e!s}"
+        context_parts = []
 
-        def recall_memory(query: str) -> list[str]:
-            """Tool to recall memories."""
-            try:
-                user_id = self._get_current_user_id()
-                memories = retrieve_memories(
-                    query,
-                    self.config.vector_store,
-                    user_id,
-                    limit=self.config.max_memories_per_retrieval,
-                )
-                return memories
-            except Exception as e:
-                logger.exception(f"Error recalling memories: {e}")
-                return []
-
-        # Create structured tools
-        memory_save_tool = StructuredTool.from_function(
-            func=save_memory,
-            name="save_memory",
-            description="Save an important fact or detail about the user for future reference",
-            return_direct=False,
-        )
-
-        structured_memory_save_tool = StructuredTool.from_function(
-            func=save_structured_memory,
-            name="save_structured_memory",
-            description="Save a structured fact as a knowledge triple (subject, predicate, object)",
-            return_direct=False,
-        )
-
-        memory_recall_tool = StructuredTool.from_function(
-            func=recall_memory,
-            name="recall_memories",
-            description="Search for relevant memories about the current user",
-            return_direct=False,
-        )
-
-        # Add memory tools to existing tools
-        memory_tools = [memory_save_tool, memory_recall_tool]
-
-        # Add structured memory tool if configured
-        if self.config.memory_type in ["structured", "both"]:
-            memory_tools.append(structured_memory_save_tool)
-
-        # Extend tools list with memory tools
-        self.tools.extend(memory_tools)
-
-        # Rebuild the tool mapping
-        self.tool_mapping = {tool.name: tool for tool in self.tools}
-
-    def _get_current_user_id(self) -> str:
-        """Get the current user ID from runtime config."""
-        # First check if it's in the runtime config
-        if hasattr(self, "current_user_id") and self.current_user_id:
-            return self.current_user_id
-
-        # Try to get from config
+        # Search user memories
         try:
-            runtime_config = self.config.runnable_config
-            if runtime_config and "configurable" in runtime_config:
-                user_id = runtime_config["configurable"].get("user_id")
-                if user_id:
-                    self.current_user_id = user_id
-                    return user_id
-        except Exception:
-            pass
-
-        # Default user ID
-        default_id = f"user_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
-        self.current_user_id = default_id
-        return default_id
-
-    def setup_workflow(self) -> None:
-        """Set up the workflow graph with memory management nodes."""
-        logger.debug(f"Setting up workflow for MemoryAgent {self.config.name}")
-
-        # Create dynamic graph builder
-        gb = DynamicGraph(components=[self.config.engine], state_schema=self.config.state_schema)
-
-        # Add memory loading node
-        gb.add_node(
-            name=self.config.memory_load_node_name,
-            config=self._load_memories,
-            command_goto="extract_query",
-        )
-        gb.set_entry_point(self.config.memory_load_node_name)
-
-        # Add query extraction node
-        gb.add_node("extract_query", self._extract_query, self.config.memory_extract_node_name)
-
-        # Add memory extraction node
-        gb.add_node(
-            name=self.config.memory_extract_node_name,
-            config=self._extract_memories,
-            command_goto="add_system",
-        )
-
-        # Add system message if provided
-        if self.config.system_prompt or self.config.memory_system_prompt:
-            self._add_memory_system_message_node(gb)
-
-        # Set up the LLM with tool binding
-        self._setup_llm_node(gb)
-
-        # Set up tool execution
-        if self.version == "v1":
-            self._setup_tools_v1(gb)
-        else:
-            self._setup_tools_v2(gb)
-
-        # Add memory saving node
-        gb.add_node(
-            name=self.config.memory_save_node_name, config=self._save_memories, command_goto=END
-        )
-
-        # Modify the standard flow to include memory saving
-        # We want the LLM to return to memory extraction after tool execution
-        try:
-            gb.remove_edge(self.config.tool_node_name, self.config.llm_node_name)
-            gb.add_edge(self.config.tool_node_name, self.config.memory_extract_node_name)
+            user_ns = ("user", self.user_id)
+            results = self._store.search(user_ns, query=query, limit=5)
+            if results:
+                memories = []
+                for item in results:
+                    val = item.value if hasattr(item, "value") else item
+                    content = val.get("content", str(val)) if isinstance(val, dict) else str(val)
+                    memories.append(f"- {content}")
+                if memories:
+                    context_parts.append("Memories:\n" + "\n".join(memories))
         except Exception as e:
-            logger.warning(f"Error modifying tool flow: {e}")
+            logger.warning(f"Failed to load memories: {e}")
 
-        # Add edge from LLM to memory saving
-        gb.add_conditional_edges(
-            self.config.llm_node_name,
-            self._route_after_llm,
-            {
-                self.config.tool_node_name: self.config.tool_node_name,
-                self.config.memory_save_node_name: self.config.memory_save_node_name,
-            },
-        )
-
-        # Add structured output node if schema provided
-        if self.config.structured_output_schema:
-            self._add_structured_output_node(gb)
-
-            # Ensure structured output node is after memory saving
-            try:
-                gb.remove_edge(self.config.llm_node_name, self.config.output_node_name)
-                gb.add_edge(self.config.memory_save_node_name, self.config.output_node_name)
-            except Exception as e:
-                logger.warning(f"Error modifying structured output flow: {e}")
-
-        # Build the graph
-        self.graph = gb.build()
-        logger.info(f"Set up Memory Agent workflow for {self.config.name}")
-
-    def _load_memories(self, state: dict[str, Any]) -> dict[str, Any]:
-        """Load relevant memories for the current user.
-
-        Args:
-            state: Current state
-
-        Returns:
-            Updated state with loaded memories
-        """
+        # Search KG triples
         try:
-            # Extract user ID from state or config
-            user_id = get_user_id_from_state(state)
-            if not user_id:
-                user_id = self._get_current_user_id()
-
-            # Save user ID in state
-            result: dict[str, Any] = {"user_id": user_id}
-
-            # Check if we have messages or a query to search with
-            query = state.get("query", "")
-            messages = state.get("messages", [])
-
-            # If we have messages but no query, extract query from last message
-            if not query and messages:
-                # Get the last message content
-                for msg in reversed(messages):
-                    if isinstance(msg, HumanMessage) or (
-                        isinstance(msg, tuple) and msg[0] == "human"
-                    ):
-                        if hasattr(msg, "content") and not isinstance(msg, tuple):
-                            content = getattr(msg, "content", "")
-                        elif isinstance(msg, tuple) and len(msg) > 1:
-                            content = msg[1]
-                        else:
-                            content = str(msg)
-                        query = str(content)
-                        break
-
-            # If we have a query, retrieve relevant memories
-            if query:
-                memories = retrieve_memories(
-                    query,
-                    self.config.vector_store,
-                    user_id,
-                    limit=self.config.max_memories_per_retrieval,
-                )
-
-                # Add to result
-                result["recall_memories"] = memories
-                logger.info(f"Loaded {len(memories)} memories for user {user_id}")
-            else:
-                # No query, set empty memories
-                result["recall_memories"] = []
-
-            return result
-
+            kg_ns = ("kg", self.user_id)
+            kg_results = self._store.search(kg_ns, query=query, limit=5)
+            if kg_results:
+                triples = []
+                for item in kg_results:
+                    val = item.value if hasattr(item, "value") else item
+                    if isinstance(val, dict) and val.get("type") == "kg_triple":
+                        triples.append(f"- {val['subject']} {val['predicate']} {val['object']}")
+                if triples:
+                    context_parts.append("Known facts:\n" + "\n".join(triples))
         except Exception as e:
-            logger.exception(f"Error loading memories: {e}")
-            return {"recall_memories": [], "user_id": self._get_current_user_id()}
+            logger.warning(f"Failed to load KG triples: {e}")
 
-    def _extract_query(self, state: dict[str, Any]) -> dict[str, Any]:
-        """Extract query from messages and store in state.
-
-        Args:
-            state: Current state with messages
-
-        Returns:
-            Updated state with extracted query
-        """
-        # Extract the query from messages
-        query = ""
-        messages = state.get("messages", [])
-
-        if messages:
-            # Look for the last human message
-            for msg in reversed(messages):
-                if isinstance(msg, HumanMessage) or (isinstance(msg, tuple) and msg[0] == "human"):
-                    if hasattr(msg, "content") and not isinstance(msg, tuple):
-                        content = getattr(msg, "content", "")
-                    elif isinstance(msg, tuple) and len(msg) > 1:
-                        content = msg[1]
-                    else:
-                        content = str(msg)
-                    query = str(content)
-                    break
-
-        # Only update if we found a query
-        if query:
-            return {"query": query}
-
-        return {}
-
-    def _extract_memories(self, state: dict[str, Any]) -> dict[str, Any]:
-        """Extract memories from conversation.
-
-        Args:
-            state: Current state with messages
-
-        Returns:
-            Updated state with extracted memories
-        """
-        # Skip if memory extraction is disabled
-        if not state.get("should_save_memories", True):
-            return {}
-
-        # Check if we have messages
-        messages = state.get("messages", [])
-        if not messages:
-            return {}
-
-        memory_type = state.get("memory_type", self.config.memory_type)
-
-        # Use the memory extraction engine if provided, otherwise use the main
-        # engine
-        extraction_engine = self.config.memory_extraction_engine or self.config.engine
-
+        # Search summaries
         try:
-            # Create a prompt for memory extraction
-            if memory_type == "structured":
-                prompt_template = (
-                    self.config.memory_extraction_prompt
-                    or """
-                Extract important information from the conversation as structured knowledge triples.
-                Format: [{"subject": "entity1", "predicate": "relation", "object_": "entity2"}]
+            summary_ns = ("summary", self.user_id)
+            sum_results = self._store.search(summary_ns, query=query, limit=2)
+            if sum_results:
+                summaries = []
+                for item in sum_results:
+                    val = item.value if hasattr(item, "value") else item
+                    content = val.get("content", str(val)) if isinstance(val, dict) else str(val)
+                    summaries.append(f"- {content}")
+                if summaries:
+                    context_parts.append("Previous conversation summaries:\n" + "\n".join(summaries))
+        except Exception as e:
+            logger.warning(f"Failed to load summaries: {e}")
 
-                Extract only facts that would be useful to remember for future conversations.
-                Focus on personal preferences, facts about the user, important events, etc.
-                """
-                )
-            else:
-                prompt_template = (
-                    self.config.memory_extraction_prompt
-                    or """
-                Extract important information from the conversation as natural language statements.
-                Format each memory as a separate, self-contained statement.
+        if context_parts:
+            return "Relevant context from past conversations:\n\n" + "\n\n".join(context_parts)
+        return ""
 
-                Extract only facts that would be useful to remember for future conversations.
-                Focus on personal preferences, facts about the user, important events, etc.
-                """
-                )
+    # ---- Token counting ----
 
-            # Create a complete prompt with conversation history
-            conversation_str = "\n".join(
-                [
-                    f"{msg.type if hasattr(msg, 'type') else msg[0]}: {
-                        msg.content if hasattr(msg, 'content') else msg[1]
-                    }"
-                    for msg in messages
-                ]
+    def _count_tokens(self, messages: list) -> int:
+        """Approximate token count from messages."""
+        total = 0
+        for msg in messages:
+            content = msg.content if hasattr(msg, "content") else str(msg)
+            total += len(content) // 4  # ~4 chars per token
+        return total
+
+    # ---- Auto-summarization (post-hook on context length) ----
+
+    def _summarize_conversation(self, messages: list) -> str:
+        """Summarize conversation using a SimpleAgent."""
+        if self._summarizer is None:
+            from haive.agents.simple.agent import SimpleAgent
+            self._summarizer = SimpleAgent(
+                name=f"{self.name}_summarizer",
+                engine=AugLLMConfig(
+                    temperature=0.2,
+                    system_message=(
+                        "Summarize this conversation concisely. Include:\n"
+                        "- Key facts learned about the user\n"
+                        "- Decisions made\n"
+                        "- User preferences expressed\n"
+                        "- Important context for future conversations"
+                    ),
+                ),
             )
 
-            full_prompt = f"{prompt_template}\n\nConversation:\n{conversation_str}"
-
-            # Extract memories using the engine
-            if isinstance(extraction_engine, AugLLMConfig):
-                llm = extraction_engine.create_runnable()
-                extraction_result = llm.invoke(full_prompt)
-            else:
-                # Assume it's already a runnable
-                extraction_result = extraction_engine.invoke(full_prompt)
-
-            # Process the extraction result
-            extracted_content = (
-                extraction_result.content
-                if hasattr(extraction_result, "content")
-                else str(extraction_result)
-            )
-
-            # Parse the extracted memories
-            if memory_type == "structured":
-                # Try to parse as JSON
-                try:
-                    # Look for JSON array in the output
-
-                    json_match = re.search(r"\[.*\]", extracted_content, re.DOTALL)
-                    if json_match:
-                        json_str = json_match.group(0)
-                        structured_memories = json.loads(json_str)
-
-                        # Ensure they're in the right format
-                        valid_memories = []
-                        for memory in structured_memories:
-                            if isinstance(memory, dict) and all(
-                                k in memory for k in ["subject", "predicate", "object_"]
-                            ):
-                                valid_memories.append(memory)
-
-                        if valid_memories:
-                            return {"extracted_memories": valid_memories}
-                except Exception as e:
-                    logger.exception(f"Error parsing structured memories: {e}")
-                    # Fall back to unstructured extraction
-
-            # Unstructured memory extraction
-            # Split by newlines and filter out empty lines
-            unstructured_memories = [
-                line.strip()
-                for line in extracted_content.split("\n")
-                if line.strip()
-                and not line.strip().startswith("```")
-                and not line.strip().endswith("```")
-            ]
-
-            if unstructured_memories:
-                return {"extracted_memories": unstructured_memories}
-
-        except Exception as e:
-            logger.exception(f"Error extracting memories: {e}")
-
-        return {}
-
-    def _save_memories(self, state: dict[str, Any]) -> dict[str, Any]:
-        """Save extracted memories to vector store.
-
-        Args:
-            state: Current state with extracted memories
-
-        Returns:
-            Updated state
-        """
-        # Skip if memory saving is disabled
-        if not state.get("should_save_memories", True):
-            return {}
-
-        # Get extracted memories
-        extracted_memories = state.get("extracted_memories", [])
-        if not extracted_memories:
-            return {}
-
-        # Get user ID
-        user_id = state.get("user_id") or self._get_current_user_id()
+        conv_text = "\n".join(
+            f"{'User' if isinstance(m, HumanMessage) else 'Assistant'}: {m.content[:300]}"
+            for m in messages if hasattr(m, "content") and m.content
+        )
 
         try:
-            # Determine memory type
-            memory_type = state.get("memory_type", self.config.memory_type)
-
-            # Save memories based on type
-            if memory_type == "structured":
-                # Save as structured memories
-                structured_memories = []
-
-                for memory in extracted_memories:
-                    if isinstance(memory, dict) and all(
-                        k in memory for k in ["subject", "predicate", "object_"]
-                    ):
-                        structured_memories.append(memory)
-                    elif isinstance(memory, str):
-                        # Try to parse string as JSON
-                        try:
-                            memory_dict = json.loads(memory)
-                            if all(k in memory_dict for k in ["subject", "predicate", "object_"]):
-                                structured_memories.append(memory_dict)
-                        except BaseException:
-                            # Skip invalid memories
-                            pass
-
-                if structured_memories:
-                    save_structured_memories(structured_memories, self.config.vector_store, user_id)
-                    logger.info(f"Saved {len(structured_memories)} structured memories")
-
-            else:  # unstructured
-                # Save as unstructured memories
-                unstructured_memories = []
-
-                for memory in extracted_memories:
-                    if isinstance(memory, str):
-                        unstructured_memories.append(memory)
-                    elif isinstance(memory, dict) and "content" in memory:
-                        unstructured_memories.append(memory["content"])
-
-                if unstructured_memories:
-                    save_unstructured_memories(
-                        unstructured_memories, self.config.vector_store, user_id
-                    )
-                    logger.info(f"Saved {len(unstructured_memories)} unstructured memories")
-
+            result = self._summarizer.run(f"Summarize:\n\n{conv_text}")
+            if hasattr(result, "messages") and result.messages:
+                return result.messages[-1].content
         except Exception as e:
-            logger.exception(f"Error saving memories: {e}")
+            logger.warning(f"Summarization failed: {e}")
 
-        # Clear extracted memories to avoid re-saving
-        return {"extracted_memories": []}
+        return f"Conversation with {len(messages)} messages."
 
-    def _add_memory_system_message_node(self, gb: DynamicGraph) -> None:
-        """Add a node for adding a memory-enhanced system message."""
+    # ---- KG extraction (post-hook) ----
 
-        def add_system_message(state: dict[str, Any]) -> dict[str, Any]:
-            """Add system message with memory context."""
-            messages = state.get("messages", [])
+    def _extract_and_store_kg(self, messages: list) -> None:
+        """Extract KG triples from conversation and store them.
 
-            # Check if we already have a system message
-            has_system = any(
-                isinstance(m, SystemMessage) for m in messages if isinstance(m, BaseMessage)
+        Uses a SimpleAgent with structured output to extract triples,
+        then stores them via the store's put() API.
+        """
+        if not self.auto_extract_kg or not self._store:
+            return
+
+        # Build conversation text from last exchange (not entire history)
+        recent = [m for m in messages[-4:] if hasattr(m, "content") and m.content]
+        if not recent:
+            return
+
+        conv_text = "\n".join(
+            f"{'User' if isinstance(m, HumanMessage) else 'Assistant'}: {m.content[:300]}"
+            for m in recent
+        )
+
+        if self._extractor is None:
+            from haive.agents.simple.agent import SimpleAgent
+            self._extractor = SimpleAgent(
+                name=f"{self.name}_extractor",
+                engine=AugLLMConfig(
+                    temperature=0.1,
+                    system_message=(
+                        "Extract structured information from this conversation.\n"
+                        "Identify knowledge graph triples (subject-predicate-object facts).\n"
+                        "Focus on facts about the user, their preferences, relationships, and context.\n"
+                        "Only extract if there is genuinely useful information to save."
+                    ),
+                ),
             )
 
-            if not has_system:
-                # Get memories
-                memories = state.get("recall_memories", [])
-                memories_str = (
-                    "\n".join([f"- {memory}" for memory in memories])
-                    if memories
-                    else "No relevant memories."
-                )
+        try:
+            result = self._extractor.run(
+                f"Extract triples from this conversation:\n\n{conv_text}\n\n"
+                "Respond with JSON: {\"triples\": [{\"subject\": \"...\", \"predicate\": \"...\", \"object\": \"...\"}], \"should_save\": true/false}"
+            )
 
-                # Create system message with memories
-                system_prompt = self.config.memory_system_prompt or self.config.system_prompt
-                if not system_prompt:
-                    system_prompt = "You are a helpful assistant with memory capabilities."
+            # Parse the extraction result
+            response_text = ""
+            if hasattr(result, "messages") and result.messages:
+                response_text = result.messages[-1].content
+            elif isinstance(result, str):
+                response_text = result
 
-                # Replace memory placeholder
-                system_content = system_prompt.replace("{recall_memories}", memories_str)
+            if not response_text:
+                return
 
-                # Create system message
-                system_msg = SystemMessage(content=system_content)
+            # Try to parse JSON from response
+            import json
+            # Find JSON in response (may be wrapped in markdown)
+            json_start = response_text.find("{")
+            json_end = response_text.rfind("}") + 1
+            if json_start >= 0 and json_end > json_start:
+                extraction = json.loads(response_text[json_start:json_end])
+                if not extraction.get("should_save", True):
+                    return
 
-                # Return updated messages list
-                return {"messages": [system_msg]}
+                kg_ns = ("kg", self.user_id)
+                for triple in extraction.get("triples", []):
+                    subj = triple.get("subject", "")
+                    pred = triple.get("predicate", "")
+                    obj = triple.get("object", "")
+                    if subj and pred and obj:
+                        key = f"{subj}_{pred}_{obj}".replace(" ", "_")[:100]
+                        self._store.put(
+                            kg_ns, key,
+                            {"subject": subj, "predicate": pred, "object": obj, "type": "kg_triple"},
+                        )
+                        logger.info(f"KG extracted: {subj} {pred} {obj}")
 
-            return {}
+                        # Sync to Neo4j if connected
+                        if self._kg_store:
+                            self._kg_store.save_triple(
+                                subj, pred, obj, user_id=self.user_id,
+                                source="conversation_extraction",
+                            )
 
-        # Add the node and connect it
-        gb.add_node("add_system", add_system_message, self.config.llm_node_name)
+        except json.JSONDecodeError:
+            logger.debug("KG extraction: no valid JSON in response")
+        except Exception as e:
+            logger.warning(f"KG extraction failed: {e}")
 
-    def _route_after_llm(self, state: dict[str, Any]) -> str:
-        """Determine where to route after the LLM node.
+    # ---- Main run loop ----
 
-        Args:
-            state: Current state
+    def run(self, input_data: str | dict | Any = None, debug: bool | None = None, **kwargs) -> Any:
+        """Run with memory: load context -> respond -> extract KG -> maybe summarize.
 
-        Returns:
-            Next node name
+        Flow:
+        1. Pre-hook: Load memory context (memories + KG triples + summaries)
+        2. Execute: ReactAgent responds (may call memory tools)
+        3. Post-hook: Extract KG triples from conversation
+        4. Post-hook: Auto-summarize if context length exceeds threshold
         """
-        # Check if the last message has tool calls
-        messages = state.get("messages", [])
-        if not messages:
-            return self.config.memory_save_node_name
-
-        last_message = messages[-1]
-        if isinstance(last_message, AIMessage) and getattr(last_message, "tool_calls", None):
-            return self.config.tool_node_name
-
-        # No tool calls, go to memory saving
-        return self.config.memory_save_node_name
-
-    def run(
-        self, input_data: str | dict[str, Any], user_id: str | None = None, **kwargs
-    ) -> dict[str, Any]:
-        """Run the memory agent.
-
-        Args:
-            input_data: Input query or state
-            user_id: Optional user ID for memory context
-            **kwargs: Additional parameters
-
-        Returns:
-            Result from agent execution
-        """
-        # Store current user ID
-        self.current_user_id = user_id
-
-        # Ensure we have a configurable section in runtime config
-        runtime_config = kwargs.get("runtime_config", {}) or self.config.runnable_config
-        if "configurable" not in runtime_config:
-            runtime_config["configurable"] = {}
-
-        # Add user ID to runtime config
-        if user_id:
-            runtime_config["configurable"]["user_id"] = user_id
-
-        # Convert string to messages if needed
+        # Extract query for memory search
         if isinstance(input_data, str):
-            input_data = {"messages": [HumanMessage(content=input_data)]}
+            query = input_data
+        elif isinstance(input_data, dict):
+            query = input_data.get("query", "")
+            if not query and input_data.get("messages"):
+                msgs = input_data["messages"]
+                if msgs:
+                    last = msgs[-1]
+                    query = last.content if hasattr(last, "content") else str(last)
+        else:
+            query = str(input_data) if input_data else ""
 
-        # Add memory configuration if needed
-        if "should_save_memories" not in input_data:
-            input_data["should_save_memories"] = True
+        # ---- PRE-HOOK: Load memory context ----
+        memory_ctx = self._load_memory_context(query)
+        if memory_ctx and self.engine:
+            self.engine.system_message = MEMORY_SYSTEM_PROMPT.format(memory_context=memory_ctx)
 
-        if "memory_type" not in input_data:
-            input_data["memory_type"] = self.config.memory_type
+        # ---- EXECUTE: ReactAgent ----
+        kwargs.pop("debug", None)
+        result = super().run(input_data, debug=debug, **kwargs)
 
-        # Run agent with memory context
-        return super().run(input_data, runtime_config=runtime_config, **kwargs)
+        # ---- POST-HOOKS ----
+        if hasattr(result, "messages") and result.messages:
+            token_count = self._count_tokens(result.messages)
+
+            # Post-hook 1: KG extraction (lightweight, runs on recent messages)
+            try:
+                self._extract_and_store_kg(result.messages)
+            except Exception as e:
+                logger.warning(f"KG extraction post-hook failed: {e}")
+
+            # Post-hook 2: Auto-summarize if context length exceeded
+            if token_count > self.summarize_threshold and self.auto_save:
+                try:
+                    summary = self._summarize_conversation(result.messages)
+                    summary_ns = ("summary", self.user_id)
+                    self._store.put(
+                        summary_ns,
+                        str(uuid.uuid4()),
+                        {"content": summary, "type": "conversation_summary"},
+                    )
+                    logger.info(f"Auto-summarized conversation ({token_count} tokens)")
+                except Exception as e:
+                    logger.warning(f"Failed to save summary: {e}")
+
+        return result
+
+    def get_store(self) -> Any:
+        """Get the underlying store for direct access."""
+        return self._store
+
+    # ---- Neo4j KG integration ----
+
+    def connect_neo4j(self, config: Any = None) -> Any:
+        """Connect to Neo4j for graph-based KG queries.
+
+        Args:
+            config: Neo4jKGConfig instance, or None for env var defaults
+
+        Returns:
+            Neo4jKGStore instance
+        """
+        from .kg_store import Neo4jKGConfig, Neo4jKGStore
+        if config is None:
+            config = Neo4jKGConfig()
+        self._kg_store = Neo4jKGStore(config)
+        return self._kg_store
+
+    def sync_kg_to_neo4j(self) -> int:
+        """Sync all KG triples from store to Neo4j.
+
+        Creates the KG in Neo4j from existing triples in the LangGraph store.
+        Must call connect_neo4j() first.
+
+        Returns:
+            Number of triples synced
+        """
+        if not self._kg_store:
+            logger.warning("Neo4j not connected. Call connect_neo4j() first.")
+            return 0
+        return self._kg_store.create_kg_from_memories(self._store, self.user_id)
+
+    def query_kg(self, entity: str) -> list[dict]:
+        """Query KG triples for an entity from Neo4j.
+
+        Args:
+            entity: Entity name to look up
+
+        Returns:
+            List of {subject, predicate, object} dicts
+        """
+        if self._kg_store:
+            return self._kg_store.query_entity(entity)
+        # Fallback to store search
+        try:
+            kg_ns = ("kg", self.user_id)
+            results = self._store.search(kg_ns, query=entity, limit=10)
+            triples = []
+            for item in results:
+                val = item.value if hasattr(item, "value") else item
+                if isinstance(val, dict) and val.get("type") == "kg_triple":
+                    triples.append({
+                        "subject": val["subject"],
+                        "predicate": val["predicate"],
+                        "object": val["object"],
+                    })
+            return triples
+        except Exception as e:
+            logger.warning(f"KG query failed: {e}")
+            return []
+
+    def create_graph_query_tool(self) -> Any:
+        """Create a LangChain tool that queries the Neo4j KG with natural language.
+
+        Uses GraphDBRAGAgent internally to generate Cypher from questions.
+        Requires Neo4j connection (connect_neo4j() must be called first).
+        """
+        from langchain_core.tools import StructuredTool
+
+        kg_store = self._kg_store
+
+        def query_knowledge_graph(question: str) -> str:
+            '''Query the knowledge graph with a natural language question.
+            Use this to find relationships, paths, and connections between entities.
+
+            Args:
+                question: Natural language question about entities and relationships
+            '''
+            if not kg_store:
+                return "Neo4j not connected. Cannot query knowledge graph."
+            try:
+                # Use direct Cypher for simple entity lookups
+                results = kg_store.query_cypher(
+                    "MATCH (s:Entity)-[r:RELATES_TO]->(o:Entity) "
+                    "WHERE toLower(s.name) CONTAINS toLower($q) OR toLower(o.name) CONTAINS toLower($q) "
+                    "RETURN s.name AS subject, r.predicate AS predicate, o.name AS object LIMIT 10",
+                    params={"q": question}
+                )
+                if results:
+                    lines = [f"- {r['subject']} {r['predicate']} {r['object']}" for r in results]
+                    return "Knowledge graph results:\n" + "\n".join(lines)
+                return "No matching entities found in knowledge graph."
+            except Exception as e:
+                return f"KG query error: {e}"
+
+        return StructuredTool.from_function(
+            query_knowledge_graph,
+            name="query_knowledge_graph",
+            description=query_knowledge_graph.__doc__,
+        )
+
+    def query_kg_cypher(self, cypher: str, params: dict | None = None) -> list[dict]:
+        """Execute a raw Cypher query against the Neo4j KG.
+
+        Args:
+            cypher: Cypher query string
+            params: Query parameters
+
+        Returns:
+            List of result records
+        """
+        if not self._kg_store:
+            logger.warning("Neo4j not connected. Call connect_neo4j() first.")
+            return []
+        return self._kg_store.query_cypher(cypher, params)
+
+    # ---- Advanced: Document-level KG extraction ----
+
+    def extract_kg_from_document(self, text: str, allowed_nodes: list[str] | None = None) -> list[dict]:
+        """Extract KG triples from a document using GraphTransformer.
+
+        Uses haive.agents.document_modifiers.kg for full document-level
+        knowledge graph extraction (more thorough than conversation extraction).
+
+        Args:
+            text: Document text to extract from
+            allowed_nodes: Optional list of entity types to extract
+
+        Returns:
+            List of extracted triples as dicts
+        """
+        try:
+            from langchain_core.documents import Document
+            from haive.agents.document_modifiers.kg.kg_base.models import GraphTransformer
+
+            transformer = GraphTransformer()
+            docs = [Document(page_content=text)]
+            graphs = transformer.transform_documents(
+                documents=docs,
+                allowed_nodes=allowed_nodes or [],
+                strict_mode=False,
+            )
+
+            triples = []
+            kg_ns = ("kg", self.user_id)
+            for graph in graphs:
+                for rel in graph.relationships:
+                    triple = {
+                        "subject": rel.source.id,
+                        "predicate": rel.type,
+                        "object": rel.target.id,
+                    }
+                    triples.append(triple)
+                    # Also store in the store
+                    key = f"{triple['subject']}_{triple['predicate']}_{triple['object']}".replace(" ", "_")[:100]
+                    self._store.put(
+                        kg_ns, key,
+                        {**triple, "type": "kg_triple", "source": "document_extraction"},
+                    )
+
+            logger.info(f"Extracted {len(triples)} triples from document")
+            return triples
+
+        except ImportError as e:
+            logger.warning(f"GraphTransformer not available: {e}")
+            return []
+        except Exception as e:
+            logger.warning(f"Document KG extraction failed: {e}")
+            return []
+
+
+def create_memory_agent(
+    name: str = "memory_agent",
+    store: Any = None,
+    connection_string: str | None = None,
+    extra_tools: list | None = None,
+    user_id: str = "default",
+    auto_extract_kg: bool = True,
+    summarize_threshold: int = 4000,
+    neo4j_config: Any = None,
+    **kwargs,
+) -> MemoryAgent:
+    """Factory for creating a memory agent with store + memory tools pre-wired.
+
+    This is the recommended way to create a MemoryAgent. It resolves the store,
+    creates memory tools, and passes them into the engine so ReactAgent's
+    tool routing works correctly.
+
+    Args:
+        name: Agent name
+        store: Direct store instance (takes precedence over connection_string)
+        connection_string: PostgreSQL connection string for production
+        extra_tools: Additional tools beyond memory tools
+        user_id: User ID for memory scoping
+        auto_extract_kg: Enable automatic KG triple extraction from conversations
+        summarize_threshold: Token count threshold for auto-summarization
+        neo4j_config: Neo4jKGConfig instance, True for env var defaults, or None to skip
+        **kwargs: Additional MemoryAgent/ReactAgent kwargs
+    """
+    # Resolve store
+    resolved_store = _resolve_store(store, connection_string)
+
+    # Create memory tools bound to this store + user
+    memory_tools = create_memory_tools(resolved_store, user_id)
+
+    # Combine with any extra user tools
+    all_tools = list(extra_tools or []) + memory_tools
+
+    # Build engine with tools included (so ReactAgent routing works)
+    engine_kwargs = {"temperature": 0.7}
+    if "engine" in kwargs:
+        provided_engine = kwargs.pop("engine")
+        if isinstance(provided_engine, AugLLMConfig):
+            engine_kwargs["temperature"] = provided_engine.temperature
+            if provided_engine.system_message:
+                engine_kwargs["system_message"] = provided_engine.system_message
+            if provided_engine.tools:
+                all_tools = list(provided_engine.tools) + all_tools
+    if "system_message" not in engine_kwargs:
+        engine_kwargs["system_message"] = MEMORY_SYSTEM_PROMPT.format(memory_context="")
+
+    engine = AugLLMConfig(tools=all_tools, **engine_kwargs)
+
+    agent = MemoryAgent(
+        name=name,
+        user_id=user_id,
+        engine=engine,
+        auto_extract_kg=auto_extract_kg,
+        summarize_threshold=summarize_threshold,
+        **kwargs,
+    )
+    agent._store = resolved_store
+
+    if neo4j_config is not None:
+        agent.connect_neo4j(neo4j_config if not isinstance(neo4j_config, bool) else None)
+        # Add graph query tool to engine
+        graph_tool = agent.create_graph_query_tool()
+        agent.engine.add_tool(graph_tool)
+
+    return agent
